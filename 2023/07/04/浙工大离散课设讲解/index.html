@@ -5,7 +5,7 @@
 <h2 id="如何解析合式公式"><a href="#如何解析合式公式" class="headerlink" title="&lt;0x01&gt; 如何解析合式公式"></a>&lt;0x01&gt; 如何解析合式公式</h2><p>在尝试解析合式公式前，我们可以先想想我们该如何解析一般加减乘除的<br>(所谓解析就是判断计算的优先级)  </p>
 <p>比方说我们有公式<code>1+2*3/(4-5)</code><br>按运算优先级加上括号就是<code>(1+((2*3)/(4-5)))</code><br>所以说我们该如何让计算机按这样的优先级计算呢  </p>
 <p>隆重介绍，双栈法<br>准备两个栈，一个是运算数栈，一个是运算符栈<br>运算式在运算前先在首位各加括号(确保最后会栈空)<br>然后从左向右遍历运算式<br>遇到<code>(</code>时直接压入运算符栈，遇到数字压入运算数栈<br>当遇到运算符时，先检查当前运算符优先级是否大于栈顶运算符，如是，直接压入<br>如果不是，那么就先进行弹出操作<br>每次弹出都是弹出一个运算符与两个运算数，并将运算结果再压入运算符栈中<br>重复弹出，直到当前运算符优先级大于运算符栈顶的运算符优先级为止<br>如果遍历过程中遇到<code>)</code>，则反复进行弹出操作，直到弹出一个<code>(</code>为止  </p>
-<p><img src="/./picture/%E7%A6%BB%E6%95%A3%E8%AF%BE%E8%AE%BE%E8%AE%B2%E8%A7%A3/1.gif" alt="演示动画"><br>(动画是用<code>manim</code>做的，头一次做)<br>(强烈推荐<code>manim</code>，太好用了，如果用<code>AE</code>做能做一天)  </p>
+<p><img src="/1.gif" alt="演示动画"><br>(动画是用<code>manim</code>做的，头一次做)<br>(强烈推荐<code>manim</code>，太好用了，如果用<code>AE</code>做能做一天)  </p>
 <p>同样的思路也可以运用在合式公式上<br>具体流程如下：  </p>
 <ul>
 <li>1 给公式的左右套上括号</li>
@@ -25,7 +25,7 @@
 <h2 id="由双栈法构建运算树"><a href="#由双栈法构建运算树" class="headerlink" title="&lt;0x02&gt; 由双栈法构建运算树"></a>&lt;0x02&gt; 由双栈法构建运算树</h2><p>目前我们已经有方法解析合式公式了，但有一个问题<br>我们的题目要求给出一个真值表<br>如果每次计算我们都要先解析一遍合式公式的话，效率不会很高  </p>
 <p>所以我们要用一种数据结构来保存计算的结构<br>每个单一操作数数可以改变对应的真假指派(就是<code>T/F</code>)  </p>
 <p>对于一个计算的过程，我们可以抽象成一个树<br>所有的操作数都是树的叶子(最末端的节点)<br>操作数由运算符连接，合成一个新节点<br>如此嵌套，最后连接在一个根节点上<br>每次计算时，先给操作数真假指派，然后走遍计算树，根节点的值就是公式的计算结果  </p>
-<p><img src="/./picture/%E7%A6%BB%E6%95%A3%E8%AF%BE%E8%AE%BE%E8%AE%B2%E8%A7%A3/2.png" alt="计算树结构"><br>就是这么个结构  </p>
+<p><img src="/picture/%E7%A6%BB%E6%95%A3%E8%AF%BE%E8%AE%BE%E8%AE%B2%E8%A7%A3/2.png" alt="计算树结构"><br>就是这么个结构  </p>
 <p>怎么构建这棵树呢，其实之前的双栈法里就有这个答案<br>我们仅需略微更改下代码，操作数栈不存储运算结果而是存储运算节点<br>这样走一遍公式就相当于构建了一颗计算树<br>最后只要存储根节点就好了  </p>
 <h2 id="逻辑实现"><a href="#逻辑实现" class="headerlink" title="&lt;0x03&gt; 逻辑实现"></a>&lt;0x03&gt; 逻辑实现</h2><h3 id="按从低到高的优先级列出运算符的枚举类型"><a href="#按从低到高的优先级列出运算符的枚举类型" class="headerlink" title="按从低到高的优先级列出运算符的枚举类型"></a>按从低到高的优先级列出运算符的枚举类型</h3><figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="built_in">enum</span> Operator<span class="comment">//枚举运算符</span></span><br><span class="line">&#123;</span><br><span class="line">    LeftBracket,<span class="comment">//左括号</span></span><br><span class="line">    XNOR,<span class="comment">//双条件运算符</span></span><br><span class="line">    Odds,<span class="comment">//条件运算符</span></span><br><span class="line">    Or,<span class="comment">//析取运算符</span></span><br><span class="line">    And,<span class="comment">//合取运算符</span></span><br><span class="line">    Not,<span class="comment">//取反运算符</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
