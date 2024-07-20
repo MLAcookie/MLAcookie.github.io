@@ -1,0 +1,520 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Blog on MLAcookie</title><link>http://localhost:1313/categories/blog/</link><description>Recent content in Blog on MLAcookie</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Sun, 03 Mar 2024 13:24:40 +0000</lastBuildDate><atom:link href="http://localhost:1313/categories/blog/index.xml" rel="self" type="application/rss+xml"/><item><title>我的hexo配合obsidian的配置</title><link>http://localhost:1313/article/categories/blog/%E6%88%91%E7%9A%84hexo%E9%85%8D%E5%90%88obsidian%E7%9A%84%E9%85%8D%E7%BD%AE/</link><pubDate>Sun, 03 Mar 2024 13:24:40 +0000</pubDate><guid>http://localhost:1313/article/categories/blog/%E6%88%91%E7%9A%84hexo%E9%85%8D%E5%90%88obsidian%E7%9A%84%E9%85%8D%E7%BD%AE/</guid><description>&lt;p>闲着没事想着优化一下hexo的博客配置
+我原来一直都是用&lt;code>vscode&lt;/code>写markdown的，至于体验嘛，能写但不是很舒适
+所以我就尝试换成了现在在用的&lt;code>obsidian&lt;/code>，体验就好多了&lt;/p>
+&lt;p>然后就按网上的教程，尝试配置更加优雅的流程
+然后发现原来用的&lt;code>hexo&lt;/code>框架有点老了，就干脆重装了
+没想到啊，重装个&lt;code>hexo&lt;/code>又出了很多问题
+所以这篇博客就从&lt;code>hexo&lt;/code>的安装开始讲吧&lt;/p>
+&lt;h2 id="0x00-hexo的安装">&amp;lt;0x00&amp;gt; hexo的安装
+&lt;/h2>&lt;p>（一般情况下跟着&lt;a class="link" href="https://hexo.io/zh-cn/docs/" target="_blank" rel="noopener"
+>hexo官方教程&lt;/a>没啥问题）
+首先是要有&lt;code>Node.js&lt;/code>环境，这个随意，最好是最新的版本
+还要安装&lt;code>git&lt;/code>，这个直接网上找安装包安装就好了&lt;/p>
+&lt;h3 id="npm换源">npm换源
+&lt;/h3>&lt;p>&lt;code>npm&lt;/code>原本的国内连接不畅，所以要换源
+一般是换成国内的淘宝源&lt;/p>
+&lt;h4 id="一般敲命令方法">一般敲命令方法
+&lt;/h4>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>npm config set registry https://registry.npm.taobao.org
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h4 id="通过nrm切换">通过nrm切换
+&lt;/h4>&lt;p>&lt;code>nrm&lt;/code>是&lt;code>npm&lt;/code>的源管理器，可以在不同的源中切换
+如果没有什么特殊上网方式访问原本的源的话还是建议先手动切换源
+（&lt;code>nrm&lt;/code>也是靠&lt;code>npm&lt;/code>下载的）&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># -g参数表示全局安装，这样的话可以在任何目录中使用nrm&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>npm install -g nrm
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>nrm use taobao
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 查看其它可以用的源&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>nrm ls
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 测试源&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>nrm test
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="安装hexo">安装hexo
+&lt;/h3>&lt;p>首先是安装hexo环境&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>npm install -g hexo-cli
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>然后挑一个空的文件夹，初始化
+（这里取名叫HexoBlog了）&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>hexo init ./HexoBlog
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>然后原本空的文件夹里面会生成一些文件
+安装&lt;code>hexo&lt;/code>依赖&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>cd ./HexoBlog
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>npm install
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>这样之后，&lt;code>hexo&lt;/code>就搭建好了
+但貌似&lt;code>hexo&lt;/code>的依赖文件写的版本可能比较老了，最好还是更新一下&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>npm update
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="0x01-安装anatolo主题">&amp;lt;0x01&amp;gt; 安装Anatolo主题
+&lt;/h2>&lt;p>别的主题就看具体的安装说明了，我这里还是用&lt;a class="link" href="https://github.com/Lhcfl/hexo-theme-anatolo" target="_blank" rel="noopener"
+>Anatolo&lt;/a>了&lt;/p>
+&lt;p>首先是在&lt;code>HexoBlog&lt;/code>文件夹&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>git clone https://gitee.com/Lhcfl/hexo-theme-anatolo.git themes/Anatolo
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>npm install hexo-renderer-pug --save
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>npm install hexo-renderer-stylus --save
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>然后进入&lt;code>HexoBlog/themes/Anatolo&lt;/code>中，复制&lt;code>_config.example.yml&lt;/code>为&lt;code>_config.yml&lt;/code>
+这个&lt;code>_config.yml&lt;/code>是&lt;code>Anatolo&lt;/code>的配置文件
+这里还需要多做一步，这一步在原本的安装文件中没有说&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>npm install
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>需要在Anatolo中再安装一次依赖，如果没有这一步的话运行时会报错找不到模块
+我的猜想是我们在安装&lt;code>hexo&lt;/code>依赖时没有全局安装，所以要在这里再安装一次
+（或者所有的&lt;code>npm&lt;/code>都&lt;code>-g&lt;/code>全局安装也行，但这样对C盘不友好，尤其是像我并不是专门做Nodejs开发的人）&lt;/p>
+&lt;p>然后回到&lt;code>HexoBlog&lt;/code>，修改&lt;code>_config.yml&lt;/code>中的&lt;code>theme: Anatolo&lt;/code>
+这样主题也安装好了&lt;/p>
+&lt;h2 id="0x02-优化hexo配置">&amp;lt;0x02&amp;gt; 优化Hexo配置
+&lt;/h2>&lt;h3 id="部署到github-page上">部署到Github Page上
+&lt;/h3>&lt;p>这个网上的教程足够多了，这边不细讲
+就是记得安装&lt;code>hexo-deployer-git&lt;/code>插件就好
+在&lt;code>HexoBlog&lt;/code>中&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>npm install hexo-deployer-git --save
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="更方便的分文件管理">更方便的分文件管理
+&lt;/h3>&lt;p>&lt;code>hexo&lt;/code>的默认所有的博客文章都存放在&lt;code>HexoBlog/source/_posts&lt;/code>下面
+虽然可以在里面用文件夹归类不同的文章，但需要给这些博客手动写上&lt;code>categories&lt;/code>属性
+这就很麻烦了，手写麻烦还容易出错&lt;/p>
+&lt;p>可以安装一个插件，&lt;code>hexo-auto-category&lt;/code>
+它可以在&lt;code>hexo&lt;/code>生成网页时自动给每个博客打上对应的&lt;code>categories&lt;/code>属性&lt;/p>
+&lt;p>在&lt;code>HexoBlog&lt;/code>中&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>npm install hexo-auto-category --save
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>修改&lt;code>_config.yml&lt;/code>，添加下面的语句&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-yml" data-lang="yml">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">auto_category&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">enable&lt;/span>: &lt;span style="color:#66d9ef">true&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">depth&lt;/span>:
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>这样就安装好并启用了&lt;/p>
+&lt;h2 id="0x03-使用obsidian作为编辑器">&amp;lt;0x03&amp;gt; 使用obsidian作为编辑器
+&lt;/h2>&lt;p>&lt;code>obsidian&lt;/code>确实香，比起原本的&lt;code>vscode&lt;/code>好多了，毕竟是专门的&lt;code>markdown&lt;/code>编辑器
+但要在&lt;code>hexo&lt;/code>中使用&lt;code>obsidian&lt;/code>作为编辑器，还需要做一些小优化&lt;/p>
+&lt;p>仓库的话，用obsidian打开&lt;code>HexoBlog/source/_posts&lt;/code>就可以了&lt;/p>
+&lt;h3 id="图片问题">图片问题
+&lt;/h3>&lt;p>hexo在生成时，图片需要在&lt;code>HexoBlog/source&lt;/code>下面
+但由于obsidian打开的目录在&lt;code>HexoBlog/source/_posts&lt;/code>，所以会检索不到图片&lt;/p>
+&lt;p>我的解决方案是在&lt;code>HexoBlog/source&lt;/code>下面新建&lt;code>picture&lt;/code>文件夹来专门存图片
+然后在&lt;code>HexoBlog/source/_posts&lt;/code>下面添加&lt;code>picture&lt;/code>软连接，让&lt;code>obsidian&lt;/code>可以检索到&lt;/p>
+&lt;p>添加软连接的命令在&lt;code>powershell&lt;/code>下和&lt;code>cmd&lt;/code>下面有所不同，但都需要管理员权限&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># powershell&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>New-Item -ItemType SymbolicLink -Path $放的地方 -Name $名字 -Target $连接的目标
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># cmd&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>mklink /d $软连接存放路径 $连接的目标
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>然后就是在&lt;code>obsidian&lt;/code>中编辑时，引用图片的格式应是&lt;code>![](/picture/...)&lt;/code>
+最好把&lt;code>obsidian&lt;/code>的&lt;code>文件与链接&amp;gt; &amp;gt; 自动添加wiki引用&lt;/code>关了，&lt;code>[[]]&lt;/code>格式的连接hexo本身解析不了
+&lt;img src="http://localhost:1313/article/categories/blog/%E6%88%91%E7%9A%84hexo%E9%85%8D%E5%90%88obsidian%E7%9A%84%E9%85%8D%E7%BD%AE/picture/1.png"
+width="784"
+height="76"
+srcset="http://localhost:1313/article/categories/blog/%E6%88%91%E7%9A%84hexo%E9%85%8D%E5%90%88obsidian%E7%9A%84%E9%85%8D%E7%BD%AE/picture/1_huef58a9bd83d99962061fdf703b3f1df2_12417_480x0_resize_box_3.png 480w, http://localhost:1313/article/categories/blog/%E6%88%91%E7%9A%84hexo%E9%85%8D%E5%90%88obsidian%E7%9A%84%E9%85%8D%E7%BD%AE/picture/1_huef58a9bd83d99962061fdf703b3f1df2_12417_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="1031"
+data-flex-basis="2475px"
+>
+（貌似有插件在解决这个问题，但我没试成功过）&lt;/p>
+&lt;h2 id="0x04-使用脚本做自动化">&amp;lt;0x04&amp;gt; 使用脚本做自动化
+&lt;/h2>&lt;p>&lt;code>hexo&lt;/code>的生成和部署都还是靠cli命令的
+所以可以写一些脚本来做一些自动化
+这里的脚本都是&lt;code>powershell&lt;/code>脚本&lt;/p>
+&lt;h3 id="新建博客文章并编辑">新建博客文章并编辑
+&lt;/h3>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-powershell" data-lang="powershell">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># (@24-03-07) 优化脚本，增加去除URL特殊字符&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">param&lt;/span>(
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>    [&lt;span style="color:#66d9ef">string&lt;/span>]
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>    [ValidateNotNullOrEmpty()]
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>    $Name
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">function&lt;/span> ValidatedName {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>    &lt;span style="color:#66d9ef">param&lt;/span> (
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>        [&lt;span style="color:#66d9ef">string&lt;/span>]
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>        [ValidateNotNullOrEmpty()]
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>        $Name
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>    )
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>    $SpecialCharacters = [&lt;span style="color:#66d9ef">char[]&lt;/span>]@(
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>        &lt;span style="color:#e6db74">&amp;#34;` &amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>        &lt;span style="color:#e6db74">&amp;#34;`!&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>        &lt;span style="color:#e6db74">&amp;#34;&lt;/span>&lt;span style="color:#ae81ff">`&amp;#34;&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>        &lt;span style="color:#e6db74">&amp;#34;`#&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>        &lt;span style="color:#e6db74">&amp;#34;&lt;/span>&lt;span style="color:#ae81ff">`$&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>        &lt;span style="color:#e6db74">&amp;#34;`%&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>        &lt;span style="color:#e6db74">&amp;#34;`&amp;amp;&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>        &lt;span style="color:#e6db74">&amp;#34;&lt;/span>&lt;span style="color:#ae81ff">`&amp;#39;&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>        &lt;span style="color:#e6db74">&amp;#34;(&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>        &lt;span style="color:#e6db74">&amp;#34;)&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>        &lt;span style="color:#e6db74">&amp;#34;*&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>        &lt;span style="color:#e6db74">&amp;#34;+&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>        &lt;span style="color:#e6db74">&amp;#34;,&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>        &lt;span style="color:#e6db74">&amp;#34;-&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>        &lt;span style="color:#e6db74">&amp;#34;.&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>        &lt;span style="color:#e6db74">&amp;#34;/&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>        &lt;span style="color:#e6db74">&amp;#34;:&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>        &lt;span style="color:#e6db74">&amp;#34;;&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>        &lt;span style="color:#e6db74">&amp;#34;&amp;lt;&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>        &lt;span style="color:#e6db74">&amp;#34;=&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>        &lt;span style="color:#e6db74">&amp;#34;&amp;gt; &amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>        &lt;span style="color:#e6db74">&amp;#34;?&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>        &lt;span style="color:#e6db74">&amp;#34;@&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>        &lt;span style="color:#e6db74">&amp;#34;[&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>        &lt;span style="color:#e6db74">&amp;#34;\&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>        &lt;span style="color:#e6db74">&amp;#34;]&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>        &lt;span style="color:#e6db74">&amp;#34;^&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>        &lt;span style="color:#e6db74">&amp;#34;_&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>        &lt;span style="color:#e6db74">&amp;#34;&lt;/span>&lt;span style="color:#ae81ff">``&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>        &lt;span style="color:#e6db74">&amp;#34;{&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>        &lt;span style="color:#e6db74">&amp;#34;|&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>        &lt;span style="color:#e6db74">&amp;#34;}&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>        &lt;span style="color:#e6db74">&amp;#34;~&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>    )
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>    &lt;span style="color:#75715e"># 先每个替换成-&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>    &lt;span style="color:#66d9ef">foreach&lt;/span> ($Character &lt;span style="color:#66d9ef">in&lt;/span> $SpecialCharacters) {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>        $Name = $Name.Replace($Character, &lt;span style="color:#e6db74">&amp;#34;-&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>    }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>    &lt;span style="color:#75715e"># 返回时使用正则表达式匹配连续的-，并替换为单个-&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>    &lt;span style="color:#66d9ef">return&lt;/span> $Name &lt;span style="color:#f92672">-Replace&lt;/span> &lt;span style="color:#e6db74">&amp;#39;([-])+&amp;#39;&lt;/span>, &lt;span style="color:#e6db74">&amp;#39;-&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 指定Obsidian目录&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>$ObsidianPath = &lt;span style="color:#e6db74">&amp;#34;C:\Users\cookie\scoop\apps\obsidian\current\Obsidian.exe&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 新建hexo博客&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>hexo new $Name
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 去除URL特殊字符&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>$Name=ValidatedName -Name $Name
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 创建图片文件夹&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>mkdir ./source/picture/$Name
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 启动Obsidian&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Start-Process $ObsidianPath -ArgumentList ./source/_posts
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># cls&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Clear-Host
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="本地化部署测试">本地化部署测试
+&lt;/h3>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-powershell" data-lang="powershell">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">param&lt;/span>(
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>    [&lt;span style="color:#66d9ef">Int16&lt;/span>]
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>    $Port
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 清理hexo缓存&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>hexo clean
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># hexo生成&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>hexo g
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 启动本地hexo服务器&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">if&lt;/span> ($Port &lt;span style="color:#f92672">-eq&lt;/span> $null) {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>    hexo server
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">else&lt;/span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>    hexo server -p $Port
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="0x05-安装过程中可能的问题">&amp;lt;0x05&amp;gt; 安装过程中可能的问题
+&lt;/h2>&lt;p>&lt;code>hexo&lt;/code>的有些依赖可能已经已放弃维护了
+比如说&lt;code>hexo-renderer-sass&lt;/code>，这个非常容易报错
+（貌似删了不影响整体运行）
+可以替换成&lt;code>hexo-renderer-sass-next&lt;/code>，这个稳定很多&lt;/p>
+&lt;h2 id="0x06-这套方案的问题">&amp;lt;0x06&amp;gt; 这套方案的问题
+&lt;/h2>&lt;p>不支持Obsidian的wiki链接解析
+也没用上Obsidian自带的模板功能
+文章之间相互引用也很麻烦，要知道文章的具体URL&lt;/p></description></item><item><title>给侧边栏加个B站图标</title><link>http://localhost:1313/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/</link><pubDate>Wed, 26 Apr 2023 21:59:57 +0000</pubDate><guid>http://localhost:1313/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/</guid><description>&lt;p>搭个博客嘛，肯定要加点个人的一些账号。然后呢，我想加个B站的链接，但是在 Anatolo 的模板里没有，这下只能自己动手了。&lt;/p>
+&lt;h2 id="一些约定的符号">一些约定的符号
+&lt;/h2>&lt;p>&lt;code>./&lt;/code> 表示 hexo 博客的根目录&lt;/p>
+&lt;h2 id="0x00-分析">&amp;lt;0x00&amp;gt; 分析
+&lt;/h2>&lt;p>我先是在 &lt;code>./themes/Anatolo/source/images&lt;/code> 里找，发现里面只有网站的 icon 和主要图标，没有那些社交媒体的图标
+&lt;img src="http://localhost:1313/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/1.jpg"
+width="87"
+height="28"
+srcset="http://localhost:1313/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/1_hu808bf1b7a55ea40dafadbefda6e35af9_9775_480x0_resize_q75_box.jpg 480w, http://localhost:1313/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/1_hu808bf1b7a55ea40dafadbefda6e35af9_9775_1024x0_resize_q75_box.jpg 1024w"
+loading="lazy"
+alt="演示"
+class="gallery-image"
+data-flex-grow="310"
+data-flex-basis="745px"
+>&lt;br>
+(比如这样的图标，B站的图标原来是没有的)&lt;br>
+然后就又去找 &lt;code>./themes/Anatolo/layout/partial&lt;/code> 下面的各种文件，发现有个叫 &lt;code>sidebar.pug&lt;/code> 和 &lt;code>social_links.pug&lt;/code> 这两个文件。问题来了，&lt;code>.pub&lt;/code> 是啥文件啊(之前真没接触过)。百度了以下，这是个排版引擎的语言。行吧，直接在线学习。&lt;/p>
+&lt;p>然后打开了 &lt;code>sidebar.pug&lt;/code> 简单分析下，感觉关系不大。打开 &lt;code>social_links.pug&lt;/code>&lt;/p>
+&lt;pre tabindex="0">&lt;code class="language-pug" data-lang="pug">// social_links.pug
+ul.social-links
+if theme.github
+li
+a(href= theme.github)
+i.fa.fa-github
+if theme.mail
+li
+//- a(href= &amp;#34;javascript:alert(\&amp;#34;&amp;#34; + theme.mail +&amp;#34;\&amp;#34;)&amp;#34; )
+a(href= &amp;#34;mailto:&amp;#34; + theme.mail )
+i.fa.fa-envelope
+if theme.QQ
+li
+a(href= &amp;#34;http://sighttp.qq.com/authd?IDKEY=&amp;#34; + theme.QQ)
+i.fa.fa-qq
+if theme.zhihu
+li
+a(href= theme.zhihu)
+i.fa.fa-mortar-board
+if theme.twitter
+li
+a(href= theme.twitter)
+i.fa.fa-twitter
+if theme.instagram
+li
+a(href= theme.instagram)
+i.fa.fa-instagram
+if theme.rss
+li
+a(href= url_for(theme.rss))
+i.fa.fa-rss
+if theme.weibo
+li
+a(href= theme.weibo)
+i.fa.fa-weibo
+if theme.facebook
+li
+a(href= theme.facebook)
+i.fa.fa-facebook
+&lt;/code>&lt;/pre>&lt;p>感觉很有关系&lt;/p>
+&lt;h2 id="0x01-简单的尝试">&amp;lt;0x01&amp;gt; 简单的尝试
+&lt;/h2>&lt;p>于是我就直接很粗暴的在 &lt;code>social_links.pug&lt;/code> 里加上这个&lt;/p>
+&lt;pre tabindex="0">&lt;code class="language-pug" data-lang="pug">if theme.bilibili
+li
+a(href= theme.bilibili)
+i.fa.fa-bilibili
+&lt;/code>&lt;/pre>&lt;p>还有在 &lt;code>./themes/Anatolo/_config.yml&lt;/code> 里加上这个&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-yml" data-lang="yml">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">bilibili&lt;/span>: &lt;span style="color:#ae81ff">https://space.bilibili.com/13629146&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>一编译，一部署，一看，果不其然，直接是空白。
+然后看看开发者工具，发现在对应地方的 html 代码里多了这些&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-html" data-lang="html">&lt;span style="display:flex;">&lt;span>&amp;lt;&lt;span style="color:#f92672">li&lt;/span>&amp;gt;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &amp;lt;&lt;span style="color:#f92672">a&lt;/span> &lt;span style="color:#a6e22e">target&lt;/span>&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;_blank&amp;#34;&lt;/span> &lt;span style="color:#a6e22e">rel&lt;/span>&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;noopener&amp;#34;&lt;/span> &lt;span style="color:#a6e22e">href&lt;/span>&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;https://space.bilibili.com/13629146&amp;#34;&lt;/span>&amp;gt;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &amp;lt;&lt;span style="color:#f92672">i&lt;/span> &lt;span style="color:#a6e22e">class&lt;/span>&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;fa fa-bilibili&amp;#34;&lt;/span>&amp;gt;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &amp;lt;/&lt;span style="color:#f92672">i&lt;/span>&amp;gt;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &amp;lt;/&lt;span style="color:#f92672">a&lt;/span>&amp;gt;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&amp;lt;/&lt;span style="color:#f92672">li&lt;/span>&amp;gt;
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>也就是说，其实添加是添加进去了，但就是没有对应的图标而已&lt;br>
+问题来了，&lt;code>&amp;lt;i class=&amp;quot;fa fa-bilibili&amp;quot;&amp;gt;&lt;/code> 里面的 &lt;code>fa&lt;/code> 指的是什么呢?&lt;/p>
+&lt;h2 id="0x02-二度分析">&amp;lt;0x02&amp;gt; 二度分析
+&lt;/h2>&lt;p>搜索了一下，&lt;code>fa&lt;/code> 指的是 Font awesome，是有各种常见图标的字体。找的官网，看了看图标列表，果然没有B站&lt;br>
+这下不得不自己做字体了(如果直接插入图片会更简单倒是)&lt;/p>
+&lt;p>翻了翻 &lt;code>./themes/Anatolo/source/fonts&lt;/code> 果然有 FontAwesome 的字体文件&lt;br>
+(有 &lt;code>.otf&lt;/code> &lt;code>.eot&lt;/code> &lt;code>.svg&lt;/code> &lt;code>.ttf&lt;/code> &lt;code>.woff&lt;/code> &lt;code>.woff2&lt;/code>)&lt;/p>
+&lt;h2 id="0x03-制作图标">&amp;lt;0x03&amp;gt; 制作图标
+&lt;/h2>&lt;p>首先需要一个工具网站，用来做字体。然后还需要一个矢量图编辑器。&lt;br>
+网站是 &lt;a class="link" href="https://icomoon.io/" target="_blank" rel="noopener"
+>icomoon.io&lt;/a> 直接点击右上角的 &lt;code>IcoMoon App&lt;/code> 即可&lt;br>
+矢量图编辑器随意，我这里用的是 &lt;a class="link" href="https://inkscape.org/" target="_blank" rel="noopener"
+>inkscape&lt;/a>&lt;/p>
+&lt;p>进入 &lt;code>IcoMoon App&lt;/code> 后，点击左上角 &lt;code>Import Icons&lt;/code>，选择 &lt;code>.svg&lt;/code> 文件&lt;br>
+左上角选择铅笔，然后随便选一个图标，点击 &lt;code>Download(SVG)&lt;/code> 下载这个图标的 &lt;code>.svg&lt;/code> 文件。&lt;/p>
+&lt;p>然后在本地用矢量图编辑器打开，把原来的图清掉，然后再在上面画矢量图就可以了。&lt;/p>
+&lt;p>画的时候注意不要用描边，要用填充来构成图形。如果不小心用描边构成了图形，那么也可以选中路径，然后找到这个&lt;br>
+&lt;img src="http://localhost:1313/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/2.jpg"
+width="235"
+height="581"
+srcset="http://localhost:1313/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/2_hu109913a40237cb6190d14dd6d7cf27a8_89168_480x0_resize_q75_box.jpg 480w, http://localhost:1313/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/2_hu109913a40237cb6190d14dd6d7cf27a8_89168_1024x0_resize_q75_box.jpg 1024w"
+loading="lazy"
+alt="路径→描边转路径"
+class="gallery-image"
+data-flex-grow="40"
+data-flex-basis="97px"
+>&lt;br>
+点一下就会自动转换成填充了&lt;br>
+画的时候要尽可能把画布填满，如果上下留白很多的话可以适当减小。&lt;br>
+画布大小可以在&lt;code>文件→文档属性&lt;/code>里修改&lt;br>
+如果贝塞尔曲线画不好的话可以先用有理B样条来画，后者好画一点，但画出来就是比较圆润。
+&lt;img src="http://localhost:1313/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/3.jpg"
+width="284"
+height="326"
+srcset="http://localhost:1313/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/3_hu66da9bad32194b9ab295e600fdb67e9a_63586_480x0_resize_q75_box.jpg 480w, http://localhost:1313/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/3_hu66da9bad32194b9ab295e600fdb67e9a_63586_1024x0_resize_q75_box.jpg 1024w"
+loading="lazy"
+alt="第一个是贝塞尔，第三个是B样条"
+class="gallery-image"
+data-flex-grow="87"
+data-flex-basis="209px"
+>&lt;br>
+用贝塞尔曲线画的画，尽可能让每个节点的手柄要么水平，要么垂直，这样画会相对简单一点&lt;br>
+如果图标有一定的对称性，那么节点要对称，而且手柄的长度也要对称&lt;br>
+&lt;img src="http://localhost:1313/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/4.jpg"
+width="1928"
+height="1050"
+srcset="http://localhost:1313/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/4_hu747705ed60103c1e25375c7c70351264_420322_480x0_resize_q75_box.jpg 480w, http://localhost:1313/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/4_hu747705ed60103c1e25375c7c70351264_420322_1024x0_resize_q75_box.jpg 1024w"
+loading="lazy"
+alt="我的成果"
+class="gallery-image"
+data-flex-grow="183"
+data-flex-basis="440px"
+>&lt;br>
+我的成果供大家参考。&lt;/p>
+&lt;p>然后，保存文件，回到之前的网页。导入我们制作的 &lt;code>.svg&lt;/code> 文件。&lt;br>
+&lt;img src="http://localhost:1313/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/5.jpg"
+width="1920"
+height="1050"
+srcset="http://localhost:1313/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/5_hu717767c703288dc490ca154b3905764b_163917_480x0_resize_q75_box.jpg 480w, http://localhost:1313/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/5_hu717767c703288dc490ca154b3905764b_163917_1024x0_resize_q75_box.jpg 1024w"
+loading="lazy"
+alt="Import to set"
+class="gallery-image"
+data-flex-grow="182"
+data-flex-basis="438px"
+>&lt;br>
+然后选择右上角移动工具&lt;br>
+&lt;img src="http://localhost:1313/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/6.jpg"
+width="160"
+height="32"
+srcset="http://localhost:1313/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/6_hu62cc3facce26d64b9ae8fa29969dfb21_12622_480x0_resize_q75_box.jpg 480w, http://localhost:1313/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/6_hu62cc3facce26d64b9ae8fa29969dfb21_12622_1024x0_resize_q75_box.jpg 1024w"
+loading="lazy"
+alt="移动工具"
+class="gallery-image"
+data-flex-grow="500"
+data-flex-basis="1200px"
+>&lt;br>
+把我们的图标移到列表的最后一个。&lt;br>
+最后选择 &lt;code>Generate Font&lt;/code> 生成字体文件。下载前找到我们新制作的图标，可以先检查下有没有什么问题。&lt;/p>
+&lt;h2 id="0x04-替换原有字体">&amp;lt;0x04&amp;gt; 替换原有字体
+&lt;/h2>&lt;p>下载后解压缩，里面有个 &lt;code>demo.html&lt;/code> 可以用来查看字体和字体编号(字体编号很重要)，还有 &lt;code>fonts&lt;/code> 文件夹，里面就是我们生成的字体了。&lt;/p>
+&lt;p>打开 &lt;code>demo.html&lt;/code>，找到我们的图标，记下图标的编号(这个编号在字体生成里也能改)，比如我的字体编号是 &lt;code>f2e1&lt;/code>。&lt;/p>
+&lt;p>把 &lt;code>fonts&lt;/code> 文件下的文件复制到 &lt;code>./themes/Anatolo/source/fonts&lt;/code>&lt;br>
+在 &lt;code>./themes/Anatolo/source/css&lt;/code> 里找到 &lt;code>font-awesome.css&lt;/code> 和 &lt;code>font-awesome.min.css&lt;/code> (建议每个复制一个作备份)，打开。&lt;br>
+在 &lt;code>font-awesome.css&lt;/code> 修改&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-css" data-lang="css">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">/*原来的*/&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>@&lt;span style="color:#66d9ef">font-face&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">font-family&lt;/span>&lt;span style="color:#f92672">:&lt;/span> &lt;span style="color:#e6db74">&amp;#39;FontAwesome&amp;#39;&lt;/span>&lt;span style="color:#f92672">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">src&lt;/span>&lt;span style="color:#f92672">:&lt;/span> &lt;span style="color:#f92672">url&lt;/span>&lt;span style="color:#f92672">(&lt;/span>&lt;span style="color:#e6db74">&amp;#39;../fonts/fontawesome-webfont.eot?v=4.7.0&amp;#39;&lt;/span>&lt;span style="color:#f92672">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">src&lt;/span>&lt;span style="color:#f92672">:&lt;/span> &lt;span style="color:#f92672">url&lt;/span>&lt;span style="color:#f92672">(&lt;/span>&lt;span style="color:#e6db74">&amp;#39;../fonts/fontawesome-webfont.eot?#iefix&amp;amp;v=4.7.0&amp;#39;&lt;/span>&lt;span style="color:#f92672">)&lt;/span> &lt;span style="color:#f92672">format&lt;/span>&lt;span style="color:#f92672">(&lt;/span>&lt;span style="color:#e6db74">&amp;#39;embedded-opentype&amp;#39;&lt;/span>&lt;span style="color:#f92672">),&lt;/span> &lt;span style="color:#f92672">url&lt;/span>&lt;span style="color:#f92672">(&lt;/span>&lt;span style="color:#e6db74">&amp;#39;../fonts/fontawesome-webfont.woff2?v=4.7.0&amp;#39;&lt;/span>&lt;span style="color:#f92672">)&lt;/span> &lt;span style="color:#f92672">format&lt;/span>&lt;span style="color:#f92672">(&lt;/span>&lt;span style="color:#e6db74">&amp;#39;woff2&amp;#39;&lt;/span>&lt;span style="color:#f92672">),&lt;/span> &lt;span style="color:#f92672">url&lt;/span>&lt;span style="color:#f92672">(&lt;/span>&lt;span style="color:#e6db74">&amp;#39;../fonts/fontawesome-webfont.woff?v=4.7.0&amp;#39;&lt;/span>&lt;span style="color:#f92672">)&lt;/span> &lt;span style="color:#f92672">format&lt;/span>&lt;span style="color:#f92672">(&lt;/span>&lt;span style="color:#e6db74">&amp;#39;woff&amp;#39;&lt;/span>&lt;span style="color:#f92672">),&lt;/span> &lt;span style="color:#f92672">url&lt;/span>&lt;span style="color:#f92672">(&lt;/span>&lt;span style="color:#e6db74">&amp;#39;../fonts/fontawesome-webfont.ttf?v=4.7.0&amp;#39;&lt;/span>&lt;span style="color:#f92672">)&lt;/span> &lt;span style="color:#f92672">format&lt;/span>&lt;span style="color:#f92672">(&lt;/span>&lt;span style="color:#e6db74">&amp;#39;truetype&amp;#39;&lt;/span>&lt;span style="color:#f92672">),&lt;/span> &lt;span style="color:#f92672">url&lt;/span>&lt;span style="color:#f92672">(&lt;/span>&lt;span style="color:#e6db74">&amp;#39;../fonts/fontawesome-webfont.svg?v=4.7.0#fontawesomeregular&amp;#39;&lt;/span>&lt;span style="color:#f92672">)&lt;/span> &lt;span style="color:#f92672">format&lt;/span>&lt;span style="color:#f92672">(&lt;/span>&lt;span style="color:#e6db74">&amp;#39;svg&amp;#39;&lt;/span>&lt;span style="color:#f92672">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">font-weight&lt;/span>&lt;span style="color:#f92672">:&lt;/span> &lt;span style="color:#f92672">normal&lt;/span>&lt;span style="color:#f92672">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">font-style&lt;/span>&lt;span style="color:#f92672">:&lt;/span> &lt;span style="color:#f92672">normal&lt;/span>&lt;span style="color:#f92672">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">/*修改为*/&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>@&lt;span style="color:#66d9ef">font-face&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">font-family&lt;/span>&lt;span style="color:#f92672">:&lt;/span> &lt;span style="color:#e6db74">&amp;#39;FontAwesome&amp;#39;&lt;/span>&lt;span style="color:#f92672">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">src&lt;/span>&lt;span style="color:#f92672">:&lt;/span> &lt;span style="color:#f92672">url&lt;/span>&lt;span style="color:#f92672">(&lt;/span>&lt;span style="color:#e6db74">&amp;#39;../fonts/fontawesome-webfont.eot&amp;#39;&lt;/span>&lt;span style="color:#f92672">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">src&lt;/span>&lt;span style="color:#f92672">:&lt;/span> &lt;span style="color:#f92672">url&lt;/span>&lt;span style="color:#f92672">(&lt;/span>&lt;span style="color:#e6db74">&amp;#39;../fonts/fontawesome-webfont.eot&amp;#39;&lt;/span>&lt;span style="color:#f92672">)&lt;/span> &lt;span style="color:#f92672">format&lt;/span>&lt;span style="color:#f92672">(&lt;/span>&lt;span style="color:#e6db74">&amp;#39;embedded-opentype&amp;#39;&lt;/span>&lt;span style="color:#f92672">),&lt;/span> &lt;span style="color:#f92672">url&lt;/span>&lt;span style="color:#f92672">(&lt;/span>&lt;span style="color:#e6db74">&amp;#39;../fonts/fontawesome-webfont.woff&amp;#39;&lt;/span>&lt;span style="color:#f92672">)&lt;/span> &lt;span style="color:#f92672">format&lt;/span>&lt;span style="color:#f92672">(&lt;/span>&lt;span style="color:#e6db74">&amp;#39;woff&amp;#39;&lt;/span>&lt;span style="color:#f92672">),&lt;/span> &lt;span style="color:#f92672">url&lt;/span>&lt;span style="color:#f92672">(&lt;/span>&lt;span style="color:#e6db74">&amp;#39;../fonts/fontawesome-webfont.ttf&amp;#39;&lt;/span>&lt;span style="color:#f92672">)&lt;/span> &lt;span style="color:#f92672">format&lt;/span>&lt;span style="color:#f92672">(&lt;/span>&lt;span style="color:#e6db74">&amp;#39;truetype&amp;#39;&lt;/span>&lt;span style="color:#f92672">),&lt;/span> &lt;span style="color:#f92672">url&lt;/span>&lt;span style="color:#f92672">(&lt;/span>&lt;span style="color:#e6db74">&amp;#39;../fonts/fontawesome-webfont.svg&amp;#39;&lt;/span>&lt;span style="color:#f92672">)&lt;/span> &lt;span style="color:#f92672">format&lt;/span>&lt;span style="color:#f92672">(&lt;/span>&lt;span style="color:#e6db74">&amp;#39;svg&amp;#39;&lt;/span>&lt;span style="color:#f92672">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">font-weight&lt;/span>&lt;span style="color:#f92672">:&lt;/span> &lt;span style="color:#f92672">normal&lt;/span>&lt;span style="color:#f92672">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">font-style&lt;/span>&lt;span style="color:#f92672">:&lt;/span> &lt;span style="color:#f92672">normal&lt;/span>&lt;span style="color:#f92672">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>我这里的字体名还是 &lt;code>fontawesome-webfont&lt;/code> 这里名字按自己的来&lt;/p>
+&lt;p>然后加上这些&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-css" data-lang="css">&lt;span style="display:flex;">&lt;span>.&lt;span style="color:#a6e22e">fa-bilibili-alt&lt;/span>:&lt;span style="color:#a6e22e">before&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">content&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;\f2e1&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>反正有很多长差不多的，加在那里面就可以。&lt;br>
+&lt;code>\f2e1&lt;/code> 这里要看你的编号填，&lt;code>.fa-bilibili-alt&lt;/code> 这个算是给图标起个名字，随意就好。&lt;br>
+&lt;code>font-awesome.min.css&lt;/code> 就是 &lt;code>font-awesome.css&lt;/code> 去掉所有缩进的版本，也要加上并修改些东西，在这里就不讲了。&lt;/p>
+&lt;h2 id="0x05-部署试试">&amp;lt;0x05&amp;gt; 部署试试
+&lt;/h2>&lt;p>(记得加上&amp;lt;0x02&amp;gt;的多出来的代码)&lt;br>
+编译，部署。访问下网页看看有没有新图标出现。如果没有，清除或禁用网页缓存后再试试。理论上自己加入的图标就会出现。&lt;br>
+&lt;img src="http://localhost:1313/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/7.jpg"
+width="232"
+height="100"
+srcset="http://localhost:1313/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/7_hu897f00d9463e4fce6fb5e0ed5669221b_2837_480x0_resize_q75_box.jpg 480w, http://localhost:1313/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/7_hu897f00d9463e4fce6fb5e0ed5669221b_2837_1024x0_resize_q75_box.jpg 1024w"
+loading="lazy"
+alt="成功示例"
+class="gallery-image"
+data-flex-grow="232"
+data-flex-basis="556px"
+>&lt;br>
+就像这样。&lt;/p>
+&lt;h2 id="搞定下班">搞定，下班
+&lt;/h2></description></item><item><title>如何一个hexo博客同时部署多git</title><link>http://localhost:1313/article/categories/blog/%E5%A6%82%E4%BD%95%E4%B8%80%E4%B8%AAhexo%E5%8D%9A%E5%AE%A2%E5%90%8C%E6%97%B6%E9%83%A8%E7%BD%B2%E5%A4%9Agit/</link><pubDate>Sun, 23 Apr 2023 16:35:19 +0000</pubDate><guid>http://localhost:1313/article/categories/blog/%E5%A6%82%E4%BD%95%E4%B8%80%E4%B8%AAhexo%E5%8D%9A%E5%AE%A2%E5%90%8C%E6%97%B6%E9%83%A8%E7%BD%B2%E5%A4%9Agit/</guid><description>&lt;h2 id="0x01-如何实现">&amp;lt;0x01&amp;gt; 如何实现
+&lt;/h2>&lt;p>思路是本地多写几份 config 文件&lt;br>
+在部署时切换就可以&lt;/p>
+&lt;h2 id="0x02-开搞">&amp;lt;0x02&amp;gt; 开搞
+&lt;/h2>&lt;p>首先先新建几个 config 文件&lt;br>
+建议直接复制原来的&lt;code>_config.yml&lt;/code>&lt;br>
+复制的文件名字随意
+我们只需要修改最下面的&lt;code>deploy&lt;/code>部分就好&lt;/p>
+&lt;p>比如我在 hexo 目录建了两个文件&lt;br>
+分别是&lt;code>_GitPageConfig.yml&lt;/code>与&lt;code>_ServerConfig.yml&lt;/code>&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-yml" data-lang="yml">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># _GitPageConfig.yml的部分&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">deploy&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">type&lt;/span>: &lt;span style="color:#ae81ff">git&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">repo&lt;/span>: &lt;span style="color:#ae81ff">git@github.com:{github用户名}/{github用户名}.github.io.git&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">branch&lt;/span>: &lt;span style="color:#ae81ff">gh-pages&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-yml" data-lang="yml">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># _ServerConfig.yml的部分&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">deploy&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">type&lt;/span>: &lt;span style="color:#ae81ff">git&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">repo&lt;/span>: &lt;span style="color:#ae81ff">git@{服务器ip}:{gitea用户名}/{gitea仓库名}.git&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">branch&lt;/span>: &lt;span style="color:#ae81ff">master&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>然后新建一个脚本文件&lt;br>
+这里用 windows 配置，所以新建了个 powershell 脚本&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-ps1" data-lang="ps1">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># deploy.ps1&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>copy _ServerConfig.yml _config.yml
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>hexo g -d
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>del _config.yml
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>copy _GitPageConfig.yml _config.yml
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>hexo g -d
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>del _config.yml
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>如果要部署到更多的git仓库，以此类推
+之后部署只需要执行&lt;code>deploy.ps1&lt;/code>即可&lt;/p>
+&lt;h2 id="0x03-为什么不单文件解决">&amp;lt;0x03&amp;gt; 为什么不单文件解决
+&lt;/h2>&lt;p>(@ 23-07-07)&lt;br>
+经过我的实际测试，确实也可以直接单文件搞定&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-yml" data-lang="yml">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># _config.yml&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">deploy&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>- &lt;span style="color:#f92672">type&lt;/span>: &lt;span style="color:#ae81ff">git&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">repo&lt;/span>: &lt;span style="color:#ae81ff">git@{服务器ip}:{gitea用户名}/{gitea仓库名}.git&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">branch&lt;/span>: &lt;span style="color:#ae81ff">master&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>- &lt;span style="color:#f92672">type&lt;/span>: &lt;span style="color:#ae81ff">git&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">repo&lt;/span>: &lt;span style="color:#ae81ff">git@github.com:{github用户名}/{github用户名}.github.io.git&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">branch&lt;/span>: &lt;span style="color:#ae81ff">gh-pages&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>这样写也可以，&lt;code>hexo&lt;/code>会按从上到下的顺序依次部署&lt;/p>
+&lt;p>但这样写会导致一个问题，就是网址的根域名会对不上&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-yml" data-lang="yml">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># _config.yml&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 部署到我自己的网站&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">url&lt;/span>: &lt;span style="color:#ae81ff">http://mlacookie.top/&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 部署到GitHubPage&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">url&lt;/span>: &lt;span style="color:#ae81ff">https://MLAcookie.github.io/&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>如果仅靠单一文件的话，两个部署的根域名会是一样的&lt;br>
+这样可能会造成一些小问题&lt;/p>
+&lt;p>靠&lt;code>powershell&lt;/code>还可以顺便做部署前的一些操作，挺方便的&lt;/p></description></item><item><title>搭建hexo+gitea的博客站</title><link>http://localhost:1313/article/categories/blog/%E6%90%AD%E5%BB%BAhexo+gitea%E7%9A%84%E5%8D%9A%E5%AE%A2%E7%AB%99/</link><pubDate>Sun, 23 Apr 2023 15:50:19 +0000</pubDate><guid>http://localhost:1313/article/categories/blog/%E6%90%AD%E5%BB%BAhexo+gitea%E7%9A%84%E5%8D%9A%E5%AE%A2%E7%AB%99/</guid><description>&lt;h2 id="0x00-为什么要用gitea--hexo">&amp;lt;0x00&amp;gt; 为什么要用gitea + hexo
+&lt;/h2>&lt;p>很简单，gitea 太好用了(才不是因为 git 配置太麻烦)&lt;br>
+而且 hexo 的博客就是静态网页，基本不怎么耗费服务器资源&lt;br>
+如此再搭个 gitea 正好还能当个代码仓库，岂不美哉&lt;/p>
+&lt;h2 id="0x01-整体运行架构">&amp;lt;0x01&amp;gt; 整体运行架构
+&lt;/h2>&lt;p>就是 gitea 跑 git 仓库&lt;br>
+然后利用 git hook 功能将仓库内容同步到服务器的另一个文件夹&lt;br>
+hexo 的界面靠 nginx 反代
+本地写完靠 hexo 的配置脚本通过 git 同步到服务器&lt;br>
+(其实用 gitea 的话也可以通过插件实现 GitHub Page 的功能的)&lt;/p>
+&lt;h2 id="0x02-先安装些组件">&amp;lt;0x02&amp;gt; 先安装些组件
+&lt;/h2>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#安装nginx&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>sudo apt update &lt;span style="color:#f92672">&amp;amp;&amp;amp;&lt;/span> sudo apt upgrade
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>sudo apt install nginx
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>gitea 的安装在这就不赘述了&lt;br>
+(我之前有从零搭建的教程)&lt;/p>
+&lt;h2 id="0x03-配置git-hook">&amp;lt;0x03&amp;gt; 配置git hook
+&lt;/h2>&lt;p>git hook 其实就是一个自动化脚本&lt;br>
+简单理解就是 git 到服务器上后服务器要干的事&lt;br>
+首先，在 gitea 里创建一个仓库，名字随意&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#进入对应仓库的hook配置目录&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>cd /var/lib/gitea/data/gitea-repositories/&lt;span style="color:#e6db74">${&lt;/span>gitea用户名&lt;span style="color:#e6db74">}&lt;/span>/&lt;span style="color:#e6db74">${&lt;/span>仓库名&lt;span style="color:#e6db74">}&lt;/span>.git/hooks/
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>(&lt;code>${gitea用户名}&lt;/code>和&lt;code>${仓库名}&lt;/code>都是按照自己的设置填的)
+这里是 git 的各种 hook，别的现在用不大到&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#进入需要编辑的hook目录&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>cd post-receive.d/
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#创建我们自己的hook，名字随意&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>vim hexo
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>在 hexo 文件中，输入以下内容&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#!/bin/bash
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>sss&lt;span style="color:#f92672">=&lt;/span>/var/lib/gitea/data/gitea-repositories/&lt;span style="color:#e6db74">${&lt;/span>gitea用户名&lt;span style="color:#e6db74">}&lt;/span>/&lt;span style="color:#e6db74">${&lt;/span>仓库名&lt;span style="color:#e6db74">}&lt;/span>.git
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>ttt&lt;span style="color:#f92672">=&lt;/span>/var/www/blog
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>rm -rf &lt;span style="color:#e6db74">${&lt;/span>ttt&lt;span style="color:#e6db74">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>git clone &lt;span style="color:#e6db74">${&lt;/span>sss&lt;span style="color:#e6db74">}&lt;/span> &lt;span style="color:#e6db74">${&lt;/span>ttt&lt;span style="color:#e6db74">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>其中&lt;code>/var/www/blog&lt;/code>是你希望存储网页的地址，可以改成别的&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#给这个hook添加可执行权限&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>chmod a+x hexo
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>现在，理论上当你用 hexo 一键配置脚本的时候，那些网页文件会出现在那个位置&lt;/p>
+&lt;h2 id="0x04-配置存储地址和nginx">&amp;lt;0x04&amp;gt; 配置存储地址和nginx
+&lt;/h2>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#进入你希望存网页的位置&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>cd /var/www/
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>mkdir blog
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#为第一次git用户删除提供权限&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>chmod -R &lt;span style="color:#ae81ff">777&lt;/span> ./
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#进入nginx的目录&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>cd /etc/nginx/
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>cd sites-enabled/
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>vim default
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>需要注意的是，这里的nginx版本可能比较新，所以需要修改&lt;code>/etc/nginx/sites-enabled/default&lt;/code>&lt;br>
+如果你在&lt;code>/etc/nginx/nginx.conf&lt;/code>中能看到在&lt;code>http{}&lt;/code>中有&lt;code>server{}&lt;/code>&lt;br>
+那么直接在&lt;code>/etc/nginx/nginx.conf&lt;/code>就行&lt;/p>
+&lt;p>在&lt;code>server{}&lt;/code>中，把&lt;code>root&lt;/code>的值改为存储网页的位置&lt;br>
+在这里是改为&lt;code>root /var/www/blog&lt;/code>
+再在&lt;code>index&lt;/code>后加入&lt;code>index.html&lt;/code>
+(有了就不用加)&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#重启nginx服务&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>nginx -s reload
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>现在，理论上访问服务器 ip 后就是博客首页了&lt;/p>
+&lt;h2 id="0x05-本地的一些修改">&amp;lt;0x05&amp;gt; 本地的一些修改
+&lt;/h2>&lt;p>打开&lt;code>_config.yml&lt;/code>&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-yml" data-lang="yml">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">deploy&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">type&lt;/span>: &lt;span style="color:#ae81ff">git&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">repo&lt;/span>: &lt;span style="color:#ae81ff">git@{服务器ip}:{gitea用户名}/{gitea仓库名}.git&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">branch&lt;/span>: &lt;span style="color:#ae81ff">master&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>现在，当你运行&lt;code>hexo deploy&lt;/code>，网页内容将同步到git仓库并且也会同步到网页存储位置&lt;/p></description></item></channel></rss>

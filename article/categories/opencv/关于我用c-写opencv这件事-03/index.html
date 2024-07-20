@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="（说实话我有点后悔用C#写Opencv了） 今天我们神秘的数字图像处理做实验了 虽然东西是挺简单的，但因为我用的是C#，导致很多现成的代码都没法抄 再加上虽然Opencvsharp4宣称是和C++的API是对应的 但实际上的开发体验差别真挺大的，很多API的调用方法是不一样的 （有些调用像C++，有些调用有自己的特色） 基本上所有的代码都要自己去试，写着挺痛苦的 所以还是讲讲我们做了啥吧 &lt;0x01&gt;读取图像\r这个其实是简单的 假设需要读取一个图片，比方说是D:/Test/1.png 通过Cv2.ImRead()方法就可以读取为内置的矩阵类型了 Mat image = Cv2.ImRead(&#34;D:/Test/1.png&#34;); 这个方法可以读取一般常见的图片格式 然后，这个方法还可以传入第二个参数，用来控制读取的行为 比方说我们希望获取的是图像的灰度图 Mat grayImage = Cv2.ImRead(&#34;D:/Test/1.png&#34;, ImreadModes.Grayscale); ImreadModes是一个枚举类型，有很多常用的读取行为 一般也就是这个ImreadModes.Grayscale获取灰度图用的多 Cv2.ImRead()这个参数的默认值是ImreadModes.Color，即默认读入带颜色的图像 &lt;0x02&gt;将有色图转换为灰度图\r前面提到，我们可以指定读取图片时保存为灰度图 那有没有别的在运行时从有色图转换为灰度图的方法呢？ 肯定是有的 Mat image = Cv2.ImRead(&#34;D:/Test/1.png&#34;); Mat grayImage = iamge.CvtColor(ColorConversionCodes.RGB2GRAY); 这样也完成了转换 还有一个等价的写法 Mat image = Cv2.ImRead(&#34;D:/Test/1.png&#34;); Mat grayImage = new(); Cv2.CvtColor(image, grayImage, ColorConversionCodes.RGB2GRAY); 这样写也行 CvtColor()方法中，传入的ColorConversionCodes也是个枚举类型 里面也有很多常用的转换方式，有什么RGB2BGR之类的 &lt;0x03&gt;图像按位取反\r这个在C#中的写法确实跟C++之类的挺像的 Mat image = Cv2.ImRead(&#34;D:/Test/1.png&#34;); Mat inversedImage = new(); Cv2.BitwiseNot(image, inversedImage); 当然也可以自己写对每个位的操作，但这样就太麻烦了 &lt;0x04&gt;图像对比度增强\r关于图像对比度增强的办法有很多，我这里用的是限制对比度自适应直方图均衡化的办法 （原理我也说不出来，没细学，还是看别的大佬的文章吧）">
+<title>关于我用C#写Opencv这件事-03</title>
+
+<link rel='canonical' href='http://localhost:1313/article/categories/opencv/%E5%85%B3%E4%BA%8E%E6%88%91%E7%94%A8c-%E5%86%99opencv%E8%BF%99%E4%BB%B6%E4%BA%8B-03/'>
+
+<link rel="stylesheet" href="/scss/style.min.e8c7fca7d1c9294aa7a4f3426c225ee26540f7d94e39be0b5a4a5c8a49ca5a25.css"><meta property='og:title' content="关于我用C#写Opencv这件事-03">
+<meta property='og:description' content="（说实话我有点后悔用C#写Opencv了） 今天我们神秘的数字图像处理做实验了 虽然东西是挺简单的，但因为我用的是C#，导致很多现成的代码都没法抄 再加上虽然Opencvsharp4宣称是和C++的API是对应的 但实际上的开发体验差别真挺大的，很多API的调用方法是不一样的 （有些调用像C++，有些调用有自己的特色） 基本上所有的代码都要自己去试，写着挺痛苦的 所以还是讲讲我们做了啥吧 &lt;0x01&gt;读取图像\r这个其实是简单的 假设需要读取一个图片，比方说是D:/Test/1.png 通过Cv2.ImRead()方法就可以读取为内置的矩阵类型了 Mat image = Cv2.ImRead(&#34;D:/Test/1.png&#34;); 这个方法可以读取一般常见的图片格式 然后，这个方法还可以传入第二个参数，用来控制读取的行为 比方说我们希望获取的是图像的灰度图 Mat grayImage = Cv2.ImRead(&#34;D:/Test/1.png&#34;, ImreadModes.Grayscale); ImreadModes是一个枚举类型，有很多常用的读取行为 一般也就是这个ImreadModes.Grayscale获取灰度图用的多 Cv2.ImRead()这个参数的默认值是ImreadModes.Color，即默认读入带颜色的图像 &lt;0x02&gt;将有色图转换为灰度图\r前面提到，我们可以指定读取图片时保存为灰度图 那有没有别的在运行时从有色图转换为灰度图的方法呢？ 肯定是有的 Mat image = Cv2.ImRead(&#34;D:/Test/1.png&#34;); Mat grayImage = iamge.CvtColor(ColorConversionCodes.RGB2GRAY); 这样也完成了转换 还有一个等价的写法 Mat image = Cv2.ImRead(&#34;D:/Test/1.png&#34;); Mat grayImage = new(); Cv2.CvtColor(image, grayImage, ColorConversionCodes.RGB2GRAY); 这样写也行 CvtColor()方法中，传入的ColorConversionCodes也是个枚举类型 里面也有很多常用的转换方式，有什么RGB2BGR之类的 &lt;0x03&gt;图像按位取反\r这个在C#中的写法确实跟C++之类的挺像的 Mat image = Cv2.ImRead(&#34;D:/Test/1.png&#34;); Mat inversedImage = new(); Cv2.BitwiseNot(image, inversedImage); 当然也可以自己写对每个位的操作，但这样就太麻烦了 &lt;0x04&gt;图像对比度增强\r关于图像对比度增强的办法有很多，我这里用的是限制对比度自适应直方图均衡化的办法 （原理我也说不出来，没细学，还是看别的大佬的文章吧）">
+<meta property='og:url' content='http://localhost:1313/article/categories/opencv/%E5%85%B3%E4%BA%8E%E6%88%91%E7%94%A8c-%E5%86%99opencv%E8%BF%99%E4%BB%B6%E4%BA%8B-03/'>
+<meta property='og:site_name' content='MLAcookie'>
+<meta property='og:type' content='article'><meta property='article:section' content='Article' /><meta property='article:tag' content='OpenCV' /><meta property='article:tag' content='CSharp' /><meta property='article:published_time' content='2024-03-18T12:59:53&#43;00:00'/><meta property='article:modified_time' content='2024-03-18T12:59:53&#43;00:00'/>
+<meta name="twitter:title" content="关于我用C#写Opencv这件事-03">
+<meta name="twitter:description" content="（说实话我有点后悔用C#写Opencv了） 今天我们神秘的数字图像处理做实验了 虽然东西是挺简单的，但因为我用的是C#，导致很多现成的代码都没法抄 再加上虽然Opencvsharp4宣称是和C++的API是对应的 但实际上的开发体验差别真挺大的，很多API的调用方法是不一样的 （有些调用像C++，有些调用有自己的特色） 基本上所有的代码都要自己去试，写着挺痛苦的 所以还是讲讲我们做了啥吧 &lt;0x01&gt;读取图像\r这个其实是简单的 假设需要读取一个图片，比方说是D:/Test/1.png 通过Cv2.ImRead()方法就可以读取为内置的矩阵类型了 Mat image = Cv2.ImRead(&#34;D:/Test/1.png&#34;); 这个方法可以读取一般常见的图片格式 然后，这个方法还可以传入第二个参数，用来控制读取的行为 比方说我们希望获取的是图像的灰度图 Mat grayImage = Cv2.ImRead(&#34;D:/Test/1.png&#34;, ImreadModes.Grayscale); ImreadModes是一个枚举类型，有很多常用的读取行为 一般也就是这个ImreadModes.Grayscale获取灰度图用的多 Cv2.ImRead()这个参数的默认值是ImreadModes.Color，即默认读入带颜色的图像 &lt;0x02&gt;将有色图转换为灰度图\r前面提到，我们可以指定读取图片时保存为灰度图 那有没有别的在运行时从有色图转换为灰度图的方法呢？ 肯定是有的 Mat image = Cv2.ImRead(&#34;D:/Test/1.png&#34;); Mat grayImage = iamge.CvtColor(ColorConversionCodes.RGB2GRAY); 这样也完成了转换 还有一个等价的写法 Mat image = Cv2.ImRead(&#34;D:/Test/1.png&#34;); Mat grayImage = new(); Cv2.CvtColor(image, grayImage, ColorConversionCodes.RGB2GRAY); 这样写也行 CvtColor()方法中，传入的ColorConversionCodes也是个枚举类型 里面也有很多常用的转换方式，有什么RGB2BGR之类的 &lt;0x03&gt;图像按位取反\r这个在C#中的写法确实跟C++之类的挺像的 Mat image = Cv2.ImRead(&#34;D:/Test/1.png&#34;); Mat inversedImage = new(); Cv2.BitwiseNot(image, inversedImage); 当然也可以自己写对每个位的操作，但这样就太麻烦了 &lt;0x04&gt;图像对比度增强\r关于图像对比度增强的办法有很多，我这里用的是限制对比度自适应直方图均衡化的办法 （原理我也说不出来，没细学，还是看别的大佬的文章吧）">
+    <link rel="shortcut icon" href="/favicon.webp" />
+
+  
+
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu01ec501d434397934aa5721ebabee736_552660_300x0_resize_box_3.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">😜</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">MLAcookie</a></h1>
+            <h2 class="site-description">随便记点东西的记事本</h2>
+        </div>
+    </header><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/about/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>About</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/links/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>Links</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>Dark Mode</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">Table of contents</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#0x01读取图像">&lt;0x01&gt;读取图像</a></li>
+    <li><a href="#0x02将有色图转换为灰度图">&lt;0x02&gt;将有色图转换为灰度图</a></li>
+    <li><a href="#0x03图像按位取反">&lt;0x03&gt;图像按位取反</a></li>
+    <li><a href="#0x04图像对比度增强">&lt;0x04&gt;图像对比度增强</a></li>
+    <li><a href="#0x05图像二值化">&lt;0x05&gt;图像二值化</a></li>
+    <li><a href="#0x06图片相加">&lt;0x06&gt;图片相加</a>
+      <ul>
+        <li><a href="#同大小图片相加">同大小图片相加</a></li>
+        <li><a href="#不同大小的图片相加">不同大小的图片相加</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/opencv/" >
+                OpenCV
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/article/categories/opencv/%E5%85%B3%E4%BA%8E%E6%88%91%E7%94%A8c-%E5%86%99opencv%E8%BF%99%E4%BB%B6%E4%BA%8B-03/">关于我用C#写Opencv这件事-03</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Mar 18, 2024</time>
+            </div>
+        
+
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <p>（说实话我有点后悔用C#写Opencv了）
+今天我们神秘的数字图像处理做实验了
+虽然东西是挺简单的，但因为我用的是C#，导致很多现成的代码都没法抄
+再加上虽然<code>Opencvsharp4</code>宣称是和C++的API是对应的
+但实际上的开发体验差别真挺大的，很多API的调用方法是不一样的
+（有些调用像C++，有些调用有自己的特色）
+基本上所有的代码都要自己去试，写着挺痛苦的
+所以还是讲讲我们做了啥吧</p>
+<h2 id="0x01读取图像">&lt;0x01&gt;读取图像
+</h2><p>这个其实是简单的
+假设需要读取一个图片，比方说是<code>D:/Test/1.png</code>
+通过Cv2.ImRead()方法就可以读取为内置的矩阵类型了</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span>Mat image = Cv2.ImRead(<span style="color:#e6db74">&#34;D:/Test/1.png&#34;</span>);
+</span></span></code></pre></div><p>这个方法可以读取一般常见的图片格式</p>
+<p>然后，这个方法还可以传入第二个参数，用来控制读取的行为
+比方说我们希望获取的是图像的灰度图</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span>Mat grayImage = Cv2.ImRead(<span style="color:#e6db74">&#34;D:/Test/1.png&#34;</span>, ImreadModes.Grayscale);
+</span></span></code></pre></div><p><code>ImreadModes</code>是一个枚举类型，有很多常用的读取行为
+一般也就是这个<code>ImreadModes.Grayscale</code>获取灰度图用的多
+Cv2.ImRead()这个参数的默认值是<code>ImreadModes.Color</code>，即默认读入带颜色的图像</p>
+<h2 id="0x02将有色图转换为灰度图">&lt;0x02&gt;将有色图转换为灰度图
+</h2><p>前面提到，我们可以指定读取图片时保存为灰度图
+那有没有别的在运行时从有色图转换为灰度图的方法呢？
+肯定是有的</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span>Mat image = Cv2.ImRead(<span style="color:#e6db74">&#34;D:/Test/1.png&#34;</span>);
+</span></span><span style="display:flex;"><span>Mat grayImage = iamge.CvtColor(ColorConversionCodes.RGB2GRAY);
+</span></span></code></pre></div><p>这样也完成了转换</p>
+<p>还有一个等价的写法</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span>Mat image = Cv2.ImRead(<span style="color:#e6db74">&#34;D:/Test/1.png&#34;</span>);
+</span></span><span style="display:flex;"><span>Mat grayImage = <span style="color:#66d9ef">new</span>();
+</span></span><span style="display:flex;"><span>Cv2.CvtColor(image, grayImage, ColorConversionCodes.RGB2GRAY);
+</span></span></code></pre></div><p>这样写也行</p>
+<p><code>CvtColor()</code>方法中，传入的<code>ColorConversionCodes</code>也是个枚举类型
+里面也有很多常用的转换方式，有什么<code>RGB2BGR</code>之类的</p>
+<h2 id="0x03图像按位取反">&lt;0x03&gt;图像按位取反
+</h2><p>这个在C#中的写法确实跟C++之类的挺像的</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span>Mat image = Cv2.ImRead(<span style="color:#e6db74">&#34;D:/Test/1.png&#34;</span>);
+</span></span><span style="display:flex;"><span>Mat inversedImage = <span style="color:#66d9ef">new</span>();
+</span></span><span style="display:flex;"><span>Cv2.BitwiseNot(image, inversedImage);
+</span></span></code></pre></div><p>当然也可以自己写对每个位的操作，但这样就太麻烦了</p>
+<h2 id="0x04图像对比度增强">&lt;0x04&gt;图像对比度增强
+</h2><p>关于图像对比度增强的办法有很多，我这里用的是<code>限制对比度自适应直方图均衡化</code>的办法
+（原理我也说不出来，没细学，还是看别的大佬的文章吧）</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span>Mat image = Cv2.ImRead(<span style="color:#e6db74">&#34;D:/Test/1.png&#34;</span>);
+</span></span><span style="display:flex;"><span>Mat enhancedImage = <span style="color:#66d9ef">new</span>();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>CLAHE clahe = Cv2.CreateCLAHE(<span style="color:#ae81ff">3</span>, <span style="color:#66d9ef">new</span> OpenCvSharp.Size(<span style="color:#ae81ff">8</span>, <span style="color:#ae81ff">8</span>));
+</span></span><span style="display:flex;"><span>clahe.Apply(image, enhancedImage);
+</span></span></code></pre></div><p>第一个参数表示像素出现的阈值，应该是百分比阈值，默认是40
+第二个参数表示重新分配的大小</p>
+<p><code>限制对比度自适应直方图均衡化</code>的大体过程如下
+首先会统计每种像素的出现次数
+然后跟设置的阈值对比，如果超过阈值，会把多余的像素按设定的大小重新分配给别的类型的像素
+总之确实是能增强对比度（真说不大明白）</p>
+<h2 id="0x05图像二值化">&lt;0x05&gt;图像二值化
+</h2><p>所谓二值化算是极端化的灰度图，只有黑白两种颜色
+代码如下</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span>Mat image = Cv2.ImRead(<span style="color:#e6db74">&#34;D:/Test/1.png&#34;</span>);
+</span></span><span style="display:flex;"><span>Mat binarizedImage = image.Threshold(<span style="color:#ae81ff">127</span>, <span style="color:#ae81ff">255</span>, ThresholdTypes.Binary);
+</span></span></code></pre></div><p>也有稍微麻烦点的写法</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span>Mat image = Cv2.ImRead(<span style="color:#e6db74">&#34;D:/Test/1.png&#34;</span>);
+</span></span><span style="display:flex;"><span>Mat binarizedImage = <span style="color:#66d9ef">new</span>();
+</span></span><span style="display:flex;"><span>Cv2.Threshold(image, binarizedImage, <span style="color:#ae81ff">127</span>, <span style="color:#ae81ff">255</span>, ThresholdTypes.Binary);
+</span></span></code></pre></div><p><code>Threshold()</code>第一个数字是阈值，第二个值算是默认值，具体行为看第三个参数
+<code>ThresholdTypes</code>是一个枚举类型，表示如何处理图像
+二值化的时候这个值取<code>ThresholdTypes.Binary</code>，表示像素值大于阈值时用默认值，否则赋值0
+比方说在二值化的时候，某像素值为128&gt;127，那么就会把它的值变为255
+其他的行为这里就不展开了</p>
+<h2 id="0x06图片相加">&lt;0x06&gt;图片相加
+</h2><p>重量级的来了，我折腾了有段时间的东西
+（C#代码参考实在是太少了）</p>
+<h3 id="同大小图片相加">同大小图片相加
+</h3><p>这个其实很简单，毕竟在Opencv眼里，所有的图片都是矩阵，相加不是很简单嘛</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span>Mat A = Cv2.ImRead(<span style="color:#e6db74">&#34;D:/Test/1.png&#34;</span>);
+</span></span><span style="display:flex;"><span>Mat B = Cv2.ImRead(<span style="color:#e6db74">&#34;D:/Test/2.png&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Mat addedImage = A + B;
+</span></span></code></pre></div><p>（就这样写就可以了）</p>
+<p>不嫌烦的话还有下面的写法</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span>Mat addedImage = A.Add(B);
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span>Mat addedImage = <span style="color:#66d9ef">new</span>();
+</span></span><span style="display:flex;"><span>Cv2.Add(A, B, addedImage);
+</span></span></code></pre></div><p>那我折腾的是啥呢？</p>
+<h3 id="不同大小的图片相加">不同大小的图片相加
+</h3><p>这些<code>Add()</code>方法要求矩阵大小一致，相当于要求图片大小一致</p>
+<p>那如果我们就是要不同大小图片相加，就要多做些处理
+我的处理方式是
+先在比较大的图片中扣出跟小图片一样大小的部分
+抠出的图和小图片相加，然后再替换掉大图片扣掉的部分</p>
+<h4 id="怎么抠出图像">怎么抠出图像
+</h4><p><code>Opencvsharp4</code>中有个<code>Rect</code>类型，可以用来划出需要的部分
+类型声明示例</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span>Rect rect = <span style="color:#66d9ef">new</span>(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">100</span>, <span style="color:#ae81ff">100</span>);
+</span></span></code></pre></div><p>前面表示起始位置，也即矩形的左上角的点坐标，后面两个参数表示矩形大小</p>
+<p>对于一个图像，假设我们需要在图像<code>(100, 100)</code>的地方扣出<code>200*200</code>大小的图片
+代码如下</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span>Mat image = Cv2.ImRead(<span style="color:#e6db74">&#34;D:/Test/1.png&#34;</span>);
+</span></span><span style="display:flex;"><span>Mat temp = image[<span style="color:#66d9ef">new</span> Rect(<span style="color:#ae81ff">100</span>, <span style="color:#ae81ff">100</span>, <span style="color:#ae81ff">200</span>, <span style="color:#ae81ff">200</span>)];
+</span></span></code></pre></div><p>需要注意的是，这里的<code>temp</code>获取到的是<code>image</code>对应区域的引用
+对<code>temp</code>的所有修改也会反应到<code>image</code>上
+如果需要新建一个矩阵，需要用<code>CopyTo()</code>方法</p>
+<h4 id="完整的代码">完整的代码
+</h4><p>有了上面的基础，现在给出完整的图片相加代码</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span>Mat L = Cv2.ImRead(<span style="color:#e6db74">&#34;D:/Test/1.png&#34;</span>);
+</span></span><span style="display:flex;"><span>Mat S = Cv2.ImRead(<span style="color:#e6db74">&#34;D:/Test/2.png&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//还需要注意框选的区域不能超过大图片的范围</span>
+</span></span><span style="display:flex;"><span>Mat temp = image[<span style="color:#66d9ef">new</span> Rect(<span style="color:#ae81ff">100</span>, <span style="color:#ae81ff">100</span>, S.Width, S.Height)];
+</span></span><span style="display:flex;"><span>temp = temp + s;
+</span></span></code></pre></div><p>这样就可以了，至于图片相减也是差不多这样的代码</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/opencv/">OpenCV</a>
+        
+            <a href="/tags/csharp/">CSharp</a>
+        
+    </section>
+
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+        <link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI&#43;WdtXRGWt2kTvGFasHpSy3SV"crossorigin="anonymous"
+            ><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG&#43;vnGctmUb0ZY0l8"crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"integrity="sha384-&#43;VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4&#43;/RRE05"crossorigin="anonymous"
+                defer
+                >
+            </script><script>
+    window.addEventListener("DOMContentLoaded", () => {
+        renderMathInElement(document.body, {
+            delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: "$", right: "$", display: false },
+                { left: "\\(", right: "\\)", display: false },
+                { left: "\\[", right: "\\]", display: true }
+            ],
+            ignoredClasses: ["gist"]
+        });})
+</script>
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/article/categories/opencv/%E5%85%B3%E4%BA%8E%E6%88%91%E7%94%A8c-%E5%86%99opencv%E8%BF%99%E4%BB%B6%E4%BA%8B-02/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">关于我用C#写Opencv这件事-02</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/article/categories/opencv/%E5%85%B3%E4%BA%8E%E6%88%91%E7%94%A8c-%E5%86%99opencv%E8%BF%99%E4%BB%B6%E4%BA%8B-01/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">关于我用C#写Opencv这件事-01</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/article/categories/wpf/wpf%E5%BC%80%E5%8F%91%E8%BF%87%E7%A8%8B%E4%B8%ADinitializecomponent-%E7%A5%9E%E7%A7%98%E6%8A%A5%E9%94%99/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">WPF开发过程中InitializeComponent()神秘报错</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/article/posts/%E7%AE%80%E5%8D%95%E7%94%A8%E4%B8%8Bsharppcap/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">简单用下SharpPcap</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B006-%E5%85%B3%E4%BA%8Elistview/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">WPF学习笔记06-关于ListView</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2023 - 
+        
+        2024 MLAcookie
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.26.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

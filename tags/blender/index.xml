@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Blender on MLAcookie</title><link>http://localhost:1313/tags/blender/</link><description>Recent content in Blender on MLAcookie</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Wed, 29 Nov 2023 22:39:09 +0000</lastBuildDate><atom:link href="http://localhost:1313/tags/blender/index.xml" rel="self" type="application/rss+xml"/><item><title>radeon780m核显跑blender相关的问题</title><link>http://localhost:1313/article/posts/radeon780m%E6%A0%B8%E6%98%BE%E8%B7%91blender%E7%9B%B8%E5%85%B3%E7%9A%84%E9%97%AE%E9%A2%98/</link><pubDate>Wed, 29 Nov 2023 22:39:09 +0000</pubDate><guid>http://localhost:1313/article/posts/radeon780m%E6%A0%B8%E6%98%BE%E8%B7%91blender%E7%9B%B8%E5%85%B3%E7%9A%84%E9%97%AE%E9%A2%98/</guid><description>&lt;p>(@ 24-01-12)&lt;br>
+这篇博客目前写的有点简练，之后会再补充的&lt;/p>
+&lt;h2 id="0x01-先描述下问题">&amp;lt;0x01&amp;gt; 先描述下问题
+&lt;/h2>&lt;p>最近入了台笔记本，7840HS的，CPU强核显也强&lt;br>
+（主要是没米了）&lt;br>
+然后毕竟是做游戏相关的，Blender总得装上吧
+然后发现，跑Cycles渲染器会报错&lt;br>
+&lt;code>HIP binary kernel for this graphics card compute capability (11.0) not found&lt;/code>&lt;br>
+就会报这个错误&lt;/p>
+&lt;h2 id="解决办法">解决办法
+&lt;/h2>&lt;p>从网站上下源码编译Blender就好&lt;br>
+&lt;a class="link" href="https://wiki.blender.org/wiki/Building_Blender/Windows" target="_blank" rel="noopener"
+>Build Blender On Windows&lt;/a>&lt;br>
+需要安装&lt;/p>
+&lt;ul>
+&lt;li>VS2022的C++桌面开发工作负载&lt;/li>
+&lt;li>TortoiseSVN&lt;/li>
+&lt;li>Git&lt;/li>
+&lt;li>CMake&lt;/li>
+&lt;li>perl&lt;/li>
+&lt;li>python&lt;/li>
+&lt;/ul>
+&lt;p>然后就按官方文章讲的，在cmd里面运行&lt;code>make update&lt;/code>和&lt;code>make&lt;/code>就好&lt;br>
+（powershell也不是不行，改成&lt;code>./make&lt;/code>，但没试过）&lt;/p>
+&lt;h2 id="问题分析">问题分析
+&lt;/h2>&lt;p>就是这么个问题&lt;br>
+radeon780m对应得代码是gfx1103&lt;br>
+但是blender正常下载的版本还没有带对应这个代码的驱动文件&lt;br>
+在最新的代码中，已经包含了生成代号gfx1103的驱动文件的代码了&lt;br>
+（其实就是CMakeList里面加了个gfx1103）&lt;/p></description></item></channel></rss>

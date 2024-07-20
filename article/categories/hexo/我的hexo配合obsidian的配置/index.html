@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="闲着没事想着优化一下hexo的博客配置 我原来一直都是用vscode写markdown的，至于体验嘛，能写但不是很舒适 所以我就尝试换成了现在在用的obsidian，体验就好多了 然后就按网上的教程，尝试配置更加优雅的流程 然后发现原来用的hexo框架有点老了，就干脆重装了 没想到啊，重装个hexo又出了很多问题 所以这篇博客就从hexo的安装开始讲吧 &lt;0x01&gt;hexo的安装\r（一般情况下跟着hexo官方教程没啥问题） 首先是要有Node.js环境，这个随意，最好是最新的版本 还要安装git，这个直接网上找安装包安装就好了 npm换源\rnpm原本的国内连接不畅，所以要换源 一般是换成国内的淘宝源 一般敲命令方法\rnpm config set registry https://registry.npm.taobao.org 通过nrm切换\rnrm是npm的源管理器，可以在不同的源中切换 如果没有什么特殊上网方式访问原本的源的话还是建议先手动切换源 （nrm也是靠npm下载的） # -g参数表示全局安装，这样的话可以在任何目录中使用nrm npm install -g nrm nrm use taobao # 查看其它可以用的源 nrm ls # 测试源 nrm test 安装hexo\r首先是安装hexo环境 npm install -g hexo-cli 然后挑一个空的文件夹，初始化 （这里取名叫HexoBlog了） hexo init ./HexoBlog 然后原本空的文件夹里面会生成一些文件 安装hexo依赖 cd ./HexoBlog npm install 这样之后，hexo就搭建好了 但貌似hexo的依赖文件写的版本可能比较老了，最好还是更新一下 npm update &lt;0x02&gt;安装Anatolo主题\r别的主题就看具体的安装说明了，我这里还是用Anatolo了 首先是在HexoBlog文件夹 git clone https://gitee.com/Lhcfl/hexo-theme-anatolo.git themes/Anatolo npm install hexo-renderer-pug --save npm install hexo-renderer-stylus --save 然后进入HexoBlog/themes/Anatolo中，复制_config.">
+<title>我的hexo配合obsidian的配置</title>
+
+<link rel='canonical' href='http://localhost:1313/article/categories/hexo/%E6%88%91%E7%9A%84hexo%E9%85%8D%E5%90%88obsidian%E7%9A%84%E9%85%8D%E7%BD%AE/'>
+
+<link rel="stylesheet" href="/scss/style.min.e8c7fca7d1c9294aa7a4f3426c225ee26540f7d94e39be0b5a4a5c8a49ca5a25.css"><meta property='og:title' content="我的hexo配合obsidian的配置">
+<meta property='og:description' content="闲着没事想着优化一下hexo的博客配置 我原来一直都是用vscode写markdown的，至于体验嘛，能写但不是很舒适 所以我就尝试换成了现在在用的obsidian，体验就好多了 然后就按网上的教程，尝试配置更加优雅的流程 然后发现原来用的hexo框架有点老了，就干脆重装了 没想到啊，重装个hexo又出了很多问题 所以这篇博客就从hexo的安装开始讲吧 &lt;0x01&gt;hexo的安装\r（一般情况下跟着hexo官方教程没啥问题） 首先是要有Node.js环境，这个随意，最好是最新的版本 还要安装git，这个直接网上找安装包安装就好了 npm换源\rnpm原本的国内连接不畅，所以要换源 一般是换成国内的淘宝源 一般敲命令方法\rnpm config set registry https://registry.npm.taobao.org 通过nrm切换\rnrm是npm的源管理器，可以在不同的源中切换 如果没有什么特殊上网方式访问原本的源的话还是建议先手动切换源 （nrm也是靠npm下载的） # -g参数表示全局安装，这样的话可以在任何目录中使用nrm npm install -g nrm nrm use taobao # 查看其它可以用的源 nrm ls # 测试源 nrm test 安装hexo\r首先是安装hexo环境 npm install -g hexo-cli 然后挑一个空的文件夹，初始化 （这里取名叫HexoBlog了） hexo init ./HexoBlog 然后原本空的文件夹里面会生成一些文件 安装hexo依赖 cd ./HexoBlog npm install 这样之后，hexo就搭建好了 但貌似hexo的依赖文件写的版本可能比较老了，最好还是更新一下 npm update &lt;0x02&gt;安装Anatolo主题\r别的主题就看具体的安装说明了，我这里还是用Anatolo了 首先是在HexoBlog文件夹 git clone https://gitee.com/Lhcfl/hexo-theme-anatolo.git themes/Anatolo npm install hexo-renderer-pug --save npm install hexo-renderer-stylus --save 然后进入HexoBlog/themes/Anatolo中，复制_config.">
+<meta property='og:url' content='http://localhost:1313/article/categories/hexo/%E6%88%91%E7%9A%84hexo%E9%85%8D%E5%90%88obsidian%E7%9A%84%E9%85%8D%E7%BD%AE/'>
+<meta property='og:site_name' content='MLAcookie'>
+<meta property='og:type' content='article'><meta property='article:section' content='Article' /><meta property='article:tag' content='Anatolo' /><meta property='article:tag' content='Hexo' /><meta property='article:published_time' content='2024-03-03T13:24:40&#43;00:00'/><meta property='article:modified_time' content='2024-03-03T13:24:40&#43;00:00'/>
+<meta name="twitter:title" content="我的hexo配合obsidian的配置">
+<meta name="twitter:description" content="闲着没事想着优化一下hexo的博客配置 我原来一直都是用vscode写markdown的，至于体验嘛，能写但不是很舒适 所以我就尝试换成了现在在用的obsidian，体验就好多了 然后就按网上的教程，尝试配置更加优雅的流程 然后发现原来用的hexo框架有点老了，就干脆重装了 没想到啊，重装个hexo又出了很多问题 所以这篇博客就从hexo的安装开始讲吧 &lt;0x01&gt;hexo的安装\r（一般情况下跟着hexo官方教程没啥问题） 首先是要有Node.js环境，这个随意，最好是最新的版本 还要安装git，这个直接网上找安装包安装就好了 npm换源\rnpm原本的国内连接不畅，所以要换源 一般是换成国内的淘宝源 一般敲命令方法\rnpm config set registry https://registry.npm.taobao.org 通过nrm切换\rnrm是npm的源管理器，可以在不同的源中切换 如果没有什么特殊上网方式访问原本的源的话还是建议先手动切换源 （nrm也是靠npm下载的） # -g参数表示全局安装，这样的话可以在任何目录中使用nrm npm install -g nrm nrm use taobao # 查看其它可以用的源 nrm ls # 测试源 nrm test 安装hexo\r首先是安装hexo环境 npm install -g hexo-cli 然后挑一个空的文件夹，初始化 （这里取名叫HexoBlog了） hexo init ./HexoBlog 然后原本空的文件夹里面会生成一些文件 安装hexo依赖 cd ./HexoBlog npm install 这样之后，hexo就搭建好了 但貌似hexo的依赖文件写的版本可能比较老了，最好还是更新一下 npm update &lt;0x02&gt;安装Anatolo主题\r别的主题就看具体的安装说明了，我这里还是用Anatolo了 首先是在HexoBlog文件夹 git clone https://gitee.com/Lhcfl/hexo-theme-anatolo.git themes/Anatolo npm install hexo-renderer-pug --save npm install hexo-renderer-stylus --save 然后进入HexoBlog/themes/Anatolo中，复制_config.">
+    <link rel="shortcut icon" href="/favicon.webp" />
+
+  
+
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu01ec501d434397934aa5721ebabee736_552660_300x0_resize_box_3.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">😜</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">MLAcookie</a></h1>
+            <h2 class="site-description">随便记点东西的记事本</h2>
+        </div>
+    </header><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/about/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>About</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/links/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>Links</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>Dark Mode</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">Table of contents</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#0x01hexo的安装">&lt;0x01&gt;hexo的安装</a>
+      <ul>
+        <li><a href="#npm换源">npm换源</a></li>
+        <li><a href="#安装hexo">安装hexo</a></li>
+      </ul>
+    </li>
+    <li><a href="#0x02安装anatolo主题">&lt;0x02&gt;安装Anatolo主题</a></li>
+    <li><a href="#0x03优化hexo配置">&lt;0x03&gt;优化Hexo配置</a>
+      <ul>
+        <li><a href="#部署到github-page上">部署到Github Page上</a></li>
+        <li><a href="#更方便的分文件管理">更方便的分文件管理</a></li>
+      </ul>
+    </li>
+    <li><a href="#0x04使用obsidian作为编辑器">&lt;0x04&gt;使用obsidian作为编辑器</a>
+      <ul>
+        <li><a href="#图片问题">图片问题</a></li>
+      </ul>
+    </li>
+    <li><a href="#0x05使用脚本做自动化">&lt;0x05&gt;使用脚本做自动化</a>
+      <ul>
+        <li><a href="#新建博客文章并编辑">新建博客文章并编辑</a></li>
+        <li><a href="#本地化部署测试">本地化部署测试</a></li>
+      </ul>
+    </li>
+    <li><a href="#0x06安装过程中可能的问题">&lt;0x06&gt;安装过程中可能的问题</a></li>
+    <li><a href="#0x07这套方案的问题">&lt;0x07&gt;这套方案的问题</a></li>
+  </ul>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/hexo/" >
+                Hexo
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/article/categories/hexo/%E6%88%91%E7%9A%84hexo%E9%85%8D%E5%90%88obsidian%E7%9A%84%E9%85%8D%E7%BD%AE/">我的hexo配合obsidian的配置</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Mar 03, 2024</time>
+            </div>
+        
+
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <p>闲着没事想着优化一下hexo的博客配置
+我原来一直都是用<code>vscode</code>写markdown的，至于体验嘛，能写但不是很舒适
+所以我就尝试换成了现在在用的<code>obsidian</code>，体验就好多了</p>
+<p>然后就按网上的教程，尝试配置更加优雅的流程
+然后发现原来用的<code>hexo</code>框架有点老了，就干脆重装了
+没想到啊，重装个<code>hexo</code>又出了很多问题
+所以这篇博客就从<code>hexo</code>的安装开始讲吧</p>
+<h2 id="0x01hexo的安装">&lt;0x01&gt;hexo的安装
+</h2><p>（一般情况下跟着<a class="link" href="https://hexo.io/zh-cn/docs/"  target="_blank" rel="noopener"
+    >hexo官方教程</a>没啥问题）
+首先是要有<code>Node.js</code>环境，这个随意，最好是最新的版本
+还要安装<code>git</code>，这个直接网上找安装包安装就好了</p>
+<h3 id="npm换源">npm换源
+</h3><p><code>npm</code>原本的国内连接不畅，所以要换源
+一般是换成国内的淘宝源</p>
+<h4 id="一般敲命令方法">一般敲命令方法
+</h4><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>npm config set registry https://registry.npm.taobao.org
+</span></span></code></pre></div><h4 id="通过nrm切换">通过nrm切换
+</h4><p><code>nrm</code>是<code>npm</code>的源管理器，可以在不同的源中切换
+如果没有什么特殊上网方式访问原本的源的话还是建议先手动切换源
+（<code>nrm</code>也是靠<code>npm</code>下载的）</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># -g参数表示全局安装，这样的话可以在任何目录中使用nrm</span>
+</span></span><span style="display:flex;"><span>npm install -g nrm
+</span></span><span style="display:flex;"><span>nrm use taobao
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 查看其它可以用的源</span>
+</span></span><span style="display:flex;"><span>nrm ls
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 测试源</span>
+</span></span><span style="display:flex;"><span>nrm test
+</span></span></code></pre></div><h3 id="安装hexo">安装hexo
+</h3><p>首先是安装hexo环境</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>npm install -g hexo-cli
+</span></span></code></pre></div><p>然后挑一个空的文件夹，初始化
+（这里取名叫HexoBlog了）</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>hexo init ./HexoBlog
+</span></span></code></pre></div><p>然后原本空的文件夹里面会生成一些文件
+安装<code>hexo</code>依赖</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>cd ./HexoBlog
+</span></span><span style="display:flex;"><span>npm install
+</span></span></code></pre></div><p>这样之后，<code>hexo</code>就搭建好了
+但貌似<code>hexo</code>的依赖文件写的版本可能比较老了，最好还是更新一下</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>npm update
+</span></span></code></pre></div><h2 id="0x02安装anatolo主题">&lt;0x02&gt;安装Anatolo主题
+</h2><p>别的主题就看具体的安装说明了，我这里还是用<a class="link" href="https://github.com/Lhcfl/hexo-theme-anatolo"  target="_blank" rel="noopener"
+    >Anatolo</a>了</p>
+<p>首先是在<code>HexoBlog</code>文件夹</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>git clone https://gitee.com/Lhcfl/hexo-theme-anatolo.git themes/Anatolo
+</span></span><span style="display:flex;"><span>npm install hexo-renderer-pug --save
+</span></span><span style="display:flex;"><span>npm install hexo-renderer-stylus --save
+</span></span></code></pre></div><p>然后进入<code>HexoBlog/themes/Anatolo</code>中，复制<code>_config.example.yml</code>为<code>_config.yml</code>
+这个<code>_config.yml</code>是<code>Anatolo</code>的配置文件
+这里还需要多做一步，这一步在原本的安装文件中没有说</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>npm install
+</span></span></code></pre></div><p>需要在Anatolo中再安装一次依赖，如果没有这一步的话运行时会报错找不到模块
+我的猜想是我们在安装<code>hexo</code>依赖时没有全局安装，所以要在这里再安装一次
+（或者所有的<code>npm</code>都<code>-g</code>全局安装也行，但这样对C盘不友好，尤其是像我并不是专门做Nodejs开发的人）</p>
+<p>然后回到<code>HexoBlog</code>，修改 <code>_config.yml</code>： <code>theme: Anatolo</code>
+这样主题也安装好了</p>
+<h2 id="0x03优化hexo配置">&lt;0x03&gt;优化Hexo配置
+</h2><h3 id="部署到github-page上">部署到Github Page上
+</h3><p>这个网上的教程足够多了，这边不细讲
+就是记得安装<code>hexo-deployer-git</code>插件就好
+在<code>HexoBlog</code>中</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>npm install hexo-deployer-git --save
+</span></span></code></pre></div><h3 id="更方便的分文件管理">更方便的分文件管理
+</h3><p><code>hexo</code>的默认所有的博客文章都存放在<code>HexoBlog/source/_posts</code>下面
+虽然可以在里面用文件夹归类不同的文章，但需要给这些博客手动写上<code>categories</code>属性
+这就很麻烦了，手写麻烦还容易出错</p>
+<p>可以安装一个插件，<code>hexo-auto-category</code>
+它可以在<code>hexo</code>生成网页时自动给每个博客打上对应的<code>categories</code>属性</p>
+<p>在<code>HexoBlog</code>中</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>npm install hexo-auto-category --save
+</span></span></code></pre></div><p>修改<code>_config.yml</code>，添加下面的语句</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yml" data-lang="yml"><span style="display:flex;"><span><span style="color:#f92672">auto_category</span>:
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">enable</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">depth</span>:
+</span></span></code></pre></div><p>这样就安装好并启用了</p>
+<h2 id="0x04使用obsidian作为编辑器">&lt;0x04&gt;使用obsidian作为编辑器
+</h2><p><code>obsidian</code>确实香，比起原本的<code>vscode</code>好多了，毕竟是专门的<code>markdown</code>编辑器
+但要在<code>hexo</code>中使用<code>obsidian</code>作为编辑器，还需要做一些小优化</p>
+<p>仓库的话，用obsidian打开<code>HexoBlog/source/_posts</code>就可以了</p>
+<h3 id="图片问题">图片问题
+</h3><p>hexo在生成时，图片需要在<code>HexoBlog/source</code>下面
+但由于obsidian打开的目录在<code>HexoBlog/source/_posts</code>，所以会检索不到图片</p>
+<p>我的解决方案是在<code>HexoBlog/source</code>下面新建<code>picture</code>文件夹来专门存图片
+然后在<code>HexoBlog/source/_posts</code>下面添加<code>picture</code>软连接，让<code>obsidian</code>可以检索到</p>
+<p>添加软连接的命令在<code>powershell</code>下和<code>cmd</code>下面有所不同，但都需要管理员权限</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># powershell</span>
+</span></span><span style="display:flex;"><span>New-Item -ItemType SymbolicLink -Path $放的地方 -Name $名字 -Target $连接的目标
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># cmd</span>
+</span></span><span style="display:flex;"><span>mklink /d $软连接存放路径 $连接的目标
+</span></span></code></pre></div><p>然后就是在<code>obsidian</code>中编辑时，引用图片的格式应是<code>![](/picture/...)</code>
+最好把<code>obsidian</code>的<code>文件与链接&gt;&gt;自动添加wiki引用</code>关了，<code>[[]]</code>格式的连接hexo本身解析不了
+<img src="/picture/%e6%88%91%e7%9a%84hexo%e9%85%8d%e5%90%88obsidian%e7%9a%84%e9%85%8d%e7%bd%ae/1.png"
+	
+	
+	
+	loading="lazy"
+	
+	
+>
+（貌似有插件在解决这个问题，但我没试成功过）</p>
+<h2 id="0x05使用脚本做自动化">&lt;0x05&gt;使用脚本做自动化
+</h2><p><code>hexo</code>的生成和部署都还是靠cli命令的
+所以可以写一些脚本来做一些自动化
+这里的脚本都是<code>powershell</code>脚本</p>
+<h3 id="新建博客文章并编辑">新建博客文章并编辑
+</h3><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span><span style="color:#75715e"># (@24-03-07) 优化脚本，增加去除URL特殊字符</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">param</span>(
+</span></span><span style="display:flex;"><span>    [<span style="color:#66d9ef">string</span>]
+</span></span><span style="display:flex;"><span>    [ValidateNotNullOrEmpty()]
+</span></span><span style="display:flex;"><span>    $Name
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">function</span> ValidatedName {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">param</span> (
+</span></span><span style="display:flex;"><span>        [<span style="color:#66d9ef">string</span>]
+</span></span><span style="display:flex;"><span>        [ValidateNotNullOrEmpty()]
+</span></span><span style="display:flex;"><span>        $Name
+</span></span><span style="display:flex;"><span>    )
+</span></span><span style="display:flex;"><span>    $SpecialCharacters = [<span style="color:#66d9ef">char[]</span>]@(
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;` &#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;`!&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">`&#34;</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;`#&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">`$</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;`%&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;`&amp;&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">`&#39;</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;(&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;)&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;*&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;+&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;,&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;-&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;.&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;/&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;:&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;;&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;&lt;&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;=&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;&gt;&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;?&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;@&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;[&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;\&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;]&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;^&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;_&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">``</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;{&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;|&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;}&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;~&#34;</span>
+</span></span><span style="display:flex;"><span>    )
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 先每个替换成-</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">foreach</span> ($Character <span style="color:#66d9ef">in</span> $SpecialCharacters) {
+</span></span><span style="display:flex;"><span>        $Name = $Name.Replace($Character, <span style="color:#e6db74">&#34;-&#34;</span>)
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 返回时使用正则表达式匹配连续的-，并替换为单个-</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> $Name <span style="color:#f92672">-Replace</span> <span style="color:#e6db74">&#39;([-])+&#39;</span>, <span style="color:#e6db74">&#39;-&#39;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 指定Obsidian目录</span>
+</span></span><span style="display:flex;"><span>$ObsidianPath = <span style="color:#e6db74">&#34;C:\Users\cookie\scoop\apps\obsidian\current\Obsidian.exe&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 新建hexo博客</span>
+</span></span><span style="display:flex;"><span>hexo new $Name
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 去除URL特殊字符</span>
+</span></span><span style="display:flex;"><span>$Name=ValidatedName -Name $Name
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 创建图片文件夹</span>
+</span></span><span style="display:flex;"><span>mkdir ./source/picture/$Name
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 启动Obsidian</span>
+</span></span><span style="display:flex;"><span>Start-Process $ObsidianPath -ArgumentList ./source/_posts
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># cls</span>
+</span></span><span style="display:flex;"><span>Clear-Host
+</span></span></code></pre></div><h3 id="本地化部署测试">本地化部署测试
+</h3><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span><span style="color:#66d9ef">param</span>(
+</span></span><span style="display:flex;"><span>    [<span style="color:#66d9ef">Int16</span>]
+</span></span><span style="display:flex;"><span>    $Port
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 清理hexo缓存</span>
+</span></span><span style="display:flex;"><span>hexo clean
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># hexo生成</span>
+</span></span><span style="display:flex;"><span>hexo g
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 启动本地hexo服务器</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> ($Port <span style="color:#f92672">-eq</span> $null) {
+</span></span><span style="display:flex;"><span>    hexo server
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">else</span>{
+</span></span><span style="display:flex;"><span>    hexo server -p $Port
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="0x06安装过程中可能的问题">&lt;0x06&gt;安装过程中可能的问题
+</h2><p><code>hexo</code>的有些依赖可能已经已放弃维护了
+比如说<code>hexo-renderer-sass</code>，这个非常容易报错
+（貌似删了不影响整体运行）
+可以替换成<code>hexo-renderer-sass-next</code>，这个稳定很多</p>
+<h2 id="0x07这套方案的问题">&lt;0x07&gt;这套方案的问题
+</h2><p>不支持Obsidian的wiki链接解析
+也没用上Obsidian自带的模板功能
+文章之间相互引用也很麻烦，要知道文章的具体URL</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/anatolo/">Anatolo</a>
+        
+            <a href="/tags/hexo/">Hexo</a>
+        
+    </section>
+
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+        <link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI&#43;WdtXRGWt2kTvGFasHpSy3SV"crossorigin="anonymous"
+            ><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG&#43;vnGctmUb0ZY0l8"crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"integrity="sha384-&#43;VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4&#43;/RRE05"crossorigin="anonymous"
+                defer
+                >
+            </script><script>
+    window.addEventListener("DOMContentLoaded", () => {
+        renderMathInElement(document.body, {
+            delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: "$", right: "$", display: false },
+                { left: "\\(", right: "\\)", display: false },
+                { left: "\\[", right: "\\]", display: true }
+            ],
+            ignoredClasses: ["gist"]
+        });})
+</script>
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/article/categories/hexo/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">给侧边栏加个B站图标</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/article/categories/hexo/%E5%A6%82%E4%BD%95%E4%B8%80%E4%B8%AAhexo%E5%8D%9A%E5%AE%A2%E5%90%8C%E6%97%B6%E9%83%A8%E7%BD%B2%E5%A4%9Agit/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">如何一个hexo博客同时部署多git</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/article/categories/hexo/%E6%90%AD%E5%BB%BAhexo&#43;gitea%E7%9A%84%E5%8D%9A%E5%AE%A2%E7%AB%99/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">搭建hexo&#43;gitea的博客站</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2023 - 
+        
+        2024 MLAcookie
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.26.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

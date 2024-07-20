@@ -1,0 +1,435 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Cpp on MLAcookie</title><link>http://localhost:1313/tags/cpp/</link><description>Recent content in Cpp on MLAcookie</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Thu, 15 Jun 2023 23:42:16 +0000</lastBuildDate><atom:link href="http://localhost:1313/tags/cpp/index.xml" rel="self" type="application/rss+xml"/><item><title>浙工大c++课设讲解</title><link>http://localhost:1313/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7c++%E8%AF%BE%E8%AE%BE%E8%AE%B2%E8%A7%A3/</link><pubDate>Thu, 15 Jun 2023 23:42:16 +0000</pubDate><guid>http://localhost:1313/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7c++%E8%AF%BE%E8%AE%BE%E8%AE%B2%E8%A7%A3/</guid><description>&lt;h2 id="0x00-前言">&amp;lt;0x00&amp;gt; 前言
+&lt;/h2>&lt;p>我的题目是幼儿园的信息管理系统(第29号)&lt;br>
+运行在&lt;code>Cmake 3.25.3&lt;/code>+&lt;code>mingw 12.2.0&lt;/code>上&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-txt" data-lang="txt">&lt;span style="display:flex;">&lt;span>基本要求：
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>能从文件读出一个班级小朋友的信息，并能将管理信息保存到文件
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>小朋友的信息包括：姓名、出生年月（年龄）、性别、住址、身高、体重、父母联系人姓名、联系电话，备注信息等
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>功能要求：
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>1、系统以菜单方式工作；
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>2、增加修改和删除小朋友信息；
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>3、查询某个小朋友的父母联系人姓名及联系电话；查询小朋友住址；
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>4、显示所有小朋友信息：能根据小朋友的身高、体重分别排序，或者按身高体重比排序；
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>5、能按性别统计班级男女生人数比例；
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>6、可以进行小朋友信息的文件读写。
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>实现上面功能是挺简单，所以我加入了一些新功能&lt;br>
+于是就实现了些杂七杂八的东西(之后也会重点介绍的):&lt;/p>
+&lt;ul>
+&lt;li>双向模板链表&lt;/li>
+&lt;li>方向键界面控制&lt;/li>
+&lt;li>csv的文件读取和导出&lt;/li>
+&lt;li>多文件管理&lt;/li>
+&lt;li>从临时文件恢复&lt;/li>
+&lt;/ul>
+&lt;p>本来想实现更多的，实际上摸了就没写😋&lt;br>
+(主要是真没啥好写的)&lt;/p>
+&lt;p>你可以在&lt;a class="link" href="http://mlacookie.top:3000/ForPublic/CppCourseProject" target="_blank" rel="noopener"
+>本站gitea&lt;/a>下载源代码&lt;br>
+(课设报告就不发了，自己写写挺快的)&lt;/p>
+&lt;h2 id="0x01-双向链表实现">&amp;lt;0x01&amp;gt; 双向链表实现
+&lt;/h2>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-cpp" data-lang="cpp">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">//Mylist.cpp 仅列出声明，完整代码见源文件
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#75715e">#pragma once
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;cstddef&amp;gt;&lt;/span>&lt;span style="color:#75715e"> &lt;/span>&lt;span style="color:#75715e">//NULL的定义在这个头文件里(我用的是mingw)
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#66d9ef">using&lt;/span> &lt;span style="color:#66d9ef">namespace&lt;/span> std;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">template&lt;/span> &lt;span style="color:#f92672">&amp;lt;&lt;/span>&lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">T&lt;/span>&lt;span style="color:#f92672">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">MyList&lt;/span>; &lt;span style="color:#75715e">//提前声明类型
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#66d9ef">template&lt;/span> &lt;span style="color:#f92672">&amp;lt;&lt;/span>&lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">T&lt;/span>&lt;span style="color:#f92672">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">MyNode&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> T content; &lt;span style="color:#75715e">// 存放内容
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> MyNode&lt;span style="color:#f92672">&amp;lt;&lt;/span>T&lt;span style="color:#f92672">&amp;gt;&lt;/span> &lt;span style="color:#f92672">*&lt;/span>next; &lt;span style="color:#75715e">// 指向下一个Node
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> MyNode&lt;span style="color:#f92672">&amp;lt;&lt;/span>T&lt;span style="color:#f92672">&amp;gt;&lt;/span> &lt;span style="color:#f92672">*&lt;/span>back; &lt;span style="color:#75715e">// 指向前一个Node
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">friend&lt;/span> &lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">MyList&lt;/span>&lt;span style="color:#f92672">&amp;lt;&lt;/span>T&lt;span style="color:#f92672">&amp;gt;&lt;/span>; &lt;span style="color:#75715e">// 为List类提供访问权限(方便)
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">friend&lt;/span> &lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">Tool&lt;/span>; &lt;span style="color:#75715e">// 为Tool类提供访问权限(方便)
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> MyNode();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">public&lt;/span>&lt;span style="color:#f92672">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> MyNode(&lt;span style="color:#66d9ef">const&lt;/span> T &lt;span style="color:#f92672">&amp;amp;&lt;/span>content, MyNode &lt;span style="color:#f92672">*&lt;/span>next &lt;span style="color:#f92672">=&lt;/span> NULL, MyNode &lt;span style="color:#f92672">*&lt;/span>back &lt;span style="color:#f92672">=&lt;/span> NULL);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> MyNode(&lt;span style="color:#66d9ef">const&lt;/span> MyNode &lt;span style="color:#f92672">&amp;amp;&lt;/span>n); &lt;span style="color:#75715e">//一些节点的构造函数
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> MyNode&lt;span style="color:#f92672">&amp;lt;&lt;/span>T&lt;span style="color:#f92672">&amp;gt;&lt;/span> &lt;span style="color:#f92672">&amp;amp;&lt;/span>&lt;span style="color:#66d9ef">operator&lt;/span>&lt;span style="color:#f92672">=&lt;/span>(&lt;span style="color:#66d9ef">const&lt;/span> MyNode &lt;span style="color:#f92672">&amp;amp;&lt;/span>n); &lt;span style="color:#75715e">//保险起见，重载下赋值运算
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>};
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">template&lt;/span> &lt;span style="color:#f92672">&amp;lt;&lt;/span>&lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">T&lt;/span>&lt;span style="color:#f92672">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">MyList&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> length; &lt;span style="color:#75715e">// List的长度
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> MyNode&lt;span style="color:#f92672">&amp;lt;&lt;/span>T&lt;span style="color:#f92672">&amp;gt;&lt;/span> &lt;span style="color:#f92672">*&lt;/span>head; &lt;span style="color:#75715e">// 指向头节点
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> MyNode&lt;span style="color:#f92672">&amp;lt;&lt;/span>T&lt;span style="color:#f92672">&amp;gt;&lt;/span> &lt;span style="color:#f92672">*&lt;/span>end; &lt;span style="color:#75715e">// 指向尾节点
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> MyNode&lt;span style="color:#f92672">&amp;lt;&lt;/span>T&lt;span style="color:#f92672">&amp;gt;&lt;/span> &lt;span style="color:#f92672">*&lt;/span>Find(&lt;span style="color:#66d9ef">int&lt;/span> index) &lt;span style="color:#66d9ef">const&lt;/span>; &lt;span style="color:#75715e">// 内部按index搜索用
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">friend&lt;/span> &lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">Tool&lt;/span>; &lt;span style="color:#75715e">// 为Tool类提供访问权限(懒得写访问的函数了)
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">public&lt;/span>&lt;span style="color:#f92672">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> MyList();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">bool&lt;/span> &lt;span style="color:#a6e22e">Insert&lt;/span>(&lt;span style="color:#66d9ef">const&lt;/span> T &lt;span style="color:#f92672">&amp;amp;&lt;/span>c, &lt;span style="color:#66d9ef">int&lt;/span> n &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>); &lt;span style="color:#75715e">// 插入List，可指定插入位置
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">bool&lt;/span> &lt;span style="color:#a6e22e">Delete&lt;/span>(&lt;span style="color:#66d9ef">int&lt;/span> index); &lt;span style="color:#75715e">// 按index删除List元素
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">void&lt;/span> &lt;span style="color:#a6e22e">Clear&lt;/span>(); &lt;span style="color:#75715e">// 清空List内容
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">int&lt;/span> &lt;span style="color:#a6e22e">GetLength&lt;/span>() &lt;span style="color:#66d9ef">const&lt;/span>; &lt;span style="color:#75715e">// 返回List的长度
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> MyList&lt;span style="color:#f92672">&amp;lt;&lt;/span>T&lt;span style="color:#f92672">&amp;gt;&lt;/span> &lt;span style="color:#f92672">&amp;amp;&lt;/span>&lt;span style="color:#66d9ef">operator&lt;/span>&lt;span style="color:#f92672">=&lt;/span>(&lt;span style="color:#66d9ef">const&lt;/span> MyList&lt;span style="color:#f92672">&amp;lt;&lt;/span>T&lt;span style="color:#f92672">&amp;gt;&lt;/span> &lt;span style="color:#f92672">&amp;amp;&lt;/span>n); &lt;span style="color:#75715e">//保险起见，重载下赋值运算
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> T &lt;span style="color:#f92672">*&lt;/span>&lt;span style="color:#66d9ef">operator&lt;/span>[](&lt;span style="color:#66d9ef">int&lt;/span> index) &lt;span style="color:#66d9ef">const&lt;/span>; &lt;span style="color:#75715e">// 外部按index搜索用
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#f92672">~&lt;/span>MyList(); &lt;span style="color:#75715e">// 析构是门学问
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>};
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="泛型类-mynodet">泛型类 MyNode&amp;lt;T&amp;gt;
+&lt;/h3>&lt;p>主要就是存放内容物的节点，为了数据结构的可拓展性，就写了个泛型&lt;br>
+基本就没啥好说的，关键就是用指针关系吧各个节点连接起来&lt;/p>
+&lt;p>我这里采用的是双向链表的数据结构，即每个节点可以找到它的前一个后一个&lt;br>
+所以我这里的&lt;code>MyNode&lt;/code>类需要两个指针，一个指前一个节点，一个指后一个节点&lt;/p>
+&lt;h3 id="泛型类-mylistt">泛型类 MyList&amp;lt;T&amp;gt;
+&lt;/h3>&lt;p>说白了，这部分的内容就是把各个节点拼起来&lt;br>
+为了首尾插入效率与保险起见，这个双向列表带有空的首尾节点&lt;br>
+(但最终代码没有完成对末尾插入的优化，忘了&lt;/p>
+&lt;p>总之，数据结构图如下&lt;br>
+&lt;img src="http://localhost:1313/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7c&amp;#43;&amp;#43;%E8%AF%BE%E8%AE%BE%E8%AE%B2%E8%A7%A3/picture/1.png"
+width="554"
+height="117"
+srcset="http://localhost:1313/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7c&amp;#43;&amp;#43;%E8%AF%BE%E8%AE%BE%E8%AE%B2%E8%A7%A3/picture/1_hub2e23a13c4ffb794c035d632afb50c12_17676_480x0_resize_box_3.png 480w, http://localhost:1313/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7c&amp;#43;&amp;#43;%E8%AF%BE%E8%AE%BE%E8%AE%B2%E8%A7%A3/picture/1_hub2e23a13c4ffb794c035d632afb50c12_17676_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="数据结构"
+class="gallery-image"
+data-flex-grow="473"
+data-flex-basis="1136px"
+>&lt;br>
+每个节点都可以找到它的前后节点&lt;br>
+虽然对插入操作没什么优势，但可以加速删除操作&lt;br>
+对于删除操作，仅需传入节点位置即可删除&lt;br>
+相当于把要删除的东西抽出来，再两边节点建立连接&lt;br>
+(单向链表的删除比较抽象)&lt;/p>
+&lt;p>对于&lt;code>Clear()&lt;/code>操作，相当于走一遍链表，边走边删对象&lt;br>
+走完了再回归到初始状态&lt;br>
+析构就是&lt;code>Clear()&lt;/code>后再把首尾节点也删了&lt;/p>
+&lt;p>剩下的都挺直观的，也不说了&lt;/p>
+&lt;h2 id="0x02-方向键控制">&amp;lt;0x02&amp;gt; 方向键控制
+&lt;/h2>&lt;p>方向键控制的代码写在&lt;code>UI.hpp&lt;/code>里&lt;br>
+&lt;code>UI.hpp&lt;/code>里面都是一堆静态函数，提供一些标准化输出实现&lt;br>
+(压缩代码量)&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-cpp" data-lang="cpp">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">//能实现方向控制的示例代码
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;conio.h&amp;gt;&lt;/span>&lt;span style="color:#75715e"> &lt;/span>&lt;span style="color:#75715e">//必要的头文件
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#66d9ef">using&lt;/span> &lt;span style="color:#66d9ef">namespace&lt;/span> std;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">int&lt;/span> &lt;span style="color:#a6e22e">main&lt;/span>()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">char&lt;/span> c;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> c &lt;span style="color:#f92672">=&lt;/span> _getch();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> swich(c)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">case&lt;/span> &lt;span style="color:#ae81ff">72&lt;/span>&lt;span style="color:#f92672">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">//上方向键的代码
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">case&lt;/span> &lt;span style="color:#ae81ff">80&lt;/span>&lt;span style="color:#f92672">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">//下方向键的代码
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">case&lt;/span> &lt;span style="color:#ae81ff">75&lt;/span>&lt;span style="color:#f92672">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">//左方向键的代码
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">case&lt;/span> &lt;span style="color:#ae81ff">77&lt;/span>&lt;span style="color:#f92672">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">//右方向建的代码
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">case&lt;/span> &lt;span style="color:#ae81ff">13&lt;/span>&lt;span style="color:#f92672">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">//回车键的代码
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>关键就是&lt;code>_getch()&lt;/code>这个函数，他会捕获命令行界面的按键，然后返回对应按键的编码&lt;br>
+其他的按键编码网上应该都能找到的&lt;/p>
+&lt;p>顺带讲下&lt;code>UI.hpp&lt;/code>里的东西&lt;/p>
+&lt;h3 id="结构体-uiinfo">结构体 UIInfo
+&lt;/h3>&lt;p>就是用来传递菜单信息的结构体&lt;br>
+好让主函数知道进行了什么操作，选了哪一个&lt;/p>
+&lt;h3 id="ui类">UI类
+&lt;/h3>&lt;p>里面都是静态函数&lt;/p>
+&lt;p>&lt;code>Confirm(...)&lt;/code>函数用来显示确认菜单&lt;br>
+&lt;code>yesText&lt;/code>写确认的文字&lt;br>
+&lt;code>noText&lt;/code>写取消的文字&lt;br>
+&lt;code>content&lt;/code>写显示的内容&lt;/p>
+&lt;p>&lt;code>Select(...)&lt;/code>函数显示选择菜单&lt;br>
+有三个重载&lt;br>
+总之可以显示标题，功能选择项，一般选择项，描述词，默认指针位置&lt;br>
+&lt;code>title&lt;/code>标题&lt;br>
+&lt;code>function&lt;/code>功能选择项&lt;br>
+&lt;code>content&lt;/code>一般选择项&lt;br>
+&lt;code>head&lt;/code>描述词&lt;br>
+&lt;code>index&lt;/code>默认指针位置&lt;br>
+一般选择项十个每页，功能选择项始终显示&lt;/p>
+&lt;p>&lt;code>Show(...)&lt;/code>函数就是个简单的输出函数&lt;br>
+没啥好说的，让输出好看点而已&lt;/p>
+&lt;h2 id="0x03-csv文件的读写">&amp;lt;0x03&amp;gt; CSV文件的读写
+&lt;/h2>&lt;p>CSV文件的读写代码写在&lt;code>ManageTool.hpp&lt;/code>里&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-cpp" data-lang="cpp">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">//导出为CSV文件
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">//原代码的逻辑已经嵌在相关函数里了，这里单独拿出来
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;fstream&amp;gt;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;cstddef&amp;gt;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;string&amp;gt;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;#34;MyClass.hpp&amp;#34;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;#34;MyDate.hpp&amp;#34;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;#34;UI.hpp&amp;#34;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#66d9ef">using&lt;/span> &lt;span style="color:#66d9ef">namespace&lt;/span> std;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>string temp; &lt;span style="color:#75715e">//当前文件路径
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>MyClass &lt;span style="color:#f92672">*&lt;/span>selectClass; &lt;span style="color:#75715e">//MyClass是我写的班级类
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>ofstream writeFile; &lt;span style="color:#75715e">//写入文件流
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#66d9ef">void&lt;/span> &lt;span style="color:#a6e22e">ExportCSVFile&lt;/span>()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> writeFile.open(temp.substr(&lt;span style="color:#ae81ff">0&lt;/span>, temp.length() &lt;span style="color:#f92672">-&lt;/span> &lt;span style="color:#ae81ff">4&lt;/span>) &lt;span style="color:#f92672">+&lt;/span> &lt;span style="color:#e6db74">&amp;#34;-&amp;#34;&lt;/span> &lt;span style="color:#f92672">+&lt;/span> selectClass&lt;span style="color:#f92672">-&amp;gt;&lt;/span>className &lt;span style="color:#f92672">+&lt;/span> &lt;span style="color:#e6db74">&amp;#34;.csv&amp;#34;&lt;/span>, ios&lt;span style="color:#f92672">::&lt;/span>out);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> writeFile &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> &lt;span style="color:#e6db74">&amp;#34;Class name: &amp;#34;&lt;/span> &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> selectClass&lt;span style="color:#f92672">-&amp;gt;&lt;/span>className &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> &lt;span style="color:#e6db74">&amp;#34;,&amp;#34;&lt;/span> &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> selectClass&lt;span style="color:#f92672">-&amp;gt;&lt;/span>children.GetLength() &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> &lt;span style="color:#e6db74">&amp;#34;,&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> writeFile &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> &lt;span style="color:#e6db74">&amp;#34;Name,Birthday,Age,Gender,Address,Height,Weight,Parent&amp;#39;s name,Parent&amp;#39;s phone,note,&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">int&lt;/span> i &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>; i &lt;span style="color:#f92672">&amp;lt;&lt;/span> selectClass&lt;span style="color:#f92672">-&amp;gt;&lt;/span>children.GetLength(); i&lt;span style="color:#f92672">++&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> writeFile &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> selectClass&lt;span style="color:#f92672">-&amp;gt;&lt;/span>children[i]&lt;span style="color:#f92672">-&amp;gt;&lt;/span>name &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> &lt;span style="color:#e6db74">&amp;#34;,&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> writeFile &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> selectClass&lt;span style="color:#f92672">-&amp;gt;&lt;/span>children[i]&lt;span style="color:#f92672">-&amp;gt;&lt;/span>birthday.GetDate() &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> &lt;span style="color:#e6db74">&amp;#34;,&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> writeFile &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> selectClass&lt;span style="color:#f92672">-&amp;gt;&lt;/span>children[i]&lt;span style="color:#f92672">-&amp;gt;&lt;/span>age &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> &lt;span style="color:#e6db74">&amp;#34;,&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (selectClass&lt;span style="color:#f92672">-&amp;gt;&lt;/span>children[i]&lt;span style="color:#f92672">-&amp;gt;&lt;/span>isBoy)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> writeFile &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> &lt;span style="color:#e6db74">&amp;#34;Boy,&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">else&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> writeFile &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> &lt;span style="color:#e6db74">&amp;#34;Girl,&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> writeFile &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> selectClass&lt;span style="color:#f92672">-&amp;gt;&lt;/span>children[i]&lt;span style="color:#f92672">-&amp;gt;&lt;/span>address &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> &lt;span style="color:#e6db74">&amp;#34;,&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> writeFile &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> selectClass&lt;span style="color:#f92672">-&amp;gt;&lt;/span>children[i]&lt;span style="color:#f92672">-&amp;gt;&lt;/span>height &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> &lt;span style="color:#e6db74">&amp;#34;,&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> writeFile &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> selectClass&lt;span style="color:#f92672">-&amp;gt;&lt;/span>children[i]&lt;span style="color:#f92672">-&amp;gt;&lt;/span>weight &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> &lt;span style="color:#e6db74">&amp;#34;,&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> writeFile &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> selectClass&lt;span style="color:#f92672">-&amp;gt;&lt;/span>children[i]&lt;span style="color:#f92672">-&amp;gt;&lt;/span>parentName &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> &lt;span style="color:#e6db74">&amp;#34;,&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> writeFile &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> selectClass&lt;span style="color:#f92672">-&amp;gt;&lt;/span>children[i]&lt;span style="color:#f92672">-&amp;gt;&lt;/span>parentPhone &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> &lt;span style="color:#e6db74">&amp;#34;,&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> writeFile &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> selectClass&lt;span style="color:#f92672">-&amp;gt;&lt;/span>children[i]&lt;span style="color:#f92672">-&amp;gt;&lt;/span>note &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> &lt;span style="color:#e6db74">&amp;#34;,&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> writeFile &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> &lt;span style="color:#e6db74">&amp;#34;&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> writeFile.close();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> UI&lt;span style="color:#f92672">::&lt;/span>Show(&lt;span style="color:#e6db74">&amp;#34;CSV file has been generate&amp;#34;&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">break&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-cpp" data-lang="cpp">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">//由CSV文件导入
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">//原代码的逻辑已经嵌在相关函数里了，这里单独拿出来
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;fstream&amp;gt;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;cstddef&amp;gt;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;string&amp;gt;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;vector&amp;gt;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;#34;MyClass.hpp&amp;#34;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;#34;MyDate.hpp&amp;#34;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;#34;UI.hpp&amp;#34;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#66d9ef">using&lt;/span> &lt;span style="color:#66d9ef">namespace&lt;/span> std;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>string path; &lt;span style="color:#75715e">//路径
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>MyClass &lt;span style="color:#f92672">*&lt;/span>selectClass; &lt;span style="color:#75715e">//MyClass是我写的班级类
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>ifstream readFile; &lt;span style="color:#75715e">// 读取文件流
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>Student &lt;span style="color:#a6e22e">Create&lt;/span>(vector&lt;span style="color:#f92672">&amp;lt;&lt;/span>string&lt;span style="color:#f92672">&amp;gt;&lt;/span> &lt;span style="color:#f92672">&amp;amp;&lt;/span>list)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">//由传入的list来创建Student对象并返回
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#75715e">//代码略，见原代码
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">void&lt;/span> &lt;span style="color:#a6e22e">ImportCSV&lt;/span>()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> readFile.open(path &lt;span style="color:#f92672">+&lt;/span> &lt;span style="color:#e6db74">&amp;#34;&lt;/span>&lt;span style="color:#ae81ff">\\&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span> &lt;span style="color:#f92672">+&lt;/span> files[u.index], ios&lt;span style="color:#f92672">::&lt;/span>in);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> selectClass&lt;span style="color:#f92672">-&amp;gt;&lt;/span>children.Clear();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> string temp;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> getline(readFile, temp, &lt;span style="color:#e6db74">&amp;#39;,&amp;#39;&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> getline(readFile, temp, &lt;span style="color:#e6db74">&amp;#39;,&amp;#39;&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> readFile.get();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> vector&lt;span style="color:#f92672">&amp;lt;&lt;/span>string&lt;span style="color:#f92672">&amp;gt;&lt;/span> list;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> num &lt;span style="color:#f92672">=&lt;/span> atoi(temp.c_str());
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">int&lt;/span> i &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>; i &lt;span style="color:#f92672">&amp;lt;&lt;/span> &lt;span style="color:#ae81ff">10&lt;/span>; i&lt;span style="color:#f92672">++&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> getline(readFile, temp, &lt;span style="color:#e6db74">&amp;#39;,&amp;#39;&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> } &lt;span style="color:#75715e">//用来忽略表头的
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">int&lt;/span> i &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>; i &lt;span style="color:#f92672">&amp;lt;&lt;/span> num; i&lt;span style="color:#f92672">++&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> list.clear();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> readFile.get(); &lt;span style="color:#75715e">//吞上一行回车
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">int&lt;/span> j &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>; j &lt;span style="color:#f92672">&amp;lt;&lt;/span> &lt;span style="color:#ae81ff">10&lt;/span>; j&lt;span style="color:#f92672">++&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> getline(readFile, temp, &lt;span style="color:#e6db74">&amp;#39;,&amp;#39;&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> list.push_back(p.assign(temp));
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> selectClass&lt;span style="color:#f92672">-&amp;gt;&lt;/span>children.Insert(Create(list), selectClass&lt;span style="color:#f92672">-&amp;gt;&lt;/span>children.GetLength());
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> readFile.close();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>CSV文件其实就是&lt;code>数值1,数值2,...&lt;/code>这样组成的文件，这种文件格式可以被&lt;code>Excel&lt;/code>读取&lt;br>
+输出的时候先输出基本班级信息，然后按行输出每个人的信息&lt;br>
+导入CSV时先读取基本班级信息，然后按行导入学生信息&lt;/p>
+&lt;p>输出一般不大会遇到问题，就是读取时文件指针的控制是个问题&lt;br>
+这里在读取时用&lt;code>getline(ifstream,string,char)&lt;/code>来读取，碰到&lt;code>,&lt;/code>就截断&lt;br>
+前面还有&lt;code>readFile.get()&lt;/code>来吞上一行的空格&lt;/p>
+&lt;h2 id="0x04-多文件管理">&amp;lt;0x04&amp;gt; 多文件管理
+&lt;/h2>&lt;p>为了方便备份和多幼儿园管理(?)，实现了多工程文件的选择&lt;/p>
+&lt;p>选择和访问都应该不成问题，但获取对应文件夹下指定类型的所有文件是个问题&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-cpp" data-lang="cpp">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">//关键代码
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;io.h&amp;gt;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;vector&amp;gt;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;string&amp;gt;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#66d9ef">using&lt;/span> &lt;span style="color:#66d9ef">namespace&lt;/span> std;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">void&lt;/span> &lt;span style="color:#a6e22e">GetFiles&lt;/span>(string path, vector&lt;span style="color:#f92672">&amp;lt;&lt;/span>string&lt;span style="color:#f92672">&amp;gt;&lt;/span> &lt;span style="color:#f92672">&amp;amp;&lt;/span>files, string fileType) &lt;span style="color:#75715e">// 获取指定路径下指类型的所有文件名
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> intptr_t hFile &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>; &lt;span style="color:#75715e">// 句柄编号
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">struct&lt;/span> &lt;span style="color:#a6e22e">_finddata_t&lt;/span> fileInfo; &lt;span style="color:#75715e">// 文件信息结构体
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">if&lt;/span> ((hFile &lt;span style="color:#f92672">=&lt;/span> _findfirst((path &lt;span style="color:#f92672">+&lt;/span> &lt;span style="color:#e6db74">&amp;#34;&lt;/span>&lt;span style="color:#ae81ff">\\&lt;/span>&lt;span style="color:#e6db74">*&amp;#34;&lt;/span> &lt;span style="color:#f92672">+&lt;/span> fileType).c_str(), &lt;span style="color:#f92672">&amp;amp;&lt;/span>fileInfo)) &lt;span style="color:#f92672">!=&lt;/span> &lt;span style="color:#f92672">-&lt;/span>&lt;span style="color:#ae81ff">1&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">do&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> files.push_back(fileInfo.name); &lt;span style="color:#75715e">// 给files加入文件名
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> } &lt;span style="color:#66d9ef">while&lt;/span> (_findnext(hFile, &lt;span style="color:#f92672">&amp;amp;&lt;/span>fileInfo) &lt;span style="color:#f92672">==&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> _findclose(hFile); &lt;span style="color:#75715e">// 关闭句柄
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>这段代码实现了获取指定路径下指定文件类型的所有文件名&lt;br>
+通过句柄实现(也就是用系统api)&lt;br>
+最后的结果会保存在传入的&lt;code>files&lt;/code>中&lt;/p>
+&lt;p>注意，网上的多数代码会将句柄编号的类型写为&lt;code>long&lt;/code>&lt;br>
+但在&lt;code>win10&lt;/code>环境下，使用&lt;code>long&lt;/code>类型的句柄会导致精度丢失进而导致错&lt;br>
+使用&lt;code>intptr_t&lt;/code>就没这个问题&lt;/p>
+&lt;h2 id="0x05-从临时文件恢复">&amp;lt;0x05&amp;gt; 从临时文件恢复
+&lt;/h2>&lt;p>为了防止用户系统崩溃(也可能程序崩溃)导致的数据丢失&lt;br>
+管理系统在选择文件后会新建一个一样的同名的&lt;code>.tmp&lt;/code>临时文件&lt;br>
+后续的所有文件写入操作都会对这个&lt;code>.tmp&lt;/code>文件操作&lt;br>
+只有在用户正常退出系统时才会将&lt;code>.tmp&lt;/code>文件保存为&lt;code>.dat&lt;/code>文件&lt;/p>
+&lt;p>具体来说就是选择文件时并没有真正打开选择的文件，而是读取到文件名&lt;br>
+在选择班级之后，正常读取文件&lt;br>
+如果在班级管理界面里修改了相关数据，并不是修改原文件，而是创建同名临时文件，将修改后的结果写入&lt;br>
+最后用户正常退出后，在主对象析构中把原文件删了，然后把临时文件的后缀改成&lt;code>.dat&lt;/code>&lt;/p>
+&lt;p>代码就不单独拆出来了，原代码里有具体标明的&lt;/p>
+&lt;h2 id="0x06-把所有东西拼起来">&amp;lt;0x06&amp;gt; 把所有东西拼起来
+&lt;/h2>&lt;p>总体采用了UI与处理分离的设计&lt;br>
+&lt;code>UI.hpp&lt;/code>负责所有的界面输出，&lt;code>ManageTool.hpp&lt;/code>负责所有的数据处理和页面逻辑&lt;/p>
+&lt;p>&lt;code>main()&lt;/code>函数里就建立了&lt;code>Tool&lt;/code>对象然后调用&lt;code>MainDisplay()&lt;/code>启动&lt;br>
+之后不同的功能就是不同的函数，不同的页面也是不同的函数&lt;br>
+页面函数调用下一个页面的函数来实现功能的切换&lt;br>
+页面函数相当于不同功能的调度器，页面输出还是靠&lt;code>UI.hpp&lt;/code>的函数&lt;br>
+UI的选择结果由&lt;code>UIInfo&lt;/code>传递&lt;/p>
+&lt;p>其他的文件只是定义所需要的不同的类型&lt;/p>
+&lt;p>这样就吧所有的东西都拼起来了&lt;/p>
+&lt;h2 id="后记">后记
+&lt;/h2>&lt;p>课设的基本要求都不难，但是都要完成&lt;br>
+如果要拿优秀，肯定是要扩充功能的&lt;br>
+如果想不到能扩充啥功能，可以优化UI&lt;br>
+课设一般也不大需要多少时间，熟练的话写完课设大概3天&lt;/p></description></item><item><title>从Cmake换到Xmake</title><link>http://localhost:1313/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/</link><pubDate>Fri, 02 Jun 2023 19:45:28 +0000</pubDate><guid>http://localhost:1313/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/</guid><description>&lt;h2 id="0x00-为啥不用cmake了">&amp;lt;0x00&amp;gt; 为啥不用Cmake了
+&lt;/h2>&lt;p>怎么说呢，&lt;code>Cmake&lt;/code> 确实不是很好用，虽然说我还是稍微懂点 shell 命令的，但用着就是感觉很怪&lt;br>
+虽然 &lt;code>Cmake&lt;/code> 很强大，而且经过这么多年的发展，&lt;code>Cmake&lt;/code> 的社区支持也非常丰富&lt;br>
+但对于初学者，Cmake 的各种函数还是显得略微晦涩难懂&lt;br>
+而且 &lt;code>Cmake&lt;/code> 在 &lt;code>VS Code&lt;/code> 的环境下报错代码会很日怪
+(也可能是我没装好对应的插件，反正看报错挺费脑子的)&lt;/p>
+&lt;h2 id="0x01-为什么使用xmake">&amp;lt;0x01&amp;gt; 为什么使用Xmake
+&lt;/h2>&lt;p>&lt;code>Xmake&lt;/code> 使用 lua 作为脚本语言，整体看着能更好理解，并且更加语句更少&lt;/p>
+&lt;p>我常用的 &lt;code>Cmake&lt;/code> 配置文件&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-makefile" data-lang="makefile">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># CMakeLists.txt
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">cmake_minimum_required(VERSION&lt;/span> &lt;span style="color:#960050;background-color:#1e0010">3.0.0)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">project(Course&lt;/span> &lt;span style="color:#960050;background-color:#1e0010">VERSION&lt;/span> &lt;span style="color:#960050;background-color:#1e0010">0.1.0)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">include(CTest)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">enable_testing()&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 指定文件转编码为GBK
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">set(CMAKE_CXX_FLAGS&lt;/span> &lt;span style="color:#e6db74">&amp;#34;${CMAKE_CXX_FLAGS} -Wall -fexec-charset=GBK&amp;#34;&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 指定编译器和标准
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">set(CMAKE_CXX_COMPILER&lt;/span> &lt;span style="color:#e6db74">&amp;#34;g++&amp;#34;&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">set(CMAKE_CXX_STANDARD&lt;/span> &lt;span style="color:#960050;background-color:#1e0010">17)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 添加include路径
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#960050;background-color:#1e0010">include_directories(include)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">aux_source_directory(src&lt;/span> &lt;span style="color:#960050;background-color:#1e0010">SRC)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">set(CPACK_PROJECT_NAME&lt;/span> &lt;span style="color:#960050;background-color:#1e0010">${PROJECT_NAME})&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">set(CPACK_PROJECT_VERSION&lt;/span> &lt;span style="color:#960050;background-color:#1e0010">${PROJECT_VERSION})&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">add_executable(${PROJECT_NAME}&lt;/span> &lt;span style="color:#960050;background-color:#1e0010">${SRC})&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>换成 &lt;code>xmake.lua&lt;/code> 的等价配置文件&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-lua" data-lang="lua">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">--xmake.lua&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>add_rules(&lt;span style="color:#e6db74">&amp;#34;mode.debug&amp;#34;&lt;/span>, &lt;span style="color:#e6db74">&amp;#34;mode.release&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>target(&lt;span style="color:#e6db74">&amp;#34;xtest&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> set_symbols(&lt;span style="color:#e6db74">&amp;#34;debug&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">--指定文件转编码为GBK&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> add_cxxflags(&lt;span style="color:#e6db74">&amp;#34;-fexec-charset=GBK&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> set_kind(&lt;span style="color:#e6db74">&amp;#34;binary&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">--指定C++标准&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> set_languages(&lt;span style="color:#e6db74">&amp;#34;c++17&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">--添加inlude路径&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> add_includedirs(&lt;span style="color:#e6db74">&amp;#34;include&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> add_files(&lt;span style="color:#e6db74">&amp;#34;src/*.cpp&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>是不是确实干净很多？而且更加易懂？&lt;br>
+所以说嘛，人不能折磨自己，如果刚刚打算跑 C++ 的多文件编译，我强烈推荐用 &lt;code>Xmake&lt;/code>&lt;br>
+在文档中提到，&lt;code>Xmake&lt;/code> 的构建效率可以达到 &lt;code>ninja&lt;/code> 的水平，这个在我的使用中似乎并未体现&lt;br>
+(可能是我的项目相对比较小)
+总之 &lt;code>Xmake&lt;/code> 更现代，对很多东西都有很好的原生支持，具体可以看项目文档&lt;/p>
+&lt;h2 id="0x02-安装xmake">&amp;lt;0x02&amp;gt; 安装Xmake
+&lt;/h2>&lt;p>如果有配置 &lt;code>winget&lt;/code> 可以直接敲下面的命令&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-powershell" data-lang="powershell">&lt;span style="display:flex;">&lt;span>winget install xmake
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>(强烈安利 &lt;code>winget&lt;/code>，先挖个在 &lt;code>win10 LTSC&lt;/code> 下安装 &lt;code>winget&lt;/code> 的坑)&lt;/p>
+&lt;p>也可以去 &lt;a class="link" href="https://github.com/xmake-io/xmake" target="_blank" rel="noopener"
+>Github-xmake项目&lt;/a> 下载安装包&lt;br>
+直接安装就可以了，全默认就可以&lt;/p>
+&lt;h2 id="0x03-vs-code的配置">&amp;lt;0x03&amp;gt; VS Code的配置
+&lt;/h2>&lt;p>&lt;code>VS Code&lt;/code> 的配置也很简单，仅需安装一个叫 &lt;code>Xmake&lt;/code> 的插件&lt;br>
+&lt;img src="http://localhost:1313/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/1.png"
+width="270"
+height="72"
+srcset="http://localhost:1313/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/1_hu2071bb82300890dd794c966b777715ec_7689_480x0_resize_box_3.png 480w, http://localhost:1313/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/1_hu2071bb82300890dd794c966b777715ec_7689_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="Xmake插件截图"
+class="gallery-image"
+data-flex-grow="375"
+data-flex-basis="900px"
+>&lt;br>
+安装上就行了&lt;/p>
+&lt;h2 id="0x04-由xmake创建项目">&amp;lt;0x04&amp;gt; 由Xmake创建项目
+&lt;/h2>&lt;p>先新建个文件夹，作为存放项目代码的文件夹&lt;br>
+在 &lt;code>VS Code&lt;/code> 中打开这个文件夹&lt;br>
+快捷键 &lt;code>Ctrl+Shift+P&lt;/code> 打开命令窗口，输入 &lt;code>Xmake&lt;/code>&lt;br>
+&lt;img src="http://localhost:1313/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/2.png"
+width="600"
+height="451"
+srcset="http://localhost:1313/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/2_hu18d925f4e620f590097ba1cb8344ee0c_28603_480x0_resize_box_3.png 480w, http://localhost:1313/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/2_hu18d925f4e620f590097ba1cb8344ee0c_28603_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="命令窗口"
+class="gallery-image"
+data-flex-grow="133"
+data-flex-basis="319px"
+>&lt;/p>
+&lt;p>选择 &lt;code>XMake: CreateProject&lt;/code> 这个选项&lt;br>
+选择后一般右下角会有个窗口，提示没有 &lt;code>xmake.lua&lt;/code> 文件，询问是否创建，创建就是了&lt;br>
+&lt;img src="http://localhost:1313/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/3.png"
+width="451"
+height="84"
+srcset="http://localhost:1313/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/3_hue2fc95e41467282dccb9c375039f0bf0_6997_480x0_resize_box_3.png 480w, http://localhost:1313/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/3_hue2fc95e41467282dccb9c375039f0bf0_6997_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="创建提示"
+class="gallery-image"
+data-flex-grow="536"
+data-flex-basis="1288px"
+>&lt;/p>
+&lt;p>然后按你需要的选择配置，我通常选择 C++ 的命令行应用&lt;br>
+&lt;img src="http://localhost:1313/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/4.png"
+width="598"
+height="355"
+srcset="http://localhost:1313/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/4_hu995ecca81a53503dc663b7960bb57731_7588_480x0_resize_box_3.png 480w, http://localhost:1313/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/4_hu995ecca81a53503dc663b7960bb57731_7588_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="选语言"
+class="gallery-image"
+data-flex-grow="168"
+data-flex-basis="404px"
+>&lt;br>
+&lt;img src="http://localhost:1313/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/5.png"
+width="598"
+height="349"
+srcset="http://localhost:1313/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/5_hu69fcd2bcd0a579ea85aac804eab7640d_12502_480x0_resize_box_3.png 480w, http://localhost:1313/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/5_hu69fcd2bcd0a579ea85aac804eab7640d_12502_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="选应用类型"
+class="gallery-image"
+data-flex-grow="171"
+data-flex-basis="411px"
+>&lt;/p>
+&lt;p>之后，项目的文件夹结构就创建好了&lt;br>
+&lt;img src="http://localhost:1313/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/6.png"
+width="280"
+height="140"
+srcset="http://localhost:1313/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/6_hu7719235cf98258a9956520d51bd44837_6309_480x0_resize_box_3.png 480w, http://localhost:1313/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/6_hu7719235cf98258a9956520d51bd44837_6309_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="项目文件结构"
+class="gallery-image"
+data-flex-grow="200"
+data-flex-basis="480px"
+>&lt;br>
+里面的 &lt;code>xmake.lua&lt;/code> 就是配置文件，里面已经写好了基本的配置&lt;/p>
+&lt;p>如果有 &lt;code>include&lt;/code> 的文件，创建个文件夹放然后在配置文件指明就好&lt;br>
+可以直接参考[&amp;lt;0x01&amp;gt;](#&amp;lt;0x01&amp;gt; 为什么使用Xmake)部分的配置文件&lt;/p>
+&lt;p>之后创建新项目就按这个方法就可以了，轻松加愉快&lt;br>
+编译时按下面的 &lt;code>Build&lt;/code> 或者 &lt;code>▶&lt;/code> 就可以&lt;br>
+调试就是打完断点，然后按下面的 &lt;code>🐞&lt;/code> 图标&lt;br>
+&lt;img src="http://localhost:1313/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/7.png"
+width="590"
+height="22"
+srcset="http://localhost:1313/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/7_hude98329aba1eba7f2c2b3e1cd253bab1_3548_480x0_resize_box_3.png 480w, http://localhost:1313/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/7_hude98329aba1eba7f2c2b3e1cd253bab1_3548_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="下边的栏"
+class="gallery-image"
+data-flex-grow="2681"
+data-flex-basis="6436px"
+>&lt;/p></description></item></channel></rss>

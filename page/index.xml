@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Pages on MLAcookie</title><link>http://localhost:1313/page/</link><description>Recent content in Pages on MLAcookie</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Thu, 18 Jul 2024 00:00:00 +0000</lastBuildDate><atom:link href="http://localhost:1313/page/index.xml" rel="self" type="application/rss+xml"/><item><title>About</title><link>http://localhost:1313/page/about/</link><pubDate>Thu, 18 Jul 2024 00:00:00 +0000</pubDate><guid>http://localhost:1313/page/about/</guid><description>&lt;p>欢迎各位光临我的小站&lt;/p>
+&lt;h3 id="为什么开这个博客">为什么开这个博客
+&lt;/h3>&lt;p>学习计算机嘛，总会遇到些莫名其妙的问题&lt;br>
+然后用各种搜索引擎上下求索&lt;br>
+有时候呢，会有现成的方案，那就直接用就是&lt;br>
+但更多的时候要么是解决方案很老，目前已经不支持或者有更好的方法&lt;br>
+甚至压根就是没有（尤其在中文互联网上）&lt;br>
+所以我就想发些东西，解决方案也好，学习什么东西的历程也好&lt;br>
+有一个看算一个，帮一个算一个&lt;/p>
+&lt;p>其实也主要是写给自己看的&lt;br>
+我不常说我记性不好嘛，所以就想写点什么，万一以后想着要用就方便查&lt;/p>
+&lt;p>总之在这里我会分享各种知识，啥都会讲点（哪天讲讲中世纪黑魔法也说不定😂）&lt;/p>
+&lt;h3 id="为什么没评论区">为什么没评论区
+&lt;/h3>&lt;p>不开评论区主要是没精力回复每一个评论(我其实挺少访问我自己的博客)&lt;br>
+而且说实在的，我也估计没啥人会访问我的博客，也没开评论区的必要&lt;/p>
+&lt;p>无论有什么事都可以通过邮箱联系我，B站私信也行(B站常年在线)&lt;/p>
+&lt;h3 id="其他杂项">其他杂项
+&lt;/h3>&lt;p>博客基于 Hugo&lt;br>
+主题是 Stack&lt;br>
+（之前用Hexo）&lt;/p>
+&lt;p>写博客好累啊，基本都是写多少时间代码就多写多少时间的博客&lt;br>
+所以可能会经常把没写完的博客发上来，也没啥办法，真写不完了&lt;br>
+（我超级写的完.jpg）&lt;/p>
+&lt;p>全站 CC BY-NC-SA 4.0&lt;br>
+总之在这里的内容大家可以随意取用，转载的话都行，不是商业行为就行&lt;/p>
+&lt;!-- raw HTML omitted --></description></item><item><title>Archives</title><link>http://localhost:1313/page/archives/</link><pubDate>Tue, 28 May 2019 00:00:00 +0000</pubDate><guid>http://localhost:1313/page/archives/</guid><description/></item><item><title>Links</title><link>http://localhost:1313/page/links/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>http://localhost:1313/page/links/</guid><description>&lt;h3 id="哪里能找到我">哪里能找到我
+&lt;/h3>&lt;p>&lt;a class="link" href="https://github.com/MLAcookie" target="_blank" rel="noopener"
+>GitHub&lt;/a>&lt;br>
+&lt;a class="link" href="https://space.bilibili.com/13629146" target="_blank" rel="noopener"
+>B站&lt;/a>&lt;br>
+&lt;a class="link" href="mailto://mla_cookie@163.com" >E-Mail&lt;/a>&lt;/p>
+&lt;h3 id="友情链接">友情链接
+&lt;/h3>&lt;p>&lt;a class="link" href="https://www.07blog.com/" target="_blank" rel="noopener"
+>好兄弟的博客&lt;/a>（室友的）&lt;br>
+&lt;a class="link" href="https://www.theonlyproblem.top/" target="_blank" rel="noopener"
+>某大佬的博客&lt;/a>（图形渲染方面的大佬）&lt;/p>
+&lt;p>ZJUT车万外部群: 326106477（多来点车车人吧）&lt;br>
+&lt;a class="link" href="https://github.com/zjutjh/zjut-icicles" target="_blank" rel="noopener"
+>ZJUT课程互帮互助项目&lt;/a>（高情商：知识共享，低情商：抄作业）&lt;/p>
+&lt;h3 id="鸣谢">鸣谢
+&lt;/h3>&lt;p>&lt;a class="link" href="https://gohugo.io/" target="_blank" rel="noopener"
+>Hugo博客框架&lt;/a>&lt;br>
+&lt;a class="link" href="https://stack.jimmycai.com/" target="_blank" rel="noopener"
+>Stack主题&lt;/a>&lt;/p>
+&lt;p>虽然现在不用Hexo了，但Hexo确实好用&lt;/p>
+&lt;p>&lt;a class="link" href="https://github.com/hexojs/hexo" target="_blank" rel="noopener"
+>hexo博客框架&lt;/a>&lt;br>
+&lt;a class="link" href="https://github.com/Lhcfl/hexo-theme-anatolo" target="_blank" rel="noopener"
+>anatolo主题&lt;/a>&lt;/p>
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted --></description></item><item><title>Search</title><link>http://localhost:1313/page/search/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>http://localhost:1313/page/search/</guid><description/></item></channel></rss>

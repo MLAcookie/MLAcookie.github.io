@@ -1,0 +1,986 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>CourseProject on MLAcookie</title><link>http://localhost:1313/tags/courseproject/</link><description>Recent content in CourseProject on MLAcookie</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Tue, 04 Jul 2023 13:14:00 +0000</lastBuildDate><atom:link href="http://localhost:1313/tags/courseproject/index.xml" rel="self" type="application/rss+xml"/><item><title>浙工大离散课设讲解</title><link>http://localhost:1313/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7%E7%A6%BB%E6%95%A3%E8%AF%BE%E8%AE%BE%E8%AE%B2%E8%A7%A3/</link><pubDate>Tue, 04 Jul 2023 13:14:00 +0000</pubDate><guid>http://localhost:1313/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7%E7%A6%BB%E6%95%A3%E8%AF%BE%E8%AE%BE%E8%AE%B2%E8%A7%A3/</guid><description>&lt;h2 id="前言">前言
+&lt;/h2>&lt;p>一般来说离散的课设都是给一大堆题目然后自己选的&lt;br>
+我选的是合式公式的真值表和成真成假赋值&lt;br>
+算是里面相对难的&lt;br>
+(别的是真挺简单的)&lt;/p>
+&lt;p>课设我是拿&lt;code>C#&lt;/code>写的(人生苦短，还是用好用的语言吧)&lt;br>
+应该常用的&lt;code>.net&lt;/code>版本都能跑起来吧，代码里没怎么用新特性&lt;br>
+(我用的是&lt;code>.net 6.0&lt;/code>)&lt;br>
+&lt;code>C#&lt;/code>的语法还是挺好懂得，用过C系语言看懂应该问题不大&lt;/p>
+&lt;p>同样，可以在本文最后复制所有的原码&lt;br>
+(就一个文件，就不发本站的&lt;code>gitea&lt;/code>了)&lt;br>
+(报告自己写写挺快的)&lt;/p>
+&lt;h2 id="0x00-如何解析合式公式">&amp;lt;0x00&amp;gt; 如何解析合式公式
+&lt;/h2>&lt;p>在尝试解析合式公式前，我们可以先想想我们该如何解析一般加减乘除的&lt;br>
+(所谓解析就是判断计算的优先级)&lt;/p>
+&lt;p>比方说我们有公式&lt;code>1+2*3/(4-5)&lt;/code>&lt;br>
+按运算优先级加上括号就是&lt;code>(1+((2*3)/(4-5)))&lt;/code>&lt;br>
+所以说我们该如何让计算机按这样的优先级计算呢&lt;/p>
+&lt;p>双栈法&lt;br>
+准备两个栈，一个是运算数栈，一个是运算符栈&lt;br>
+运算式在运算前先在首位各加括号(确保最后会栈空)&lt;br>
+然后从左向右遍历运算式&lt;br>
+遇到&lt;code>(&lt;/code>时直接压入运算符栈，遇到数字压入运算数栈&lt;br>
+当遇到运算符时，先检查当前运算符优先级是否大于栈顶运算符，如是，直接压入&lt;br>
+如果不是，那么就先进行弹出操作&lt;br>
+每次弹出都是弹出一个运算符与两个运算数，并将运算结果再压入运算符栈中&lt;br>
+重复弹出，直到当前运算符优先级大于运算符栈顶的运算符优先级为止&lt;br>
+如果遍历过程中遇到&lt;code>)&lt;/code>，则反复进行弹出操作，直到弹出一个&lt;code>(&lt;/code>为止&lt;/p>
+&lt;p>&lt;img src="http://localhost:1313/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7%E7%A6%BB%E6%95%A3%E8%AF%BE%E8%AE%BE%E8%AE%B2%E8%A7%A3/picture/1.gif"
+width="400"
+height="400"
+srcset="http://localhost:1313/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7%E7%A6%BB%E6%95%A3%E8%AF%BE%E8%AE%BE%E8%AE%B2%E8%A7%A3/picture/1_hu258ec33d35618ac3195ff0565a7c9b2d_11767406_480x0_resize_box_1.gif 480w, http://localhost:1313/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7%E7%A6%BB%E6%95%A3%E8%AF%BE%E8%AE%BE%E8%AE%B2%E8%A7%A3/picture/1_hu258ec33d35618ac3195ff0565a7c9b2d_11767406_1024x0_resize_box_1.gif 1024w"
+loading="lazy"
+alt="演示动画"
+class="gallery-image"
+data-flex-grow="100"
+data-flex-basis="240px"
+>&lt;br>
+(动画是用&lt;code>manim&lt;/code>做的，头一次做)&lt;/p>
+&lt;p>同样的思路也可以运用在合式公式上&lt;br>
+具体流程如下：&lt;/p>
+&lt;ul>
+&lt;li>1 给公式的左右套上括号&lt;/li>
+&lt;li>2 从左向右读取&lt;/li>
+&lt;li>3 如果遇到&lt;code>(&lt;/code>，将&lt;code>(&lt;/code>压入&lt;code>运算符栈&lt;/code>后继续&lt;/li>
+&lt;li>4 如果遇到运算数，压入&lt;code>操作数栈&lt;/code>后继续&lt;/li>
+&lt;li>5 如果遇到运算符，按照以下规则：
+&lt;ul>
+&lt;li>a 如果&lt;code>运算符栈&lt;/code>为空或栈顶元素优先级小于当前运算符，直接压入&lt;code>运算符栈&lt;/code>&lt;/li>
+&lt;li>b 若遇到栈顶元素为&lt;code>┐(非)&lt;/code>，需要弹出所有的连续&lt;code>┐(非)&lt;/code>，弹出此运算符再弹出一个运算数，并将运算结果压回&lt;code>操作数栈&lt;/code>&lt;/li>
+&lt;li>c 其余情况按照弹出一个运算符并弹出两个操作数的规则，反复弹出，并将结合结果压回操作数栈，直到能按照&lt;code>5.a&lt;/code>压入&lt;code>运算符栈&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>6 遇到&lt;code>)&lt;/code>时，反复按照规则弹出，直到&lt;code>运算符栈&lt;/code>顶为&lt;code>(&lt;/code>，最后移除栈顶的&lt;code>(&lt;/code>&lt;/li>
+&lt;li>7 读取完毕后，&lt;code>操作数栈&lt;/code>留下的东西就是公式答案&lt;/li>
+&lt;/ul>
+&lt;p>这个就不再用动画演示了，本质上就是一般&lt;code>+-*/&lt;/code>运算双栈法的变种&lt;br>
+唯一不一样的就是对于&lt;code>┐(非)&lt;/code>要注意连续弹出问题&lt;br>
+因为&lt;code>┐(非)&lt;/code>是一个右结合单目运算符，而且优先级最高&lt;br>
+如果不先处理调连续的&lt;code>┐(非)&lt;/code>容易解析出问题&lt;br>
+所以要把连续的&lt;code>┐(非)&lt;/code>全弹出，当作一个整体，这样才能出正确答案&lt;/p>
+&lt;h2 id="0x01-由双栈法构建运算树">&amp;lt;0x01&amp;gt; 由双栈法构建运算树
+&lt;/h2>&lt;p>目前我们已经有方法解析合式公式了，但有一个问题&lt;br>
+我们的题目要求给出一个真值表&lt;br>
+如果每次计算我们都要先解析一遍合式公式的话，效率不会很高&lt;/p>
+&lt;p>所以我们要用一种数据结构来保存计算的结构&lt;br>
+每个单一操作数数可以改变对应的真假指派(就是&lt;code>T/F&lt;/code>)&lt;/p>
+&lt;p>对于一个计算的过程，我们可以抽象成一个树&lt;br>
+所有的操作数都是树的叶子(最末端的节点)&lt;br>
+操作数由运算符连接，合成一个新节点&lt;br>
+如此嵌套，最后连接在一个根节点上&lt;br>
+每次计算时，先给操作数真假指派，然后走遍计算树，根节点的值就是公式的计算结果&lt;/p>
+&lt;p>&lt;img src="http://localhost:1313/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7%E7%A6%BB%E6%95%A3%E8%AF%BE%E8%AE%BE%E8%AE%B2%E8%A7%A3/picture/2.png"
+width="381"
+height="279"
+srcset="http://localhost:1313/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7%E7%A6%BB%E6%95%A3%E8%AF%BE%E8%AE%BE%E8%AE%B2%E8%A7%A3/picture/2_hu215fccaeef457934695ea3694b27b0df_34017_480x0_resize_box_3.png 480w, http://localhost:1313/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7%E7%A6%BB%E6%95%A3%E8%AF%BE%E8%AE%BE%E8%AE%B2%E8%A7%A3/picture/2_hu215fccaeef457934695ea3694b27b0df_34017_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="计算树结构"
+class="gallery-image"
+data-flex-grow="136"
+data-flex-basis="327px"
+>&lt;br>
+就是这么个结构&lt;/p>
+&lt;p>怎么构建这棵树呢，其实之前的双栈法里就有这个答案&lt;br>
+我们仅需略微更改下代码，操作数栈不存储运算结果而是存储运算节点&lt;br>
+这样走一遍公式就相当于构建了一颗计算树&lt;br>
+最后只要存储根节点就好了&lt;/p>
+&lt;h2 id="0x02-逻辑实现">&amp;lt;0x02&amp;gt; 逻辑实现
+&lt;/h2>&lt;h3 id="按从低到高的优先级列出运算符的枚举类型">按从低到高的优先级列出运算符的枚举类型
+&lt;/h3>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-cs" data-lang="cs">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">enum&lt;/span> Operator&lt;span style="color:#75715e">//枚举运算符&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> LeftBracket,&lt;span style="color:#75715e">//左括号&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> XNOR,&lt;span style="color:#75715e">//双条件运算符&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Odds,&lt;span style="color:#75715e">//条件运算符&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Or,&lt;span style="color:#75715e">//析取运算符&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> And,&lt;span style="color:#75715e">//合取运算符&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Not,&lt;span style="color:#75715e">//取反运算符&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="定义计算树的计算节点类仅列出定义">定义计算树的计算节点类(仅列出定义)
+&lt;/h3>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-cs" data-lang="cs">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">internal&lt;/span> &lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">CalculateNode&lt;/span>&lt;span style="color:#75715e">//定义计算节点&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> CalculateNode? left;&lt;span style="color:#75715e">//运算符左边&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> CalculateNode? right;&lt;span style="color:#75715e">//运算符右边&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Operator oper;&lt;span style="color:#75715e">//节点的运算符&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">bool&lt;/span> ans;&lt;span style="color:#75715e">//该节点答案&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">internal&lt;/span> CalculateNode(&lt;span style="color:#66d9ef">bool&lt;/span> ans);&lt;span style="color:#75715e">//末节点构造方法&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">internal&lt;/span> CalculateNode(CalculateNode? left, CalculateNode right, Operatoroper);&lt;span style="color:#75715e">//计算节点构造方法&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">static&lt;/span> &lt;span style="color:#66d9ef">bool&lt;/span> Odds(&lt;span style="color:#66d9ef">bool&lt;/span> a, &lt;span style="color:#66d9ef">bool&lt;/span> b);&lt;span style="color:#75715e">//单独定义条件运算符&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">bool&lt;/span> Calculate(CalculateNode node);&lt;span style="color:#75715e">//从某节点递归计算&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">internal&lt;/span> &lt;span style="color:#66d9ef">bool&lt;/span> Calculate();&lt;span style="color:#75715e">//提供一个入口&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">internal&lt;/span> &lt;span style="color:#66d9ef">void&lt;/span> ChangeAns(&lt;span style="color:#66d9ef">bool&lt;/span> ans);&lt;span style="color:#75715e">//改变末节点的值&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>可以看到，每个计算节点包含运算符，左边节点，右边节点，节点答案&lt;br>
+操作数节点仅有节点答案(所以左右节点的类型是可空类型)&lt;br>
+因为条件运算符没有现成的运算符，所以自己写一个&lt;br>
+&lt;code>Calculate(CalculateNode node)&lt;/code>通过递归来遍历每个节点并给出每个节点的答案&lt;br>
+&lt;code>Calculate()&lt;/code>专门给外部调用的，里面就一句&lt;code>return Calculate(this);&lt;/code>&lt;br>
+&lt;code>ChangeAns(bool ans)&lt;/code>用来改变操作数的真假指派&lt;/p>
+&lt;h3 id="定义wellformedformula类仅列出定义">定义WellFormedFormula类(仅列出定义)
+&lt;/h3>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-cs" data-lang="cs">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">WellFormedFormula&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">string&lt;/span> formula;&lt;span style="color:#75715e">//原公式&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Dictionary&amp;lt;&lt;span style="color:#66d9ef">string&lt;/span>, CalculateNode&amp;gt; map;&lt;span style="color:#75715e">//以string方式索引所有节点&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Dictionary&amp;lt;&lt;span style="color:#66d9ef">int&lt;/span>, &lt;span style="color:#66d9ef">string&lt;/span>&amp;gt; dic;&lt;span style="color:#75715e">//以int方式索引所有根节点的名字&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> CalculateNode root;&lt;span style="color:#75715e">//最终答案节点&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">bool&lt;/span>[] truthTable;&lt;span style="color:#75715e">//真值表&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">private&lt;/span> &lt;span style="color:#66d9ef">static&lt;/span> &lt;span style="color:#66d9ef">bool&lt;/span> IsOperator(&lt;span style="color:#66d9ef">char&lt;/span> c);&lt;span style="color:#75715e">//判断是否为二元运算符&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">private&lt;/span> &lt;span style="color:#66d9ef">static&lt;/span> &lt;span style="color:#66d9ef">char&lt;/span> OperatorToChar(Operator op);&lt;span style="color:#75715e">//运算符换成char&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">private&lt;/span> &lt;span style="color:#66d9ef">static&lt;/span> Operator CharToOperator(&lt;span style="color:#66d9ef">char&lt;/span> c);&lt;span style="color:#75715e">//char换成运算符&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">private&lt;/span> &lt;span style="color:#66d9ef">bool&lt;/span> Verify();&lt;span style="color:#75715e">//验证公式是否有效&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">private&lt;/span> &lt;span style="color:#66d9ef">void&lt;/span> Init();&lt;span style="color:#75715e">//初始化计算树&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">public&lt;/span> WellFormedFormula(&lt;span style="color:#66d9ef">string&lt;/span> formula);&lt;span style="color:#75715e">//构造方法&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">bool&lt;/span> Calculate(&lt;span style="color:#66d9ef">int&lt;/span> n);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">bool&lt;/span> Calculate(Dictionary&amp;lt;&lt;span style="color:#66d9ef">string&lt;/span>, &lt;span style="color:#66d9ef">bool&lt;/span>&amp;gt; keyValuePairs);&lt;span style="color:#75715e">//单独计算用&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">private&lt;/span> &lt;span style="color:#66d9ef">void&lt;/span> CalculateAll();&lt;span style="color:#75715e">//全计算&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">void&lt;/span> ChangeFormula(&lt;span style="color:#66d9ef">string&lt;/span> formula);&lt;span style="color:#75715e">//更改公式&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">void&lt;/span> ShowrTruthTable();&lt;span style="color:#75715e">//展示真值表&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">void&lt;/span> ShowFormula();&lt;span style="color:#75715e">//展示公式&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">void&lt;/span> ShowAllNode();&lt;span style="color:#75715e">//展示所有节点信息，用于调试&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">void&lt;/span> ShowTrueAssignment();&lt;span style="color:#75715e">//展示所有成真赋值&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">void&lt;/span> ShowFalseAssignment();&lt;span style="color:#75715e">//展示所有成假赋值&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">void&lt;/span> ShowDNF();&lt;span style="color:#75715e">//主析取范式&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">void&lt;/span> ShowCNF();&lt;span style="color:#75715e">//主合取范式&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>最关键的是&lt;code>Init()&lt;/code>方法，别的实现不难&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-cs" data-lang="cs">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">private&lt;/span> &lt;span style="color:#66d9ef">void&lt;/span> Init()&lt;span style="color:#75715e">//初始化计算树(略去实现细节)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Verify();&lt;span style="color:#75715e">//验证&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">//获取所有的变量&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">//...&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">//构建计算树&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">//...&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> CalculateAll();&lt;span style="color:#75715e">//顺便把真值表给算了&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>在&lt;code>Init()&lt;/code>中，先验证公式合法性(防输入错误)&lt;br>
+然后会先遍历遍公式，获取所有的变量名并创建操作数节点(末节点)&lt;br>
+然后再遍历一遍，构建计算树&lt;br>
+构建完成后，&lt;code>root&lt;/code>指向根节点，&lt;code>map&lt;/code>可以按节点名索引到对应的操作数节点&lt;br>
+&lt;code>dic&lt;/code>可以按&lt;code>index&lt;/code>索引到节点名字(方便遍历)&lt;br>
+构建完再计算所有的赋值情况，直接得出真值表&lt;br>
+其他的方法都是调用真值表答案，不会再计算公式&lt;/p>
+&lt;p>构建过程就是双栈法构建&lt;/p>
+&lt;h2 id="附录所有的代码">附录，所有的代码
+&lt;/h2>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-cs" data-lang="cs">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">//核心逻辑实现&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">namespace&lt;/span> CStest
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">enum&lt;/span> Operator&lt;span style="color:#75715e">//枚举运算符&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> LeftBracket,&lt;span style="color:#75715e">//左括号&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> XNOR,&lt;span style="color:#75715e">//双条件运算符&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Odds,&lt;span style="color:#75715e">//条件运算符&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Or,&lt;span style="color:#75715e">//析取运算符&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> And,&lt;span style="color:#75715e">//合取运算符&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Not,&lt;span style="color:#75715e">//取反运算符&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">internal&lt;/span> &lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">CalculateNode&lt;/span>&lt;span style="color:#75715e">//定义计算节点&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> CalculateNode? left;&lt;span style="color:#75715e">//运算符左边&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> CalculateNode? right;&lt;span style="color:#75715e">//运算符右边&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Operator oper;&lt;span style="color:#75715e">//节点的运算符&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">bool&lt;/span> ans;&lt;span style="color:#75715e">//该节点答案&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">internal&lt;/span> CalculateNode(&lt;span style="color:#66d9ef">bool&lt;/span> ans)&lt;span style="color:#75715e">//末节点构造方法&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> left = &lt;span style="color:#66d9ef">null&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> right = &lt;span style="color:#66d9ef">null&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">this&lt;/span>.ans = ans;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">internal&lt;/span> CalculateNode(CalculateNode? left, CalculateNode right, Operator oper)&lt;span style="color:#75715e">//计算节点构造方法&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">this&lt;/span>.left = left;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">this&lt;/span>.right = right;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">this&lt;/span>.oper = oper;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">static&lt;/span> &lt;span style="color:#66d9ef">bool&lt;/span> Odds(&lt;span style="color:#66d9ef">bool&lt;/span> a, &lt;span style="color:#66d9ef">bool&lt;/span> b)&lt;span style="color:#75715e">//单独定义条件运算符&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (!a)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#66d9ef">true&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">else&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (b)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#66d9ef">true&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">else&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#66d9ef">false&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">bool&lt;/span> Calculate(CalculateNode node)&lt;span style="color:#75715e">//从某节点递归计算&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (node.right == &lt;span style="color:#66d9ef">null&lt;/span>)&lt;span style="color:#75715e">//递归边界条件&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> node.ans;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">switch&lt;/span> (node.oper)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">case&lt;/span> Operator.Not:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> node.ans = !Calculate(node.right);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">break&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">case&lt;/span> Operator.And:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> node.ans = Calculate(node.left) &amp;amp;&amp;amp; Calculate(node.right);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">break&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">case&lt;/span> Operator.Or:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> node.ans = Calculate(node.left) || Calculate(node.right);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">break&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">case&lt;/span> Operator.Odds:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> node.ans = Odds(Calculate(node.left), Calculate(node.right));
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">break&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">case&lt;/span> Operator.XNOR:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> node.ans = !(Calculate(node.left) ^ Calculate(node.right));
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">break&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> node.ans;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">internal&lt;/span> &lt;span style="color:#66d9ef">bool&lt;/span> Calculate()&lt;span style="color:#75715e">//提供一个入口&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> Calculate(&lt;span style="color:#66d9ef">this&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">internal&lt;/span> &lt;span style="color:#66d9ef">void&lt;/span> ChangeAns(&lt;span style="color:#66d9ef">bool&lt;/span> ans)&lt;span style="color:#75715e">//改变末节点的值&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">this&lt;/span>.ans = ans;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">WellFormedFormula&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">string&lt;/span> formula;&lt;span style="color:#75715e">//原公式&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Dictionary&amp;lt;&lt;span style="color:#66d9ef">string&lt;/span>, CalculateNode&amp;gt; map;&lt;span style="color:#75715e">//以string方式索引所有节点&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Dictionary&amp;lt;&lt;span style="color:#66d9ef">int&lt;/span>, &lt;span style="color:#66d9ef">string&lt;/span>&amp;gt; dic;&lt;span style="color:#75715e">//以int方式索引所有根节点的名字&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> CalculateNode root;&lt;span style="color:#75715e">//最终答案节点&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">bool&lt;/span>[] truthTable;&lt;span style="color:#75715e">//真值表&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">private&lt;/span> &lt;span style="color:#66d9ef">static&lt;/span> &lt;span style="color:#66d9ef">bool&lt;/span> IsOperator(&lt;span style="color:#66d9ef">char&lt;/span> c)&lt;span style="color:#75715e">//判断是否为二元运算符&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> c == &lt;span style="color:#e6db74">&amp;#39;∧&amp;#39;&lt;/span> || c == &lt;span style="color:#e6db74">&amp;#39;∨&amp;#39;&lt;/span> || c == &lt;span style="color:#e6db74">&amp;#39;→&amp;#39;&lt;/span> || c == &lt;span style="color:#e6db74">&amp;#39;⊙&amp;#39;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">private&lt;/span> &lt;span style="color:#66d9ef">static&lt;/span> &lt;span style="color:#66d9ef">char&lt;/span> OperatorToChar(Operator op)&lt;span style="color:#75715e">//运算符换成char&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">switch&lt;/span> (op)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">case&lt;/span> Operator.And: &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#e6db74">&amp;#39;∧&amp;#39;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">case&lt;/span> Operator.Or: &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#e6db74">&amp;#39;∨&amp;#39;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">case&lt;/span> Operator.Odds: &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#e6db74">&amp;#39;→&amp;#39;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">case&lt;/span> Operator.XNOR: &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#e6db74">&amp;#39;⊙&amp;#39;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#e6db74">&amp;#39; &amp;#39;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">private&lt;/span> &lt;span style="color:#66d9ef">static&lt;/span> Operator CharToOperator(&lt;span style="color:#66d9ef">char&lt;/span> c)&lt;span style="color:#75715e">//char换成运算符&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">switch&lt;/span> (c)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">case&lt;/span> &lt;span style="color:#e6db74">&amp;#39;∧&amp;#39;&lt;/span>: &lt;span style="color:#66d9ef">return&lt;/span> Operator.And;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">case&lt;/span> &lt;span style="color:#e6db74">&amp;#39;∨&amp;#39;&lt;/span>: &lt;span style="color:#66d9ef">return&lt;/span> Operator.Or;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">case&lt;/span> &lt;span style="color:#e6db74">&amp;#39;→&amp;#39;&lt;/span>: &lt;span style="color:#66d9ef">return&lt;/span> Operator.Odds;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">case&lt;/span> &lt;span style="color:#e6db74">&amp;#39;⊙&amp;#39;&lt;/span>: &lt;span style="color:#66d9ef">return&lt;/span> Operator.XNOR;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> Operator.LeftBracket;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">private&lt;/span> &lt;span style="color:#66d9ef">bool&lt;/span> Verify()&lt;span style="color:#75715e">//验证公式是否有效&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (IsOperator(formula[&lt;span style="color:#ae81ff">0&lt;/span>]) || formula[^&lt;span style="color:#ae81ff">1&lt;/span>] == &lt;span style="color:#e6db74">&amp;#39;┐&amp;#39;&lt;/span> || IsOperator(formula[^&lt;span style="color:#ae81ff">1&lt;/span>]))
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">throw&lt;/span> &lt;span style="color:#66d9ef">new&lt;/span> Exception(&lt;span style="color:#e6db74">&amp;#34;Error in formula&amp;#34;&lt;/span>);&lt;span style="color:#75715e">//在首尾出现了不该出现的运算符&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> l = &lt;span style="color:#ae81ff">0&lt;/span>;&lt;span style="color:#75715e">//统计左括号&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> r = &lt;span style="color:#ae81ff">0&lt;/span>;&lt;span style="color:#75715e">//统计右括号&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">int&lt;/span> i = &lt;span style="color:#ae81ff">0&lt;/span>; i &amp;lt; formula.Length; i++)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (formula[i] == &lt;span style="color:#e6db74">&amp;#39;(&amp;#39;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> l++;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">else&lt;/span> &lt;span style="color:#66d9ef">if&lt;/span> (formula[i] == &lt;span style="color:#e6db74">&amp;#39;)&amp;#39;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> r++;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (formula[i] == &lt;span style="color:#e6db74">&amp;#39;┐&amp;#39;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (IsOperator(formula[i + &lt;span style="color:#ae81ff">1&lt;/span>]))
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">throw&lt;/span> &lt;span style="color:#66d9ef">new&lt;/span> Exception(&lt;span style="color:#e6db74">&amp;#34;Error in formula&amp;#34;&lt;/span>);&lt;span style="color:#75715e">//取反运算符后接别的运算符&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (IsOperator(formula[i]))
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (IsOperator(formula[i - &lt;span style="color:#ae81ff">1&lt;/span>]))
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">throw&lt;/span> &lt;span style="color:#66d9ef">new&lt;/span> Exception(&lt;span style="color:#e6db74">&amp;#34;Error in formula&amp;#34;&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (IsOperator(formula[i + &lt;span style="color:#ae81ff">1&lt;/span>]) || formula[i + &lt;span style="color:#ae81ff">1&lt;/span>] == &lt;span style="color:#e6db74">&amp;#39;┐&amp;#39;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">throw&lt;/span> &lt;span style="color:#66d9ef">new&lt;/span> Exception(&lt;span style="color:#e6db74">&amp;#34;Error in formula&amp;#34;&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }&lt;span style="color:#75715e">//都是判断多个运算符不应该相连的情况&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (l != r)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">throw&lt;/span> &lt;span style="color:#66d9ef">new&lt;/span> Exception(&lt;span style="color:#e6db74">&amp;#34;Error in formula&amp;#34;&lt;/span>);&lt;span style="color:#75715e">//左右括号数不匹配&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#66d9ef">true&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">private&lt;/span> &lt;span style="color:#66d9ef">void&lt;/span> Init()&lt;span style="color:#75715e">//初始化计算树&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Verify();&lt;span style="color:#75715e">//验证&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">string&lt;/span> formula = &lt;span style="color:#e6db74">&amp;#34;(&amp;#34;&lt;/span> + &lt;span style="color:#66d9ef">this&lt;/span>.formula + &lt;span style="color:#e6db74">&amp;#34;)&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">//获取所有的变量&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> index = &lt;span style="color:#ae81ff">0&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">bool&lt;/span> flag = &lt;span style="color:#66d9ef">true&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">int&lt;/span> i = &lt;span style="color:#ae81ff">0&lt;/span>; i &amp;lt; formula.Length; i++)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (flag &amp;amp;&amp;amp; formula[i] != &lt;span style="color:#e6db74">&amp;#39;(&amp;#39;&lt;/span> &amp;amp;&amp;amp; formula[i] != &lt;span style="color:#e6db74">&amp;#39;┐&amp;#39;&lt;/span> &amp;amp;&amp;amp; !IsOperator(formula[i]))
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> index = i;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> flag = &lt;span style="color:#66d9ef">false&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">else&lt;/span> &lt;span style="color:#66d9ef">if&lt;/span> (formula[i] == &lt;span style="color:#e6db74">&amp;#39;)&amp;#39;&lt;/span> || formula[i] == &lt;span style="color:#e6db74">&amp;#39;┐&amp;#39;&lt;/span> || IsOperator(formula[i]))
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (index != i &amp;amp;&amp;amp; !flag &amp;amp;&amp;amp; !map.ContainsKey(formula[index..i]))
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> map.Add(formula[index..i], &lt;span style="color:#66d9ef">new&lt;/span> CalculateNode(&lt;span style="color:#66d9ef">false&lt;/span>));
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> dic.Add(dic.Count, formula[index..i]);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> flag = &lt;span style="color:#66d9ef">true&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> flag = &lt;span style="color:#66d9ef">true&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">//构建计算树&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Stack&amp;lt;&lt;span style="color:#66d9ef">string&lt;/span>&amp;gt; v = &lt;span style="color:#66d9ef">new&lt;/span> Stack&amp;lt;&lt;span style="color:#66d9ef">string&lt;/span>&amp;gt;();&lt;span style="color:#75715e">//操作数栈&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Stack&amp;lt;Operator&amp;gt; op = &lt;span style="color:#66d9ef">new&lt;/span> Stack&amp;lt;Operator&amp;gt;();&lt;span style="color:#75715e">//运算符栈&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">string&lt;/span> sa;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">string&lt;/span> sb;&lt;span style="color:#75715e">//两个临时string变量&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">int&lt;/span> i = &lt;span style="color:#ae81ff">0&lt;/span>; i &amp;lt; formula.Length; i++)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (formula[i] == &lt;span style="color:#e6db74">&amp;#39;(&amp;#39;&lt;/span>)&lt;span style="color:#75715e">//左括号直接压入栈&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> op.Push(Operator.LeftBracket);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">continue&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (flag &amp;amp;&amp;amp; formula[i] != &lt;span style="color:#e6db74">&amp;#39;)&amp;#39;&lt;/span> &amp;amp;&amp;amp; formula[i] != &lt;span style="color:#e6db74">&amp;#39;┐&amp;#39;&lt;/span> &amp;amp;&amp;amp; !IsOperator(formula[i]))
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> index = i;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> flag = &lt;span style="color:#66d9ef">false&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">else&lt;/span> &lt;span style="color:#66d9ef">if&lt;/span> (formula[i] == &lt;span style="color:#e6db74">&amp;#39;)&amp;#39;&lt;/span> || formula[i] == &lt;span style="color:#e6db74">&amp;#39;┐&amp;#39;&lt;/span> || IsOperator(formula[i]))
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (index != i &amp;amp;&amp;amp; !flag)&lt;span style="color:#75715e">//压入操作数&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> v.Push(formula[index..i]);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> flag = &lt;span style="color:#66d9ef">true&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (formula[i] == &lt;span style="color:#e6db74">&amp;#39;┐&amp;#39;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> op.Push(Operator.Not);&lt;span style="color:#75715e">//取反直接压入&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">else&lt;/span> &lt;span style="color:#66d9ef">if&lt;/span> (formula[i] == &lt;span style="color:#e6db74">&amp;#39;)&amp;#39;&lt;/span>)&lt;span style="color:#75715e">//遇到右括号不断弹出，直到遇到左括号&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">while&lt;/span> (op.Peek() != Operator.LeftBracket)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (op.Peek() == Operator.Not)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> sa = v.Pop();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> map.Add(&lt;span style="color:#e6db74">&amp;#34;(┐&amp;#34;&lt;/span> + sa + &lt;span style="color:#e6db74">&amp;#34;)&amp;#34;&lt;/span>, &lt;span style="color:#66d9ef">new&lt;/span> CalculateNode(&lt;span style="color:#66d9ef">null&lt;/span>, map[sa], Operator.Not));
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> v.Push(&lt;span style="color:#e6db74">&amp;#34;(┐&amp;#34;&lt;/span> + sa + &lt;span style="color:#e6db74">&amp;#34;)&amp;#34;&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">break&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">else&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> sa = v.Pop();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> sb = v.Pop();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> map.Add(&lt;span style="color:#e6db74">&amp;#34;(&amp;#34;&lt;/span> + sb + OperatorToChar(op.Peek()) + sa + &lt;span style="color:#e6db74">&amp;#34;)&amp;#34;&lt;/span>, &lt;span style="color:#66d9ef">new&lt;/span> CalculateNode(map[sb], map[sa], op.Peek()));
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> v.Push(&lt;span style="color:#e6db74">&amp;#34;(&amp;#34;&lt;/span> + sb + OperatorToChar(op.Peek()) + sa + &lt;span style="color:#e6db74">&amp;#34;)&amp;#34;&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> op.Pop();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> op.Pop();&lt;span style="color:#75715e">//弹出左括号&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">else&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (op.Count != &lt;span style="color:#ae81ff">0&lt;/span> &amp;amp;&amp;amp; CharToOperator(formula[i]) &amp;lt; op.Peek())
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (op.Peek() == Operator.Not)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">do&lt;/span>&lt;span style="color:#75715e">//由于取反运算可多个连接，所以要一次性弹出所有连续的取反运算&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> op.Pop();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> sa = v.Pop();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> map.Add(&lt;span style="color:#e6db74">&amp;#34;(┐&amp;#34;&lt;/span> + sa + &lt;span style="color:#e6db74">&amp;#34;)&amp;#34;&lt;/span>, &lt;span style="color:#66d9ef">new&lt;/span> CalculateNode(&lt;span style="color:#66d9ef">null&lt;/span>, map[sa], Operator.Not));
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> v.Push(&lt;span style="color:#e6db74">&amp;#34;(┐&amp;#34;&lt;/span> + sa + &lt;span style="color:#e6db74">&amp;#34;)&amp;#34;&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> } &lt;span style="color:#66d9ef">while&lt;/span> (op.Peek() == Operator.Not);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">else&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> sa = v.Pop();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> sb = v.Pop();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> map.Add(&lt;span style="color:#e6db74">&amp;#34;(&amp;#34;&lt;/span> + sb + OperatorToChar(op.Peek()) + sa + &lt;span style="color:#e6db74">&amp;#34;)&amp;#34;&lt;/span>, &lt;span style="color:#66d9ef">new&lt;/span> CalculateNode(map[sb], map[sa], op.Peek()));
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> v.Push(&lt;span style="color:#e6db74">&amp;#34;(&amp;#34;&lt;/span> + sb + OperatorToChar(op.Peek()) + sa + &lt;span style="color:#e6db74">&amp;#34;)&amp;#34;&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> op.Pop();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> op.Push(CharToOperator(formula[i]));&lt;span style="color:#75715e">//最后把当前运算符压入&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> root = map[v.Pop()];&lt;span style="color:#75715e">//最后的操作数就是root节点&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> truthTable = &lt;span style="color:#66d9ef">new&lt;/span> &lt;span style="color:#66d9ef">bool&lt;/span>[(&lt;span style="color:#66d9ef">int&lt;/span>)Math.Pow(&lt;span style="color:#ae81ff">2&lt;/span>, dic.Count)];
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> CalculateAll();&lt;span style="color:#75715e">//顺便把真值表给算了&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">public&lt;/span> WellFormedFormula(&lt;span style="color:#66d9ef">string&lt;/span> formula)&lt;span style="color:#75715e">//构造方法&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> map = &lt;span style="color:#66d9ef">new&lt;/span> Dictionary&amp;lt;&lt;span style="color:#66d9ef">string&lt;/span>, CalculateNode&amp;gt;();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> dic = &lt;span style="color:#66d9ef">new&lt;/span> Dictionary&amp;lt;&lt;span style="color:#66d9ef">int&lt;/span>, &lt;span style="color:#66d9ef">string&lt;/span>&amp;gt;();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">this&lt;/span>.formula = formula;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Init();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">bool&lt;/span> Calculate(&lt;span style="color:#66d9ef">int&lt;/span> n)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> truthTable[n];
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">bool&lt;/span> Calculate(Dictionary&amp;lt;&lt;span style="color:#66d9ef">string&lt;/span>, &lt;span style="color:#66d9ef">bool&lt;/span>&amp;gt; keyValuePairs)&lt;span style="color:#75715e">//单独计算用&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (keyValuePairs.Count != dic.Count)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">throw&lt;/span> &lt;span style="color:#66d9ef">new&lt;/span> Exception();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">foreach&lt;/span> (&lt;span style="color:#66d9ef">var&lt;/span> kv &lt;span style="color:#66d9ef">in&lt;/span> keyValuePairs)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> map[kv.Key].ChangeAns(kv.Value);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> root.Calculate();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">private&lt;/span> &lt;span style="color:#66d9ef">void&lt;/span> CalculateAll()&lt;span style="color:#75715e">//全计算&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Stack&amp;lt;&lt;span style="color:#66d9ef">bool&lt;/span>&amp;gt; b = &lt;span style="color:#66d9ef">new&lt;/span> Stack&amp;lt;&lt;span style="color:#66d9ef">bool&lt;/span>&amp;gt;();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> index;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">int&lt;/span> i = &lt;span style="color:#ae81ff">0&lt;/span>; i &amp;lt; (&lt;span style="color:#66d9ef">int&lt;/span>)Math.Pow(&lt;span style="color:#ae81ff">2&lt;/span>, dic.Count); i++)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> b.Clear();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> index = i;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">while&lt;/span> (index &amp;gt; &lt;span style="color:#ae81ff">0&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (index % &lt;span style="color:#ae81ff">2&lt;/span> == &lt;span style="color:#ae81ff">1&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> b.Push(&lt;span style="color:#66d9ef">true&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">else&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> b.Push(&lt;span style="color:#66d9ef">false&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> index /= &lt;span style="color:#ae81ff">2&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">while&lt;/span> (b.Count &amp;lt; dic.Count)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> b.Push(&lt;span style="color:#66d9ef">false&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">int&lt;/span> j = &lt;span style="color:#ae81ff">0&lt;/span>; j &amp;lt; dic.Count; j++)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> map[dic[j]].ChangeAns(b.Pop());
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> truthTable[i] = root.Calculate();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">void&lt;/span> ChangeFormula(&lt;span style="color:#66d9ef">string&lt;/span> formula)&lt;span style="color:#75715e">//更改公式&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">this&lt;/span>.formula = formula;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> map.Clear();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> dic.Clear();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Init();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">void&lt;/span> ShowrTruthTable()&lt;span style="color:#75715e">//展示真值表&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">int&lt;/span> i = &lt;span style="color:#ae81ff">0&lt;/span>; i &amp;lt; dic.Count; i++)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Console.Write(dic[i] + &lt;span style="color:#e6db74">&amp;#39;\t&amp;#39;&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Console.WriteLine(formula);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Stack&amp;lt;&lt;span style="color:#66d9ef">bool&lt;/span>&amp;gt; b = &lt;span style="color:#66d9ef">new&lt;/span> Stack&amp;lt;&lt;span style="color:#66d9ef">bool&lt;/span>&amp;gt;();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> index;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">int&lt;/span> i = &lt;span style="color:#ae81ff">0&lt;/span>; i &amp;lt; (&lt;span style="color:#66d9ef">int&lt;/span>)Math.Pow(&lt;span style="color:#ae81ff">2&lt;/span>, dic.Count); i++)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> index = i;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">while&lt;/span> (index &amp;gt; &lt;span style="color:#ae81ff">0&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (index % &lt;span style="color:#ae81ff">2&lt;/span> == &lt;span style="color:#ae81ff">1&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> b.Push(&lt;span style="color:#66d9ef">true&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">else&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> b.Push(&lt;span style="color:#66d9ef">false&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> index /= &lt;span style="color:#ae81ff">2&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">while&lt;/span> (b.Count &amp;lt; dic.Count)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> b.Push(&lt;span style="color:#66d9ef">false&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">while&lt;/span> (b.Count &amp;gt; &lt;span style="color:#ae81ff">0&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (b.Pop())
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Console.Write(&lt;span style="color:#e6db74">&amp;#34;T\t&amp;#34;&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">else&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Console.Write(&lt;span style="color:#e6db74">&amp;#34;F\t&amp;#34;&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (truthTable[i])
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Console.WriteLine(&lt;span style="color:#e6db74">&amp;#34;T&amp;#34;&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">else&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Console.WriteLine(&lt;span style="color:#e6db74">&amp;#34;F&amp;#34;&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">void&lt;/span> ShowFormula()&lt;span style="color:#75715e">//展示公式&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Console.WriteLine(formula);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">void&lt;/span> ShowAllNode()&lt;span style="color:#75715e">//展示所有节点信息，用于调试&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Console.Write(&lt;span style="color:#e6db74">&amp;#34;| &amp;#34;&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">foreach&lt;/span> (&lt;span style="color:#66d9ef">var&lt;/span> m &lt;span style="color:#66d9ef">in&lt;/span> map)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Console.Write(m.Key + &lt;span style="color:#e6db74">&amp;#34; | &amp;#34;&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Console.WriteLine();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">void&lt;/span> ShowTrueAssignment()&lt;span style="color:#75715e">//展示所有成真赋值&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Console.Write(&lt;span style="color:#e6db74">&amp;#34;All true assignment: &amp;#34;&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">int&lt;/span> i = &lt;span style="color:#ae81ff">0&lt;/span>; i &amp;lt; dic.Count; i++)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (i == &lt;span style="color:#ae81ff">0&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Console.Write(dic[i]);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">else&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Console.Write(&lt;span style="color:#e6db74">&amp;#34; | &amp;#34;&lt;/span> + dic[i]);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Console.WriteLine();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> index;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Stack&amp;lt;&lt;span style="color:#66d9ef">byte&lt;/span>&amp;gt; temp = &lt;span style="color:#66d9ef">new&lt;/span> Stack&amp;lt;&lt;span style="color:#66d9ef">byte&lt;/span>&amp;gt;();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">int&lt;/span> i = &lt;span style="color:#ae81ff">0&lt;/span>; i &amp;lt; (&lt;span style="color:#66d9ef">int&lt;/span>)Math.Pow(&lt;span style="color:#ae81ff">2&lt;/span>, dic.Count); i++)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> temp.Clear();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (truthTable[i])
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> index = i;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">while&lt;/span> (index &amp;gt; &lt;span style="color:#ae81ff">0&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> temp.Push((&lt;span style="color:#66d9ef">byte&lt;/span>)(index % &lt;span style="color:#ae81ff">2&lt;/span>));
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> index /= &lt;span style="color:#ae81ff">2&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">while&lt;/span> (temp.Count &amp;lt; dic.Count)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> temp.Push(&lt;span style="color:#ae81ff">0&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">while&lt;/span> (temp.Count &amp;gt; &lt;span style="color:#ae81ff">0&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Console.Write(temp.Pop());
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Console.WriteLine(&lt;span style="color:#e6db74">&amp;#34;(&amp;#34;&lt;/span> + i + &lt;span style="color:#e6db74">&amp;#34;)&amp;#34;&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">void&lt;/span> ShowFalseAssignment()&lt;span style="color:#75715e">//展示所有成假赋值&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Console.Write(&lt;span style="color:#e6db74">&amp;#34;All false assignment: &amp;#34;&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">int&lt;/span> i = &lt;span style="color:#ae81ff">0&lt;/span>; i &amp;lt; dic.Count; i++)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (i == &lt;span style="color:#ae81ff">0&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Console.Write(dic[i]);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">else&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Console.Write(&lt;span style="color:#e6db74">&amp;#34; | &amp;#34;&lt;/span> + dic[i]);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Console.WriteLine();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> index;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Stack&amp;lt;&lt;span style="color:#66d9ef">byte&lt;/span>&amp;gt; temp = &lt;span style="color:#66d9ef">new&lt;/span> Stack&amp;lt;&lt;span style="color:#66d9ef">byte&lt;/span>&amp;gt;();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">int&lt;/span> i = &lt;span style="color:#ae81ff">0&lt;/span>; i &amp;lt; (&lt;span style="color:#66d9ef">int&lt;/span>)Math.Pow(&lt;span style="color:#ae81ff">2&lt;/span>, dic.Count); i++)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> temp.Clear();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (!truthTable[i])
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> index = i;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">while&lt;/span> (index &amp;gt; &lt;span style="color:#ae81ff">0&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> temp.Push((&lt;span style="color:#66d9ef">byte&lt;/span>)(index % &lt;span style="color:#ae81ff">2&lt;/span>));
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> index /= &lt;span style="color:#ae81ff">2&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">while&lt;/span> (temp.Count &amp;lt; dic.Count)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> temp.Push(&lt;span style="color:#ae81ff">0&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">while&lt;/span> (temp.Count &amp;gt; &lt;span style="color:#ae81ff">0&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Console.Write(temp.Pop());
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Console.WriteLine(&lt;span style="color:#e6db74">&amp;#34;(&amp;#34;&lt;/span> + i + &lt;span style="color:#e6db74">&amp;#34;)&amp;#34;&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">void&lt;/span> ShowDNF()&lt;span style="color:#75715e">//主析取范式&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> count = &lt;span style="color:#ae81ff">0&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">int&lt;/span> i = &lt;span style="color:#ae81ff">0&lt;/span>; i &amp;lt; (&lt;span style="color:#66d9ef">int&lt;/span>)Math.Pow(&lt;span style="color:#ae81ff">2&lt;/span>, dic.Count); i++)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (truthTable[i])
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (count == &lt;span style="color:#ae81ff">0&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Console.Write(&lt;span style="color:#e6db74">&amp;#34;m(&amp;#34;&lt;/span> + i + &lt;span style="color:#e6db74">&amp;#34;)&amp;#34;&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">else&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Console.Write(&lt;span style="color:#e6db74">&amp;#34;∨m(&amp;#34;&lt;/span> + i + &lt;span style="color:#e6db74">&amp;#34;)&amp;#34;&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> count++;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Console.WriteLine();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">void&lt;/span> ShowCNF()&lt;span style="color:#75715e">//主合取范式&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> count = &lt;span style="color:#ae81ff">0&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">int&lt;/span> i = &lt;span style="color:#ae81ff">0&lt;/span>; i &amp;lt; (&lt;span style="color:#66d9ef">int&lt;/span>)Math.Pow(&lt;span style="color:#ae81ff">2&lt;/span>, dic.Count); i++)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (!truthTable[i])
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (count == &lt;span style="color:#ae81ff">0&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Console.Write(&lt;span style="color:#e6db74">&amp;#34;M(&amp;#34;&lt;/span> + i + &lt;span style="color:#e6db74">&amp;#34;)&amp;#34;&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">else&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Console.Write(&lt;span style="color:#e6db74">&amp;#34;∧M(&amp;#34;&lt;/span> + i + &lt;span style="color:#e6db74">&amp;#34;)&amp;#34;&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> count++;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Console.WriteLine();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-cs" data-lang="cs">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">//main.cs&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">namespace&lt;/span> CTest{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">test&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">static&lt;/span> &lt;span style="color:#66d9ef">void&lt;/span> Main(String[] args)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> WellFormedFormula w = &lt;span style="color:#66d9ef">new&lt;/span> WellFormedFormula(&lt;span style="color:#e6db74">&amp;#34;(P∨Q)∧(P→R)&amp;#34;&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> w.ShowAllNode();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> w.ShowrTruthTable();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> w.ShowTrueAssignment();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> w.ShowFalseAssignment();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> w.ShowCNF();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> w.ShowDNF();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div></description></item><item><title>浙工大c++课设讲解</title><link>http://localhost:1313/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7c++%E8%AF%BE%E8%AE%BE%E8%AE%B2%E8%A7%A3/</link><pubDate>Thu, 15 Jun 2023 23:42:16 +0000</pubDate><guid>http://localhost:1313/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7c++%E8%AF%BE%E8%AE%BE%E8%AE%B2%E8%A7%A3/</guid><description>&lt;h2 id="0x00-前言">&amp;lt;0x00&amp;gt; 前言
+&lt;/h2>&lt;p>我的题目是幼儿园的信息管理系统(第29号)&lt;br>
+运行在&lt;code>Cmake 3.25.3&lt;/code>+&lt;code>mingw 12.2.0&lt;/code>上&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-txt" data-lang="txt">&lt;span style="display:flex;">&lt;span>基本要求：
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>能从文件读出一个班级小朋友的信息，并能将管理信息保存到文件
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>小朋友的信息包括：姓名、出生年月（年龄）、性别、住址、身高、体重、父母联系人姓名、联系电话，备注信息等
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>功能要求：
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>1、系统以菜单方式工作；
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>2、增加修改和删除小朋友信息；
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>3、查询某个小朋友的父母联系人姓名及联系电话；查询小朋友住址；
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>4、显示所有小朋友信息：能根据小朋友的身高、体重分别排序，或者按身高体重比排序；
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>5、能按性别统计班级男女生人数比例；
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>6、可以进行小朋友信息的文件读写。
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>实现上面功能是挺简单，所以我加入了一些新功能&lt;br>
+于是就实现了些杂七杂八的东西(之后也会重点介绍的):&lt;/p>
+&lt;ul>
+&lt;li>双向模板链表&lt;/li>
+&lt;li>方向键界面控制&lt;/li>
+&lt;li>csv的文件读取和导出&lt;/li>
+&lt;li>多文件管理&lt;/li>
+&lt;li>从临时文件恢复&lt;/li>
+&lt;/ul>
+&lt;p>本来想实现更多的，实际上摸了就没写😋&lt;br>
+(主要是真没啥好写的)&lt;/p>
+&lt;p>你可以在&lt;a class="link" href="http://mlacookie.top:3000/ForPublic/CppCourseProject" target="_blank" rel="noopener"
+>本站gitea&lt;/a>下载源代码&lt;br>
+(课设报告就不发了，自己写写挺快的)&lt;/p>
+&lt;h2 id="0x01-双向链表实现">&amp;lt;0x01&amp;gt; 双向链表实现
+&lt;/h2>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-cpp" data-lang="cpp">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">//Mylist.cpp 仅列出声明，完整代码见源文件
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#75715e">#pragma once
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;cstddef&amp;gt;&lt;/span>&lt;span style="color:#75715e"> &lt;/span>&lt;span style="color:#75715e">//NULL的定义在这个头文件里(我用的是mingw)
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#66d9ef">using&lt;/span> &lt;span style="color:#66d9ef">namespace&lt;/span> std;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">template&lt;/span> &lt;span style="color:#f92672">&amp;lt;&lt;/span>&lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">T&lt;/span>&lt;span style="color:#f92672">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">MyList&lt;/span>; &lt;span style="color:#75715e">//提前声明类型
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#66d9ef">template&lt;/span> &lt;span style="color:#f92672">&amp;lt;&lt;/span>&lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">T&lt;/span>&lt;span style="color:#f92672">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">MyNode&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> T content; &lt;span style="color:#75715e">// 存放内容
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> MyNode&lt;span style="color:#f92672">&amp;lt;&lt;/span>T&lt;span style="color:#f92672">&amp;gt;&lt;/span> &lt;span style="color:#f92672">*&lt;/span>next; &lt;span style="color:#75715e">// 指向下一个Node
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> MyNode&lt;span style="color:#f92672">&amp;lt;&lt;/span>T&lt;span style="color:#f92672">&amp;gt;&lt;/span> &lt;span style="color:#f92672">*&lt;/span>back; &lt;span style="color:#75715e">// 指向前一个Node
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">friend&lt;/span> &lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">MyList&lt;/span>&lt;span style="color:#f92672">&amp;lt;&lt;/span>T&lt;span style="color:#f92672">&amp;gt;&lt;/span>; &lt;span style="color:#75715e">// 为List类提供访问权限(方便)
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">friend&lt;/span> &lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">Tool&lt;/span>; &lt;span style="color:#75715e">// 为Tool类提供访问权限(方便)
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> MyNode();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">public&lt;/span>&lt;span style="color:#f92672">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> MyNode(&lt;span style="color:#66d9ef">const&lt;/span> T &lt;span style="color:#f92672">&amp;amp;&lt;/span>content, MyNode &lt;span style="color:#f92672">*&lt;/span>next &lt;span style="color:#f92672">=&lt;/span> NULL, MyNode &lt;span style="color:#f92672">*&lt;/span>back &lt;span style="color:#f92672">=&lt;/span> NULL);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> MyNode(&lt;span style="color:#66d9ef">const&lt;/span> MyNode &lt;span style="color:#f92672">&amp;amp;&lt;/span>n); &lt;span style="color:#75715e">//一些节点的构造函数
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> MyNode&lt;span style="color:#f92672">&amp;lt;&lt;/span>T&lt;span style="color:#f92672">&amp;gt;&lt;/span> &lt;span style="color:#f92672">&amp;amp;&lt;/span>&lt;span style="color:#66d9ef">operator&lt;/span>&lt;span style="color:#f92672">=&lt;/span>(&lt;span style="color:#66d9ef">const&lt;/span> MyNode &lt;span style="color:#f92672">&amp;amp;&lt;/span>n); &lt;span style="color:#75715e">//保险起见，重载下赋值运算
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>};
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">template&lt;/span> &lt;span style="color:#f92672">&amp;lt;&lt;/span>&lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">T&lt;/span>&lt;span style="color:#f92672">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">MyList&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> length; &lt;span style="color:#75715e">// List的长度
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> MyNode&lt;span style="color:#f92672">&amp;lt;&lt;/span>T&lt;span style="color:#f92672">&amp;gt;&lt;/span> &lt;span style="color:#f92672">*&lt;/span>head; &lt;span style="color:#75715e">// 指向头节点
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> MyNode&lt;span style="color:#f92672">&amp;lt;&lt;/span>T&lt;span style="color:#f92672">&amp;gt;&lt;/span> &lt;span style="color:#f92672">*&lt;/span>end; &lt;span style="color:#75715e">// 指向尾节点
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> MyNode&lt;span style="color:#f92672">&amp;lt;&lt;/span>T&lt;span style="color:#f92672">&amp;gt;&lt;/span> &lt;span style="color:#f92672">*&lt;/span>Find(&lt;span style="color:#66d9ef">int&lt;/span> index) &lt;span style="color:#66d9ef">const&lt;/span>; &lt;span style="color:#75715e">// 内部按index搜索用
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">friend&lt;/span> &lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">Tool&lt;/span>; &lt;span style="color:#75715e">// 为Tool类提供访问权限(懒得写访问的函数了)
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">public&lt;/span>&lt;span style="color:#f92672">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> MyList();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">bool&lt;/span> &lt;span style="color:#a6e22e">Insert&lt;/span>(&lt;span style="color:#66d9ef">const&lt;/span> T &lt;span style="color:#f92672">&amp;amp;&lt;/span>c, &lt;span style="color:#66d9ef">int&lt;/span> n &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>); &lt;span style="color:#75715e">// 插入List，可指定插入位置
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">bool&lt;/span> &lt;span style="color:#a6e22e">Delete&lt;/span>(&lt;span style="color:#66d9ef">int&lt;/span> index); &lt;span style="color:#75715e">// 按index删除List元素
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">void&lt;/span> &lt;span style="color:#a6e22e">Clear&lt;/span>(); &lt;span style="color:#75715e">// 清空List内容
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">int&lt;/span> &lt;span style="color:#a6e22e">GetLength&lt;/span>() &lt;span style="color:#66d9ef">const&lt;/span>; &lt;span style="color:#75715e">// 返回List的长度
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> MyList&lt;span style="color:#f92672">&amp;lt;&lt;/span>T&lt;span style="color:#f92672">&amp;gt;&lt;/span> &lt;span style="color:#f92672">&amp;amp;&lt;/span>&lt;span style="color:#66d9ef">operator&lt;/span>&lt;span style="color:#f92672">=&lt;/span>(&lt;span style="color:#66d9ef">const&lt;/span> MyList&lt;span style="color:#f92672">&amp;lt;&lt;/span>T&lt;span style="color:#f92672">&amp;gt;&lt;/span> &lt;span style="color:#f92672">&amp;amp;&lt;/span>n); &lt;span style="color:#75715e">//保险起见，重载下赋值运算
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> T &lt;span style="color:#f92672">*&lt;/span>&lt;span style="color:#66d9ef">operator&lt;/span>[](&lt;span style="color:#66d9ef">int&lt;/span> index) &lt;span style="color:#66d9ef">const&lt;/span>; &lt;span style="color:#75715e">// 外部按index搜索用
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#f92672">~&lt;/span>MyList(); &lt;span style="color:#75715e">// 析构是门学问
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>};
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="泛型类-mynodet">泛型类 MyNode&amp;lt;T&amp;gt;
+&lt;/h3>&lt;p>主要就是存放内容物的节点，为了数据结构的可拓展性，就写了个泛型&lt;br>
+基本就没啥好说的，关键就是用指针关系吧各个节点连接起来&lt;/p>
+&lt;p>我这里采用的是双向链表的数据结构，即每个节点可以找到它的前一个后一个&lt;br>
+所以我这里的&lt;code>MyNode&lt;/code>类需要两个指针，一个指前一个节点，一个指后一个节点&lt;/p>
+&lt;h3 id="泛型类-mylistt">泛型类 MyList&amp;lt;T&amp;gt;
+&lt;/h3>&lt;p>说白了，这部分的内容就是把各个节点拼起来&lt;br>
+为了首尾插入效率与保险起见，这个双向列表带有空的首尾节点&lt;br>
+(但最终代码没有完成对末尾插入的优化，忘了&lt;/p>
+&lt;p>总之，数据结构图如下&lt;br>
+&lt;img src="http://localhost:1313/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7c&amp;#43;&amp;#43;%E8%AF%BE%E8%AE%BE%E8%AE%B2%E8%A7%A3/picture/1.png"
+width="554"
+height="117"
+srcset="http://localhost:1313/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7c&amp;#43;&amp;#43;%E8%AF%BE%E8%AE%BE%E8%AE%B2%E8%A7%A3/picture/1_hub2e23a13c4ffb794c035d632afb50c12_17676_480x0_resize_box_3.png 480w, http://localhost:1313/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7c&amp;#43;&amp;#43;%E8%AF%BE%E8%AE%BE%E8%AE%B2%E8%A7%A3/picture/1_hub2e23a13c4ffb794c035d632afb50c12_17676_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="数据结构"
+class="gallery-image"
+data-flex-grow="473"
+data-flex-basis="1136px"
+>&lt;br>
+每个节点都可以找到它的前后节点&lt;br>
+虽然对插入操作没什么优势，但可以加速删除操作&lt;br>
+对于删除操作，仅需传入节点位置即可删除&lt;br>
+相当于把要删除的东西抽出来，再两边节点建立连接&lt;br>
+(单向链表的删除比较抽象)&lt;/p>
+&lt;p>对于&lt;code>Clear()&lt;/code>操作，相当于走一遍链表，边走边删对象&lt;br>
+走完了再回归到初始状态&lt;br>
+析构就是&lt;code>Clear()&lt;/code>后再把首尾节点也删了&lt;/p>
+&lt;p>剩下的都挺直观的，也不说了&lt;/p>
+&lt;h2 id="0x02-方向键控制">&amp;lt;0x02&amp;gt; 方向键控制
+&lt;/h2>&lt;p>方向键控制的代码写在&lt;code>UI.hpp&lt;/code>里&lt;br>
+&lt;code>UI.hpp&lt;/code>里面都是一堆静态函数，提供一些标准化输出实现&lt;br>
+(压缩代码量)&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-cpp" data-lang="cpp">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">//能实现方向控制的示例代码
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;conio.h&amp;gt;&lt;/span>&lt;span style="color:#75715e"> &lt;/span>&lt;span style="color:#75715e">//必要的头文件
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#66d9ef">using&lt;/span> &lt;span style="color:#66d9ef">namespace&lt;/span> std;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">int&lt;/span> &lt;span style="color:#a6e22e">main&lt;/span>()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">char&lt;/span> c;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> c &lt;span style="color:#f92672">=&lt;/span> _getch();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> swich(c)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">case&lt;/span> &lt;span style="color:#ae81ff">72&lt;/span>&lt;span style="color:#f92672">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">//上方向键的代码
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">case&lt;/span> &lt;span style="color:#ae81ff">80&lt;/span>&lt;span style="color:#f92672">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">//下方向键的代码
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">case&lt;/span> &lt;span style="color:#ae81ff">75&lt;/span>&lt;span style="color:#f92672">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">//左方向键的代码
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">case&lt;/span> &lt;span style="color:#ae81ff">77&lt;/span>&lt;span style="color:#f92672">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">//右方向建的代码
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">case&lt;/span> &lt;span style="color:#ae81ff">13&lt;/span>&lt;span style="color:#f92672">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">//回车键的代码
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>关键就是&lt;code>_getch()&lt;/code>这个函数，他会捕获命令行界面的按键，然后返回对应按键的编码&lt;br>
+其他的按键编码网上应该都能找到的&lt;/p>
+&lt;p>顺带讲下&lt;code>UI.hpp&lt;/code>里的东西&lt;/p>
+&lt;h3 id="结构体-uiinfo">结构体 UIInfo
+&lt;/h3>&lt;p>就是用来传递菜单信息的结构体&lt;br>
+好让主函数知道进行了什么操作，选了哪一个&lt;/p>
+&lt;h3 id="ui类">UI类
+&lt;/h3>&lt;p>里面都是静态函数&lt;/p>
+&lt;p>&lt;code>Confirm(...)&lt;/code>函数用来显示确认菜单&lt;br>
+&lt;code>yesText&lt;/code>写确认的文字&lt;br>
+&lt;code>noText&lt;/code>写取消的文字&lt;br>
+&lt;code>content&lt;/code>写显示的内容&lt;/p>
+&lt;p>&lt;code>Select(...)&lt;/code>函数显示选择菜单&lt;br>
+有三个重载&lt;br>
+总之可以显示标题，功能选择项，一般选择项，描述词，默认指针位置&lt;br>
+&lt;code>title&lt;/code>标题&lt;br>
+&lt;code>function&lt;/code>功能选择项&lt;br>
+&lt;code>content&lt;/code>一般选择项&lt;br>
+&lt;code>head&lt;/code>描述词&lt;br>
+&lt;code>index&lt;/code>默认指针位置&lt;br>
+一般选择项十个每页，功能选择项始终显示&lt;/p>
+&lt;p>&lt;code>Show(...)&lt;/code>函数就是个简单的输出函数&lt;br>
+没啥好说的，让输出好看点而已&lt;/p>
+&lt;h2 id="0x03-csv文件的读写">&amp;lt;0x03&amp;gt; CSV文件的读写
+&lt;/h2>&lt;p>CSV文件的读写代码写在&lt;code>ManageTool.hpp&lt;/code>里&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-cpp" data-lang="cpp">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">//导出为CSV文件
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">//原代码的逻辑已经嵌在相关函数里了，这里单独拿出来
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;fstream&amp;gt;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;cstddef&amp;gt;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;string&amp;gt;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;#34;MyClass.hpp&amp;#34;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;#34;MyDate.hpp&amp;#34;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;#34;UI.hpp&amp;#34;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#66d9ef">using&lt;/span> &lt;span style="color:#66d9ef">namespace&lt;/span> std;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>string temp; &lt;span style="color:#75715e">//当前文件路径
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>MyClass &lt;span style="color:#f92672">*&lt;/span>selectClass; &lt;span style="color:#75715e">//MyClass是我写的班级类
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>ofstream writeFile; &lt;span style="color:#75715e">//写入文件流
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#66d9ef">void&lt;/span> &lt;span style="color:#a6e22e">ExportCSVFile&lt;/span>()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> writeFile.open(temp.substr(&lt;span style="color:#ae81ff">0&lt;/span>, temp.length() &lt;span style="color:#f92672">-&lt;/span> &lt;span style="color:#ae81ff">4&lt;/span>) &lt;span style="color:#f92672">+&lt;/span> &lt;span style="color:#e6db74">&amp;#34;-&amp;#34;&lt;/span> &lt;span style="color:#f92672">+&lt;/span> selectClass&lt;span style="color:#f92672">-&amp;gt;&lt;/span>className &lt;span style="color:#f92672">+&lt;/span> &lt;span style="color:#e6db74">&amp;#34;.csv&amp;#34;&lt;/span>, ios&lt;span style="color:#f92672">::&lt;/span>out);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> writeFile &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> &lt;span style="color:#e6db74">&amp;#34;Class name: &amp;#34;&lt;/span> &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> selectClass&lt;span style="color:#f92672">-&amp;gt;&lt;/span>className &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> &lt;span style="color:#e6db74">&amp;#34;,&amp;#34;&lt;/span> &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> selectClass&lt;span style="color:#f92672">-&amp;gt;&lt;/span>children.GetLength() &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> &lt;span style="color:#e6db74">&amp;#34;,&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> writeFile &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> &lt;span style="color:#e6db74">&amp;#34;Name,Birthday,Age,Gender,Address,Height,Weight,Parent&amp;#39;s name,Parent&amp;#39;s phone,note,&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">int&lt;/span> i &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>; i &lt;span style="color:#f92672">&amp;lt;&lt;/span> selectClass&lt;span style="color:#f92672">-&amp;gt;&lt;/span>children.GetLength(); i&lt;span style="color:#f92672">++&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> writeFile &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> selectClass&lt;span style="color:#f92672">-&amp;gt;&lt;/span>children[i]&lt;span style="color:#f92672">-&amp;gt;&lt;/span>name &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> &lt;span style="color:#e6db74">&amp;#34;,&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> writeFile &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> selectClass&lt;span style="color:#f92672">-&amp;gt;&lt;/span>children[i]&lt;span style="color:#f92672">-&amp;gt;&lt;/span>birthday.GetDate() &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> &lt;span style="color:#e6db74">&amp;#34;,&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> writeFile &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> selectClass&lt;span style="color:#f92672">-&amp;gt;&lt;/span>children[i]&lt;span style="color:#f92672">-&amp;gt;&lt;/span>age &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> &lt;span style="color:#e6db74">&amp;#34;,&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (selectClass&lt;span style="color:#f92672">-&amp;gt;&lt;/span>children[i]&lt;span style="color:#f92672">-&amp;gt;&lt;/span>isBoy)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> writeFile &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> &lt;span style="color:#e6db74">&amp;#34;Boy,&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">else&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> writeFile &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> &lt;span style="color:#e6db74">&amp;#34;Girl,&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> writeFile &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> selectClass&lt;span style="color:#f92672">-&amp;gt;&lt;/span>children[i]&lt;span style="color:#f92672">-&amp;gt;&lt;/span>address &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> &lt;span style="color:#e6db74">&amp;#34;,&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> writeFile &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> selectClass&lt;span style="color:#f92672">-&amp;gt;&lt;/span>children[i]&lt;span style="color:#f92672">-&amp;gt;&lt;/span>height &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> &lt;span style="color:#e6db74">&amp;#34;,&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> writeFile &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> selectClass&lt;span style="color:#f92672">-&amp;gt;&lt;/span>children[i]&lt;span style="color:#f92672">-&amp;gt;&lt;/span>weight &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> &lt;span style="color:#e6db74">&amp;#34;,&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> writeFile &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> selectClass&lt;span style="color:#f92672">-&amp;gt;&lt;/span>children[i]&lt;span style="color:#f92672">-&amp;gt;&lt;/span>parentName &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> &lt;span style="color:#e6db74">&amp;#34;,&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> writeFile &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> selectClass&lt;span style="color:#f92672">-&amp;gt;&lt;/span>children[i]&lt;span style="color:#f92672">-&amp;gt;&lt;/span>parentPhone &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> &lt;span style="color:#e6db74">&amp;#34;,&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> writeFile &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> selectClass&lt;span style="color:#f92672">-&amp;gt;&lt;/span>children[i]&lt;span style="color:#f92672">-&amp;gt;&lt;/span>note &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> &lt;span style="color:#e6db74">&amp;#34;,&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> writeFile &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> &lt;span style="color:#e6db74">&amp;#34;&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> writeFile.close();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> UI&lt;span style="color:#f92672">::&lt;/span>Show(&lt;span style="color:#e6db74">&amp;#34;CSV file has been generate&amp;#34;&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">break&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-cpp" data-lang="cpp">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">//由CSV文件导入
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">//原代码的逻辑已经嵌在相关函数里了，这里单独拿出来
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;fstream&amp;gt;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;cstddef&amp;gt;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;string&amp;gt;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;vector&amp;gt;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;#34;MyClass.hpp&amp;#34;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;#34;MyDate.hpp&amp;#34;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;#34;UI.hpp&amp;#34;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#66d9ef">using&lt;/span> &lt;span style="color:#66d9ef">namespace&lt;/span> std;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>string path; &lt;span style="color:#75715e">//路径
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>MyClass &lt;span style="color:#f92672">*&lt;/span>selectClass; &lt;span style="color:#75715e">//MyClass是我写的班级类
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>ifstream readFile; &lt;span style="color:#75715e">// 读取文件流
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>Student &lt;span style="color:#a6e22e">Create&lt;/span>(vector&lt;span style="color:#f92672">&amp;lt;&lt;/span>string&lt;span style="color:#f92672">&amp;gt;&lt;/span> &lt;span style="color:#f92672">&amp;amp;&lt;/span>list)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">//由传入的list来创建Student对象并返回
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#75715e">//代码略，见原代码
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">void&lt;/span> &lt;span style="color:#a6e22e">ImportCSV&lt;/span>()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> readFile.open(path &lt;span style="color:#f92672">+&lt;/span> &lt;span style="color:#e6db74">&amp;#34;&lt;/span>&lt;span style="color:#ae81ff">\\&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span> &lt;span style="color:#f92672">+&lt;/span> files[u.index], ios&lt;span style="color:#f92672">::&lt;/span>in);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> selectClass&lt;span style="color:#f92672">-&amp;gt;&lt;/span>children.Clear();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> string temp;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> getline(readFile, temp, &lt;span style="color:#e6db74">&amp;#39;,&amp;#39;&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> getline(readFile, temp, &lt;span style="color:#e6db74">&amp;#39;,&amp;#39;&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> readFile.get();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> vector&lt;span style="color:#f92672">&amp;lt;&lt;/span>string&lt;span style="color:#f92672">&amp;gt;&lt;/span> list;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> num &lt;span style="color:#f92672">=&lt;/span> atoi(temp.c_str());
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">int&lt;/span> i &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>; i &lt;span style="color:#f92672">&amp;lt;&lt;/span> &lt;span style="color:#ae81ff">10&lt;/span>; i&lt;span style="color:#f92672">++&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> getline(readFile, temp, &lt;span style="color:#e6db74">&amp;#39;,&amp;#39;&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> } &lt;span style="color:#75715e">//用来忽略表头的
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">int&lt;/span> i &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>; i &lt;span style="color:#f92672">&amp;lt;&lt;/span> num; i&lt;span style="color:#f92672">++&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> list.clear();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> readFile.get(); &lt;span style="color:#75715e">//吞上一行回车
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">int&lt;/span> j &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>; j &lt;span style="color:#f92672">&amp;lt;&lt;/span> &lt;span style="color:#ae81ff">10&lt;/span>; j&lt;span style="color:#f92672">++&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> getline(readFile, temp, &lt;span style="color:#e6db74">&amp;#39;,&amp;#39;&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> list.push_back(p.assign(temp));
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> selectClass&lt;span style="color:#f92672">-&amp;gt;&lt;/span>children.Insert(Create(list), selectClass&lt;span style="color:#f92672">-&amp;gt;&lt;/span>children.GetLength());
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> readFile.close();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>CSV文件其实就是&lt;code>数值1,数值2,...&lt;/code>这样组成的文件，这种文件格式可以被&lt;code>Excel&lt;/code>读取&lt;br>
+输出的时候先输出基本班级信息，然后按行输出每个人的信息&lt;br>
+导入CSV时先读取基本班级信息，然后按行导入学生信息&lt;/p>
+&lt;p>输出一般不大会遇到问题，就是读取时文件指针的控制是个问题&lt;br>
+这里在读取时用&lt;code>getline(ifstream,string,char)&lt;/code>来读取，碰到&lt;code>,&lt;/code>就截断&lt;br>
+前面还有&lt;code>readFile.get()&lt;/code>来吞上一行的空格&lt;/p>
+&lt;h2 id="0x04-多文件管理">&amp;lt;0x04&amp;gt; 多文件管理
+&lt;/h2>&lt;p>为了方便备份和多幼儿园管理(?)，实现了多工程文件的选择&lt;/p>
+&lt;p>选择和访问都应该不成问题，但获取对应文件夹下指定类型的所有文件是个问题&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-cpp" data-lang="cpp">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">//关键代码
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;io.h&amp;gt;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;vector&amp;gt;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;string&amp;gt;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#66d9ef">using&lt;/span> &lt;span style="color:#66d9ef">namespace&lt;/span> std;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">void&lt;/span> &lt;span style="color:#a6e22e">GetFiles&lt;/span>(string path, vector&lt;span style="color:#f92672">&amp;lt;&lt;/span>string&lt;span style="color:#f92672">&amp;gt;&lt;/span> &lt;span style="color:#f92672">&amp;amp;&lt;/span>files, string fileType) &lt;span style="color:#75715e">// 获取指定路径下指类型的所有文件名
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> intptr_t hFile &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>; &lt;span style="color:#75715e">// 句柄编号
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">struct&lt;/span> &lt;span style="color:#a6e22e">_finddata_t&lt;/span> fileInfo; &lt;span style="color:#75715e">// 文件信息结构体
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">if&lt;/span> ((hFile &lt;span style="color:#f92672">=&lt;/span> _findfirst((path &lt;span style="color:#f92672">+&lt;/span> &lt;span style="color:#e6db74">&amp;#34;&lt;/span>&lt;span style="color:#ae81ff">\\&lt;/span>&lt;span style="color:#e6db74">*&amp;#34;&lt;/span> &lt;span style="color:#f92672">+&lt;/span> fileType).c_str(), &lt;span style="color:#f92672">&amp;amp;&lt;/span>fileInfo)) &lt;span style="color:#f92672">!=&lt;/span> &lt;span style="color:#f92672">-&lt;/span>&lt;span style="color:#ae81ff">1&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">do&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> files.push_back(fileInfo.name); &lt;span style="color:#75715e">// 给files加入文件名
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> } &lt;span style="color:#66d9ef">while&lt;/span> (_findnext(hFile, &lt;span style="color:#f92672">&amp;amp;&lt;/span>fileInfo) &lt;span style="color:#f92672">==&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> _findclose(hFile); &lt;span style="color:#75715e">// 关闭句柄
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>这段代码实现了获取指定路径下指定文件类型的所有文件名&lt;br>
+通过句柄实现(也就是用系统api)&lt;br>
+最后的结果会保存在传入的&lt;code>files&lt;/code>中&lt;/p>
+&lt;p>注意，网上的多数代码会将句柄编号的类型写为&lt;code>long&lt;/code>&lt;br>
+但在&lt;code>win10&lt;/code>环境下，使用&lt;code>long&lt;/code>类型的句柄会导致精度丢失进而导致错&lt;br>
+使用&lt;code>intptr_t&lt;/code>就没这个问题&lt;/p>
+&lt;h2 id="0x05-从临时文件恢复">&amp;lt;0x05&amp;gt; 从临时文件恢复
+&lt;/h2>&lt;p>为了防止用户系统崩溃(也可能程序崩溃)导致的数据丢失&lt;br>
+管理系统在选择文件后会新建一个一样的同名的&lt;code>.tmp&lt;/code>临时文件&lt;br>
+后续的所有文件写入操作都会对这个&lt;code>.tmp&lt;/code>文件操作&lt;br>
+只有在用户正常退出系统时才会将&lt;code>.tmp&lt;/code>文件保存为&lt;code>.dat&lt;/code>文件&lt;/p>
+&lt;p>具体来说就是选择文件时并没有真正打开选择的文件，而是读取到文件名&lt;br>
+在选择班级之后，正常读取文件&lt;br>
+如果在班级管理界面里修改了相关数据，并不是修改原文件，而是创建同名临时文件，将修改后的结果写入&lt;br>
+最后用户正常退出后，在主对象析构中把原文件删了，然后把临时文件的后缀改成&lt;code>.dat&lt;/code>&lt;/p>
+&lt;p>代码就不单独拆出来了，原代码里有具体标明的&lt;/p>
+&lt;h2 id="0x06-把所有东西拼起来">&amp;lt;0x06&amp;gt; 把所有东西拼起来
+&lt;/h2>&lt;p>总体采用了UI与处理分离的设计&lt;br>
+&lt;code>UI.hpp&lt;/code>负责所有的界面输出，&lt;code>ManageTool.hpp&lt;/code>负责所有的数据处理和页面逻辑&lt;/p>
+&lt;p>&lt;code>main()&lt;/code>函数里就建立了&lt;code>Tool&lt;/code>对象然后调用&lt;code>MainDisplay()&lt;/code>启动&lt;br>
+之后不同的功能就是不同的函数，不同的页面也是不同的函数&lt;br>
+页面函数调用下一个页面的函数来实现功能的切换&lt;br>
+页面函数相当于不同功能的调度器，页面输出还是靠&lt;code>UI.hpp&lt;/code>的函数&lt;br>
+UI的选择结果由&lt;code>UIInfo&lt;/code>传递&lt;/p>
+&lt;p>其他的文件只是定义所需要的不同的类型&lt;/p>
+&lt;p>这样就吧所有的东西都拼起来了&lt;/p>
+&lt;h2 id="后记">后记
+&lt;/h2>&lt;p>课设的基本要求都不难，但是都要完成&lt;br>
+如果要拿优秀，肯定是要扩充功能的&lt;br>
+如果想不到能扩充啥功能，可以优化UI&lt;br>
+课设一般也不大需要多少时间，熟练的话写完课设大概3天&lt;/p></description></item></channel></rss>

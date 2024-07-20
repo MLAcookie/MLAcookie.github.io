@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Gitea on MLAcookie</title><link>http://localhost:1313/tags/gitea/</link><description>Recent content in Gitea on MLAcookie</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Sun, 23 Apr 2023 15:50:19 +0000</lastBuildDate><atom:link href="http://localhost:1313/tags/gitea/index.xml" rel="self" type="application/rss+xml"/><item><title>搭建hexo+gitea的博客站</title><link>http://localhost:1313/article/categories/blog/%E6%90%AD%E5%BB%BAhexo+gitea%E7%9A%84%E5%8D%9A%E5%AE%A2%E7%AB%99/</link><pubDate>Sun, 23 Apr 2023 15:50:19 +0000</pubDate><guid>http://localhost:1313/article/categories/blog/%E6%90%AD%E5%BB%BAhexo+gitea%E7%9A%84%E5%8D%9A%E5%AE%A2%E7%AB%99/</guid><description>&lt;h2 id="0x00-为什么要用gitea--hexo">&amp;lt;0x00&amp;gt; 为什么要用gitea + hexo
+&lt;/h2>&lt;p>很简单，gitea 太好用了(才不是因为 git 配置太麻烦)&lt;br>
+而且 hexo 的博客就是静态网页，基本不怎么耗费服务器资源&lt;br>
+如此再搭个 gitea 正好还能当个代码仓库，岂不美哉&lt;/p>
+&lt;h2 id="0x01-整体运行架构">&amp;lt;0x01&amp;gt; 整体运行架构
+&lt;/h2>&lt;p>就是 gitea 跑 git 仓库&lt;br>
+然后利用 git hook 功能将仓库内容同步到服务器的另一个文件夹&lt;br>
+hexo 的界面靠 nginx 反代
+本地写完靠 hexo 的配置脚本通过 git 同步到服务器&lt;br>
+(其实用 gitea 的话也可以通过插件实现 GitHub Page 的功能的)&lt;/p>
+&lt;h2 id="0x02-先安装些组件">&amp;lt;0x02&amp;gt; 先安装些组件
+&lt;/h2>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#安装nginx&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>sudo apt update &lt;span style="color:#f92672">&amp;amp;&amp;amp;&lt;/span> sudo apt upgrade
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>sudo apt install nginx
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>gitea 的安装在这就不赘述了&lt;br>
+(我之前有从零搭建的教程)&lt;/p>
+&lt;h2 id="0x03-配置git-hook">&amp;lt;0x03&amp;gt; 配置git hook
+&lt;/h2>&lt;p>git hook 其实就是一个自动化脚本&lt;br>
+简单理解就是 git 到服务器上后服务器要干的事&lt;br>
+首先，在 gitea 里创建一个仓库，名字随意&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#进入对应仓库的hook配置目录&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>cd /var/lib/gitea/data/gitea-repositories/&lt;span style="color:#e6db74">${&lt;/span>gitea用户名&lt;span style="color:#e6db74">}&lt;/span>/&lt;span style="color:#e6db74">${&lt;/span>仓库名&lt;span style="color:#e6db74">}&lt;/span>.git/hooks/
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>(&lt;code>${gitea用户名}&lt;/code>和&lt;code>${仓库名}&lt;/code>都是按照自己的设置填的)
+这里是 git 的各种 hook，别的现在用不大到&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#进入需要编辑的hook目录&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>cd post-receive.d/
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#创建我们自己的hook，名字随意&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>vim hexo
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>在 hexo 文件中，输入以下内容&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#!/bin/bash
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>sss&lt;span style="color:#f92672">=&lt;/span>/var/lib/gitea/data/gitea-repositories/&lt;span style="color:#e6db74">${&lt;/span>gitea用户名&lt;span style="color:#e6db74">}&lt;/span>/&lt;span style="color:#e6db74">${&lt;/span>仓库名&lt;span style="color:#e6db74">}&lt;/span>.git
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>ttt&lt;span style="color:#f92672">=&lt;/span>/var/www/blog
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>rm -rf &lt;span style="color:#e6db74">${&lt;/span>ttt&lt;span style="color:#e6db74">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>git clone &lt;span style="color:#e6db74">${&lt;/span>sss&lt;span style="color:#e6db74">}&lt;/span> &lt;span style="color:#e6db74">${&lt;/span>ttt&lt;span style="color:#e6db74">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>其中&lt;code>/var/www/blog&lt;/code>是你希望存储网页的地址，可以改成别的&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#给这个hook添加可执行权限&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>chmod a+x hexo
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>现在，理论上当你用 hexo 一键配置脚本的时候，那些网页文件会出现在那个位置&lt;/p>
+&lt;h2 id="0x04-配置存储地址和nginx">&amp;lt;0x04&amp;gt; 配置存储地址和nginx
+&lt;/h2>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#进入你希望存网页的位置&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>cd /var/www/
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>mkdir blog
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#为第一次git用户删除提供权限&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>chmod -R &lt;span style="color:#ae81ff">777&lt;/span> ./
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#进入nginx的目录&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>cd /etc/nginx/
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>cd sites-enabled/
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>vim default
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>需要注意的是，这里的nginx版本可能比较新，所以需要修改&lt;code>/etc/nginx/sites-enabled/default&lt;/code>&lt;br>
+如果你在&lt;code>/etc/nginx/nginx.conf&lt;/code>中能看到在&lt;code>http{}&lt;/code>中有&lt;code>server{}&lt;/code>&lt;br>
+那么直接在&lt;code>/etc/nginx/nginx.conf&lt;/code>就行&lt;/p>
+&lt;p>在&lt;code>server{}&lt;/code>中，把&lt;code>root&lt;/code>的值改为存储网页的位置&lt;br>
+在这里是改为&lt;code>root /var/www/blog&lt;/code>
+再在&lt;code>index&lt;/code>后加入&lt;code>index.html&lt;/code>
+(有了就不用加)&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#重启nginx服务&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>nginx -s reload
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>现在，理论上访问服务器 ip 后就是博客首页了&lt;/p>
+&lt;h2 id="0x05-本地的一些修改">&amp;lt;0x05&amp;gt; 本地的一些修改
+&lt;/h2>&lt;p>打开&lt;code>_config.yml&lt;/code>&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-yml" data-lang="yml">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">deploy&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">type&lt;/span>: &lt;span style="color:#ae81ff">git&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">repo&lt;/span>: &lt;span style="color:#ae81ff">git@{服务器ip}:{gitea用户名}/{gitea仓库名}.git&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">branch&lt;/span>: &lt;span style="color:#ae81ff">master&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>现在，当你运行&lt;code>hexo deploy&lt;/code>，网页内容将同步到git仓库并且也会同步到网页存储位置&lt;/p></description></item><item><title>关闭gitea注册功能</title><link>http://localhost:1313/article/posts/%E5%85%B3%E9%97%ADgitea%E6%B3%A8%E5%86%8C%E5%8A%9F%E8%83%BD/</link><pubDate>Sun, 23 Apr 2023 15:40:43 +0000</pubDate><guid>http://localhost:1313/article/posts/%E5%85%B3%E9%97%ADgitea%E6%B3%A8%E5%86%8C%E5%8A%9F%E8%83%BD/</guid><description>&lt;p>找到gitea的配置文件&lt;br>
+一般在/etc/gitea中(如果按官方文档配置的话)&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#打开gitea配置文件&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>cd /etc/gitea
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>vim app.ini
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>然后往下翻
+找到 &lt;code>DISABLE_REGISTRATION&lt;/code>&lt;br>
+把 &lt;code>false&lt;/code> 改成 &lt;code>true&lt;/code> 就可以了&lt;/p>
+&lt;p>然后记得重启gitea服务&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#如果已经配置了linux服务&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>systemctl restart gitea
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div></description></item><item><title>从零搭建一个gitea</title><link>http://localhost:1313/article/posts/%E4%BB%8E0%E6%90%AD%E5%BB%BAgitea/</link><pubDate>Thu, 20 Apr 2023 23:05:44 +0000</pubDate><guid>http://localhost:1313/article/posts/%E4%BB%8E0%E6%90%AD%E5%BB%BAgitea/</guid><description>&lt;h2 id="0x00-安装组件">&amp;lt;0x00&amp;gt; 安装组件
+&lt;/h2>&lt;p>首先肯定要有台服务器嘛，系统倒问题不大，我用的是&lt;code>debian 11&lt;/code>&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#安装各种包前先更新是好文明 &lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>sudo apt update
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>sudo apt upgrade
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#安装git &lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>sudo apt install git
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#安装mysql &lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>wget https://dev.mysql.com/get/mysql-apt-config_0.8.22-1_all.deb
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>sudo dpkg -i mysql-apt-config_0.8.22-1_all.deb
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#这里可能会跳出个界面，直接选最后的ok就可以&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>rm mysql-apt-config_0.8.22-1_all.deb
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>sudo apt update
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>sudo apt-get install mysql-server
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>安装&lt;code>mysql&lt;/code>的时候会要求你设置数据库 root 账户密码的&lt;/p>
+&lt;h2 id="0x01-配置mysql">&amp;lt;0x01&amp;gt; 配置mysql
+&lt;/h2>&lt;p>在&lt;code>/etc/mysql/mysql.conf.d/mysqld.cnf&lt;/code>中加入&lt;code>bind-address = 127.0.0.1&lt;/code>
+这个配置文件的位置看版本，我这里的 mysql 版本是8.0.33
+这个&lt;code>bind-address&lt;/code>是控制 mysql 数据库允许远程访问的&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#先进入mysql控制台 &lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>mysql -u root -p&lt;span style="color:#e6db74">`&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#输入你设置的root账户密码&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#配置gitea的数据库 &lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>CREATE USER &lt;span style="color:#e6db74">&amp;#39;gitea&amp;#39;&lt;/span> IDENTIFIED BY &lt;span style="color:#e6db74">&amp;#39;密码&amp;#39;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#这里写的‘密码’是你想设置的密码&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>CREATE DATABASE giteadb CHARACTER SET &lt;span style="color:#e6db74">&amp;#39;utf8mb4&amp;#39;&lt;/span> COLLATE &lt;span style="color:#e6db74">&amp;#39;utf8mb4_unicode_ci&amp;#39;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>GRANT ALL PRIVILEGES ON giteadb.* TO &lt;span style="color:#e6db74">&amp;#39;gitea&amp;#39;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>FLUSH PRIVILEGES;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>exit
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="0x02-配置-gitea-和-git-账户">&amp;lt;0x02&amp;gt; 配置 gitea 和 git 账户
+&lt;/h2>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#下载git安装包&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>wget -O gitea https://dl.gitea.com/gitea/1.19.0/gitea-1.19.0-linux-amd64
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>chmod +x gitea
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#添加git用户并修改权限 &lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>adduser git
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>mkdir -p /var/lib/gitea/&lt;span style="color:#f92672">{&lt;/span>custom,data,log&lt;span style="color:#f92672">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>chown -R git:git /var/lib/gitea/
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>chmod -R &lt;span style="color:#ae81ff">750&lt;/span> /var/lib/gitea/
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>mkdir /etc/gitea
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>chown root:git /etc/gitea
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>chmod &lt;span style="color:#ae81ff">770&lt;/span> /etc/gitea
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>手动将下列语句加入&lt;code>/etc/profile&lt;/code>文件
+&lt;code>export GITEA_WORK_DIR=/var/lib/gitea/&lt;/code>
+(导出个全局变量)&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#一些剩下的操作 &lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>cp gitea /usr/local/bin/gitea
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>sudo vim /etc/systemd/system/gitea.service
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#将gitea.service的内容复制进去，并取消一些服务的注释，如mysql的&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>sudo systemctl enable gitea
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>sudo systemctl start gitea
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>现在访问&lt;code>(你的ip):3000&lt;/code>应该是能看到&lt;code>gitea&lt;/code>的网页了&lt;/p>
+&lt;h2 id="0x03-网页配置">&amp;lt;0x03&amp;gt; 网页配置
+&lt;/h2>&lt;p>在网页的安装界面，你需要设置你的数据库用户和用户密码&lt;br>
+然后指定数据库名字&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-txt" data-lang="txt">&lt;span style="display:flex;">&lt;span>#本次配置的值
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>数据库用户：gitea
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>用户密码：(之前给gitea设置的密码)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>数据库名称：giteadb
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>记得在网页最后那里设置管理员账户&lt;br>
+(不在这配置也行，理论上第一个创建的账户就是管理员)&lt;br>
+创建新用户后记得绑定 sshkey，这样就可以用 ssh 的 clone 地址了&lt;/p>
+&lt;h2 id="0x04-收尾配置">&amp;lt;0x04&amp;gt; 收尾配置
+&lt;/h2>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#最后记得把一些权限修改回来&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>chmod &lt;span style="color:#ae81ff">750&lt;/span> /etc/gitea
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>chmod &lt;span style="color:#ae81ff">640&lt;/span> /etc/gitea/app.ini
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="附录gitservice">附录：git.service
+&lt;/h2>&lt;p>用什么数据库就取消注释哪一行&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># git.service&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">[&lt;/span>Unit&lt;span style="color:#f92672">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Description&lt;span style="color:#f92672">=&lt;/span>Gitea &lt;span style="color:#f92672">(&lt;/span>Git with a cup of tea&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>After&lt;span style="color:#f92672">=&lt;/span>syslog.target
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>After&lt;span style="color:#f92672">=&lt;/span>network.target
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">###&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># Don&amp;#39;t forget to add the database service dependencies&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">###&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#Wants=mysql.service&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#After=mysql.service&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#Wants=mariadb.service&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#After=mariadb.service&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#Wants=postgresql.service&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#After=postgresql.service&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#Wants=memcached.service&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#After=memcached.service&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#Wants=redis.service&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#After=redis.service&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">###&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># If using socket activation for main http/s&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">###&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#After=gitea.main.socket&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#Requires=gitea.main.socket&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">###&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># (You can also provide gitea an http fallback and/or ssh socket too)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># An example of /etc/systemd/system/gitea.main.socket&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">###&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">##&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">## [Unit]&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">## Description=Gitea Web Socket&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">## PartOf=gitea.service&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">##&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">## [Socket]&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">## Service=gitea.service&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">## ListenStream=&amp;lt;some_port&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">## NoDelay=true&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">##&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">## [Install]&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">## WantedBy=sockets.target&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">##&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">###&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">[&lt;/span>Service&lt;span style="color:#f92672">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># Uncomment the next line if you have repos with lots of files and get a HTTP 500 error because of that&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># LimitNOFILE=524288:524288&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>RestartSec&lt;span style="color:#f92672">=&lt;/span>2s
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Type&lt;span style="color:#f92672">=&lt;/span>simple
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>User&lt;span style="color:#f92672">=&lt;/span>git
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Group&lt;span style="color:#f92672">=&lt;/span>git
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>WorkingDirectory&lt;span style="color:#f92672">=&lt;/span>/var/lib/gitea/
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># If using Unix socket: tells systemd to create the /run/gitea folder, which will contain the gitea.sock file&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># (manually creating /run/gitea doesn&amp;#39;t work, because it would not persist across reboots)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#RuntimeDirectory=gitea&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>ExecStart&lt;span style="color:#f92672">=&lt;/span>/usr/local/bin/gitea web --config /etc/gitea/app.ini
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Restart&lt;span style="color:#f92672">=&lt;/span>always
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Environment&lt;span style="color:#f92672">=&lt;/span>USER&lt;span style="color:#f92672">=&lt;/span>git HOME&lt;span style="color:#f92672">=&lt;/span>/home/git GITEA_WORK_DIR&lt;span style="color:#f92672">=&lt;/span>/var/lib/gitea
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># If you install Git to directory prefix other than default PATH (which happens&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># for example if you install other versions of Git side-to-side with&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># distribution version), uncomment below line and add that prefix to PATH&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># Don&amp;#39;t forget to place git-lfs binary on the PATH below if you want to enable&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># Git LFS support&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#Environment=PATH=/path/to/git/bin:/bin:/sbin:/usr/bin:/usr/sbin&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># If you want to bind Gitea to a port below 1024, uncomment&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># the two values below, or use socket activation to pass Gitea its ports as above&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">###&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#CapabilityBoundingSet=CAP_NET_BIND_SERVICE&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#AmbientCapabilities=CAP_NET_BIND_SERVICE&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">###&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># In some cases, when using CapabilityBoundingSet and AmbientCapabilities option, you may want to&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># set the following value to false to allow capabilities to be applied on gitea process. The following&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># value if set to true sandboxes gitea service and prevent any processes from running with privileges&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># in the host user namespace.&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">###&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#PrivateUsers=false&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">###&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">[&lt;/span>Install&lt;span style="color:#f92672">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>WantedBy&lt;span style="color:#f92672">=&lt;/span>multi-user.target
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>从gitea文档扒的&lt;/p></description></item></channel></rss>

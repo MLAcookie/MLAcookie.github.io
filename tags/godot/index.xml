@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Godot on MLAcookie</title><link>http://localhost:1313/tags/godot/</link><description>Recent content in Godot on MLAcookie</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Thu, 14 Sep 2023 10:29:18 +0000</lastBuildDate><atom:link href="http://localhost:1313/tags/godot/index.xml" rel="self" type="application/rss+xml"/><item><title>Godot学习笔记01-用C#开发</title><link>http://localhost:1313/article/posts/godot%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B001-%E7%94%A8c%23%E5%BC%80%E5%8F%91/</link><pubDate>Thu, 14 Sep 2023 10:29:18 +0000</pubDate><guid>http://localhost:1313/article/posts/godot%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B001-%E7%94%A8c%23%E5%BC%80%E5%8F%91/</guid><description>&lt;h2 id="0x00-前言">&amp;lt;0x00&amp;gt; 前言
+&lt;/h2>&lt;p>原本计划是搞完&lt;code>WPF&lt;/code>之后学&lt;code>Unity&lt;/code>的，&lt;code>Godot&lt;/code>顶多是个添头&lt;br>
+但众所周知，&lt;code>Unity&lt;/code>改收费模式了，过20w安装且20w刀年收入就要收安装费&lt;br>
+个人版用户收费还挺贵的&lt;br>
+因为这一条我基本就放弃用&lt;code>Unity&lt;/code>做我自己的项目了&lt;br>
+现在收费这块官方算是说明白了，但我还是打算先观望一下
+所以还是先找好退路吧，鬼知道他们还能整什么活&lt;br>
+&lt;code>Unity&lt;/code>还是会学的，但不是现在了(往后稍稍)&lt;/p>
+&lt;h2 id="0x01-简单讲讲godot">&amp;lt;0x01&amp;gt; 简单讲讲Godot
+&lt;/h2>&lt;p>&lt;code>Godot&lt;/code>是个开源(MIT)的游戏引擎，差不多就是随便用只要记得署名&lt;br>
+整个引擎非常轻量，编辑器本体仅114MB&lt;br>
+可以做跨平台开发，&lt;code>Windows&lt;/code>、&lt;code>macOS&lt;/code>、&lt;code>Linux&lt;/code>、&lt;code>Android&lt;/code>、&lt;code>IOS&lt;/code>、&lt;code>Web&lt;/code>都可以&lt;br>
+因为搞跨平台嘛，所以用的图形API是&lt;code>OpenGL ES&lt;/code>和&lt;code>Vulkan&lt;/code>(有这玩意就够了)&lt;br>
+&lt;code>Godot&lt;/code>支持的脚本语言也很多，官方支持&lt;code>C++&lt;/code>、&lt;code>C#&lt;/code>、&lt;code>GDScript&lt;/code>(Godot自己的脚本语言)&lt;br>
+还有更多的社区支持的语言，比如&lt;code>Python&lt;/code>之类的(开源的好处)&lt;br>
+效率方面，&lt;code>C++ &amp;gt; C# &amp;gt; GDScript&lt;/code>&lt;/p>
+&lt;p>本系列用&lt;code>C#&lt;/code>作为脚本语言，&lt;code>Godot&lt;/code>版本为&lt;code>4.1.1-stable-mono&lt;/code>&lt;/p>
+&lt;h2 id="0x02-安装godot并配置编辑器">&amp;lt;0x02&amp;gt; 安装Godot并配置编辑器
+&lt;/h2>&lt;h3 id="下载godot本体">下载Godot本体
+&lt;/h3>&lt;p>找官网下就好了&lt;br>
+但因为我们要用C#作为我们的脚本语言&lt;br>
+所以我们要下载带&lt;code>Mono&lt;/code>的版本，要往下翻一下&lt;br>
+&lt;img src="http://localhost:1313/article/posts/godot%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B001-%E7%94%A8c"
+width="1920"
+height="931"
+srcset="http://localhost:1313/article/posts/godot%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B001-%E7%94%A8c 480w, http://localhost:1313/article/posts/godot%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B001-%E7%94%A8c 1024w"
+loading="lazy"
+alt="找对下载的位置"
+class="gallery-image"
+data-flex-grow="206"
+data-flex-basis="494px"
+>&lt;br>
+就是那两个&lt;/p>
+&lt;p>下载下来是一个压缩包，里面就两个&lt;code>.exe&lt;/code>和一个文件夹，不带&lt;code>_console&lt;/code>的&lt;code>.exe&lt;/code>就是编辑器本体&lt;br>
+运行就可以了，没有安装的过程(可以随便丢到你喜欢的地方)&lt;/p>
+&lt;h3 id="安装netsdk">安装.netSDK
+&lt;/h3>&lt;p>开发&lt;code>C#&lt;/code>嘛，肯定要装.netSDK的，版本最好是&lt;code>6.0&lt;/code>&lt;br>
+你说更加新的&lt;code>7.0&lt;/code>行不行呢，也是行的(我用的就是)&lt;br>
+因为&lt;code>Godot&lt;/code>刚用上&lt;code>C#&lt;/code>不久，语法支持到&lt;code>C#7&lt;/code>&lt;br>
+差不多就是&lt;code>6.0&lt;/code>的版本，&lt;code>Godot&lt;/code>也在努力跟上新的&lt;code>.net&lt;/code>版本&lt;/p>
+&lt;h3 id="配置编辑器">配置编辑器
+&lt;/h3>&lt;p>别的编辑器也是可以的，具体配置官网也有教程，这里以&lt;code>VS Code&lt;/code>为例&lt;br>
+Godot本身是带着编辑器的，但对&lt;code>C#&lt;/code>的支持不是很好&lt;br>
+所以还是要配置下对应的外部编辑器&lt;/p>
+&lt;p>(@ 23-09-15 4.0目前仅要求装这一个)&lt;br>
+其实也没啥好讲的，就是装1个插件&lt;br>
+&lt;img src="http://localhost:1313/article/posts/godot%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B001-%E7%94%A8c"
+width="238"
+height="73"
+srcset="http://localhost:1313/article/posts/godot%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B001-%E7%94%A8c 480w, http://localhost:1313/article/posts/godot%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B001-%E7%94%A8c 1024w"
+loading="lazy"
+alt="C#DevKit"
+class="gallery-image"
+data-flex-grow="326"
+data-flex-basis="782px"
+>&lt;br>
+然后&lt;code>VS Code&lt;/code>这块就好了&lt;/p>
+&lt;p>之后在&lt;code>Godot&lt;/code>里配置下外部编辑器就好&lt;br>
+&lt;img src="http://localhost:1313/article/posts/godot%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B001-%E7%94%A8c"
+width="454"
+height="362"
+srcset="http://localhost:1313/article/posts/godot%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B001-%E7%94%A8c 480w, http://localhost:1313/article/posts/godot%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B001-%E7%94%A8c 1024w"
+loading="lazy"
+alt="编辑器设置"
+class="gallery-image"
+data-flex-grow="125"
+data-flex-basis="300px"
+>&lt;br>
+&lt;img src="http://localhost:1313/article/posts/godot%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B001-%E7%94%A8c"
+width="900"
+height="733"
+srcset="http://localhost:1313/article/posts/godot%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B001-%E7%94%A8c 480w, http://localhost:1313/article/posts/godot%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B001-%E7%94%A8c 1024w"
+loading="lazy"
+alt="指定外部编辑器"
+class="gallery-image"
+data-flex-grow="122"
+data-flex-basis="294px"
+>&lt;br>
+然后就完全配置好了&lt;/p>
+&lt;h2 id="0x03-开发一个简单的2d游戏">&amp;lt;0x03&amp;gt; 开发一个简单的2D游戏
+&lt;/h2>&lt;p>基于官方文档&lt;a class="link" href="https://docs.godotengine.org/en/stable/getting_started/first_2d_game/index.html" target="_blank" rel="noopener"
+>你的第一款2D游戏&lt;/a>，这里只是些对&lt;code>C#&lt;/code>开发过程的补充&lt;/p>
+&lt;p>现在&lt;code>Godot&lt;/code>还不能很好支持&lt;code>C#&lt;/code>&lt;br>
+所以每次写完&lt;code>C#&lt;/code>的脚本都要点右上角的&lt;code>Build&lt;/code>来更新&lt;br>
+不&lt;code>Build&lt;/code>的话在脚本里新定义的变量同步不过来的&lt;/p>
+&lt;p>还有就是文档些的关于&lt;code>Signal&lt;/code>的部分是针对&lt;code>GDScript&lt;/code>的&lt;br>
+&lt;code>C#&lt;/code>要自己去连接方法&lt;br>
+&lt;img src="http://localhost:1313/article/posts/godot%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B001-%E7%94%A8c"
+width="823"
+height="823"
+srcset="http://localhost:1313/article/posts/godot%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B001-%E7%94%A8c 480w, http://localhost:1313/article/posts/godot%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B001-%E7%94%A8c 1024w"
+loading="lazy"
+alt="连接方法"
+class="gallery-image"
+data-flex-grow="100"
+data-flex-basis="240px"
+>&lt;br>
+每个都要自己连接，包括教程里&lt;code>Timer&lt;/code>的&lt;code>timeout&lt;/code>之类的都要自己连接&lt;br>
+不然根本就没有触发&lt;/p>
+&lt;p>还有就是官方文档里写的通过&lt;code>body_entered&lt;/code>信号触发自己写的&lt;code>Hit&lt;/code>信号的代码是这样的&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-cs" data-lang="cs">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">private&lt;/span> &lt;span style="color:#66d9ef">void&lt;/span> OnBodyEntered(PhysicsBody2D body)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Hide(); &lt;span style="color:#75715e">// Player disappears after being hit.&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> EmitSignal(SignalName.Hit);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// Must be deferred as we can&amp;#39;t change physics properties on a physics callback.&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> GetNode&amp;lt;CollisionShape2D&amp;gt;(&lt;span style="color:#e6db74">&amp;#34;CollisionShape2D&amp;#34;&lt;/span>).SetDeferred(CollisionShape2D.PropertyName.Disabled, &lt;span style="color:#66d9ef">true&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>主要是这句&lt;code>EmitSignal(SignalName.Hit);&lt;/code>会报&lt;code>找不到Hit定义的错误&lt;/code>&lt;br>
+但不影响运行&lt;br>
+看着难受的话可以改成&lt;code>EmitSignal(&amp;quot;Hit&amp;quot;);&lt;/code>，这样不会报错&lt;br>
+我怀疑是这个&lt;code>Hit&lt;/code>的定义是运行时加的，编译期没法检查&lt;br>
+至于怎么加的，感觉像是直接操作&lt;code>CLR&lt;/code>的，不清楚&lt;br>
+(我看API也没带&lt;code>partial&lt;/code>关键字，感觉也不像源生成器)&lt;/p>
+&lt;p>(@ 23-09-15)&lt;br>
+这个问题其实是我插件没装全(之前按3.5的文档要求装的插件)&lt;br>
+(但新的文档还是只要求装一个&lt;code>C#&lt;/code>的插件)&lt;br>
+其实应该装的是前面写的&lt;code>C# Dev Kit&lt;/code>(插件包)，然后就不会报错了&lt;/p>
+&lt;p>跟着教程走的话从完全不会到做完这个2D项目大概花3小时时间&lt;br>
+还是很好上手的一个引擎&lt;/p></description></item></channel></rss>

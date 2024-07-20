@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="(感觉我这几天写了好几个杂谈类博客) 纯粹是这个事件太炸裂了 我知道这个事情都算晚的 准确来说估计24号就开始了 然后我在B站上确实看到了有人抨击这玩意 我以为，这玩意大概率又是抄啥开源项目 结果今天一看，哇，真的离谱 直接抄VSCode，硬是说是自主研发 然后扒源文件，VSCode有啥就有啥，演都不带演的 最可笑的是这玩意的.exe的版权信息还是微软的，甚至语言还是英语 哇，&ldquo;国产&quot;欸，自主研发欸🤣👉 对这个软件本身我也不想评价很多 也算是知道纳税的钱有部分是干啥了 我更想说的是整个风气问题 我跟我父母聊，他们还说能抄到就是本事 哇，那我明天我就去Github上扒个什么项目然后随便改改就说是我自主研发 然后卖给国企，或者搞点研究经费，我tm直接平步青云 国内的软件开发环境已经很差了，这种事情搞个几回，谁还乐意维护开发社区 之前是套壳Chromium的红芯浏览器，今天是套壳VSCode的CEC-IDE 都自称自主开发，都从开源项目中扒，都被喷成筛子 以后我再看到国产自主，我脑子就要思量思量了，因为我第一个想法就是不信 为什么，不是我不相信国内没人能做出东西，是因为这个词的公共信任度已经被这些东西摧毁了 目前这个软件的官网已经不能访问了 (但应该是网关层面阻止访问，不排除之后再次上线的可能) Github上也有关于这个玩意的issue，好在已经Close了 (但也算脸丢国外去了)">
+<title>好一个国产CECIDE</title>
+
+<link rel='canonical' href='http://localhost:1313/article/posts/%E5%A5%BD%E4%B8%80%E4%B8%AA%E5%9B%BD%E4%BA%A7cecide/'>
+
+<link rel="stylesheet" href="/scss/style.min.e8c7fca7d1c9294aa7a4f3426c225ee26540f7d94e39be0b5a4a5c8a49ca5a25.css"><meta property='og:title' content="好一个国产CECIDE">
+<meta property='og:description' content="(感觉我这几天写了好几个杂谈类博客) 纯粹是这个事件太炸裂了 我知道这个事情都算晚的 准确来说估计24号就开始了 然后我在B站上确实看到了有人抨击这玩意 我以为，这玩意大概率又是抄啥开源项目 结果今天一看，哇，真的离谱 直接抄VSCode，硬是说是自主研发 然后扒源文件，VSCode有啥就有啥，演都不带演的 最可笑的是这玩意的.exe的版权信息还是微软的，甚至语言还是英语 哇，&ldquo;国产&quot;欸，自主研发欸🤣👉 对这个软件本身我也不想评价很多 也算是知道纳税的钱有部分是干啥了 我更想说的是整个风气问题 我跟我父母聊，他们还说能抄到就是本事 哇，那我明天我就去Github上扒个什么项目然后随便改改就说是我自主研发 然后卖给国企，或者搞点研究经费，我tm直接平步青云 国内的软件开发环境已经很差了，这种事情搞个几回，谁还乐意维护开发社区 之前是套壳Chromium的红芯浏览器，今天是套壳VSCode的CEC-IDE 都自称自主开发，都从开源项目中扒，都被喷成筛子 以后我再看到国产自主，我脑子就要思量思量了，因为我第一个想法就是不信 为什么，不是我不相信国内没人能做出东西，是因为这个词的公共信任度已经被这些东西摧毁了 目前这个软件的官网已经不能访问了 (但应该是网关层面阻止访问，不排除之后再次上线的可能) Github上也有关于这个玩意的issue，好在已经Close了 (但也算脸丢国外去了)">
+<meta property='og:url' content='http://localhost:1313/article/posts/%E5%A5%BD%E4%B8%80%E4%B8%AA%E5%9B%BD%E4%BA%A7cecide/'>
+<meta property='og:site_name' content='MLAcookie'>
+<meta property='og:type' content='article'><meta property='article:section' content='Article' /><meta property='article:tag' content='Null' /><meta property='article:published_time' content='2023-08-26T13:02:23&#43;00:00'/><meta property='article:modified_time' content='2023-08-26T13:02:23&#43;00:00'/>
+<meta name="twitter:title" content="好一个国产CECIDE">
+<meta name="twitter:description" content="(感觉我这几天写了好几个杂谈类博客) 纯粹是这个事件太炸裂了 我知道这个事情都算晚的 准确来说估计24号就开始了 然后我在B站上确实看到了有人抨击这玩意 我以为，这玩意大概率又是抄啥开源项目 结果今天一看，哇，真的离谱 直接抄VSCode，硬是说是自主研发 然后扒源文件，VSCode有啥就有啥，演都不带演的 最可笑的是这玩意的.exe的版权信息还是微软的，甚至语言还是英语 哇，&ldquo;国产&quot;欸，自主研发欸🤣👉 对这个软件本身我也不想评价很多 也算是知道纳税的钱有部分是干啥了 我更想说的是整个风气问题 我跟我父母聊，他们还说能抄到就是本事 哇，那我明天我就去Github上扒个什么项目然后随便改改就说是我自主研发 然后卖给国企，或者搞点研究经费，我tm直接平步青云 国内的软件开发环境已经很差了，这种事情搞个几回，谁还乐意维护开发社区 之前是套壳Chromium的红芯浏览器，今天是套壳VSCode的CEC-IDE 都自称自主开发，都从开源项目中扒，都被喷成筛子 以后我再看到国产自主，我脑子就要思量思量了，因为我第一个想法就是不信 为什么，不是我不相信国内没人能做出东西，是因为这个词的公共信任度已经被这些东西摧毁了 目前这个软件的官网已经不能访问了 (但应该是网关层面阻止访问，不排除之后再次上线的可能) Github上也有关于这个玩意的issue，好在已经Close了 (但也算脸丢国外去了)">
+    <link rel="shortcut icon" href="/favicon.webp" />
+
+  
+
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu01ec501d434397934aa5721ebabee736_552660_300x0_resize_box_3.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">😜</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">MLAcookie</a></h1>
+            <h2 class="site-description">随便记点东西的记事本</h2>
+        </div>
+    </header><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/about/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>About</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/links/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>Links</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>Dark Mode</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/article/posts/%E5%A5%BD%E4%B8%80%E4%B8%AA%E5%9B%BD%E4%BA%A7cecide/">好一个国产CECIDE</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Aug 26, 2023</time>
+            </div>
+        
+
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <p>(感觉我这几天写了好几个杂谈类博客)</p>
+<p>纯粹是这个事件太炸裂了<br>
+我知道这个事情都算晚的<br>
+准确来说估计24号就开始了<br>
+然后我在B站上确实看到了有人抨击这玩意<br>
+我以为，这玩意大概率又是抄啥开源项目<br>
+结果今天一看，哇，真的离谱<br>
+直接抄<code>VSCode</code>，硬是说是自主研发<br>
+然后扒源文件，<code>VSCode</code>有啥就有啥，演都不带演的<br>
+最可笑的是这玩意的<code>.exe</code>的版权信息还是微软的，甚至语言还是英语<br>
+哇，&ldquo;国产&quot;欸，自主研发欸🤣👉</p>
+<p>对这个软件本身我也不想评价很多<br>
+也算是知道纳税的钱有部分是干啥了<br>
+我更想说的是整个风气问题<br>
+我跟我父母聊，他们还说能抄到就是本事<br>
+哇，那我明天我就去<code>Github</code>上扒个什么项目然后随便改改就说是我自主研发<br>
+然后卖给国企，或者搞点研究经费，我tm直接平步青云<br>
+国内的软件开发环境已经很差了，这种事情搞个几回，谁还乐意维护开发社区<br>
+之前是套壳<code>Chromium</code>的红芯浏览器，今天是套壳<code>VSCode</code>的CEC-IDE<br>
+都自称<code>自主开发</code>，都从开源项目中扒，都被喷成筛子<br>
+以后我再看到<code>国产自主</code>，我脑子就要思量思量了，因为我第一个想法就是不信<br>
+为什么，不是我不相信国内没人能做出东西，是因为这个词的公共信任度已经被这些东西摧毁了</p>
+<p>目前这个软件的官网已经不能访问了<br>
+(但应该是网关层面阻止访问，不排除之后再次上线的可能)<br>
+Github上也有关于这个玩意的issue，好在已经Close了<br>
+(但也算脸丢国外去了)</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/null/">Null</a>
+        
+    </section>
+
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+        <link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI&#43;WdtXRGWt2kTvGFasHpSy3SV"crossorigin="anonymous"
+            ><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG&#43;vnGctmUb0ZY0l8"crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"integrity="sha384-&#43;VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4&#43;/RRE05"crossorigin="anonymous"
+                defer
+                >
+            </script><script>
+    window.addEventListener("DOMContentLoaded", () => {
+        renderMathInElement(document.body, {
+            delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: "$", right: "$", display: false },
+                { left: "\\(", right: "\\)", display: false },
+                { left: "\\[", right: "\\]", display: true }
+            ],
+            ignoredClasses: ["gist"]
+        });})
+</script>
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/article/posts/%E4%B8%8At%E7%9C%9F%E7%9A%84%E5%A4%AA%E5%A5%BD%E4%BA%86/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">上T真的太好了</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2023 - 
+        
+        2024 MLAcookie
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.26.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>
