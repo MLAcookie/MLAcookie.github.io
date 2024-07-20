@@ -30,58 +30,7 @@
 一般第二天就能备案下来&lt;br>
 里面有个&lt;code>业务类型&lt;/code>，如果只是跟我一样搭个博客的话不要勾选&lt;code>交互服务&lt;/code>，然后选&lt;code>www服务&lt;/code>就好&lt;br>
 据说选了交互服务要线下确认，所以能少一事就少一事&lt;/p>
-&lt;p>最后记得在页面下面挂备案号。&lt;/p></description></item><item><title>如何一个hexo博客同时部署多git</title><link>https://mlacookie.github.io/article/categories/blog/%E5%A6%82%E4%BD%95%E4%B8%80%E4%B8%AAhexo%E5%8D%9A%E5%AE%A2%E5%90%8C%E6%97%B6%E9%83%A8%E7%BD%B2%E5%A4%9Agit/</link><pubDate>Sun, 23 Apr 2023 16:35:19 +0000</pubDate><guid>https://mlacookie.github.io/article/categories/blog/%E5%A6%82%E4%BD%95%E4%B8%80%E4%B8%AAhexo%E5%8D%9A%E5%AE%A2%E5%90%8C%E6%97%B6%E9%83%A8%E7%BD%B2%E5%A4%9Agit/</guid><description>&lt;h2 id="0x01-如何实现">&amp;lt;0x01&amp;gt; 如何实现
-&lt;/h2>&lt;p>思路是本地多写几份 config 文件&lt;br>
-在部署时切换就可以&lt;/p>
-&lt;h2 id="0x02-开搞">&amp;lt;0x02&amp;gt; 开搞
-&lt;/h2>&lt;p>首先先新建几个 config 文件&lt;br>
-建议直接复制原来的&lt;code>_config.yml&lt;/code>&lt;br>
-复制的文件名字随意
-我们只需要修改最下面的&lt;code>deploy&lt;/code>部分就好&lt;/p>
-&lt;p>比如我在 hexo 目录建了两个文件&lt;br>
-分别是&lt;code>_GitPageConfig.yml&lt;/code>与&lt;code>_ServerConfig.yml&lt;/code>&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-yml" data-lang="yml">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># _GitPageConfig.yml的部分&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">deploy&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">type&lt;/span>: &lt;span style="color:#ae81ff">git&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">repo&lt;/span>: &lt;span style="color:#ae81ff">git@github.com:{github用户名}/{github用户名}.github.io.git&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">branch&lt;/span>: &lt;span style="color:#ae81ff">gh-pages&lt;/span>
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-yml" data-lang="yml">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># _ServerConfig.yml的部分&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">deploy&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">type&lt;/span>: &lt;span style="color:#ae81ff">git&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">repo&lt;/span>: &lt;span style="color:#ae81ff">git@{服务器ip}:{gitea用户名}/{gitea仓库名}.git&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">branch&lt;/span>: &lt;span style="color:#ae81ff">master&lt;/span>
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>然后新建一个脚本文件&lt;br>
-这里用 windows 配置，所以新建了个 powershell 脚本&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-ps1" data-lang="ps1">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># deploy.ps1&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>copy _ServerConfig.yml _config.yml
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>hexo g -d
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>del _config.yml
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>copy _GitPageConfig.yml _config.yml
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>hexo g -d
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>del _config.yml
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>如果要部署到更多的git仓库，以此类推
-之后部署只需要执行&lt;code>deploy.ps1&lt;/code>即可&lt;/p>
-&lt;h2 id="0x03-为什么不单文件解决">&amp;lt;0x03&amp;gt; 为什么不单文件解决
-&lt;/h2>&lt;p>(@ 23-07-07)&lt;br>
-经过我的实际测试，确实也可以直接单文件搞定&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-yml" data-lang="yml">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># _config.yml&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">deploy&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>- &lt;span style="color:#f92672">type&lt;/span>: &lt;span style="color:#ae81ff">git&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">repo&lt;/span>: &lt;span style="color:#ae81ff">git@{服务器ip}:{gitea用户名}/{gitea仓库名}.git&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">branch&lt;/span>: &lt;span style="color:#ae81ff">master&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>- &lt;span style="color:#f92672">type&lt;/span>: &lt;span style="color:#ae81ff">git&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">repo&lt;/span>: &lt;span style="color:#ae81ff">git@github.com:{github用户名}/{github用户名}.github.io.git&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">branch&lt;/span>: &lt;span style="color:#ae81ff">gh-pages&lt;/span>
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>这样写也可以，&lt;code>hexo&lt;/code>会按从上到下的顺序依次部署&lt;/p>
-&lt;p>但这样写会导致一个问题，就是网址的根域名会对不上&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-yml" data-lang="yml">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># _config.yml&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 部署到我自己的网站&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">url&lt;/span>: &lt;span style="color:#ae81ff">http://mlacookie.top/&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 部署到GitHubPage&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">url&lt;/span>: &lt;span style="color:#ae81ff">https://MLAcookie.github.io/&lt;/span>
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>如果仅靠单一文件的话，两个部署的根域名会是一样的&lt;br>
-这样可能会造成一些小问题&lt;/p>
-&lt;p>靠&lt;code>powershell&lt;/code>还可以顺便做部署前的一些操作，挺方便的&lt;/p></description></item><item><title>搭建hexo+gitea的博客站</title><link>https://mlacookie.github.io/article/categories/blog/%E6%90%AD%E5%BB%BAhexo+gitea%E7%9A%84%E5%8D%9A%E5%AE%A2%E7%AB%99/</link><pubDate>Sun, 23 Apr 2023 15:50:19 +0000</pubDate><guid>https://mlacookie.github.io/article/categories/blog/%E6%90%AD%E5%BB%BAhexo+gitea%E7%9A%84%E5%8D%9A%E5%AE%A2%E7%AB%99/</guid><description>&lt;h2 id="0x00-为什么要用gitea--hexo">&amp;lt;0x00&amp;gt; 为什么要用gitea + hexo
+&lt;p>最后记得在页面下面挂备案号。&lt;/p></description></item><item><title>搭建hexo+gitea的博客站</title><link>https://mlacookie.github.io/article/categories/blog/%E6%90%AD%E5%BB%BAhexo+gitea%E7%9A%84%E5%8D%9A%E5%AE%A2%E7%AB%99/</link><pubDate>Sun, 23 Apr 2023 15:50:19 +0000</pubDate><guid>https://mlacookie.github.io/article/categories/blog/%E6%90%AD%E5%BB%BAhexo+gitea%E7%9A%84%E5%8D%9A%E5%AE%A2%E7%AB%99/</guid><description>&lt;h2 id="0x00-为什么要用gitea--hexo">&amp;lt;0x00&amp;gt; 为什么要用gitea + hexo
 &lt;/h2>&lt;p>很简单，gitea 太好用了(才不是因为 git 配置太麻烦)&lt;br>
 而且 hexo 的博客就是静态网页，基本不怎么耗费服务器资源&lt;br>
 如此再搭个 gitea 正好还能当个代码仓库，岂不美哉&lt;/p>

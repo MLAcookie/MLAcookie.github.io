@@ -1,4 +1,192 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>MLAcookie</title><link>https://mlacookie.github.io/</link><description>Recent content on MLAcookie</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Sat, 20 Jul 2024 15:02:34 +0800</lastBuildDate><atom:link href="https://mlacookie.github.io/index.xml" rel="self" type="application/rss+xml"/><item><title>从Hexo到Hugo-记录博客框架切换</title><link>https://mlacookie.github.io/article/categories/blog/%E4%BB%8Ehexo%E5%88%B0hugo-%E8%AE%B0%E5%BD%95%E5%8D%9A%E5%AE%A2%E6%A1%86%E6%9E%B6%E5%88%87%E6%8D%A2/</link><pubDate>Sat, 20 Jul 2024 15:02:34 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/blog/%E4%BB%8Ehexo%E5%88%B0hugo-%E8%AE%B0%E5%BD%95%E5%8D%9A%E5%AE%A2%E6%A1%86%E6%9E%B6%E5%88%87%E6%8D%A2/</guid><description>&lt;p>嘶，总算是学校的事情忙完了，终于有点时间写写博客了&lt;br>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>MLAcookie</title><link>https://mlacookie.github.io/</link><description>Recent content on MLAcookie</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Sat, 20 Jul 2024 23:05:43 +0800</lastBuildDate><atom:link href="https://mlacookie.github.io/index.xml" rel="self" type="application/rss+xml"/><item><title>算法康复计划 01</title><link>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-01/</link><pubDate>Sat, 20 Jul 2024 23:05:43 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-01/</guid><description>&lt;p>这两年，技术研究得越来越多，但算法基本是没学了&lt;br>
+让我本就不强的算法能力更是雪上加霜&lt;br>
+于是我就打算趁着暑假的时间，每天做一道算法题&lt;br>
+也不是为了比赛之类的，只是觉得现在确实缺算法方面的能力&lt;br>
+顺便也当练练C++了，我C++熟练度也不够&lt;/p>
+&lt;p>需要写在前面的是，我的代码会有很多封装，这样性能肯定不是最佳的&lt;/p>
+&lt;h2 id="0x00-今日题目马的遍历">&amp;lt;0x00&amp;gt; 今日题目：马的遍历
+&lt;/h2>&lt;p>&lt;a class="link" href="https://www.luogu.com.cn/problem/P1443" target="_blank" rel="noopener"
+>洛谷的P1443&lt;/a>&lt;/p>
+&lt;h3 id="题目描述">题目描述
+&lt;/h3>&lt;p>有一个 $n \times m$ 的棋盘，在某个点 $(x, y)$ 上有一个马，要求你计算出马到达棋盘上任意一个点最少要走几步。&lt;/p>
+&lt;h3 id="输入格式">输入格式
+&lt;/h3>&lt;p>输入只有一行四个整数，分别为 $n, m, x, y$。&lt;/p>
+&lt;h3 id="输出格式">输出格式
+&lt;/h3>&lt;p>一个 $n \times m$ 的矩阵，代表马到达某个点最少要走几步（不能到达则输出 $-1$）。&lt;/p>
+&lt;h3 id="样例-1">样例 #1
+&lt;/h3>&lt;h5 id="样例输入-1">样例输入 #1
+&lt;/h5>&lt;pre tabindex="0">&lt;code>3 3 1 1
+&lt;/code>&lt;/pre>&lt;h5 id="样例输出-1">样例输出 #1
+&lt;/h5>&lt;pre tabindex="0">&lt;code>0 3 2
+3 -1 1
+2 1 4
+&lt;/code>&lt;/pre>&lt;h3 id="数据规模与约定">数据规模与约定
+&lt;/h3>&lt;p>对于全部的测试点，保证 $1 \leq x \leq n \leq 400$，$1 \leq y \leq m \leq 400$。&lt;/p>
+&lt;h2 id="0x01-分析">&amp;lt;0x01&amp;gt; 分析
+&lt;/h2>&lt;p>这个题目是一道搜索相关的题目&lt;br>
+搜索的话，基本上就是&lt;code>DFS深度优先&lt;/code>和&lt;code>BFS广度优先&lt;/code>&lt;br>
+本题需要计算马到棋盘的每一格最少需要走几步&lt;br>
+使用&lt;code>DFS&lt;/code>的话马容易一条路走到黑，虽然也是能解决问题的&lt;br>
+而选择&lt;code>BFS&lt;/code>的话，相当于同时放出好几匹马，更快得出最少步数&lt;/p>
+&lt;p>因为走不到的地方要标&lt;code>-1&lt;/code>，所以地图初始化所有标记为&lt;code>-1&lt;/code>&lt;/p>
+&lt;h2 id="0x02-代码">&amp;lt;0x02&amp;gt; 代码
+&lt;/h2>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-cpp" data-lang="cpp">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;iostream&amp;gt;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;queue&amp;gt;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;vector&amp;gt;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">// 为了更好的可读性，这里封装了一个Map类型
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">Map&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> n;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> m;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>vector&lt;span style="color:#f92672">&amp;lt;&lt;/span>std&lt;span style="color:#f92672">::&lt;/span>vector&lt;span style="color:#f92672">&amp;lt;&lt;/span>&lt;span style="color:#66d9ef">int&lt;/span>&lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> mat;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">public&lt;/span>&lt;span style="color:#f92672">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 负责访问内容
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">int&lt;/span> &lt;span style="color:#f92672">&amp;amp;&lt;/span>At(&lt;span style="color:#66d9ef">int&lt;/span> x, &lt;span style="color:#66d9ef">int&lt;/span> y)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> mat[y][x];
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 运算符重载
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> std&lt;span style="color:#f92672">::&lt;/span>vector&lt;span style="color:#f92672">&amp;lt;&lt;/span>&lt;span style="color:#66d9ef">int&lt;/span>&lt;span style="color:#f92672">&amp;gt;&lt;/span> &lt;span style="color:#f92672">&amp;amp;&lt;/span>&lt;span style="color:#66d9ef">operator&lt;/span>[](&lt;span style="color:#66d9ef">int&lt;/span> index)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> mat[index];
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">void&lt;/span> &lt;span style="color:#a6e22e">ShowMap&lt;/span>()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">int&lt;/span> i &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>; i &lt;span style="color:#f92672">&amp;lt;&lt;/span> n; i&lt;span style="color:#f92672">++&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">int&lt;/span> j &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>; j &lt;span style="color:#f92672">&amp;lt;&lt;/span> m; j&lt;span style="color:#f92672">++&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>cout &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> mat[j][i] &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> &lt;span style="color:#e6db74">&amp;#34; &amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>cout &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> &lt;span style="color:#e6db74">&amp;#34;&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 复制构造函数，防止C++整花活
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> Map(&lt;span style="color:#66d9ef">const&lt;/span> Map &lt;span style="color:#f92672">&amp;amp;&lt;/span>c)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> n &lt;span style="color:#f92672">=&lt;/span> c.n;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> m &lt;span style="color:#f92672">=&lt;/span> c.m;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> mat.resize(m);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">int&lt;/span> i &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>; i &lt;span style="color:#f92672">&amp;lt;&lt;/span> m; i&lt;span style="color:#f92672">++&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> mat[i].resize(n);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">int&lt;/span> j &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>; j &lt;span style="color:#f92672">&amp;lt;&lt;/span> n; j&lt;span style="color:#f92672">++&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> mat[i][j] &lt;span style="color:#f92672">=&lt;/span> c.mat[i][j];
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 正常的构造函数
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> Map(&lt;span style="color:#66d9ef">int&lt;/span> n, &lt;span style="color:#66d9ef">int&lt;/span> m)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">this&lt;/span>&lt;span style="color:#f92672">-&amp;gt;&lt;/span>n &lt;span style="color:#f92672">=&lt;/span> n;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">this&lt;/span>&lt;span style="color:#f92672">-&amp;gt;&lt;/span>m &lt;span style="color:#f92672">=&lt;/span> m;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> mat.resize(m);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">int&lt;/span> i &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>; i &lt;span style="color:#f92672">&amp;lt;&lt;/span> m; i&lt;span style="color:#f92672">++&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> mat[i].resize(n);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">int&lt;/span> j &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>; j &lt;span style="color:#f92672">&amp;lt;&lt;/span> n; j&lt;span style="color:#f92672">++&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> mat[i][j] &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#f92672">-&lt;/span>&lt;span style="color:#ae81ff">1&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>};
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">// BSF状态结构
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">State&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">public&lt;/span>&lt;span style="color:#f92672">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> px;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> py;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> step &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> State(&lt;span style="color:#66d9ef">int&lt;/span> px, &lt;span style="color:#66d9ef">int&lt;/span> py, &lt;span style="color:#66d9ef">int&lt;/span> step, Map map)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">this&lt;/span>&lt;span style="color:#f92672">-&amp;gt;&lt;/span>px &lt;span style="color:#f92672">=&lt;/span> px;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">this&lt;/span>&lt;span style="color:#f92672">-&amp;gt;&lt;/span>py &lt;span style="color:#f92672">=&lt;/span> py;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">this&lt;/span>&lt;span style="color:#f92672">-&amp;gt;&lt;/span>step &lt;span style="color:#f92672">=&lt;/span> step;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>};
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">// 马的移动
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#66d9ef">int&lt;/span> dx[] &lt;span style="color:#f92672">=&lt;/span> {&lt;span style="color:#f92672">-&lt;/span>&lt;span style="color:#ae81ff">1&lt;/span>, &lt;span style="color:#ae81ff">1&lt;/span>, &lt;span style="color:#ae81ff">2&lt;/span>, &lt;span style="color:#ae81ff">2&lt;/span>, &lt;span style="color:#f92672">-&lt;/span>&lt;span style="color:#ae81ff">1&lt;/span>, &lt;span style="color:#ae81ff">1&lt;/span>, &lt;span style="color:#f92672">-&lt;/span>&lt;span style="color:#ae81ff">2&lt;/span>, &lt;span style="color:#f92672">-&lt;/span>&lt;span style="color:#ae81ff">2&lt;/span>};
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">int&lt;/span> dy[] &lt;span style="color:#f92672">=&lt;/span> {&lt;span style="color:#f92672">-&lt;/span>&lt;span style="color:#ae81ff">2&lt;/span>, &lt;span style="color:#f92672">-&lt;/span>&lt;span style="color:#ae81ff">2&lt;/span>, &lt;span style="color:#f92672">-&lt;/span>&lt;span style="color:#ae81ff">1&lt;/span>, &lt;span style="color:#ae81ff">1&lt;/span>, &lt;span style="color:#ae81ff">2&lt;/span>, &lt;span style="color:#ae81ff">2&lt;/span>, &lt;span style="color:#f92672">-&lt;/span>&lt;span style="color:#ae81ff">1&lt;/span>, &lt;span style="color:#ae81ff">1&lt;/span>};
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">// 地图大小
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#66d9ef">int&lt;/span> MaxX &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">int&lt;/span> MaxY &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">// 出界判断
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#66d9ef">bool&lt;/span> &lt;span style="color:#a6e22e">IsOutBorder&lt;/span>(&lt;span style="color:#66d9ef">int&lt;/span> x, &lt;span style="color:#66d9ef">int&lt;/span> y)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (x &lt;span style="color:#f92672">&amp;lt;&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span> &lt;span style="color:#f92672">||&lt;/span> y &lt;span style="color:#f92672">&amp;lt;&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> true;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (x &lt;span style="color:#f92672">&amp;gt;=&lt;/span> MaxX &lt;span style="color:#f92672">||&lt;/span> y &lt;span style="color:#f92672">&amp;gt;=&lt;/span> MaxY)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> true;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> false;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">// BFS函数
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#66d9ef">void&lt;/span> &lt;span style="color:#a6e22e">BFS&lt;/span>(Map map, &lt;span style="color:#66d9ef">int&lt;/span> x, &lt;span style="color:#66d9ef">int&lt;/span> y)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 使用std库中的队列来处理
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> std&lt;span style="color:#f92672">::&lt;/span>queue&lt;span style="color:#f92672">&amp;lt;&lt;/span>State&lt;span style="color:#f92672">&amp;gt;&lt;/span> q;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 初始化第一个状态
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> map.At(x, y) &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> q.push(State(x, y, &lt;span style="color:#ae81ff">0&lt;/span>, map));
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 进入BFS循环
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">while&lt;/span> (&lt;span style="color:#f92672">!&lt;/span>q.empty())
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 获取队列顶部对象
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> State temp &lt;span style="color:#f92672">=&lt;/span> q.front();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> q.pop();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 生成下面可能的8个状态
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">int&lt;/span> i &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>; i &lt;span style="color:#f92672">&amp;lt;&lt;/span> &lt;span style="color:#ae81ff">8&lt;/span>; i&lt;span style="color:#f92672">++&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 临时的位置
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">int&lt;/span> tx &lt;span style="color:#f92672">=&lt;/span> temp.px &lt;span style="color:#f92672">+&lt;/span> dx[i];
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> ty &lt;span style="color:#f92672">=&lt;/span> temp.py &lt;span style="color:#f92672">+&lt;/span> dy[i];
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 判断是否出界
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">if&lt;/span> (IsOutBorder(tx, ty))
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">continue&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 判断这个位置是否有马走过
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">if&lt;/span> (map.At(tx, ty) &lt;span style="color:#f92672">!=&lt;/span> &lt;span style="color:#f92672">-&lt;/span>&lt;span style="color:#ae81ff">1&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">continue&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> ts &lt;span style="color:#f92672">=&lt;/span> temp.step &lt;span style="color:#f92672">+&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 向全局地图中添加标记
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> map.At(tx, ty) &lt;span style="color:#f92672">=&lt;/span> ts;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 向队列中添加新的状态
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> q.push(State(tx, ty, ts, map));
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 最后，输出答案
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> map.ShowMap();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">// main入口，负责读取与启动
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#66d9ef">int&lt;/span> &lt;span style="color:#a6e22e">main&lt;/span>(&lt;span style="color:#66d9ef">int&lt;/span> argc, &lt;span style="color:#66d9ef">char&lt;/span> &lt;span style="color:#f92672">**&lt;/span>argv)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> x, y;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>cin &lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> MaxX &lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> MaxY &lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> x &lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> y;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> BFS(Map(MaxX, MaxY), x &lt;span style="color:#f92672">-&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>, y &lt;span style="color:#f92672">-&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="0x03-遇到的坑">&amp;lt;0x03&amp;gt; 遇到的坑
+&lt;/h2>&lt;p>主要也就是最后输出的时候矩阵反了&lt;br>
+因为题目给的样例最后答案也是沿对角线对称的，一开始还真没发现&lt;/p></description></item><item><title>从Hexo到Hugo 记录博客框架切换</title><link>https://mlacookie.github.io/article/categories/blog/%E4%BB%8Ehexo%E5%88%B0hugo-%E8%AE%B0%E5%BD%95%E5%8D%9A%E5%AE%A2%E6%A1%86%E6%9E%B6%E5%88%87%E6%8D%A2/</link><pubDate>Sat, 20 Jul 2024 15:02:34 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/blog/%E4%BB%8Ehexo%E5%88%B0hugo-%E8%AE%B0%E5%BD%95%E5%8D%9A%E5%AE%A2%E6%A1%86%E6%9E%B6%E5%88%87%E6%8D%A2/</guid><description>&lt;p>嘶，总算是学校的事情忙完了，终于有点时间写写博客了&lt;br>
 这个学期感觉一直都在和时间赛跑，没啥时间写博客，自己的项目也基本都断了&lt;br>
 当然这些都是另外的话题了&lt;/p>
 &lt;p>如果之前有看过我博客的人，应该会发现现在网页大变样了&lt;br>
@@ -325,7 +513,36 @@ data-flex-basis="634px"
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Set-Location $localDir
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>使用示例&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>.&lt;span style="color:#ae81ff">\D&lt;/span>eploy.ps1
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>运行即可推送到GitHub Page上&lt;/p></description></item><item><title>About</title><link>https://mlacookie.github.io/page/about/</link><pubDate>Thu, 18 Jul 2024 00:00:00 +0000</pubDate><guid>https://mlacookie.github.io/page/about/</guid><description>&lt;p>欢迎各位光临我的小站&lt;/p>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>运行即可推送到GitHub Page上&lt;/p>
+&lt;h3 id="批量创建页面包路径结构">批量创建页面包路径结构
+&lt;/h3>&lt;p>因为之前使用的是hexo，里面都是单独的markdown文件&lt;br>
+如果自己手动一个一个移动并创建picture文件夹那就太累了&lt;br>
+所以还是要写一个脚本完成自动化&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># TransFromSingleFile.ps1&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>param&lt;span style="color:#f92672">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">[&lt;/span>string&lt;span style="color:#f92672">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">[&lt;/span>ValidateNotNullOrEmpty&lt;span style="color:#f92672">()]&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $postDir
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 排除文件名单&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>$excludeList &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;_index&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Get-ChildItem -Path $postDir -File | ForEach-Object &lt;span style="color:#f92672">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> &lt;span style="color:#f92672">(&lt;/span>$_.BaseName -notin $excludeList&lt;span style="color:#f92672">)&lt;/span> &lt;span style="color:#f92672">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># 创建文件夹并移动&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $destDir &lt;span style="color:#f92672">=&lt;/span> Join-Path -Path $postDir -ChildPath $_.BaseName
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> New-Item -ItemType Directory -Force -Path $destDir
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Move-Item -Path $_.FullName -Destination &lt;span style="color:#f92672">(&lt;/span>Join-Path -Path $destDir -ChildPath &lt;span style="color:#e6db74">&amp;#34;index&lt;/span>&lt;span style="color:#66d9ef">$(&lt;/span>$_.Extension&lt;span style="color:#66d9ef">)&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># 创建对应的picture文件夹&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $newPostPicture &lt;span style="color:#f92672">=&lt;/span> Join-Path -Path $destDir -ChildPath &lt;span style="color:#e6db74">&amp;#34;picture&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> mkdir $newPostPicture
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>使用示例&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>.&lt;span style="color:#ae81ff">\T&lt;/span>ransFromSingleFile.ps1 &lt;span style="color:#f92672">[&lt;/span>某个路径&lt;span style="color:#f92672">]&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>运行可以为路径内所有文件创建同名文件夹，并将文件移动至对应文件夹后重命名为&lt;code>index.md&lt;/code>&lt;br>
+里面也会创建&lt;code>picture&lt;/code>文件夹&lt;/p></description></item><item><title>About</title><link>https://mlacookie.github.io/page/about/</link><pubDate>Thu, 18 Jul 2024 00:00:00 +0000</pubDate><guid>https://mlacookie.github.io/page/about/</guid><description>&lt;p>欢迎各位光临我的小站&lt;/p>
 &lt;h3 id="为什么开这个博客">为什么开这个博客
 &lt;/h3>&lt;p>学习计算机嘛，总会遇到些莫名其妙的问题&lt;br>
 然后用各种搜索引擎上下求索&lt;br>
@@ -351,28 +568,28 @@ data-flex-basis="634px"
 &lt;p>全站 CC BY-NC-SA 4.0&lt;br>
 总之在这里的内容大家可以随意取用，转载的话都行，不是商业行为就行&lt;/p>
 &lt;!-- raw HTML omitted --></description></item><item><title>关于我用C#写Opencv这件事-03</title><link>https://mlacookie.github.io/article/categories/opencv/%E5%85%B3%E4%BA%8E%E6%88%91%E7%94%A8c%23%E5%86%99opencv%E8%BF%99%E4%BB%B6%E4%BA%8B-03/</link><pubDate>Mon, 18 Mar 2024 12:59:53 +0000</pubDate><guid>https://mlacookie.github.io/article/categories/opencv/%E5%85%B3%E4%BA%8E%E6%88%91%E7%94%A8c%23%E5%86%99opencv%E8%BF%99%E4%BB%B6%E4%BA%8B-03/</guid><description>&lt;p>（说实话我有点后悔用C#写Opencv了）
-今天我们神秘的数字图像处理做实验了
-虽然东西是挺简单的，但因为我用的是C#，导致很多现成的代码都没法抄
-再加上虽然&lt;code>Opencvsharp4&lt;/code>宣称是和C++的API是对应的
-但实际上的开发体验差别真挺大的，很多API的调用方法是不一样的
-（有些调用像C++，有些调用有自己的特色）
-基本上所有的代码都要自己去试，写着挺痛苦的
+今天我们神秘的数字图像处理做实验了&lt;br>
+虽然东西是挺简单的，但因为我用的是C#，导致很多现成的代码都没法抄&lt;br>
+再加上虽然&lt;code>Opencvsharp4&lt;/code>宣称是和C++的API是对应的&lt;br>
+但实际上的开发体验差别真挺大的，很多API的调用方法是不一样的&lt;br>
+（有些调用像C++，有些调用有自己的特色）&lt;br>
+基本上所有的代码都要自己去试，写着挺痛苦的&lt;br>
 所以还是讲讲我们做了啥吧&lt;/p>
 &lt;h2 id="0x00读取图像">&amp;lt;0x00&amp;gt;读取图像
-&lt;/h2>&lt;p>这个其实是简单的
-假设需要读取一个图片，比方说是&lt;code>D:/Test/1.png&lt;/code>
+&lt;/h2>&lt;p>这个其实是简单的&lt;br>
+假设需要读取一个图片，比方说是&lt;code>D:/Test/1.png&lt;/code>&lt;br>
 通过Cv2.ImRead()方法就可以读取为内置的矩阵类型了&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-cs" data-lang="cs">&lt;span style="display:flex;">&lt;span>Mat image = Cv2.ImRead(&lt;span style="color:#e6db74">&amp;#34;D:/Test/1.png&amp;#34;&lt;/span>);
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>这个方法可以读取一般常见的图片格式&lt;/p>
-&lt;p>然后，这个方法还可以传入第二个参数，用来控制读取的行为
+&lt;p>然后，这个方法还可以传入第二个参数，用来控制读取的行为&lt;br>
 比方说我们希望获取的是图像的灰度图&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-cs" data-lang="cs">&lt;span style="display:flex;">&lt;span>Mat grayImage = Cv2.ImRead(&lt;span style="color:#e6db74">&amp;#34;D:/Test/1.png&amp;#34;&lt;/span>, ImreadModes.Grayscale);
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;code>ImreadModes&lt;/code>是一个枚举类型，有很多常用的读取行为
-一般也就是这个&lt;code>ImreadModes.Grayscale&lt;/code>获取灰度图用的多
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;code>ImreadModes&lt;/code>是一个枚举类型，有很多常用的读取行为&lt;br>
+一般也就是这个&lt;code>ImreadModes.Grayscale&lt;/code>获取灰度图用的多&lt;br>
 Cv2.ImRead()这个参数的默认值是&lt;code>ImreadModes.Color&lt;/code>，即默认读入带颜色的图像&lt;/p>
 &lt;h2 id="0x01将有色图转换为灰度图">&amp;lt;0x01&amp;gt;将有色图转换为灰度图
-&lt;/h2>&lt;p>前面提到，我们可以指定读取图片时保存为灰度图
-那有没有别的在运行时从有色图转换为灰度图的方法呢？
+&lt;/h2>&lt;p>前面提到，我们可以指定读取图片时保存为灰度图&lt;br>
+那有没有别的在运行时从有色图转换为灰度图的方法呢？&lt;br>
 肯定是有的&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-cs" data-lang="cs">&lt;span style="display:flex;">&lt;span>Mat image = Cv2.ImRead(&lt;span style="color:#e6db74">&amp;#34;D:/Test/1.png&amp;#34;&lt;/span>);
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Mat grayImage = iamge.CvtColor(ColorConversionCodes.RGB2GRAY);
@@ -382,7 +599,7 @@ Cv2.ImRead()这个参数的默认值是&lt;code>ImreadModes.Color&lt;/code>，�
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Mat grayImage = &lt;span style="color:#66d9ef">new&lt;/span>();
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Cv2.CvtColor(image, grayImage, ColorConversionCodes.RGB2GRAY);
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>这样写也行&lt;/p>
-&lt;p>&lt;code>CvtColor()&lt;/code>方法中，传入的&lt;code>ColorConversionCodes&lt;/code>也是个枚举类型
+&lt;p>&lt;code>CvtColor()&lt;/code>方法中，传入的&lt;code>ColorConversionCodes&lt;/code>也是个枚举类型&lt;br>
 里面也有很多常用的转换方式，有什么&lt;code>RGB2BGR&lt;/code>之类的&lt;/p>
 &lt;h2 id="0x02图像按位取反">&amp;lt;0x02&amp;gt;图像按位取反
 &lt;/h2>&lt;p>这个在C#中的写法确实跟C++之类的挺像的&lt;/p>
@@ -391,21 +608,21 @@ Cv2.ImRead()这个参数的默认值是&lt;code>ImreadModes.Color&lt;/code>，�
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Cv2.BitwiseNot(image, inversedImage);
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>当然也可以自己写对每个位的操作，但这样就太麻烦了&lt;/p>
 &lt;h2 id="0x03图像对比度增强">&amp;lt;0x03&amp;gt;图像对比度增强
-&lt;/h2>&lt;p>关于图像对比度增强的办法有很多，我这里用的是&lt;code>限制对比度自适应直方图均衡化&lt;/code>的办法
+&lt;/h2>&lt;p>关于图像对比度增强的办法有很多，我这里用的是&lt;code>限制对比度自适应直方图均衡化&lt;/code>的办法&lt;br>
 （原理我也说不出来，没细学，还是看别的大佬的文章吧）&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-cs" data-lang="cs">&lt;span style="display:flex;">&lt;span>Mat image = Cv2.ImRead(&lt;span style="color:#e6db74">&amp;#34;D:/Test/1.png&amp;#34;&lt;/span>);
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Mat enhancedImage = &lt;span style="color:#66d9ef">new&lt;/span>();
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>CLAHE clahe = Cv2.CreateCLAHE(&lt;span style="color:#ae81ff">3&lt;/span>, &lt;span style="color:#66d9ef">new&lt;/span> OpenCvSharp.Size(&lt;span style="color:#ae81ff">8&lt;/span>, &lt;span style="color:#ae81ff">8&lt;/span>));
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>clahe.Apply(image, enhancedImage);
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>第一个参数表示像素出现的阈值，应该是百分比阈值，默认是40
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>第一个参数表示像素出现的阈值，应该是百分比阈值，默认是40&lt;br>
 第二个参数表示重新分配的大小&lt;/p>
-&lt;p>&lt;code>限制对比度自适应直方图均衡化&lt;/code>的大体过程如下
-首先会统计每种像素的出现次数
-然后跟设置的阈值对比，如果超过阈值，会把多余的像素按设定的大小重新分配给别的类型的像素
+&lt;p>&lt;code>限制对比度自适应直方图均衡化&lt;/code>的大体过程如下&lt;br>
+首先会统计每种像素的出现次数&lt;br>
+然后跟设置的阈值对比，如果超过阈值，会把多余的像素按设定的大小重新分配给别的类型的像素&lt;br>
 总之确实是能增强对比度（真说不大明白）&lt;/p>
 &lt;h2 id="0x04图像二值化">&amp;lt;0x04&amp;gt;图像二值化
-&lt;/h2>&lt;p>所谓二值化算是极端化的灰度图，只有黑白两种颜色
+&lt;/h2>&lt;p>所谓二值化算是极端化的灰度图，只有黑白两种颜色&lt;br>
 代码如下&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-cs" data-lang="cs">&lt;span style="display:flex;">&lt;span>Mat image = Cv2.ImRead(&lt;span style="color:#e6db74">&amp;#34;D:/Test/1.png&amp;#34;&lt;/span>);
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Mat binarizedImage = image.Threshold(&lt;span style="color:#ae81ff">127&lt;/span>, &lt;span style="color:#ae81ff">255&lt;/span>, ThresholdTypes.Binary);
@@ -413,15 +630,13 @@ Cv2.ImRead()这个参数的默认值是&lt;code>ImreadModes.Color&lt;/code>，�
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-cs" data-lang="cs">&lt;span style="display:flex;">&lt;span>Mat image = Cv2.ImRead(&lt;span style="color:#e6db74">&amp;#34;D:/Test/1.png&amp;#34;&lt;/span>);
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Mat binarizedImage = &lt;span style="color:#66d9ef">new&lt;/span>();
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Cv2.Threshold(image, binarizedImage, &lt;span style="color:#ae81ff">127&lt;/span>, &lt;span style="color:#ae81ff">255&lt;/span>, ThresholdTypes.Binary);
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;code>Threshold()&lt;/code>第一个数字是阈值，第二个值算是默认值，具体行为看第三个参数
-&lt;code>ThresholdTypes&lt;/code>是一个枚举类型，表示如何处理图像
-二值化的时候这个值取&lt;code>ThresholdTypes.Binary&lt;/code>，表示像素值大于阈值时用默认值，否则赋值0
-比方说在二值化的时候，某像素值为128&amp;gt;127，那么就会把它的值变为255
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;code>Threshold()&lt;/code>第一个数字是阈值，第二个值算是默认值，具体行为看第三个参数&lt;br>
+&lt;code>ThresholdTypes&lt;/code>是一个枚举类型，表示如何处理图像&lt;br>
+二值化的时候这个值取&lt;code>ThresholdTypes.Binary&lt;/code>，表示像素值大于阈值时用默认值，否则赋值0&lt;br>
+比方说在二值化的时候，某像素值为128&amp;gt;127，那么就会把它的值变为255&lt;br>
 其他的行为这里就不展开了&lt;/p>
 &lt;h2 id="0x05图片相加">&amp;lt;0x05&amp;gt;图片相加
-&lt;/h2>&lt;p>重量级的来了，我折腾了有段时间的东西
-（C#代码参考实在是太少了）&lt;/p>
-&lt;h3 id="同大小图片相加">同大小图片相加
+&lt;/h2>&lt;h3 id="同大小图片相加">同大小图片相加
 &lt;/h3>&lt;p>这个其实很简单，毕竟在Opencv眼里，所有的图片都是矩阵，相加不是很简单嘛&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-cs" data-lang="cs">&lt;span style="display:flex;">&lt;span>Mat A = Cv2.ImRead(&lt;span style="color:#e6db74">&amp;#34;D:/Test/1.png&amp;#34;&lt;/span>);
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Mat B = Cv2.ImRead(&lt;span style="color:#e6db74">&amp;#34;D:/Test/2.png&amp;#34;&lt;/span>);
@@ -432,24 +647,23 @@ Cv2.ImRead()这个参数的默认值是&lt;code>ImreadModes.Color&lt;/code>，�
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-cs" data-lang="cs">&lt;span style="display:flex;">&lt;span>Mat addedImage = A.Add(B);
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-cs" data-lang="cs">&lt;span style="display:flex;">&lt;span>Mat addedImage = &lt;span style="color:#66d9ef">new&lt;/span>();
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Cv2.Add(A, B, addedImage);
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>那我折腾的是啥呢？&lt;/p>
-&lt;h3 id="不同大小的图片相加">不同大小的图片相加
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="不同大小的图片相加">不同大小的图片相加
 &lt;/h3>&lt;p>这些&lt;code>Add()&lt;/code>方法要求矩阵大小一致，相当于要求图片大小一致&lt;/p>
-&lt;p>那如果我们就是要不同大小图片相加，就要多做些处理
-我的处理方式是
-先在比较大的图片中扣出跟小图片一样大小的部分
+&lt;p>那如果我们就是要不同大小图片相加，就要多做些处理&lt;br>
+我的处理方式是&lt;br>
+先在比较大的图片中扣出跟小图片一样大小的部分&lt;br>
 抠出的图和小图片相加，然后再替换掉大图片扣掉的部分&lt;/p>
 &lt;h4 id="怎么抠出图像">怎么抠出图像
-&lt;/h4>&lt;p>&lt;code>Opencvsharp4&lt;/code>中有个&lt;code>Rect&lt;/code>类型，可以用来划出需要的部分
+&lt;/h4>&lt;p>&lt;code>Opencvsharp4&lt;/code>中有个&lt;code>Rect&lt;/code>类型，可以用来划出需要的部分&lt;br>
 类型声明示例&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-cs" data-lang="cs">&lt;span style="display:flex;">&lt;span>Rect rect = &lt;span style="color:#66d9ef">new&lt;/span>(&lt;span style="color:#ae81ff">0&lt;/span>, &lt;span style="color:#ae81ff">0&lt;/span>, &lt;span style="color:#ae81ff">100&lt;/span>, &lt;span style="color:#ae81ff">100&lt;/span>);
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>前面表示起始位置，也即矩形的左上角的点坐标，后面两个参数表示矩形大小&lt;/p>
-&lt;p>对于一个图像，假设我们需要在图像&lt;code>(100, 100)&lt;/code>的地方扣出&lt;code>200*200&lt;/code>大小的图片
+&lt;p>对于一个图像，假设我们需要在图像&lt;code>(100, 100)&lt;/code>的地方扣出&lt;code>200*200&lt;/code>大小的图片&lt;br>
 代码如下&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-cs" data-lang="cs">&lt;span style="display:flex;">&lt;span>Mat image = Cv2.ImRead(&lt;span style="color:#e6db74">&amp;#34;D:/Test/1.png&amp;#34;&lt;/span>);
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Mat temp = image[&lt;span style="color:#66d9ef">new&lt;/span> Rect(&lt;span style="color:#ae81ff">100&lt;/span>, &lt;span style="color:#ae81ff">100&lt;/span>, &lt;span style="color:#ae81ff">200&lt;/span>, &lt;span style="color:#ae81ff">200&lt;/span>)];
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>需要注意的是，这里的&lt;code>temp&lt;/code>获取到的是&lt;code>image&lt;/code>对应区域的引用
-对&lt;code>temp&lt;/code>的所有修改也会反应到&lt;code>image&lt;/code>上
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>需要注意的是，这里的&lt;code>temp&lt;/code>获取到的是&lt;code>image&lt;/code>对应区域的引用&lt;br>
+对&lt;code>temp&lt;/code>的所有修改也会反应到&lt;code>image&lt;/code>上&lt;br>
 如果需要新建一个矩阵，需要用&lt;code>CopyTo()&lt;/code>方法&lt;/p>
 &lt;h4 id="完整的代码">完整的代码
 &lt;/h4>&lt;p>有了上面的基础，现在给出完整的图片相加代码&lt;/p>

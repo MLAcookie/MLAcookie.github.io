@@ -1,26 +1,26 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>OpenCV on MLAcookie</title><link>https://mlacookie.github.io/tags/opencv/</link><description>Recent content in OpenCV on MLAcookie</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Mon, 18 Mar 2024 12:59:53 +0000</lastBuildDate><atom:link href="https://mlacookie.github.io/tags/opencv/index.xml" rel="self" type="application/rss+xml"/><item><title>关于我用C#写Opencv这件事-03</title><link>https://mlacookie.github.io/article/categories/opencv/%E5%85%B3%E4%BA%8E%E6%88%91%E7%94%A8c%23%E5%86%99opencv%E8%BF%99%E4%BB%B6%E4%BA%8B-03/</link><pubDate>Mon, 18 Mar 2024 12:59:53 +0000</pubDate><guid>https://mlacookie.github.io/article/categories/opencv/%E5%85%B3%E4%BA%8E%E6%88%91%E7%94%A8c%23%E5%86%99opencv%E8%BF%99%E4%BB%B6%E4%BA%8B-03/</guid><description>&lt;p>（说实话我有点后悔用C#写Opencv了）
-今天我们神秘的数字图像处理做实验了
-虽然东西是挺简单的，但因为我用的是C#，导致很多现成的代码都没法抄
-再加上虽然&lt;code>Opencvsharp4&lt;/code>宣称是和C++的API是对应的
-但实际上的开发体验差别真挺大的，很多API的调用方法是不一样的
-（有些调用像C++，有些调用有自己的特色）
-基本上所有的代码都要自己去试，写着挺痛苦的
+今天我们神秘的数字图像处理做实验了&lt;br>
+虽然东西是挺简单的，但因为我用的是C#，导致很多现成的代码都没法抄&lt;br>
+再加上虽然&lt;code>Opencvsharp4&lt;/code>宣称是和C++的API是对应的&lt;br>
+但实际上的开发体验差别真挺大的，很多API的调用方法是不一样的&lt;br>
+（有些调用像C++，有些调用有自己的特色）&lt;br>
+基本上所有的代码都要自己去试，写着挺痛苦的&lt;br>
 所以还是讲讲我们做了啥吧&lt;/p>
 &lt;h2 id="0x00读取图像">&amp;lt;0x00&amp;gt;读取图像
-&lt;/h2>&lt;p>这个其实是简单的
-假设需要读取一个图片，比方说是&lt;code>D:/Test/1.png&lt;/code>
+&lt;/h2>&lt;p>这个其实是简单的&lt;br>
+假设需要读取一个图片，比方说是&lt;code>D:/Test/1.png&lt;/code>&lt;br>
 通过Cv2.ImRead()方法就可以读取为内置的矩阵类型了&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-cs" data-lang="cs">&lt;span style="display:flex;">&lt;span>Mat image = Cv2.ImRead(&lt;span style="color:#e6db74">&amp;#34;D:/Test/1.png&amp;#34;&lt;/span>);
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>这个方法可以读取一般常见的图片格式&lt;/p>
-&lt;p>然后，这个方法还可以传入第二个参数，用来控制读取的行为
+&lt;p>然后，这个方法还可以传入第二个参数，用来控制读取的行为&lt;br>
 比方说我们希望获取的是图像的灰度图&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-cs" data-lang="cs">&lt;span style="display:flex;">&lt;span>Mat grayImage = Cv2.ImRead(&lt;span style="color:#e6db74">&amp;#34;D:/Test/1.png&amp;#34;&lt;/span>, ImreadModes.Grayscale);
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;code>ImreadModes&lt;/code>是一个枚举类型，有很多常用的读取行为
-一般也就是这个&lt;code>ImreadModes.Grayscale&lt;/code>获取灰度图用的多
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;code>ImreadModes&lt;/code>是一个枚举类型，有很多常用的读取行为&lt;br>
+一般也就是这个&lt;code>ImreadModes.Grayscale&lt;/code>获取灰度图用的多&lt;br>
 Cv2.ImRead()这个参数的默认值是&lt;code>ImreadModes.Color&lt;/code>，即默认读入带颜色的图像&lt;/p>
 &lt;h2 id="0x01将有色图转换为灰度图">&amp;lt;0x01&amp;gt;将有色图转换为灰度图
-&lt;/h2>&lt;p>前面提到，我们可以指定读取图片时保存为灰度图
-那有没有别的在运行时从有色图转换为灰度图的方法呢？
+&lt;/h2>&lt;p>前面提到，我们可以指定读取图片时保存为灰度图&lt;br>
+那有没有别的在运行时从有色图转换为灰度图的方法呢？&lt;br>
 肯定是有的&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-cs" data-lang="cs">&lt;span style="display:flex;">&lt;span>Mat image = Cv2.ImRead(&lt;span style="color:#e6db74">&amp;#34;D:/Test/1.png&amp;#34;&lt;/span>);
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Mat grayImage = iamge.CvtColor(ColorConversionCodes.RGB2GRAY);
@@ -30,7 +30,7 @@ Cv2.ImRead()这个参数的默认值是&lt;code>ImreadModes.Color&lt;/code>，�
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Mat grayImage = &lt;span style="color:#66d9ef">new&lt;/span>();
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Cv2.CvtColor(image, grayImage, ColorConversionCodes.RGB2GRAY);
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>这样写也行&lt;/p>
-&lt;p>&lt;code>CvtColor()&lt;/code>方法中，传入的&lt;code>ColorConversionCodes&lt;/code>也是个枚举类型
+&lt;p>&lt;code>CvtColor()&lt;/code>方法中，传入的&lt;code>ColorConversionCodes&lt;/code>也是个枚举类型&lt;br>
 里面也有很多常用的转换方式，有什么&lt;code>RGB2BGR&lt;/code>之类的&lt;/p>
 &lt;h2 id="0x02图像按位取反">&amp;lt;0x02&amp;gt;图像按位取反
 &lt;/h2>&lt;p>这个在C#中的写法确实跟C++之类的挺像的&lt;/p>
@@ -39,21 +39,21 @@ Cv2.ImRead()这个参数的默认值是&lt;code>ImreadModes.Color&lt;/code>，�
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Cv2.BitwiseNot(image, inversedImage);
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>当然也可以自己写对每个位的操作，但这样就太麻烦了&lt;/p>
 &lt;h2 id="0x03图像对比度增强">&amp;lt;0x03&amp;gt;图像对比度增强
-&lt;/h2>&lt;p>关于图像对比度增强的办法有很多，我这里用的是&lt;code>限制对比度自适应直方图均衡化&lt;/code>的办法
+&lt;/h2>&lt;p>关于图像对比度增强的办法有很多，我这里用的是&lt;code>限制对比度自适应直方图均衡化&lt;/code>的办法&lt;br>
 （原理我也说不出来，没细学，还是看别的大佬的文章吧）&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-cs" data-lang="cs">&lt;span style="display:flex;">&lt;span>Mat image = Cv2.ImRead(&lt;span style="color:#e6db74">&amp;#34;D:/Test/1.png&amp;#34;&lt;/span>);
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Mat enhancedImage = &lt;span style="color:#66d9ef">new&lt;/span>();
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>CLAHE clahe = Cv2.CreateCLAHE(&lt;span style="color:#ae81ff">3&lt;/span>, &lt;span style="color:#66d9ef">new&lt;/span> OpenCvSharp.Size(&lt;span style="color:#ae81ff">8&lt;/span>, &lt;span style="color:#ae81ff">8&lt;/span>));
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>clahe.Apply(image, enhancedImage);
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>第一个参数表示像素出现的阈值，应该是百分比阈值，默认是40
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>第一个参数表示像素出现的阈值，应该是百分比阈值，默认是40&lt;br>
 第二个参数表示重新分配的大小&lt;/p>
-&lt;p>&lt;code>限制对比度自适应直方图均衡化&lt;/code>的大体过程如下
-首先会统计每种像素的出现次数
-然后跟设置的阈值对比，如果超过阈值，会把多余的像素按设定的大小重新分配给别的类型的像素
+&lt;p>&lt;code>限制对比度自适应直方图均衡化&lt;/code>的大体过程如下&lt;br>
+首先会统计每种像素的出现次数&lt;br>
+然后跟设置的阈值对比，如果超过阈值，会把多余的像素按设定的大小重新分配给别的类型的像素&lt;br>
 总之确实是能增强对比度（真说不大明白）&lt;/p>
 &lt;h2 id="0x04图像二值化">&amp;lt;0x04&amp;gt;图像二值化
-&lt;/h2>&lt;p>所谓二值化算是极端化的灰度图，只有黑白两种颜色
+&lt;/h2>&lt;p>所谓二值化算是极端化的灰度图，只有黑白两种颜色&lt;br>
 代码如下&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-cs" data-lang="cs">&lt;span style="display:flex;">&lt;span>Mat image = Cv2.ImRead(&lt;span style="color:#e6db74">&amp;#34;D:/Test/1.png&amp;#34;&lt;/span>);
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Mat binarizedImage = image.Threshold(&lt;span style="color:#ae81ff">127&lt;/span>, &lt;span style="color:#ae81ff">255&lt;/span>, ThresholdTypes.Binary);
@@ -61,15 +61,13 @@ Cv2.ImRead()这个参数的默认值是&lt;code>ImreadModes.Color&lt;/code>，�
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-cs" data-lang="cs">&lt;span style="display:flex;">&lt;span>Mat image = Cv2.ImRead(&lt;span style="color:#e6db74">&amp;#34;D:/Test/1.png&amp;#34;&lt;/span>);
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Mat binarizedImage = &lt;span style="color:#66d9ef">new&lt;/span>();
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Cv2.Threshold(image, binarizedImage, &lt;span style="color:#ae81ff">127&lt;/span>, &lt;span style="color:#ae81ff">255&lt;/span>, ThresholdTypes.Binary);
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;code>Threshold()&lt;/code>第一个数字是阈值，第二个值算是默认值，具体行为看第三个参数
-&lt;code>ThresholdTypes&lt;/code>是一个枚举类型，表示如何处理图像
-二值化的时候这个值取&lt;code>ThresholdTypes.Binary&lt;/code>，表示像素值大于阈值时用默认值，否则赋值0
-比方说在二值化的时候，某像素值为128&amp;gt;127，那么就会把它的值变为255
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;code>Threshold()&lt;/code>第一个数字是阈值，第二个值算是默认值，具体行为看第三个参数&lt;br>
+&lt;code>ThresholdTypes&lt;/code>是一个枚举类型，表示如何处理图像&lt;br>
+二值化的时候这个值取&lt;code>ThresholdTypes.Binary&lt;/code>，表示像素值大于阈值时用默认值，否则赋值0&lt;br>
+比方说在二值化的时候，某像素值为128&amp;gt;127，那么就会把它的值变为255&lt;br>
 其他的行为这里就不展开了&lt;/p>
 &lt;h2 id="0x05图片相加">&amp;lt;0x05&amp;gt;图片相加
-&lt;/h2>&lt;p>重量级的来了，我折腾了有段时间的东西
-（C#代码参考实在是太少了）&lt;/p>
-&lt;h3 id="同大小图片相加">同大小图片相加
+&lt;/h2>&lt;h3 id="同大小图片相加">同大小图片相加
 &lt;/h3>&lt;p>这个其实很简单，毕竟在Opencv眼里，所有的图片都是矩阵，相加不是很简单嘛&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-cs" data-lang="cs">&lt;span style="display:flex;">&lt;span>Mat A = Cv2.ImRead(&lt;span style="color:#e6db74">&amp;#34;D:/Test/1.png&amp;#34;&lt;/span>);
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Mat B = Cv2.ImRead(&lt;span style="color:#e6db74">&amp;#34;D:/Test/2.png&amp;#34;&lt;/span>);
@@ -80,24 +78,23 @@ Cv2.ImRead()这个参数的默认值是&lt;code>ImreadModes.Color&lt;/code>，�
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-cs" data-lang="cs">&lt;span style="display:flex;">&lt;span>Mat addedImage = A.Add(B);
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-cs" data-lang="cs">&lt;span style="display:flex;">&lt;span>Mat addedImage = &lt;span style="color:#66d9ef">new&lt;/span>();
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Cv2.Add(A, B, addedImage);
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>那我折腾的是啥呢？&lt;/p>
-&lt;h3 id="不同大小的图片相加">不同大小的图片相加
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="不同大小的图片相加">不同大小的图片相加
 &lt;/h3>&lt;p>这些&lt;code>Add()&lt;/code>方法要求矩阵大小一致，相当于要求图片大小一致&lt;/p>
-&lt;p>那如果我们就是要不同大小图片相加，就要多做些处理
-我的处理方式是
-先在比较大的图片中扣出跟小图片一样大小的部分
+&lt;p>那如果我们就是要不同大小图片相加，就要多做些处理&lt;br>
+我的处理方式是&lt;br>
+先在比较大的图片中扣出跟小图片一样大小的部分&lt;br>
 抠出的图和小图片相加，然后再替换掉大图片扣掉的部分&lt;/p>
 &lt;h4 id="怎么抠出图像">怎么抠出图像
-&lt;/h4>&lt;p>&lt;code>Opencvsharp4&lt;/code>中有个&lt;code>Rect&lt;/code>类型，可以用来划出需要的部分
+&lt;/h4>&lt;p>&lt;code>Opencvsharp4&lt;/code>中有个&lt;code>Rect&lt;/code>类型，可以用来划出需要的部分&lt;br>
 类型声明示例&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-cs" data-lang="cs">&lt;span style="display:flex;">&lt;span>Rect rect = &lt;span style="color:#66d9ef">new&lt;/span>(&lt;span style="color:#ae81ff">0&lt;/span>, &lt;span style="color:#ae81ff">0&lt;/span>, &lt;span style="color:#ae81ff">100&lt;/span>, &lt;span style="color:#ae81ff">100&lt;/span>);
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>前面表示起始位置，也即矩形的左上角的点坐标，后面两个参数表示矩形大小&lt;/p>
-&lt;p>对于一个图像，假设我们需要在图像&lt;code>(100, 100)&lt;/code>的地方扣出&lt;code>200*200&lt;/code>大小的图片
+&lt;p>对于一个图像，假设我们需要在图像&lt;code>(100, 100)&lt;/code>的地方扣出&lt;code>200*200&lt;/code>大小的图片&lt;br>
 代码如下&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-cs" data-lang="cs">&lt;span style="display:flex;">&lt;span>Mat image = Cv2.ImRead(&lt;span style="color:#e6db74">&amp;#34;D:/Test/1.png&amp;#34;&lt;/span>);
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Mat temp = image[&lt;span style="color:#66d9ef">new&lt;/span> Rect(&lt;span style="color:#ae81ff">100&lt;/span>, &lt;span style="color:#ae81ff">100&lt;/span>, &lt;span style="color:#ae81ff">200&lt;/span>, &lt;span style="color:#ae81ff">200&lt;/span>)];
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>需要注意的是，这里的&lt;code>temp&lt;/code>获取到的是&lt;code>image&lt;/code>对应区域的引用
-对&lt;code>temp&lt;/code>的所有修改也会反应到&lt;code>image&lt;/code>上
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>需要注意的是，这里的&lt;code>temp&lt;/code>获取到的是&lt;code>image&lt;/code>对应区域的引用&lt;br>
+对&lt;code>temp&lt;/code>的所有修改也会反应到&lt;code>image&lt;/code>上&lt;br>
 如果需要新建一个矩阵，需要用&lt;code>CopyTo()&lt;/code>方法&lt;/p>
 &lt;h4 id="完整的代码">完整的代码
 &lt;/h4>&lt;p>有了上面的基础，现在给出完整的图片相加代码&lt;/p>
