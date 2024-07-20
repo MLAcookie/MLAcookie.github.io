@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>WPF on MLAcookie</title><link>http://localhost:1313/categories/wpf/</link><description>Recent content in WPF on MLAcookie</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Thu, 07 Mar 2024 01:10:14 +0000</lastBuildDate><atom:link href="http://localhost:1313/categories/wpf/index.xml" rel="self" type="application/rss+xml"/><item><title>WPF开发过程中InitializeComponent()神秘报错</title><link>http://localhost:1313/article/categories/wpf/wpf%E5%BC%80%E5%8F%91%E8%BF%87%E7%A8%8B%E4%B8%ADinitializecomponent-%E7%A5%9E%E7%A7%98%E6%8A%A5%E9%94%99/</link><pubDate>Thu, 07 Mar 2024 01:10:14 +0000</pubDate><guid>http://localhost:1313/article/categories/wpf/wpf%E5%BC%80%E5%8F%91%E8%BF%87%E7%A8%8B%E4%B8%ADinitializecomponent-%E7%A5%9E%E7%A7%98%E6%8A%A5%E9%94%99/</guid><description>&lt;p>最近在写一个WPF项目，然后今天遇到个非常神秘的问题
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>WPF on MLAcookie</title><link>https://mlacookie.github.io/categories/wpf/</link><description>Recent content in WPF on MLAcookie</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Thu, 07 Mar 2024 01:10:14 +0000</lastBuildDate><atom:link href="https://mlacookie.github.io/categories/wpf/index.xml" rel="self" type="application/rss+xml"/><item><title>WPF开发过程中InitializeComponent()神秘报错</title><link>https://mlacookie.github.io/article/categories/wpf/wpf%E5%BC%80%E5%8F%91%E8%BF%87%E7%A8%8B%E4%B8%ADinitializecomponent-%E7%A5%9E%E7%A7%98%E6%8A%A5%E9%94%99/</link><pubDate>Thu, 07 Mar 2024 01:10:14 +0000</pubDate><guid>https://mlacookie.github.io/article/categories/wpf/wpf%E5%BC%80%E5%8F%91%E8%BF%87%E7%A8%8B%E4%B8%ADinitializecomponent-%E7%A5%9E%E7%A7%98%E6%8A%A5%E9%94%99/</guid><description>&lt;p>最近在写一个WPF项目，然后今天遇到个非常神秘的问题
 就是界面的&lt;code>InitializeComponent()&lt;/code>莫名奇妙报错找不到方法了
 我仔细检查代码，也没发现问题
 而且最抽象的是，程序也能正常运行
@@ -9,12 +9,12 @@
 据说是因为分布类的问题，实际编译时生成的代码是正确的
 但是&lt;code>IntelliCode&lt;/code>依赖的文件可能没更新上
 然后就开始误报找不到&lt;code>InitializeComponent()&lt;/code>&lt;/p>
-&lt;p>总之还是一个很神秘的问题&lt;/p></description></item><item><title>WPF学习笔记06-关于ListView</title><link>http://localhost:1313/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B006-%E5%85%B3%E4%BA%8Elistview/</link><pubDate>Mon, 18 Sep 2023 20:10:22 +0000</pubDate><guid>http://localhost:1313/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B006-%E5%85%B3%E4%BA%8Elistview/</guid><description>&lt;h2 id="0x00-listview是什么">&amp;lt;0x00&amp;gt; ListView是什么
+&lt;p>总之还是一个很神秘的问题&lt;/p></description></item><item><title>WPF学习笔记06-关于ListView</title><link>https://mlacookie.github.io/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B006-%E5%85%B3%E4%BA%8Elistview/</link><pubDate>Mon, 18 Sep 2023 20:10:22 +0000</pubDate><guid>https://mlacookie.github.io/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B006-%E5%85%B3%E4%BA%8Elistview/</guid><description>&lt;h2 id="0x00-listview是什么">&amp;lt;0x00&amp;gt; ListView是什么
 &lt;/h2>&lt;p>贴张图就好了&lt;br>
-&lt;img src="http://localhost:1313/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B006-%E5%85%B3%E4%BA%8Elistview/picture/1.png"
+&lt;img src="https://mlacookie.github.io/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B006-%E5%85%B3%E4%BA%8Elistview/picture/1.png"
 width="315"
 height="87"
-srcset="http://localhost:1313/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B006-%E5%85%B3%E4%BA%8Elistview/picture/1_hue0b9ca22afd1cd4568a367a5ebfabce3_22133_480x0_resize_box_3.png 480w, http://localhost:1313/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B006-%E5%85%B3%E4%BA%8Elistview/picture/1_hue0b9ca22afd1cd4568a367a5ebfabce3_22133_1024x0_resize_box_3.png 1024w"
+srcset="https://mlacookie.github.io/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B006-%E5%85%B3%E4%BA%8Elistview/picture/1_hue0b9ca22afd1cd4568a367a5ebfabce3_22133_480x0_resize_box_3.png 480w, https://mlacookie.github.io/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B006-%E5%85%B3%E4%BA%8Elistview/picture/1_hue0b9ca22afd1cd4568a367a5ebfabce3_22133_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 alt="微软给的图"
 class="gallery-image"
@@ -50,10 +50,10 @@ data-flex-basis="868px"
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>演示的结果&lt;br>
-&lt;img src="http://localhost:1313/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B006-%E5%85%B3%E4%BA%8Elistview/picture/2.png"
+&lt;img src="https://mlacookie.github.io/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B006-%E5%85%B3%E4%BA%8Elistview/picture/2.png"
 width="307"
 height="130"
-srcset="http://localhost:1313/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B006-%E5%85%B3%E4%BA%8Elistview/picture/2_huc689fbb8aa3e0a3d62aba518f5a27861_10622_480x0_resize_box_3.png 480w, http://localhost:1313/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B006-%E5%85%B3%E4%BA%8Elistview/picture/2_huc689fbb8aa3e0a3d62aba518f5a27861_10622_1024x0_resize_box_3.png 1024w"
+srcset="https://mlacookie.github.io/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B006-%E5%85%B3%E4%BA%8Elistview/picture/2_huc689fbb8aa3e0a3d62aba518f5a27861_10622_480x0_resize_box_3.png 480w, https://mlacookie.github.io/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B006-%E5%85%B3%E4%BA%8Elistview/picture/2_huc689fbb8aa3e0a3d62aba518f5a27861_10622_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 alt="演示"
 class="gallery-image"
@@ -82,10 +82,10 @@ data-flex-basis="566px"
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;ListViewItem&lt;/span> &lt;span style="color:#a6e22e">Content=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;something5&amp;#34;&lt;/span>&lt;span style="color:#f92672">/&amp;gt;&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;/ListView&amp;gt;&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">&amp;lt;/Window&amp;gt;&lt;/span>
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;img src="http://localhost:1313/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B006-%E5%85%B3%E4%BA%8Elistview/picture/3.png"
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;img src="https://mlacookie.github.io/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B006-%E5%85%B3%E4%BA%8Elistview/picture/3.png"
 width="288"
 height="132"
-srcset="http://localhost:1313/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B006-%E5%85%B3%E4%BA%8Elistview/picture/3_huf653060d42d5d900385e9e67743f908b_17356_480x0_resize_box_3.png 480w, http://localhost:1313/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B006-%E5%85%B3%E4%BA%8Elistview/picture/3_huf653060d42d5d900385e9e67743f908b_17356_1024x0_resize_box_3.png 1024w"
+srcset="https://mlacookie.github.io/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B006-%E5%85%B3%E4%BA%8Elistview/picture/3_huf653060d42d5d900385e9e67743f908b_17356_480x0_resize_box_3.png 480w, https://mlacookie.github.io/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B006-%E5%85%B3%E4%BA%8Elistview/picture/3_huf653060d42d5d900385e9e67743f908b_17356_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 alt="效果"
 class="gallery-image"
@@ -118,10 +118,10 @@ data-flex-basis="523px"
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">&amp;lt;/Window&amp;gt;&lt;/span>
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>通过&lt;code>ListView.ItemContainerStyle&lt;/code>里面设置&lt;code>ListViewItem&lt;/code>的样式&lt;br>
 样式就按一般的方式走，这里就随便设置了下，&lt;code>Triggers&lt;/code>也能设置，这里懒得写了&lt;br>
-&lt;img src="http://localhost:1313/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B006-%E5%85%B3%E4%BA%8Elistview/picture/4.png"
+&lt;img src="https://mlacookie.github.io/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B006-%E5%85%B3%E4%BA%8Elistview/picture/4.png"
 width="406"
 height="179"
-srcset="http://localhost:1313/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B006-%E5%85%B3%E4%BA%8Elistview/picture/4_hu5440850b50f6def420e69e8163d9bf67_20347_480x0_resize_box_3.png 480w, http://localhost:1313/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B006-%E5%85%B3%E4%BA%8Elistview/picture/4_hu5440850b50f6def420e69e8163d9bf67_20347_1024x0_resize_box_3.png 1024w"
+srcset="https://mlacookie.github.io/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B006-%E5%85%B3%E4%BA%8Elistview/picture/4_hu5440850b50f6def420e69e8163d9bf67_20347_480x0_resize_box_3.png 480w, https://mlacookie.github.io/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B006-%E5%85%B3%E4%BA%8Elistview/picture/4_hu5440850b50f6def420e69e8163d9bf67_20347_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 alt="ItemViewStyle方法"
 class="gallery-image"
@@ -174,10 +174,10 @@ data-flex-basis="544px"
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;/ListView.ItemTemplate&amp;gt;&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;/ListView&amp;gt;&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">&amp;lt;/Window&amp;gt;&lt;/span>
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;img src="http://localhost:1313/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B006-%E5%85%B3%E4%BA%8Elistview/picture/5.png"
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;img src="https://mlacookie.github.io/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B006-%E5%85%B3%E4%BA%8Elistview/picture/5.png"
 width="385"
 height="193"
-srcset="http://localhost:1313/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B006-%E5%85%B3%E4%BA%8Elistview/picture/5_hue2da597cc1dc19341977b38550e7e0db_19451_480x0_resize_box_3.png 480w, http://localhost:1313/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B006-%E5%85%B3%E4%BA%8Elistview/picture/5_hue2da597cc1dc19341977b38550e7e0db_19451_1024x0_resize_box_3.png 1024w"
+srcset="https://mlacookie.github.io/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B006-%E5%85%B3%E4%BA%8Elistview/picture/5_hue2da597cc1dc19341977b38550e7e0db_19451_480x0_resize_box_3.png 480w, https://mlacookie.github.io/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B006-%E5%85%B3%E4%BA%8Elistview/picture/5_hue2da597cc1dc19341977b38550e7e0db_19451_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 alt="ItemTemplate方法"
 class="gallery-image"
@@ -217,10 +217,10 @@ data-flex-basis="478px"
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;/ListView.ItemTemplate&amp;gt;&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;/ListView&amp;gt;&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">&amp;lt;/Window&amp;gt;&lt;/span>
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;img src="http://localhost:1313/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B006-%E5%85%B3%E4%BA%8Elistview/picture/6.png"
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;img src="https://mlacookie.github.io/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B006-%E5%85%B3%E4%BA%8Elistview/picture/6.png"
 width="400"
 height="191"
-srcset="http://localhost:1313/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B006-%E5%85%B3%E4%BA%8Elistview/picture/6_hu128eb6461fdeee940327f8897731e419_24517_480x0_resize_box_3.png 480w, http://localhost:1313/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B006-%E5%85%B3%E4%BA%8Elistview/picture/6_hu128eb6461fdeee940327f8897731e419_24517_1024x0_resize_box_3.png 1024w"
+srcset="https://mlacookie.github.io/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B006-%E5%85%B3%E4%BA%8Elistview/picture/6_hu128eb6461fdeee940327f8897731e419_24517_480x0_resize_box_3.png 480w, https://mlacookie.github.io/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B006-%E5%85%B3%E4%BA%8Elistview/picture/6_hu128eb6461fdeee940327f8897731e419_24517_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 alt="合并"
 class="gallery-image"
@@ -280,10 +280,10 @@ data-flex-basis="502px"
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;img src="http://localhost:1313/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B006-%E5%85%B3%E4%BA%8Elistview/picture/7.png"
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;img src="https://mlacookie.github.io/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B006-%E5%85%B3%E4%BA%8Elistview/picture/7.png"
 width="400"
 height="400"
-srcset="http://localhost:1313/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B006-%E5%85%B3%E4%BA%8Elistview/picture/7_hu6ca762e6e758fea51c627b851f80f79c_32655_480x0_resize_box_3.png 480w, http://localhost:1313/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B006-%E5%85%B3%E4%BA%8Elistview/picture/7_hu6ca762e6e758fea51c627b851f80f79c_32655_1024x0_resize_box_3.png 1024w"
+srcset="https://mlacookie.github.io/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B006-%E5%85%B3%E4%BA%8Elistview/picture/7_hu6ca762e6e758fea51c627b851f80f79c_32655_480x0_resize_box_3.png 480w, https://mlacookie.github.io/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B006-%E5%85%B3%E4%BA%8Elistview/picture/7_hu6ca762e6e758fea51c627b851f80f79c_32655_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 alt="简单的演示"
 class="gallery-image"
@@ -352,7 +352,7 @@ data-flex-basis="240px"
 这里就不细讲了&lt;/p>
 &lt;h3 id="网格布局gridview">网格布局GridView
 &lt;/h3>&lt;p>博客最上面的图就是使用了&lt;code>GridView&lt;/code>的效果&lt;br>
-&lt;img src="http://localhost:1313/Blog/%e7%bb%99%e4%be%a7%e8%be%b9%e6%a0%8f%e5%8a%a0%e4%b8%aaB%e7%ab%99%e5%9b%be%e6%a0%87/picture/1.jpg"
+&lt;img src="https://mlacookie.github.io/Blog/%e7%bb%99%e4%be%a7%e8%be%b9%e6%a0%8f%e5%8a%a0%e4%b8%aaB%e7%ab%99%e5%9b%be%e6%a0%87/picture/1.jpg"
 loading="lazy"
 alt="这张图"
 >&lt;br>
@@ -380,7 +380,7 @@ alt="这张图"
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;/ListView.View&amp;gt;&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;/ListView&amp;gt;&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">&amp;lt;/Window&amp;gt;&lt;/span>
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;img src="http://localhost:1313/8.png"
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;img src="https://mlacookie.github.io/8.png"
 loading="lazy"
 alt="emmm"
 >&lt;br>
@@ -447,7 +447,7 @@ alt="emmm"
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">ItemsSource=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;{Binding SomeItems}&amp;#34;&lt;/span>&lt;span style="color:#f92672">/&amp;gt;&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;/Grid&amp;gt;&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">&amp;lt;/Window&amp;gt;&lt;/span>
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;img src="http://localhost:1313/9.png"
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;img src="https://mlacookie.github.io/9.png"
 loading="lazy"
 alt="效果"
 >&lt;br>
@@ -471,7 +471,7 @@ alt="效果"
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;/ListView.View&amp;gt;&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;/ListView&amp;gt;&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">&amp;lt;/Window&amp;gt;&lt;/span>
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;img src="http://localhost:1313/10.png"
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;img src="https://mlacookie.github.io/10.png"
 loading="lazy"
 alt="演示"
 >&lt;br>
@@ -501,11 +501,11 @@ alt="演示"
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;/ListView.View&amp;gt;&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;/ListView&amp;gt;&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">&amp;lt;/Window&amp;gt;&lt;/span>
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;img src="http://localhost:1313/11.png"
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;img src="https://mlacookie.github.io/11.png"
 loading="lazy"
 alt="演示"
 >&lt;/p>
-&lt;p>写这篇博客真的花了不少时间，大家看得开心就好&lt;/p></description></item><item><title>WPF学习笔记05-怎么用ModernWPF实现带导航的界面</title><link>http://localhost:1313/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B005-%E6%80%8E%E4%B9%88%E7%94%A8modernwpf%E5%AE%9E%E7%8E%B0%E5%B8%A6%E5%AF%BC%E8%88%AA%E7%9A%84%E7%95%8C%E9%9D%A2/</link><pubDate>Wed, 30 Aug 2023 13:28:48 +0000</pubDate><guid>http://localhost:1313/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B005-%E6%80%8E%E4%B9%88%E7%94%A8modernwpf%E5%AE%9E%E7%8E%B0%E5%B8%A6%E5%AF%BC%E8%88%AA%E7%9A%84%E7%95%8C%E9%9D%A2/</guid><description>&lt;h2 id="0x00-介绍下modernwpf">&amp;lt;0x00&amp;gt; 介绍下ModernWPF
+&lt;p>写这篇博客真的花了不少时间，大家看得开心就好&lt;/p></description></item><item><title>WPF学习笔记05-怎么用ModernWPF实现带导航的界面</title><link>https://mlacookie.github.io/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B005-%E6%80%8E%E4%B9%88%E7%94%A8modernwpf%E5%AE%9E%E7%8E%B0%E5%B8%A6%E5%AF%BC%E8%88%AA%E7%9A%84%E7%95%8C%E9%9D%A2/</link><pubDate>Wed, 30 Aug 2023 13:28:48 +0000</pubDate><guid>https://mlacookie.github.io/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B005-%E6%80%8E%E4%B9%88%E7%94%A8modernwpf%E5%AE%9E%E7%8E%B0%E5%B8%A6%E5%AF%BC%E8%88%AA%E7%9A%84%E7%95%8C%E9%9D%A2/</guid><description>&lt;h2 id="0x00-介绍下modernwpf">&amp;lt;0x00&amp;gt; 介绍下ModernWPF
 &lt;/h2>&lt;p>这个其实是个&lt;code>Nuget&lt;/code>包，里面有很多现代化设计的&lt;code>WPF&lt;/code>组件&lt;br>
 不是之前说嘛，在&lt;code>WPF&lt;/code>里面做现代化的&lt;code>UI&lt;/code>设计很复杂&lt;br>
 现在差不多就是别人已经把最复杂的实现写完了，我们只要调用就好了&lt;/p>
@@ -513,10 +513,10 @@ alt="演示"
 里面的很多用法是参考&lt;code>UWP&lt;/code>的(我具体用下来就是&lt;code>UWP&lt;/code>的api级复刻)&lt;br>
 所以有些组件的用法跟&lt;code>WPF&lt;/code>的常见实现不一样(就比如这里讲的导航界面)&lt;/p>
 &lt;p>安装的话用&lt;code>VS&lt;/code>的&lt;code>Nuget包管理器&lt;/code>就可以&lt;br>
-&lt;img src="http://localhost:1313/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B005-%E6%80%8E%E4%B9%88%E7%94%A8modernwpf%E5%AE%9E%E7%8E%B0%E5%B8%A6%E5%AF%BC%E8%88%AA%E7%9A%84%E7%95%8C%E9%9D%A2/picture/1.png"
+&lt;img src="https://mlacookie.github.io/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B005-%E6%80%8E%E4%B9%88%E7%94%A8modernwpf%E5%AE%9E%E7%8E%B0%E5%B8%A6%E5%AF%BC%E8%88%AA%E7%9A%84%E7%95%8C%E9%9D%A2/picture/1.png"
 width="1630"
 height="796"
-srcset="http://localhost:1313/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B005-%E6%80%8E%E4%B9%88%E7%94%A8modernwpf%E5%AE%9E%E7%8E%B0%E5%B8%A6%E5%AF%BC%E8%88%AA%E7%9A%84%E7%95%8C%E9%9D%A2/picture/1_hu88c179f03f2820dfce5e7181f627247e_54847_480x0_resize_box_3.png 480w, http://localhost:1313/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B005-%E6%80%8E%E4%B9%88%E7%94%A8modernwpf%E5%AE%9E%E7%8E%B0%E5%B8%A6%E5%AF%BC%E8%88%AA%E7%9A%84%E7%95%8C%E9%9D%A2/picture/1_hu88c179f03f2820dfce5e7181f627247e_54847_1024x0_resize_box_3.png 1024w"
+srcset="https://mlacookie.github.io/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B005-%E6%80%8E%E4%B9%88%E7%94%A8modernwpf%E5%AE%9E%E7%8E%B0%E5%B8%A6%E5%AF%BC%E8%88%AA%E7%9A%84%E7%95%8C%E9%9D%A2/picture/1_hu88c179f03f2820dfce5e7181f627247e_54847_480x0_resize_box_3.png 480w, https://mlacookie.github.io/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B005-%E6%80%8E%E4%B9%88%E7%94%A8modernwpf%E5%AE%9E%E7%8E%B0%E5%B8%A6%E5%AF%BC%E8%88%AA%E7%9A%84%E7%95%8C%E9%9D%A2/picture/1_hu88c179f03f2820dfce5e7181f627247e_54847_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 alt="认准Nuget包"
 class="gallery-image"
@@ -742,7 +742,7 @@ data-flex-basis="491px"
 某种程度上确实不大符合&lt;code>MVVM&lt;/code>的定义&lt;br>
 (我知道有别的方式可以不单独写VM，但别的方式确实没单独写VM直观)&lt;br>
 而第二种方法把前端的事情聚合在一起，那些新的页面都是在前端new出来的&lt;br>
-有啥好处呢，主要还是方便管理吧，功能更加聚合了&lt;/p></description></item><item><title>WPF学习笔记04-MVVM和别的一些东西的补充</title><link>http://localhost:1313/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B004-mvvm%E5%92%8C%E5%88%AB%E7%9A%84%E4%B8%80%E4%BA%9B%E4%B8%9C%E8%A5%BF%E7%9A%84%E8%A1%A5%E5%85%85/</link><pubDate>Wed, 23 Aug 2023 00:49:54 +0000</pubDate><guid>http://localhost:1313/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B004-mvvm%E5%92%8C%E5%88%AB%E7%9A%84%E4%B8%80%E4%BA%9B%E4%B8%9C%E8%A5%BF%E7%9A%84%E8%A1%A5%E5%85%85/</guid><description>&lt;h2 id="0x00-相对更正规的mvvm的写法">&amp;lt;0x00&amp;gt; 相对更正规的MVVM的写法
+有啥好处呢，主要还是方便管理吧，功能更加聚合了&lt;/p></description></item><item><title>WPF学习笔记04-MVVM和别的一些东西的补充</title><link>https://mlacookie.github.io/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B004-mvvm%E5%92%8C%E5%88%AB%E7%9A%84%E4%B8%80%E4%BA%9B%E4%B8%9C%E8%A5%BF%E7%9A%84%E8%A1%A5%E5%85%85/</link><pubDate>Wed, 23 Aug 2023 00:49:54 +0000</pubDate><guid>https://mlacookie.github.io/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B004-mvvm%E5%92%8C%E5%88%AB%E7%9A%84%E4%B8%80%E4%BA%9B%E4%B8%9C%E8%A5%BF%E7%9A%84%E8%A1%A5%E5%85%85/</guid><description>&lt;h2 id="0x00-相对更正规的mvvm的写法">&amp;lt;0x00&amp;gt; 相对更正规的MVVM的写法
 &lt;/h2>&lt;p>前一篇文章不是讲MVVM模型嘛，然后这几天看了看别人写的代码&lt;br>
 确实有很多值得学习的地方&lt;/p>
 &lt;h3 id="单独拆个baseviewmodel出来">单独拆个BaseViewModel出来
@@ -858,7 +858,7 @@ data-flex-basis="491px"
 具体可以看&lt;a class="link" href="https://www.bilibili.com/video/BV12x4y177qB" target="_blank" rel="noopener"
 >B站up-十月的寒流的视频&lt;/a>&lt;br>
 (人家是真大佬，他的视频做的都很不错的)&lt;br>
-(所以我的博客就摸了😋)&lt;/p></description></item><item><title>WPF学习笔记03-MVVM模型</title><link>http://localhost:1313/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B003-mvvm%E6%A8%A1%E5%9E%8B/</link><pubDate>Sat, 22 Jul 2023 17:39:25 +0000</pubDate><guid>http://localhost:1313/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B003-mvvm%E6%A8%A1%E5%9E%8B/</guid><description>&lt;h2 id="0x00-mvvm模型介绍">&amp;lt;0x00&amp;gt; MVVM模型介绍
+(所以我的博客就摸了😋)&lt;/p></description></item><item><title>WPF学习笔记03-MVVM模型</title><link>https://mlacookie.github.io/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B003-mvvm%E6%A8%A1%E5%9E%8B/</link><pubDate>Sat, 22 Jul 2023 17:39:25 +0000</pubDate><guid>https://mlacookie.github.io/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B003-mvvm%E6%A8%A1%E5%9E%8B/</guid><description>&lt;h2 id="0x00-mvvm模型介绍">&amp;lt;0x00&amp;gt; MVVM模型介绍
 &lt;/h2>&lt;p>&lt;code>MVVM模型&lt;/code>并不是一个编程的语法，而是一种设计思路&lt;br>
 整体分三块(&lt;code>M/V/VM&lt;/code>)&lt;br>
 &lt;code>M&lt;/code>(Model)指数据模型，差不多就是程序的后端部分&lt;br>
@@ -875,10 +875,10 @@ data-flex-basis="491px"
 前端的&lt;code>V&lt;/code>可以通过&lt;code>VM&lt;/code>修改&lt;code>M&lt;/code>，后端的&lt;code>M&lt;/code>也可以通过&lt;code>VM&lt;/code>通知前端的&lt;code>V&lt;/code>要界面更新&lt;br>
 这样的话，前后端本身就差不多分离了，前后端开发互不干扰&lt;br>
 反正最后都是靠写一个&lt;code>VM&lt;/code>连接在一起的，当然相应的代码量就多了&lt;/p>
-&lt;p>&lt;img src="http://localhost:1313/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B003-mvvm%E6%A8%A1%E5%9E%8B/picture/1.png"
+&lt;p>&lt;img src="https://mlacookie.github.io/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B003-mvvm%E6%A8%A1%E5%9E%8B/picture/1.png"
 width="1270"
 height="681"
-srcset="http://localhost:1313/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B003-mvvm%E6%A8%A1%E5%9E%8B/picture/1_hub1a178ce32178ed8ec53fb95ee44448b_98603_480x0_resize_box_3.png 480w, http://localhost:1313/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B003-mvvm%E6%A8%A1%E5%9E%8B/picture/1_hub1a178ce32178ed8ec53fb95ee44448b_98603_1024x0_resize_box_3.png 1024w"
+srcset="https://mlacookie.github.io/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B003-mvvm%E6%A8%A1%E5%9E%8B/picture/1_hub1a178ce32178ed8ec53fb95ee44448b_98603_480x0_resize_box_3.png 480w, https://mlacookie.github.io/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B003-mvvm%E6%A8%A1%E5%9E%8B/picture/1_hub1a178ce32178ed8ec53fb95ee44448b_98603_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 alt="大致架构图"
 class="gallery-image"
@@ -1190,13 +1190,13 @@ data-flex-basis="447px"
 (这样也叫解耦)&lt;/p>
 &lt;p>别的好处我也很难讲了，毕竟目前我的开发经验不多&lt;br>
 正如我最前面写的，这个只是个思想，并不是什么语法之类的&lt;br>
-(总算写完了)&lt;/p></description></item><item><title>WPF学习笔记02-简单美化计算器</title><link>http://localhost:1313/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B002-%E7%AE%80%E5%8D%95%E7%BE%8E%E5%8C%96%E8%AE%A1%E7%AE%97%E5%99%A8/</link><pubDate>Mon, 17 Jul 2023 01:04:58 +0000</pubDate><guid>http://localhost:1313/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B002-%E7%AE%80%E5%8D%95%E7%BE%8E%E5%8C%96%E8%AE%A1%E7%AE%97%E5%99%A8/</guid><description>&lt;h2 id="0x00-wpf的界面美化挺方便的">&amp;lt;0x00&amp;gt; WPF的界面美化挺方便的
+(总算写完了)&lt;/p></description></item><item><title>WPF学习笔记02-简单美化计算器</title><link>https://mlacookie.github.io/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B002-%E7%AE%80%E5%8D%95%E7%BE%8E%E5%8C%96%E8%AE%A1%E7%AE%97%E5%99%A8/</link><pubDate>Mon, 17 Jul 2023 01:04:58 +0000</pubDate><guid>https://mlacookie.github.io/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B002-%E7%AE%80%E5%8D%95%E7%BE%8E%E5%8C%96%E8%AE%A1%E7%AE%97%E5%99%A8/</guid><description>&lt;h2 id="0x00-wpf的界面美化挺方便的">&amp;lt;0x00&amp;gt; WPF的界面美化挺方便的
 &lt;/h2>&lt;p>就研究了一小时不到，成功让计算器的UI上升了一个档次&lt;/p>
 &lt;p>先看成果(因为相较于之前的界面确实帅多了)&lt;br>
-&lt;img src="http://localhost:1313/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B002-%E7%AE%80%E5%8D%95%E7%BE%8E%E5%8C%96%E8%AE%A1%E7%AE%97%E5%99%A8/picture/1.png"
+&lt;img src="https://mlacookie.github.io/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B002-%E7%AE%80%E5%8D%95%E7%BE%8E%E5%8C%96%E8%AE%A1%E7%AE%97%E5%99%A8/picture/1.png"
 width="300"
 height="400"
-srcset="http://localhost:1313/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B002-%E7%AE%80%E5%8D%95%E7%BE%8E%E5%8C%96%E8%AE%A1%E7%AE%97%E5%99%A8/picture/1_hubb5a51bd4206b57cfa998616d832cdca_16729_480x0_resize_box_3.png 480w, http://localhost:1313/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B002-%E7%AE%80%E5%8D%95%E7%BE%8E%E5%8C%96%E8%AE%A1%E7%AE%97%E5%99%A8/picture/1_hubb5a51bd4206b57cfa998616d832cdca_16729_1024x0_resize_box_3.png 1024w"
+srcset="https://mlacookie.github.io/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B002-%E7%AE%80%E5%8D%95%E7%BE%8E%E5%8C%96%E8%AE%A1%E7%AE%97%E5%99%A8/picture/1_hubb5a51bd4206b57cfa998616d832cdca_16729_480x0_resize_box_3.png 480w, https://mlacookie.github.io/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B002-%E7%AE%80%E5%8D%95%E7%BE%8E%E5%8C%96%E8%AE%A1%E7%AE%97%E5%99%A8/picture/1_hubb5a51bd4206b57cfa998616d832cdca_16729_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 alt="全新界面"
 class="gallery-image"
@@ -1474,7 +1474,7 @@ data-flex-basis="180px"
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;/Grid&amp;gt;&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;/Border&amp;gt;&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">&amp;lt;/Window&amp;gt;&lt;/span>
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>(经典写博客耗时比写代码多😂)&lt;/p></description></item><item><title>WPF学习笔记01-一个简单的计算器</title><link>http://localhost:1313/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B001-%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84%E8%AE%A1%E7%AE%97%E5%99%A8/</link><pubDate>Sat, 15 Jul 2023 20:51:01 +0000</pubDate><guid>http://localhost:1313/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B001-%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84%E8%AE%A1%E7%AE%97%E5%99%A8/</guid><description>&lt;h2 id="0x00-我为何选择wpf">&amp;lt;0x00&amp;gt; 我为何选择WPF
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>(经典写博客耗时比写代码多😂)&lt;/p></description></item><item><title>WPF学习笔记01-一个简单的计算器</title><link>https://mlacookie.github.io/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B001-%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84%E8%AE%A1%E7%AE%97%E5%99%A8/</link><pubDate>Sat, 15 Jul 2023 20:51:01 +0000</pubDate><guid>https://mlacookie.github.io/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B001-%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84%E8%AE%A1%E7%AE%97%E5%99%A8/</guid><description>&lt;h2 id="0x00-我为何选择wpf">&amp;lt;0x00&amp;gt; 我为何选择WPF
 &lt;/h2>&lt;p>(@ 23-08-25)&lt;br>
 慢慢学了一个月，总算知道为啥现在用&lt;code>WPF&lt;/code>的个人项目不多了&lt;br>
 写简单的&lt;code>UI&lt;/code>确实非常方便，但如果要用些现代些的设计就很烦了&lt;br>
@@ -1499,10 +1499,10 @@ data-flex-basis="180px"
 &lt;h2 id="0x01-wpf的典型结构">&amp;lt;0x01&amp;gt; WPF的典型结构
 &lt;/h2>&lt;p>我这里创建的是基于&lt;code>C#&lt;/code>的&lt;code>WPF&lt;/code>项目&lt;/p>
 &lt;p>创建完我们可以看到如图的项目结构&lt;br>
-&lt;img src="http://localhost:1313/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B001-%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84%E8%AE%A1%E7%AE%97%E5%99%A8/picture/1.png"
+&lt;img src="https://mlacookie.github.io/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B001-%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84%E8%AE%A1%E7%AE%97%E5%99%A8/picture/1.png"
 width="279"
 height="258"
-srcset="http://localhost:1313/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B001-%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84%E8%AE%A1%E7%AE%97%E5%99%A8/picture/1_hu1034328ead1f54abca7afd5c68cb1ea8_9052_480x0_resize_box_3.png 480w, http://localhost:1313/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B001-%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84%E8%AE%A1%E7%AE%97%E5%99%A8/picture/1_hu1034328ead1f54abca7afd5c68cb1ea8_9052_1024x0_resize_box_3.png 1024w"
+srcset="https://mlacookie.github.io/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B001-%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84%E8%AE%A1%E7%AE%97%E5%99%A8/picture/1_hu1034328ead1f54abca7afd5c68cb1ea8_9052_480x0_resize_box_3.png 480w, https://mlacookie.github.io/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B001-%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84%E8%AE%A1%E7%AE%97%E5%99%A8/picture/1_hu1034328ead1f54abca7afd5c68cb1ea8_9052_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="108"
@@ -1636,10 +1636,10 @@ data-flex-basis="259px"
 由于有之前的&lt;code>&amp;lt;Style&amp;gt;&lt;/code>的定义，所有的按钮都自带字体大小30单位，间距5单位的属性&lt;/p>
 &lt;p>这样，我们成功整出了一个简单的计算器界面&lt;br>
 长这样的&lt;br>
-&lt;img src="http://localhost:1313/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B001-%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84%E8%AE%A1%E7%AE%97%E5%99%A8/picture/2.png"
+&lt;img src="https://mlacookie.github.io/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B001-%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84%E8%AE%A1%E7%AE%97%E5%99%A8/picture/2.png"
 width="392"
 height="400"
-srcset="http://localhost:1313/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B001-%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84%E8%AE%A1%E7%AE%97%E5%99%A8/picture/2_hu948f628ed672d637df90431fcc24b955_14497_480x0_resize_box_3.png 480w, http://localhost:1313/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B001-%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84%E8%AE%A1%E7%AE%97%E5%99%A8/picture/2_hu948f628ed672d637df90431fcc24b955_14497_1024x0_resize_box_3.png 1024w"
+srcset="https://mlacookie.github.io/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B001-%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84%E8%AE%A1%E7%AE%97%E5%99%A8/picture/2_hu948f628ed672d637df90431fcc24b955_14497_480x0_resize_box_3.png 480w, https://mlacookie.github.io/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B001-%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84%E8%AE%A1%E7%AE%97%E5%99%A8/picture/2_hu948f628ed672d637df90431fcc24b955_14497_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="98"

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Hexo on MLAcookie</title><link>http://localhost:1313/tags/hexo/</link><description>Recent content in Hexo on MLAcookie</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Sun, 03 Mar 2024 13:24:40 +0000</lastBuildDate><atom:link href="http://localhost:1313/tags/hexo/index.xml" rel="self" type="application/rss+xml"/><item><title>我的hexo配合obsidian的配置</title><link>http://localhost:1313/article/categories/blog/%E6%88%91%E7%9A%84hexo%E9%85%8D%E5%90%88obsidian%E7%9A%84%E9%85%8D%E7%BD%AE/</link><pubDate>Sun, 03 Mar 2024 13:24:40 +0000</pubDate><guid>http://localhost:1313/article/categories/blog/%E6%88%91%E7%9A%84hexo%E9%85%8D%E5%90%88obsidian%E7%9A%84%E9%85%8D%E7%BD%AE/</guid><description>&lt;p>闲着没事想着优化一下hexo的博客配置
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Hexo on MLAcookie</title><link>https://mlacookie.github.io/tags/hexo/</link><description>Recent content in Hexo on MLAcookie</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Sun, 03 Mar 2024 13:24:40 +0000</lastBuildDate><atom:link href="https://mlacookie.github.io/tags/hexo/index.xml" rel="self" type="application/rss+xml"/><item><title>我的hexo配合obsidian的配置</title><link>https://mlacookie.github.io/article/categories/blog/%E6%88%91%E7%9A%84hexo%E9%85%8D%E5%90%88obsidian%E7%9A%84%E9%85%8D%E7%BD%AE/</link><pubDate>Sun, 03 Mar 2024 13:24:40 +0000</pubDate><guid>https://mlacookie.github.io/article/categories/blog/%E6%88%91%E7%9A%84hexo%E9%85%8D%E5%90%88obsidian%E7%9A%84%E9%85%8D%E7%BD%AE/</guid><description>&lt;p>闲着没事想着优化一下hexo的博客配置
 我原来一直都是用&lt;code>vscode&lt;/code>写markdown的，至于体验嘛，能写但不是很舒适
 所以我就尝试换成了现在在用的&lt;code>obsidian&lt;/code>，体验就好多了&lt;/p>
 &lt;p>然后就按网上的教程，尝试配置更加优雅的流程
@@ -90,10 +90,10 @@
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>mklink /d $软连接存放路径 $连接的目标
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>然后就是在&lt;code>obsidian&lt;/code>中编辑时，引用图片的格式应是&lt;code>![](/picture/...)&lt;/code>
 最好把&lt;code>obsidian&lt;/code>的&lt;code>文件与链接&amp;gt; &amp;gt; 自动添加wiki引用&lt;/code>关了，&lt;code>[[]]&lt;/code>格式的连接hexo本身解析不了
-&lt;img src="http://localhost:1313/article/categories/blog/%E6%88%91%E7%9A%84hexo%E9%85%8D%E5%90%88obsidian%E7%9A%84%E9%85%8D%E7%BD%AE/picture/1.png"
+&lt;img src="https://mlacookie.github.io/article/categories/blog/%E6%88%91%E7%9A%84hexo%E9%85%8D%E5%90%88obsidian%E7%9A%84%E9%85%8D%E7%BD%AE/picture/1.png"
 width="784"
 height="76"
-srcset="http://localhost:1313/article/categories/blog/%E6%88%91%E7%9A%84hexo%E9%85%8D%E5%90%88obsidian%E7%9A%84%E9%85%8D%E7%BD%AE/picture/1_huef58a9bd83d99962061fdf703b3f1df2_12417_480x0_resize_box_3.png 480w, http://localhost:1313/article/categories/blog/%E6%88%91%E7%9A%84hexo%E9%85%8D%E5%90%88obsidian%E7%9A%84%E9%85%8D%E7%BD%AE/picture/1_huef58a9bd83d99962061fdf703b3f1df2_12417_1024x0_resize_box_3.png 1024w"
+srcset="https://mlacookie.github.io/article/categories/blog/%E6%88%91%E7%9A%84hexo%E9%85%8D%E5%90%88obsidian%E7%9A%84%E9%85%8D%E7%BD%AE/picture/1_huef58a9bd83d99962061fdf703b3f1df2_12417_480x0_resize_box_3.png 480w, https://mlacookie.github.io/article/categories/blog/%E6%88%91%E7%9A%84hexo%E9%85%8D%E5%90%88obsidian%E7%9A%84%E9%85%8D%E7%BD%AE/picture/1_huef58a9bd83d99962061fdf703b3f1df2_12417_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="1031"
@@ -202,15 +202,15 @@ data-flex-basis="2475px"
 &lt;h2 id="0x06-这套方案的问题">&amp;lt;0x06&amp;gt; 这套方案的问题
 &lt;/h2>&lt;p>不支持Obsidian的wiki链接解析
 也没用上Obsidian自带的模板功能
-文章之间相互引用也很麻烦，要知道文章的具体URL&lt;/p></description></item><item><title>给侧边栏加个B站图标</title><link>http://localhost:1313/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/</link><pubDate>Wed, 26 Apr 2023 21:59:57 +0000</pubDate><guid>http://localhost:1313/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/</guid><description>&lt;p>搭个博客嘛，肯定要加点个人的一些账号。然后呢，我想加个B站的链接，但是在 Anatolo 的模板里没有，这下只能自己动手了。&lt;/p>
+文章之间相互引用也很麻烦，要知道文章的具体URL&lt;/p></description></item><item><title>给侧边栏加个B站图标</title><link>https://mlacookie.github.io/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/</link><pubDate>Wed, 26 Apr 2023 21:59:57 +0000</pubDate><guid>https://mlacookie.github.io/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/</guid><description>&lt;p>搭个博客嘛，肯定要加点个人的一些账号。然后呢，我想加个B站的链接，但是在 Anatolo 的模板里没有，这下只能自己动手了。&lt;/p>
 &lt;h2 id="一些约定的符号">一些约定的符号
 &lt;/h2>&lt;p>&lt;code>./&lt;/code> 表示 hexo 博客的根目录&lt;/p>
 &lt;h2 id="0x00-分析">&amp;lt;0x00&amp;gt; 分析
 &lt;/h2>&lt;p>我先是在 &lt;code>./themes/Anatolo/source/images&lt;/code> 里找，发现里面只有网站的 icon 和主要图标，没有那些社交媒体的图标
-&lt;img src="http://localhost:1313/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/1.jpg"
+&lt;img src="https://mlacookie.github.io/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/1.jpg"
 width="87"
 height="28"
-srcset="http://localhost:1313/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/1_hu808bf1b7a55ea40dafadbefda6e35af9_9775_480x0_resize_q75_box.jpg 480w, http://localhost:1313/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/1_hu808bf1b7a55ea40dafadbefda6e35af9_9775_1024x0_resize_q75_box.jpg 1024w"
+srcset="https://mlacookie.github.io/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/1_hu808bf1b7a55ea40dafadbefda6e35af9_9775_480x0_resize_q75_box.jpg 480w, https://mlacookie.github.io/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/1_hu808bf1b7a55ea40dafadbefda6e35af9_9775_1024x0_resize_q75_box.jpg 1024w"
 loading="lazy"
 alt="演示"
 class="gallery-image"
@@ -293,10 +293,10 @@ i.fa.fa-bilibili
 左上角选择铅笔，然后随便选一个图标，点击 &lt;code>Download(SVG)&lt;/code> 下载这个图标的 &lt;code>.svg&lt;/code> 文件。&lt;/p>
 &lt;p>然后在本地用矢量图编辑器打开，把原来的图清掉，然后再在上面画矢量图就可以了。&lt;/p>
 &lt;p>画的时候注意不要用描边，要用填充来构成图形。如果不小心用描边构成了图形，那么也可以选中路径，然后找到这个&lt;br>
-&lt;img src="http://localhost:1313/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/2.jpg"
+&lt;img src="https://mlacookie.github.io/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/2.jpg"
 width="235"
 height="581"
-srcset="http://localhost:1313/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/2_hu109913a40237cb6190d14dd6d7cf27a8_89168_480x0_resize_q75_box.jpg 480w, http://localhost:1313/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/2_hu109913a40237cb6190d14dd6d7cf27a8_89168_1024x0_resize_q75_box.jpg 1024w"
+srcset="https://mlacookie.github.io/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/2_hu109913a40237cb6190d14dd6d7cf27a8_89168_480x0_resize_q75_box.jpg 480w, https://mlacookie.github.io/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/2_hu109913a40237cb6190d14dd6d7cf27a8_89168_1024x0_resize_q75_box.jpg 1024w"
 loading="lazy"
 alt="路径→描边转路径"
 class="gallery-image"
@@ -307,10 +307,10 @@ data-flex-basis="97px"
 画的时候要尽可能把画布填满，如果上下留白很多的话可以适当减小。&lt;br>
 画布大小可以在&lt;code>文件→文档属性&lt;/code>里修改&lt;br>
 如果贝塞尔曲线画不好的话可以先用有理B样条来画，后者好画一点，但画出来就是比较圆润。
-&lt;img src="http://localhost:1313/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/3.jpg"
+&lt;img src="https://mlacookie.github.io/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/3.jpg"
 width="284"
 height="326"
-srcset="http://localhost:1313/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/3_hu66da9bad32194b9ab295e600fdb67e9a_63586_480x0_resize_q75_box.jpg 480w, http://localhost:1313/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/3_hu66da9bad32194b9ab295e600fdb67e9a_63586_1024x0_resize_q75_box.jpg 1024w"
+srcset="https://mlacookie.github.io/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/3_hu66da9bad32194b9ab295e600fdb67e9a_63586_480x0_resize_q75_box.jpg 480w, https://mlacookie.github.io/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/3_hu66da9bad32194b9ab295e600fdb67e9a_63586_1024x0_resize_q75_box.jpg 1024w"
 loading="lazy"
 alt="第一个是贝塞尔，第三个是B样条"
 class="gallery-image"
@@ -319,10 +319,10 @@ data-flex-basis="209px"
 >&lt;br>
 用贝塞尔曲线画的画，尽可能让每个节点的手柄要么水平，要么垂直，这样画会相对简单一点&lt;br>
 如果图标有一定的对称性，那么节点要对称，而且手柄的长度也要对称&lt;br>
-&lt;img src="http://localhost:1313/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/4.jpg"
+&lt;img src="https://mlacookie.github.io/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/4.jpg"
 width="1928"
 height="1050"
-srcset="http://localhost:1313/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/4_hu747705ed60103c1e25375c7c70351264_420322_480x0_resize_q75_box.jpg 480w, http://localhost:1313/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/4_hu747705ed60103c1e25375c7c70351264_420322_1024x0_resize_q75_box.jpg 1024w"
+srcset="https://mlacookie.github.io/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/4_hu747705ed60103c1e25375c7c70351264_420322_480x0_resize_q75_box.jpg 480w, https://mlacookie.github.io/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/4_hu747705ed60103c1e25375c7c70351264_420322_1024x0_resize_q75_box.jpg 1024w"
 loading="lazy"
 alt="我的成果"
 class="gallery-image"
@@ -331,10 +331,10 @@ data-flex-basis="440px"
 >&lt;br>
 我的成果供大家参考。&lt;/p>
 &lt;p>然后，保存文件，回到之前的网页。导入我们制作的 &lt;code>.svg&lt;/code> 文件。&lt;br>
-&lt;img src="http://localhost:1313/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/5.jpg"
+&lt;img src="https://mlacookie.github.io/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/5.jpg"
 width="1920"
 height="1050"
-srcset="http://localhost:1313/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/5_hu717767c703288dc490ca154b3905764b_163917_480x0_resize_q75_box.jpg 480w, http://localhost:1313/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/5_hu717767c703288dc490ca154b3905764b_163917_1024x0_resize_q75_box.jpg 1024w"
+srcset="https://mlacookie.github.io/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/5_hu717767c703288dc490ca154b3905764b_163917_480x0_resize_q75_box.jpg 480w, https://mlacookie.github.io/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/5_hu717767c703288dc490ca154b3905764b_163917_1024x0_resize_q75_box.jpg 1024w"
 loading="lazy"
 alt="Import to set"
 class="gallery-image"
@@ -342,10 +342,10 @@ data-flex-grow="182"
 data-flex-basis="438px"
 >&lt;br>
 然后选择右上角移动工具&lt;br>
-&lt;img src="http://localhost:1313/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/6.jpg"
+&lt;img src="https://mlacookie.github.io/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/6.jpg"
 width="160"
 height="32"
-srcset="http://localhost:1313/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/6_hu62cc3facce26d64b9ae8fa29969dfb21_12622_480x0_resize_q75_box.jpg 480w, http://localhost:1313/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/6_hu62cc3facce26d64b9ae8fa29969dfb21_12622_1024x0_resize_q75_box.jpg 1024w"
+srcset="https://mlacookie.github.io/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/6_hu62cc3facce26d64b9ae8fa29969dfb21_12622_480x0_resize_q75_box.jpg 480w, https://mlacookie.github.io/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/6_hu62cc3facce26d64b9ae8fa29969dfb21_12622_1024x0_resize_q75_box.jpg 1024w"
 loading="lazy"
 alt="移动工具"
 class="gallery-image"
@@ -388,10 +388,10 @@ data-flex-basis="1200px"
 &lt;h2 id="0x05-部署试试">&amp;lt;0x05&amp;gt; 部署试试
 &lt;/h2>&lt;p>(记得加上&amp;lt;0x02&amp;gt;的多出来的代码)&lt;br>
 编译，部署。访问下网页看看有没有新图标出现。如果没有，清除或禁用网页缓存后再试试。理论上自己加入的图标就会出现。&lt;br>
-&lt;img src="http://localhost:1313/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/7.jpg"
+&lt;img src="https://mlacookie.github.io/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/7.jpg"
 width="232"
 height="100"
-srcset="http://localhost:1313/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/7_hu897f00d9463e4fce6fb5e0ed5669221b_2837_480x0_resize_q75_box.jpg 480w, http://localhost:1313/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/7_hu897f00d9463e4fce6fb5e0ed5669221b_2837_1024x0_resize_q75_box.jpg 1024w"
+srcset="https://mlacookie.github.io/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/7_hu897f00d9463e4fce6fb5e0ed5669221b_2837_480x0_resize_q75_box.jpg 480w, https://mlacookie.github.io/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/7_hu897f00d9463e4fce6fb5e0ed5669221b_2837_1024x0_resize_q75_box.jpg 1024w"
 loading="lazy"
 alt="成功示例"
 class="gallery-image"
@@ -400,7 +400,7 @@ data-flex-basis="556px"
 >&lt;br>
 就像这样。&lt;/p>
 &lt;h2 id="搞定下班">搞定，下班
-&lt;/h2></description></item><item><title>如何一个hexo博客同时部署多git</title><link>http://localhost:1313/article/categories/blog/%E5%A6%82%E4%BD%95%E4%B8%80%E4%B8%AAhexo%E5%8D%9A%E5%AE%A2%E5%90%8C%E6%97%B6%E9%83%A8%E7%BD%B2%E5%A4%9Agit/</link><pubDate>Sun, 23 Apr 2023 16:35:19 +0000</pubDate><guid>http://localhost:1313/article/categories/blog/%E5%A6%82%E4%BD%95%E4%B8%80%E4%B8%AAhexo%E5%8D%9A%E5%AE%A2%E5%90%8C%E6%97%B6%E9%83%A8%E7%BD%B2%E5%A4%9Agit/</guid><description>&lt;h2 id="0x01-如何实现">&amp;lt;0x01&amp;gt; 如何实现
+&lt;/h2></description></item><item><title>如何一个hexo博客同时部署多git</title><link>https://mlacookie.github.io/article/categories/blog/%E5%A6%82%E4%BD%95%E4%B8%80%E4%B8%AAhexo%E5%8D%9A%E5%AE%A2%E5%90%8C%E6%97%B6%E9%83%A8%E7%BD%B2%E5%A4%9Agit/</link><pubDate>Sun, 23 Apr 2023 16:35:19 +0000</pubDate><guid>https://mlacookie.github.io/article/categories/blog/%E5%A6%82%E4%BD%95%E4%B8%80%E4%B8%AAhexo%E5%8D%9A%E5%AE%A2%E5%90%8C%E6%97%B6%E9%83%A8%E7%BD%B2%E5%A4%9Agit/</guid><description>&lt;h2 id="0x01-如何实现">&amp;lt;0x01&amp;gt; 如何实现
 &lt;/h2>&lt;p>思路是本地多写几份 config 文件&lt;br>
 在部署时切换就可以&lt;/p>
 &lt;h2 id="0x02-开搞">&amp;lt;0x02&amp;gt; 开搞
@@ -451,7 +451,7 @@ data-flex-basis="556px"
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">url&lt;/span>: &lt;span style="color:#ae81ff">https://MLAcookie.github.io/&lt;/span>
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>如果仅靠单一文件的话，两个部署的根域名会是一样的&lt;br>
 这样可能会造成一些小问题&lt;/p>
-&lt;p>靠&lt;code>powershell&lt;/code>还可以顺便做部署前的一些操作，挺方便的&lt;/p></description></item><item><title>搭建hexo+gitea的博客站</title><link>http://localhost:1313/article/categories/blog/%E6%90%AD%E5%BB%BAhexo+gitea%E7%9A%84%E5%8D%9A%E5%AE%A2%E7%AB%99/</link><pubDate>Sun, 23 Apr 2023 15:50:19 +0000</pubDate><guid>http://localhost:1313/article/categories/blog/%E6%90%AD%E5%BB%BAhexo+gitea%E7%9A%84%E5%8D%9A%E5%AE%A2%E7%AB%99/</guid><description>&lt;h2 id="0x00-为什么要用gitea--hexo">&amp;lt;0x00&amp;gt; 为什么要用gitea + hexo
+&lt;p>靠&lt;code>powershell&lt;/code>还可以顺便做部署前的一些操作，挺方便的&lt;/p></description></item><item><title>搭建hexo+gitea的博客站</title><link>https://mlacookie.github.io/article/categories/blog/%E6%90%AD%E5%BB%BAhexo+gitea%E7%9A%84%E5%8D%9A%E5%AE%A2%E7%AB%99/</link><pubDate>Sun, 23 Apr 2023 15:50:19 +0000</pubDate><guid>https://mlacookie.github.io/article/categories/blog/%E6%90%AD%E5%BB%BAhexo+gitea%E7%9A%84%E5%8D%9A%E5%AE%A2%E7%AB%99/</guid><description>&lt;h2 id="0x00-为什么要用gitea--hexo">&amp;lt;0x00&amp;gt; 为什么要用gitea + hexo
 &lt;/h2>&lt;p>很简单，gitea 太好用了(才不是因为 git 配置太麻烦)&lt;br>
 而且 hexo 的博客就是静态网页，基本不怎么耗费服务器资源&lt;br>
 如此再搭个 gitea 正好还能当个代码仓库，岂不美哉&lt;/p>

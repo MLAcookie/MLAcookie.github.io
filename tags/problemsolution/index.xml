@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>ProblemSolution on MLAcookie</title><link>http://localhost:1313/tags/problemsolution/</link><description>Recent content in ProblemSolution on MLAcookie</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Thu, 07 Mar 2024 01:10:14 +0000</lastBuildDate><atom:link href="http://localhost:1313/tags/problemsolution/index.xml" rel="self" type="application/rss+xml"/><item><title>WPF开发过程中InitializeComponent()神秘报错</title><link>http://localhost:1313/article/categories/wpf/wpf%E5%BC%80%E5%8F%91%E8%BF%87%E7%A8%8B%E4%B8%ADinitializecomponent-%E7%A5%9E%E7%A7%98%E6%8A%A5%E9%94%99/</link><pubDate>Thu, 07 Mar 2024 01:10:14 +0000</pubDate><guid>http://localhost:1313/article/categories/wpf/wpf%E5%BC%80%E5%8F%91%E8%BF%87%E7%A8%8B%E4%B8%ADinitializecomponent-%E7%A5%9E%E7%A7%98%E6%8A%A5%E9%94%99/</guid><description>&lt;p>最近在写一个WPF项目，然后今天遇到个非常神秘的问题
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>ProblemSolution on MLAcookie</title><link>https://mlacookie.github.io/tags/problemsolution/</link><description>Recent content in ProblemSolution on MLAcookie</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Thu, 07 Mar 2024 01:10:14 +0000</lastBuildDate><atom:link href="https://mlacookie.github.io/tags/problemsolution/index.xml" rel="self" type="application/rss+xml"/><item><title>WPF开发过程中InitializeComponent()神秘报错</title><link>https://mlacookie.github.io/article/categories/wpf/wpf%E5%BC%80%E5%8F%91%E8%BF%87%E7%A8%8B%E4%B8%ADinitializecomponent-%E7%A5%9E%E7%A7%98%E6%8A%A5%E9%94%99/</link><pubDate>Thu, 07 Mar 2024 01:10:14 +0000</pubDate><guid>https://mlacookie.github.io/article/categories/wpf/wpf%E5%BC%80%E5%8F%91%E8%BF%87%E7%A8%8B%E4%B8%ADinitializecomponent-%E7%A5%9E%E7%A7%98%E6%8A%A5%E9%94%99/</guid><description>&lt;p>最近在写一个WPF项目，然后今天遇到个非常神秘的问题
 就是界面的&lt;code>InitializeComponent()&lt;/code>莫名奇妙报错找不到方法了
 我仔细检查代码，也没发现问题
 而且最抽象的是，程序也能正常运行
@@ -9,7 +9,7 @@
 据说是因为分布类的问题，实际编译时生成的代码是正确的
 但是&lt;code>IntelliCode&lt;/code>依赖的文件可能没更新上
 然后就开始误报找不到&lt;code>InitializeComponent()&lt;/code>&lt;/p>
-&lt;p>总之还是一个很神秘的问题&lt;/p></description></item><item><title>在win10LTSC上安装截图与草图</title><link>http://localhost:1313/article/posts/%E5%9C%A8win10ltsc%E4%B8%8A%E5%AE%89%E8%A3%85%E6%88%AA%E5%9B%BE%E4%B8%8E%E8%8D%89%E5%9B%BE/</link><pubDate>Sun, 03 Mar 2024 01:57:13 +0000</pubDate><guid>http://localhost:1313/article/posts/%E5%9C%A8win10ltsc%E4%B8%8A%E5%AE%89%E8%A3%85%E6%88%AA%E5%9B%BE%E4%B8%8E%E8%8D%89%E5%9B%BE/</guid><description>&lt;p>众所周知，Win10的LTSC非常精简
+&lt;p>总之还是一个很神秘的问题&lt;/p></description></item><item><title>在win10LTSC上安装截图与草图</title><link>https://mlacookie.github.io/article/posts/%E5%9C%A8win10ltsc%E4%B8%8A%E5%AE%89%E8%A3%85%E6%88%AA%E5%9B%BE%E4%B8%8E%E8%8D%89%E5%9B%BE/</link><pubDate>Sun, 03 Mar 2024 01:57:13 +0000</pubDate><guid>https://mlacookie.github.io/article/posts/%E5%9C%A8win10ltsc%E4%B8%8A%E5%AE%89%E8%A3%85%E6%88%AA%E5%9B%BE%E4%B8%8E%E8%8D%89%E5%9B%BE/</guid><description>&lt;p>众所周知，Win10的LTSC非常精简
 精简到原本的&lt;code>截图与草图&lt;/code>的工具都没了
 系统里只能截图，然后自动保存在剪贴板中&lt;/p>
 &lt;p>但这不是很方便，比方说要保存到某个目录中，或者做些标记
@@ -20,14 +20,14 @@
 （这个的配置这里暂时不讲，网上的教程很多）&lt;/p>
 &lt;p>如果需要安装&lt;code>截图与草图&lt;/code>，需要在命令行中输入下面的指令&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>winget install &lt;span style="color:#e6db74">&amp;#34;Snipping Tool&amp;#34;&lt;/span>
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>回车等待就好了，安装完就能用了&lt;/p></description></item><item><title>如何将firefox改成垂直标签页</title><link>http://localhost:1313/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/</link><pubDate>Tue, 02 Jan 2024 21:34:53 +0000</pubDate><guid>http://localhost:1313/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/</guid><description>&lt;p>我经常会开一堆网页，如果采用水平的标签页的话会经常找不到标签页&lt;br>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>回车等待就好了，安装完就能用了&lt;/p></description></item><item><title>如何将firefox改成垂直标签页</title><link>https://mlacookie.github.io/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/</link><pubDate>Tue, 02 Jan 2024 21:34:53 +0000</pubDate><guid>https://mlacookie.github.io/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/</guid><description>&lt;p>我经常会开一堆网页，如果采用水平的标签页的话会经常找不到标签页&lt;br>
 而火狐又不像别的浏览器，起码到目前为止都没有官方的垂直标签页的支持&lt;br>
 经过一番探索，实际上是可以自己改出来的&lt;/p>
 &lt;h2 id="0x00-效果展示">&amp;lt;0x00&amp;gt; 效果展示
-&lt;/h2>&lt;p>&lt;img src="http://localhost:1313/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/1.png"
+&lt;/h2>&lt;p>&lt;img src="https://mlacookie.github.io/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/1.png"
 width="1290"
 height="785"
-srcset="http://localhost:1313/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/1_hu1a79717cdc707937be30662e998e0566_742242_480x0_resize_box_3.png 480w, http://localhost:1313/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/1_hu1a79717cdc707937be30662e998e0566_742242_1024x0_resize_box_3.png 1024w"
+srcset="https://mlacookie.github.io/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/1_hu1a79717cdc707937be30662e998e0566_742242_480x0_resize_box_3.png 480w, https://mlacookie.github.io/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/1_hu1a79717cdc707937be30662e998e0566_742242_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 alt="效果展示"
 class="gallery-image"
@@ -44,10 +44,10 @@ data-flex-basis="394px"
 &lt;/h2>&lt;p>首先要打开&lt;code>about:config&lt;/code>的关于自定义界面的选项&lt;br>
 火狐会跳出提示，别动别的东西就好&lt;br>
 搜索&lt;code>toolkit.legacyUserProfileCustomizations.stylesheets&lt;/code>，把值改成&lt;code>true&lt;/code>即可
-&lt;img src="http://localhost:1313/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/2.png"
+&lt;img src="https://mlacookie.github.io/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/2.png"
 width="883"
 height="148"
-srcset="http://localhost:1313/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/2_hub96a1fd94dc2d5392a25609d3d488e84_31759_480x0_resize_box_3.png 480w, http://localhost:1313/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/2_hub96a1fd94dc2d5392a25609d3d488e84_31759_1024x0_resize_box_3.png 1024w"
+srcset="https://mlacookie.github.io/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/2_hub96a1fd94dc2d5392a25609d3d488e84_31759_480x0_resize_box_3.png 480w, https://mlacookie.github.io/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/2_hub96a1fd94dc2d5392a25609d3d488e84_31759_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 alt="config"
 class="gallery-image"
@@ -56,10 +56,10 @@ data-flex-basis="1431px"
 >&lt;/p>
 &lt;h2 id="0x03-打开标题栏">&amp;lt;0x03&amp;gt; 打开标题栏
 &lt;/h2>&lt;p>在火狐顶部右键，找到定制工具栏&lt;br>
-&lt;img src="http://localhost:1313/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/3.png"
+&lt;img src="https://mlacookie.github.io/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/3.png"
 width="1276"
 height="778"
-srcset="http://localhost:1313/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/3_hu3b8f2129f040353efc9f0c9cf4bb5b34_1692777_480x0_resize_box_3.png 480w, http://localhost:1313/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/3_hu3b8f2129f040353efc9f0c9cf4bb5b34_1692777_1024x0_resize_box_3.png 1024w"
+srcset="https://mlacookie.github.io/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/3_hu3b8f2129f040353efc9f0c9cf4bb5b34_1692777_480x0_resize_box_3.png 480w, https://mlacookie.github.io/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/3_hu3b8f2129f040353efc9f0c9cf4bb5b34_1692777_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 alt="定制工具栏"
 class="gallery-image"
@@ -68,10 +68,10 @@ data-flex-basis="393px"
 >
 （图片右上角）&lt;br>
 然后打开左下角的标题栏&lt;br>
-&lt;img src="http://localhost:1313/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/4.png"
+&lt;img src="https://mlacookie.github.io/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/4.png"
 width="1290"
 height="785"
-srcset="http://localhost:1313/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/4_hu4970ad20396e5052ba10fa6770d03eca_136442_480x0_resize_box_3.png 480w, http://localhost:1313/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/4_hu4970ad20396e5052ba10fa6770d03eca_136442_1024x0_resize_box_3.png 1024w"
+srcset="https://mlacookie.github.io/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/4_hu4970ad20396e5052ba10fa6770d03eca_136442_480x0_resize_box_3.png 480w, https://mlacookie.github.io/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/4_hu4970ad20396e5052ba10fa6770d03eca_136442_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 alt="打开左下角的标题栏"
 class="gallery-image"
@@ -83,20 +83,20 @@ data-flex-basis="394px"
 &lt;/h2>&lt;p>这个也简单，&lt;code>Win+R&lt;/code>输入&lt;code>%APPDATA%\Mozilla\Firefox\Profiles\&lt;/code>&lt;br>
 里面可能会有多个名字很乱的文件夹，问题不大，找到里面文件最多的文件夹&lt;br>
 那个就是存用户设置的地方&lt;br>
-&lt;img src="http://localhost:1313/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/5.png"
+&lt;img src="https://mlacookie.github.io/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/5.png"
 width="669"
 height="197"
-srcset="http://localhost:1313/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/5_hu2a90a1a7a7ae3cd12f4a9ce92dca06d8_35254_480x0_resize_box_3.png 480w, http://localhost:1313/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/5_hu2a90a1a7a7ae3cd12f4a9ce92dca06d8_35254_1024x0_resize_box_3.png 1024w"
+srcset="https://mlacookie.github.io/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/5_hu2a90a1a7a7ae3cd12f4a9ce92dca06d8_35254_480x0_resize_box_3.png 480w, https://mlacookie.github.io/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/5_hu2a90a1a7a7ae3cd12f4a9ce92dca06d8_35254_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 alt="文件夹"
 class="gallery-image"
 data-flex-grow="339"
 data-flex-basis="815px"
 >&lt;br>
-&lt;img src="http://localhost:1313/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/6.png"
+&lt;img src="https://mlacookie.github.io/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/6.png"
 width="703"
 height="756"
-srcset="http://localhost:1313/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/6_hud134a071a52d3b9c0b02dda4e7efffad_246258_480x0_resize_box_3.png 480w, http://localhost:1313/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/6_hud134a071a52d3b9c0b02dda4e7efffad_246258_1024x0_resize_box_3.png 1024w"
+srcset="https://mlacookie.github.io/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/6_hud134a071a52d3b9c0b02dda4e7efffad_246258_480x0_resize_box_3.png 480w, https://mlacookie.github.io/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/6_hud134a071a52d3b9c0b02dda4e7efffad_246258_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 alt="存用户设置的地方"
 class="gallery-image"
@@ -106,10 +106,10 @@ data-flex-basis="223px"
 （我这里是这样的）&lt;/p>
 &lt;h2 id="0x05-创建修改界面的文件">&amp;lt;0x05&amp;gt; 创建修改界面的文件
 &lt;/h2>&lt;p>在刚刚找到的文件夹里新建叫&lt;code>chrome&lt;/code>的文件夹&lt;br>
-&lt;img src="http://localhost:1313/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/7.png"
+&lt;img src="https://mlacookie.github.io/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/7.png"
 width="1170"
 height="724"
-srcset="http://localhost:1313/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/7_hue4ea29e28c2b13fcd58de78796cdb501_239011_480x0_resize_box_3.png 480w, http://localhost:1313/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/7_hue4ea29e28c2b13fcd58de78796cdb501_239011_1024x0_resize_box_3.png 1024w"
+srcset="https://mlacookie.github.io/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/7_hue4ea29e28c2b13fcd58de78796cdb501_239011_480x0_resize_box_3.png 480w, https://mlacookie.github.io/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/7_hue4ea29e28c2b13fcd58de78796cdb501_239011_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 alt="新建chrome文件夹"
 class="gallery-image"
@@ -126,15 +126,15 @@ data-flex-basis="387px"
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>#TabsToolbar {
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">visibility&lt;/span>: &lt;span style="color:#66d9ef">collapse&lt;/span> &lt;span style="color:#75715e">!important&lt;/span>;
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>然后重启火狐理论上就生效了&lt;/p></description></item><item><title>Python在VSCode中代码提示异常问题</title><link>http://localhost:1313/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/</link><pubDate>Mon, 05 Jun 2023 00:16:03 +0000</pubDate><guid>http://localhost:1313/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/</guid><description>&lt;h2 id="0x00-这就是个很神秘的问题">&amp;lt;0x00&amp;gt; 这就是个很神秘的问题
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>然后重启火狐理论上就生效了&lt;/p></description></item><item><title>Python在VSCode中代码提示异常问题</title><link>https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/</link><pubDate>Mon, 05 Jun 2023 00:16:03 +0000</pubDate><guid>https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/</guid><description>&lt;h2 id="0x00-这就是个很神秘的问题">&amp;lt;0x00&amp;gt; 这就是个很神秘的问题
 &lt;/h2>&lt;p>突然想写一段 python 代码，然后打开 vscode&lt;br>
 就很神秘，明明啥配置都没改，代码提示又寄了&lt;br>
 网上搜索了一番，大概总结了3种可能的问题&lt;/p>
 &lt;h2 id="0x01-python-default-interpreter-path的问题">&amp;lt;0x01&amp;gt; Python: Default Interpreter Path的问题
-&lt;/h2>&lt;p>&lt;img src="http://localhost:1313/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/1.png"
+&lt;/h2>&lt;p>&lt;img src="https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/1.png"
 width="1187"
 height="220"
-srcset="http://localhost:1313/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/1_hu7eae3b9c5ab5bf8b1b9732e8387611fb_16463_480x0_resize_box_3.png 480w, http://localhost:1313/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/1_hu7eae3b9c5ab5bf8b1b9732e8387611fb_16463_1024x0_resize_box_3.png 1024w"
+srcset="https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/1_hu7eae3b9c5ab5bf8b1b9732e8387611fb_16463_480x0_resize_box_3.png 480w, https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/1_hu7eae3b9c5ab5bf8b1b9732e8387611fb_16463_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 alt="setting:PythonDefaultInterpreterPath"
 class="gallery-image"
@@ -143,10 +143,10 @@ data-flex-basis="1294px"
 >&lt;br>
 如图写上自己的 python 安装目录即可&lt;/p>
 &lt;h2 id="0x02-pythonautocompleteextrapaths的问题">&amp;lt;0x02&amp;gt; python.autoComplete.extraPaths的问题
-&lt;/h2>&lt;p>&lt;img src="http://localhost:1313/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/2.png"
+&lt;/h2>&lt;p>&lt;img src="https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/2.png"
 width="1187"
 height="223"
-srcset="http://localhost:1313/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/2_hu48b513bea48f98334b20c366a5dfbbc6_16075_480x0_resize_box_3.png 480w, http://localhost:1313/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/2_hu48b513bea48f98334b20c366a5dfbbc6_16075_1024x0_resize_box_3.png 1024w"
+srcset="https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/2_hu48b513bea48f98334b20c366a5dfbbc6_16075_480x0_resize_box_3.png 480w, https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/2_hu48b513bea48f98334b20c366a5dfbbc6_16075_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 alt="setting:python.autoComplete.extraPaths"
 class="gallery-image"
@@ -154,10 +154,10 @@ data-flex-grow="532"
 data-flex-basis="1277px"
 >&lt;br>
 如图搜索，然后点击 &lt;code>Edit in setting.json&lt;/code>&lt;br>
-&lt;img src="http://localhost:1313/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/3.png"
+&lt;img src="https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/3.png"
 width="605"
 height="93"
-srcset="http://localhost:1313/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/3_hu28af133e78bbeae9c325a2d393cc3287_5492_480x0_resize_box_3.png 480w, http://localhost:1313/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/3_hu28af133e78bbeae9c325a2d393cc3287_5492_1024x0_resize_box_3.png 1024w"
+srcset="https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/3_hu28af133e78bbeae9c325a2d393cc3287_5492_480x0_resize_box_3.png 480w, https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/3_hu28af133e78bbeae9c325a2d393cc3287_5492_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 alt="setting.json"
 class="gallery-image"
@@ -166,10 +166,10 @@ data-flex-basis="1561px"
 >&lt;br>
 按自己的安装路径填上图片里的那些就可以&lt;/p>
 &lt;h2 id="0x03-pythonlanguageserver的问题">&amp;lt;0x03&amp;gt; python.languageServer的问题
-&lt;/h2>&lt;p>&lt;img src="http://localhost:1313/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/4.png"
+&lt;/h2>&lt;p>&lt;img src="https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/4.png"
 width="1227"
 height="212"
-srcset="http://localhost:1313/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/4_hua87ac2b90d809c16bae6ef35ec7234da_11645_480x0_resize_box_3.png 480w, http://localhost:1313/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/4_hua87ac2b90d809c16bae6ef35ec7234da_11645_1024x0_resize_box_3.png 1024w"
+srcset="https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/4_hua87ac2b90d809c16bae6ef35ec7234da_11645_480x0_resize_box_3.png 480w, https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/4_hua87ac2b90d809c16bae6ef35ec7234da_11645_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 alt="setting:python.languageServer"
 class="gallery-image"

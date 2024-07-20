@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Pages on MLAcookie</title><link>http://localhost:1313/page/</link><description>Recent content in Pages on MLAcookie</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Thu, 18 Jul 2024 00:00:00 +0000</lastBuildDate><atom:link href="http://localhost:1313/page/index.xml" rel="self" type="application/rss+xml"/><item><title>About</title><link>http://localhost:1313/page/about/</link><pubDate>Thu, 18 Jul 2024 00:00:00 +0000</pubDate><guid>http://localhost:1313/page/about/</guid><description>&lt;p>欢迎各位光临我的小站&lt;/p>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Pages on MLAcookie</title><link>https://mlacookie.github.io/page/</link><description>Recent content in Pages on MLAcookie</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Thu, 18 Jul 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://mlacookie.github.io/page/index.xml" rel="self" type="application/rss+xml"/><item><title>About</title><link>https://mlacookie.github.io/page/about/</link><pubDate>Thu, 18 Jul 2024 00:00:00 +0000</pubDate><guid>https://mlacookie.github.io/page/about/</guid><description>&lt;p>欢迎各位光临我的小站&lt;/p>
 &lt;h3 id="为什么开这个博客">为什么开这个博客
 &lt;/h3>&lt;p>学习计算机嘛，总会遇到些莫名其妙的问题&lt;br>
 然后用各种搜索引擎上下求索&lt;br>
@@ -23,7 +23,7 @@
 （我超级写的完.jpg）&lt;/p>
 &lt;p>全站 CC BY-NC-SA 4.0&lt;br>
 总之在这里的内容大家可以随意取用，转载的话都行，不是商业行为就行&lt;/p>
-&lt;!-- raw HTML omitted --></description></item><item><title>Archives</title><link>http://localhost:1313/page/archives/</link><pubDate>Tue, 28 May 2019 00:00:00 +0000</pubDate><guid>http://localhost:1313/page/archives/</guid><description/></item><item><title>Links</title><link>http://localhost:1313/page/links/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>http://localhost:1313/page/links/</guid><description>&lt;h3 id="哪里能找到我">哪里能找到我
+&lt;!-- raw HTML omitted --></description></item><item><title>Archives</title><link>https://mlacookie.github.io/page/archives/</link><pubDate>Tue, 28 May 2019 00:00:00 +0000</pubDate><guid>https://mlacookie.github.io/page/archives/</guid><description/></item><item><title>Links</title><link>https://mlacookie.github.io/page/links/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://mlacookie.github.io/page/links/</guid><description>&lt;h3 id="哪里能找到我">哪里能找到我
 &lt;/h3>&lt;p>&lt;a class="link" href="https://github.com/MLAcookie" target="_blank" rel="noopener"
 >GitHub&lt;/a>&lt;br>
 &lt;a class="link" href="https://space.bilibili.com/13629146" target="_blank" rel="noopener"
@@ -36,7 +36,7 @@
 >某大佬的博客&lt;/a>（图形渲染方面的大佬）&lt;/p>
 &lt;p>ZJUT车万外部群: 326106477（多来点车车人吧）&lt;br>
 &lt;a class="link" href="https://github.com/zjutjh/zjut-icicles" target="_blank" rel="noopener"
->ZJUT课程互帮互助项目&lt;/a>（高情商：知识共享，低情商：抄作业）&lt;/p>
+>ZJUT课程互帮互助项目&lt;/a>&lt;/p>
 &lt;h3 id="鸣谢">鸣谢
 &lt;/h3>&lt;p>&lt;a class="link" href="https://gohugo.io/" target="_blank" rel="noopener"
 >Hugo博客框架&lt;/a>&lt;br>
@@ -48,4 +48,4 @@
 &lt;a class="link" href="https://github.com/Lhcfl/hexo-theme-anatolo" target="_blank" rel="noopener"
 >anatolo主题&lt;/a>&lt;/p>
 &lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted --></description></item><item><title>Search</title><link>http://localhost:1313/page/search/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>http://localhost:1313/page/search/</guid><description/></item></channel></rss>
+&lt;!-- raw HTML omitted --></description></item><item><title>Search</title><link>https://mlacookie.github.io/page/search/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://mlacookie.github.io/page/search/</guid><description/></item></channel></rss>

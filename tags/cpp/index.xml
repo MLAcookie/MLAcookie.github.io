@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Cpp on MLAcookie</title><link>http://localhost:1313/tags/cpp/</link><description>Recent content in Cpp on MLAcookie</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Thu, 15 Jun 2023 23:42:16 +0000</lastBuildDate><atom:link href="http://localhost:1313/tags/cpp/index.xml" rel="self" type="application/rss+xml"/><item><title>浙工大c++课设讲解</title><link>http://localhost:1313/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7c++%E8%AF%BE%E8%AE%BE%E8%AE%B2%E8%A7%A3/</link><pubDate>Thu, 15 Jun 2023 23:42:16 +0000</pubDate><guid>http://localhost:1313/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7c++%E8%AF%BE%E8%AE%BE%E8%AE%B2%E8%A7%A3/</guid><description>&lt;h2 id="0x00-前言">&amp;lt;0x00&amp;gt; 前言
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Cpp on MLAcookie</title><link>https://mlacookie.github.io/tags/cpp/</link><description>Recent content in Cpp on MLAcookie</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Thu, 15 Jun 2023 23:42:16 +0000</lastBuildDate><atom:link href="https://mlacookie.github.io/tags/cpp/index.xml" rel="self" type="application/rss+xml"/><item><title>浙工大c++课设讲解</title><link>https://mlacookie.github.io/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7c++%E8%AF%BE%E8%AE%BE%E8%AE%B2%E8%A7%A3/</link><pubDate>Thu, 15 Jun 2023 23:42:16 +0000</pubDate><guid>https://mlacookie.github.io/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7c++%E8%AF%BE%E8%AE%BE%E8%AE%B2%E8%A7%A3/</guid><description>&lt;h2 id="0x00-前言">&amp;lt;0x00&amp;gt; 前言
 &lt;/h2>&lt;p>我的题目是幼儿园的信息管理系统(第29号)&lt;br>
 运行在&lt;code>Cmake 3.25.3&lt;/code>+&lt;code>mingw 12.2.0&lt;/code>上&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-txt" data-lang="txt">&lt;span style="display:flex;">&lt;span>基本要求：
@@ -78,10 +78,10 @@
 为了首尾插入效率与保险起见，这个双向列表带有空的首尾节点&lt;br>
 (但最终代码没有完成对末尾插入的优化，忘了&lt;/p>
 &lt;p>总之，数据结构图如下&lt;br>
-&lt;img src="http://localhost:1313/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7c&amp;#43;&amp;#43;%E8%AF%BE%E8%AE%BE%E8%AE%B2%E8%A7%A3/picture/1.png"
+&lt;img src="https://mlacookie.github.io/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7c&amp;#43;&amp;#43;%E8%AF%BE%E8%AE%BE%E8%AE%B2%E8%A7%A3/picture/1.png"
 width="554"
 height="117"
-srcset="http://localhost:1313/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7c&amp;#43;&amp;#43;%E8%AF%BE%E8%AE%BE%E8%AE%B2%E8%A7%A3/picture/1_hub2e23a13c4ffb794c035d632afb50c12_17676_480x0_resize_box_3.png 480w, http://localhost:1313/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7c&amp;#43;&amp;#43;%E8%AF%BE%E8%AE%BE%E8%AE%B2%E8%A7%A3/picture/1_hub2e23a13c4ffb794c035d632afb50c12_17676_1024x0_resize_box_3.png 1024w"
+srcset="https://mlacookie.github.io/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7c&amp;#43;&amp;#43;%E8%AF%BE%E8%AE%BE%E8%AE%B2%E8%A7%A3/picture/1_hub2e23a13c4ffb794c035d632afb50c12_17676_480x0_resize_box_3.png 480w, https://mlacookie.github.io/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7c&amp;#43;&amp;#43;%E8%AF%BE%E8%AE%BE%E8%AE%B2%E8%A7%A3/picture/1_hub2e23a13c4ffb794c035d632afb50c12_17676_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 alt="数据结构"
 class="gallery-image"
@@ -292,7 +292,7 @@ UI的选择结果由&lt;code>UIInfo&lt;/code>传递&lt;/p>
 &lt;/h2>&lt;p>课设的基本要求都不难，但是都要完成&lt;br>
 如果要拿优秀，肯定是要扩充功能的&lt;br>
 如果想不到能扩充啥功能，可以优化UI&lt;br>
-课设一般也不大需要多少时间，熟练的话写完课设大概3天&lt;/p></description></item><item><title>从Cmake换到Xmake</title><link>http://localhost:1313/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/</link><pubDate>Fri, 02 Jun 2023 19:45:28 +0000</pubDate><guid>http://localhost:1313/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/</guid><description>&lt;h2 id="0x00-为啥不用cmake了">&amp;lt;0x00&amp;gt; 为啥不用Cmake了
+课设一般也不大需要多少时间，熟练的话写完课设大概3天&lt;/p></description></item><item><title>从Cmake换到Xmake</title><link>https://mlacookie.github.io/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/</link><pubDate>Fri, 02 Jun 2023 19:45:28 +0000</pubDate><guid>https://mlacookie.github.io/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/</guid><description>&lt;h2 id="0x00-为啥不用cmake了">&amp;lt;0x00&amp;gt; 为啥不用Cmake了
 &lt;/h2>&lt;p>怎么说呢，&lt;code>Cmake&lt;/code> 确实不是很好用，虽然说我还是稍微懂点 shell 命令的，但用着就是感觉很怪&lt;br>
 虽然 &lt;code>Cmake&lt;/code> 很强大，而且经过这么多年的发展，&lt;code>Cmake&lt;/code> 的社区支持也非常丰富&lt;br>
 但对于初学者，Cmake 的各种函数还是显得略微晦涩难懂&lt;br>
@@ -348,10 +348,10 @@ UI的选择结果由&lt;code>UIInfo&lt;/code>传递&lt;/p>
 直接安装就可以了，全默认就可以&lt;/p>
 &lt;h2 id="0x03-vs-code的配置">&amp;lt;0x03&amp;gt; VS Code的配置
 &lt;/h2>&lt;p>&lt;code>VS Code&lt;/code> 的配置也很简单，仅需安装一个叫 &lt;code>Xmake&lt;/code> 的插件&lt;br>
-&lt;img src="http://localhost:1313/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/1.png"
+&lt;img src="https://mlacookie.github.io/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/1.png"
 width="270"
 height="72"
-srcset="http://localhost:1313/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/1_hu2071bb82300890dd794c966b777715ec_7689_480x0_resize_box_3.png 480w, http://localhost:1313/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/1_hu2071bb82300890dd794c966b777715ec_7689_1024x0_resize_box_3.png 1024w"
+srcset="https://mlacookie.github.io/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/1_hu2071bb82300890dd794c966b777715ec_7689_480x0_resize_box_3.png 480w, https://mlacookie.github.io/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/1_hu2071bb82300890dd794c966b777715ec_7689_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 alt="Xmake插件截图"
 class="gallery-image"
@@ -363,10 +363,10 @@ data-flex-basis="900px"
 &lt;/h2>&lt;p>先新建个文件夹，作为存放项目代码的文件夹&lt;br>
 在 &lt;code>VS Code&lt;/code> 中打开这个文件夹&lt;br>
 快捷键 &lt;code>Ctrl+Shift+P&lt;/code> 打开命令窗口，输入 &lt;code>Xmake&lt;/code>&lt;br>
-&lt;img src="http://localhost:1313/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/2.png"
+&lt;img src="https://mlacookie.github.io/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/2.png"
 width="600"
 height="451"
-srcset="http://localhost:1313/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/2_hu18d925f4e620f590097ba1cb8344ee0c_28603_480x0_resize_box_3.png 480w, http://localhost:1313/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/2_hu18d925f4e620f590097ba1cb8344ee0c_28603_1024x0_resize_box_3.png 1024w"
+srcset="https://mlacookie.github.io/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/2_hu18d925f4e620f590097ba1cb8344ee0c_28603_480x0_resize_box_3.png 480w, https://mlacookie.github.io/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/2_hu18d925f4e620f590097ba1cb8344ee0c_28603_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 alt="命令窗口"
 class="gallery-image"
@@ -375,10 +375,10 @@ data-flex-basis="319px"
 >&lt;/p>
 &lt;p>选择 &lt;code>XMake: CreateProject&lt;/code> 这个选项&lt;br>
 选择后一般右下角会有个窗口，提示没有 &lt;code>xmake.lua&lt;/code> 文件，询问是否创建，创建就是了&lt;br>
-&lt;img src="http://localhost:1313/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/3.png"
+&lt;img src="https://mlacookie.github.io/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/3.png"
 width="451"
 height="84"
-srcset="http://localhost:1313/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/3_hue2fc95e41467282dccb9c375039f0bf0_6997_480x0_resize_box_3.png 480w, http://localhost:1313/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/3_hue2fc95e41467282dccb9c375039f0bf0_6997_1024x0_resize_box_3.png 1024w"
+srcset="https://mlacookie.github.io/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/3_hue2fc95e41467282dccb9c375039f0bf0_6997_480x0_resize_box_3.png 480w, https://mlacookie.github.io/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/3_hue2fc95e41467282dccb9c375039f0bf0_6997_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 alt="创建提示"
 class="gallery-image"
@@ -386,20 +386,20 @@ data-flex-grow="536"
 data-flex-basis="1288px"
 >&lt;/p>
 &lt;p>然后按你需要的选择配置，我通常选择 C++ 的命令行应用&lt;br>
-&lt;img src="http://localhost:1313/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/4.png"
+&lt;img src="https://mlacookie.github.io/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/4.png"
 width="598"
 height="355"
-srcset="http://localhost:1313/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/4_hu995ecca81a53503dc663b7960bb57731_7588_480x0_resize_box_3.png 480w, http://localhost:1313/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/4_hu995ecca81a53503dc663b7960bb57731_7588_1024x0_resize_box_3.png 1024w"
+srcset="https://mlacookie.github.io/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/4_hu995ecca81a53503dc663b7960bb57731_7588_480x0_resize_box_3.png 480w, https://mlacookie.github.io/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/4_hu995ecca81a53503dc663b7960bb57731_7588_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 alt="选语言"
 class="gallery-image"
 data-flex-grow="168"
 data-flex-basis="404px"
 >&lt;br>
-&lt;img src="http://localhost:1313/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/5.png"
+&lt;img src="https://mlacookie.github.io/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/5.png"
 width="598"
 height="349"
-srcset="http://localhost:1313/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/5_hu69fcd2bcd0a579ea85aac804eab7640d_12502_480x0_resize_box_3.png 480w, http://localhost:1313/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/5_hu69fcd2bcd0a579ea85aac804eab7640d_12502_1024x0_resize_box_3.png 1024w"
+srcset="https://mlacookie.github.io/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/5_hu69fcd2bcd0a579ea85aac804eab7640d_12502_480x0_resize_box_3.png 480w, https://mlacookie.github.io/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/5_hu69fcd2bcd0a579ea85aac804eab7640d_12502_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 alt="选应用类型"
 class="gallery-image"
@@ -407,10 +407,10 @@ data-flex-grow="171"
 data-flex-basis="411px"
 >&lt;/p>
 &lt;p>之后，项目的文件夹结构就创建好了&lt;br>
-&lt;img src="http://localhost:1313/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/6.png"
+&lt;img src="https://mlacookie.github.io/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/6.png"
 width="280"
 height="140"
-srcset="http://localhost:1313/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/6_hu7719235cf98258a9956520d51bd44837_6309_480x0_resize_box_3.png 480w, http://localhost:1313/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/6_hu7719235cf98258a9956520d51bd44837_6309_1024x0_resize_box_3.png 1024w"
+srcset="https://mlacookie.github.io/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/6_hu7719235cf98258a9956520d51bd44837_6309_480x0_resize_box_3.png 480w, https://mlacookie.github.io/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/6_hu7719235cf98258a9956520d51bd44837_6309_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 alt="项目文件结构"
 class="gallery-image"
@@ -423,10 +423,10 @@ data-flex-basis="480px"
 &lt;p>之后创建新项目就按这个方法就可以了，轻松加愉快&lt;br>
 编译时按下面的 &lt;code>Build&lt;/code> 或者 &lt;code>▶&lt;/code> 就可以&lt;br>
 调试就是打完断点，然后按下面的 &lt;code>🐞&lt;/code> 图标&lt;br>
-&lt;img src="http://localhost:1313/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/7.png"
+&lt;img src="https://mlacookie.github.io/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/7.png"
 width="590"
 height="22"
-srcset="http://localhost:1313/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/7_hude98329aba1eba7f2c2b3e1cd253bab1_3548_480x0_resize_box_3.png 480w, http://localhost:1313/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/7_hude98329aba1eba7f2c2b3e1cd253bab1_3548_1024x0_resize_box_3.png 1024w"
+srcset="https://mlacookie.github.io/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/7_hude98329aba1eba7f2c2b3e1cd253bab1_3548_480x0_resize_box_3.png 480w, https://mlacookie.github.io/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/7_hude98329aba1eba7f2c2b3e1cd253bab1_3548_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 alt="下边的栏"
 class="gallery-image"

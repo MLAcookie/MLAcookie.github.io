@@ -1,4 +1,331 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Blog on MLAcookie</title><link>http://localhost:1313/categories/blog/</link><description>Recent content in Blog on MLAcookie</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Sun, 03 Mar 2024 13:24:40 +0000</lastBuildDate><atom:link href="http://localhost:1313/categories/blog/index.xml" rel="self" type="application/rss+xml"/><item><title>我的hexo配合obsidian的配置</title><link>http://localhost:1313/article/categories/blog/%E6%88%91%E7%9A%84hexo%E9%85%8D%E5%90%88obsidian%E7%9A%84%E9%85%8D%E7%BD%AE/</link><pubDate>Sun, 03 Mar 2024 13:24:40 +0000</pubDate><guid>http://localhost:1313/article/categories/blog/%E6%88%91%E7%9A%84hexo%E9%85%8D%E5%90%88obsidian%E7%9A%84%E9%85%8D%E7%BD%AE/</guid><description>&lt;p>闲着没事想着优化一下hexo的博客配置
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Blog on MLAcookie</title><link>https://mlacookie.github.io/categories/blog/</link><description>Recent content in Blog on MLAcookie</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Sat, 20 Jul 2024 15:02:34 +0800</lastBuildDate><atom:link href="https://mlacookie.github.io/categories/blog/index.xml" rel="self" type="application/rss+xml"/><item><title>从Hexo到Hugo-记录博客框架切换</title><link>https://mlacookie.github.io/article/categories/blog/%E4%BB%8Ehexo%E5%88%B0hugo-%E8%AE%B0%E5%BD%95%E5%8D%9A%E5%AE%A2%E6%A1%86%E6%9E%B6%E5%88%87%E6%8D%A2/</link><pubDate>Sat, 20 Jul 2024 15:02:34 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/blog/%E4%BB%8Ehexo%E5%88%B0hugo-%E8%AE%B0%E5%BD%95%E5%8D%9A%E5%AE%A2%E6%A1%86%E6%9E%B6%E5%88%87%E6%8D%A2/</guid><description>&lt;p>嘶，总算是学校的事情忙完了，终于有点时间写写博客了&lt;br>
+这个学期感觉一直都在和时间赛跑，没啥时间写博客，自己的项目也基本都断了&lt;br>
+当然这些都是另外的话题了&lt;/p>
+&lt;p>如果之前有看过我博客的人，应该会发现现在网页大变样了&lt;br>
+现在博客的框架从&lt;code>Hexo&lt;/code>换到了&lt;code>Hugo&lt;/code>&lt;br>
+中间切换花了我很多时间，里面也有很多能说道说道的&lt;br>
+需要注意的是，我的部署方案跟官方的不一样，所以部分配置会和官方文档有所出入&lt;/p>
+&lt;h2 id="0x00-为什么要换框架">&amp;lt;0x00&amp;gt; 为什么要换框架
+&lt;/h2>&lt;p>简单来说，也算是我闲着没事干&lt;br>
+当然，之前&lt;code>Hexo&lt;/code>的流程不是很舒服，写博客的话图片很不好引用&lt;br>
+然后的话主题也不是很好看（我没时间去改主题）&lt;/p>
+&lt;p>然后正好想尝试下新东西，然后就看到了&lt;code>Hugo&lt;/code>，于是就试了试&lt;br>
+尝试之后发现这个框架使用体验确实舒适很多，于是就打算换框架了&lt;/p>
+&lt;p>换了框架后，好处主要有以下几点：&lt;/p>
+&lt;ul>
+&lt;li>文章的图片资源可以更好的管理&lt;/li>
+&lt;li>Obsidian更好的融合&lt;/li>
+&lt;li>舒适的预览体验&lt;/li>
+&lt;/ul>
+&lt;h2 id="0x01-安装hugo与新建站点">&amp;lt;0x01&amp;gt; 安装Hugo与新建站点
+&lt;/h2>&lt;h3 id="安装hugo">安装Hugo
+&lt;/h3>&lt;p>以&lt;code>windows&lt;/code>为例，其他系统只能自己看资料了
+安装&lt;code>Hugo&lt;/code>是很简单的&lt;/p>
+&lt;p>如果有安装&lt;code>scoop&lt;/code>的话，可以直接敲命令安装&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>scoop install hugo-extended
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>这里安装的是带扩展的版本，因为我使用的主题需要这个&lt;/p>
+&lt;p>如果有安装&lt;code>winget&lt;/code>，也可以直接敲命令安装&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>winget install Hugo.Hugo.Extended
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>如果上面两个包管理器都没安装，那么需要从&lt;a class="link" href="https://github.com/gohugoio/hugo/releases" target="_blank" rel="noopener"
+>Release&lt;/a>中下载预构建的版本&lt;br>
+找到带&lt;code>windows&lt;/code>的压缩包下载，里面会有一个&lt;code>hugo.exe&lt;/code>&lt;br>
+然后丢到什么路径，添加到&lt;code>windows&lt;/code>环境变量里面，这样就可以在命令行中调用了&lt;/p>
+&lt;h3 id="新建hugo站点">新建Hugo站点
+&lt;/h3>&lt;p>完成安装后，尝试新建站点来测试是否安装成功&lt;/p>
+&lt;p>在希望存放站点内容的位置打开终端&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>hugo new site TestBlog
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>这样会在这个位置创建叫&lt;code>TestBlog&lt;/code>的文件夹，里面会包含&lt;code>hugo&lt;/code>站点的结构&lt;br>
+以上就完成了Hugo站点的搭建&lt;/p>
+&lt;h2 id="0x02-配置stack主题">&amp;lt;0x02&amp;gt; 配置Stack主题
+&lt;/h2>&lt;p>这里使用的主题是&lt;a class="link" href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener"
+>Stack&lt;/a>，简洁好看&lt;/p>
+&lt;h3 id="路径约定">路径约定
+&lt;/h3>&lt;p>&lt;code>./&lt;/code>表示存放所有Hugo站点的路径&lt;br>
+所以&lt;code>./TestBlog&lt;/code>就是存放TestBlog站点的路径&lt;br>
+本文后面所有的路径都将按此表示&lt;/p>
+&lt;h3 id="安装stack主题">安装Stack主题
+&lt;/h3>&lt;p>&lt;code>./TestBlog/themes&lt;/code>是存放所有主题的路径&lt;br>
+在此打开终端&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>git clone https://github.com/CaiJimmy/hugo-theme-stack.git
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>克隆主题仓库&lt;/p>
+&lt;p>然后回到&lt;code>./TestBlog&lt;/code>，里面有个&lt;code>hugo.toml&lt;/code>&lt;br>
+将&lt;code>theme&lt;/code>的值修改为&lt;code>'hugo-theme-stack'&lt;/code>&lt;/p>
+&lt;h3 id="配置头像">配置头像
+&lt;/h3>&lt;p>进入&lt;code>./TestBlog/themes/hugo-theme-stack&lt;/code>&lt;br>
+这里是&lt;code>Stack&lt;/code>主题的文件&lt;/p>
+&lt;p>我们需要修改的头像在&lt;code>./TestBlog/themes/hugo-theme-stack/assets/img&lt;/code>中&lt;br>
+那个&lt;code>avatar.png&lt;/code>便是我们我修改的图像&lt;br>
+找自己的头像拖进去然后改名就可以了&lt;/p>
+&lt;h3 id="配置网站图标">配置网站图标
+&lt;/h3>&lt;p>配置网站图标稍微麻烦点&lt;br>
+首先进入&lt;code>./TestBlog/themes/hugo-theme-stack&lt;/code>&lt;br>
+创建叫&lt;code>static&lt;/code>的文件夹，里面放入网站图标，这里取名&lt;code>favicon.webp&lt;/code>&lt;br>
+然后回到&lt;code>./TestBlog/themes/hugo-theme-stack&lt;/code>，打开文件&lt;code>config.yaml&lt;/code>&lt;br>
+找到&lt;code>favicon&lt;/code>，将值改为&lt;code>favicon.webp&lt;/code>，也就是网站图标的文件名&lt;/p>
+&lt;h3 id="配置社交媒体菜单">配置社交媒体菜单
+&lt;/h3>&lt;p>（指的是这个东西）&lt;br>
+&lt;img src="https://mlacookie.github.io/article/categories/blog/%E4%BB%8Ehexo%E5%88%B0hugo-%E8%AE%B0%E5%BD%95%E5%8D%9A%E5%AE%A2%E6%A1%86%E6%9E%B6%E5%88%87%E6%8D%A2/picture/2.png"
+width="199"
+height="126"
+srcset="https://mlacookie.github.io/article/categories/blog/%E4%BB%8Ehexo%E5%88%B0hugo-%E8%AE%B0%E5%BD%95%E5%8D%9A%E5%AE%A2%E6%A1%86%E6%9E%B6%E5%88%87%E6%8D%A2/picture/2_hu72a80a5b65283b8b81320ae0ac54a439_4977_480x0_resize_box_3.png 480w, https://mlacookie.github.io/article/categories/blog/%E4%BB%8Ehexo%E5%88%B0hugo-%E8%AE%B0%E5%BD%95%E5%8D%9A%E5%AE%A2%E6%A1%86%E6%9E%B6%E5%88%87%E6%8D%A2/picture/2_hu72a80a5b65283b8b81320ae0ac54a439_4977_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="157"
+data-flex-basis="379px"
+>&lt;br>
+在&lt;code>./TestBlog/themes/hugo-theme-stack&lt;/code>，打开文件&lt;code>config.yaml&lt;/code>&lt;br>
+在文件最后添加这些东西&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-yaml" data-lang="yaml">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">menu&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">main&lt;/span>: []
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">social&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> - &lt;span style="color:#f92672">identifier&lt;/span>: &lt;span style="color:#ae81ff">github&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">name&lt;/span>: &lt;span style="color:#ae81ff">起个名吧&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">url&lt;/span>: &lt;span style="color:#ae81ff">GitHub链接&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">params&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">icon&lt;/span>: &lt;span style="color:#ae81ff">brand-github&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> - &lt;span style="color:#f92672">identifier&lt;/span>: &lt;span style="color:#ae81ff">bilibili&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">name&lt;/span>: &lt;span style="color:#ae81ff">起个名吧&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">url&lt;/span>: &lt;span style="color:#ae81ff">bilibili链接&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">params&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">icon&lt;/span>: &lt;span style="color:#ae81ff">brand-bilibili&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>但仅仅这样是不行的，如果构建网页会说没有&lt;code>brand-bilibili.svg&lt;/code>&lt;br>
+所以我们需要添加这个svg&lt;br>
+进入&lt;code>./TestBlog/themes/hugo-theme-stack/assets/icons&lt;/code>，里面是所有的图标文件&lt;br>
+新建一个文件，命名为&lt;code>brand-bilibili.svg&lt;/code>，添加以下内容&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-html" data-lang="html">&lt;span style="display:flex;">&lt;span>&amp;lt;&lt;span style="color:#f92672">svg&lt;/span> &lt;span style="color:#a6e22e">xmlns&lt;/span>&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;http://www.w3.org/2000/svg&amp;#34;&lt;/span> &lt;span style="color:#a6e22e">width&lt;/span>&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;24&amp;#34;&lt;/span> &lt;span style="color:#a6e22e">height&lt;/span>&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;24&amp;#34;&lt;/span> &lt;span style="color:#a6e22e">viewBox&lt;/span>&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;0 0 24 24&amp;#34;&lt;/span> &lt;span style="color:#a6e22e">fill&lt;/span>&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;none&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">stroke&lt;/span>&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;currentcolor&amp;#34;&lt;/span> &lt;span style="color:#a6e22e">stroke-width&lt;/span>&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;2&amp;#34;&lt;/span> &lt;span style="color:#a6e22e">stroke-linecap&lt;/span>&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;round&amp;#34;&lt;/span> &lt;span style="color:#a6e22e">stroke-linejoin&lt;/span>&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;round&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">class&lt;/span>&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;icon icon-tabler icons-tabler-outline icon-tabler-brand-bilibili&amp;#34;&lt;/span>&amp;gt;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &amp;lt;&lt;span style="color:#f92672">path&lt;/span> &lt;span style="color:#a6e22e">stroke&lt;/span>&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;none&amp;#34;&lt;/span> &lt;span style="color:#a6e22e">d&lt;/span>&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;M0 0h24v24H0z&amp;#34;&lt;/span> &lt;span style="color:#a6e22e">fill&lt;/span>&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;none&amp;#34;&lt;/span>&amp;gt;&amp;lt;/&lt;span style="color:#f92672">path&lt;/span>&amp;gt;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &amp;lt;&lt;span style="color:#f92672">path&lt;/span> &lt;span style="color:#a6e22e">d&lt;/span>&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;M3 10a4 4 0 014-4h10a4 4 0 014 4v6a4 4 0 01-4 4H7a4 4 0 01-4-4v-6z&amp;#34;&lt;/span>&amp;gt;&amp;lt;/&lt;span style="color:#f92672">path&lt;/span>&amp;gt;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &amp;lt;&lt;span style="color:#f92672">path&lt;/span> &lt;span style="color:#a6e22e">d&lt;/span>&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;M8 3l2 3&amp;#34;&lt;/span>&amp;gt;&amp;lt;/&lt;span style="color:#f92672">path&lt;/span>&amp;gt;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &amp;lt;&lt;span style="color:#f92672">path&lt;/span> &lt;span style="color:#a6e22e">d&lt;/span>&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;M16 3l-2 3&amp;#34;&lt;/span>&amp;gt;&amp;lt;/&lt;span style="color:#f92672">path&lt;/span>&amp;gt;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &amp;lt;&lt;span style="color:#f92672">path&lt;/span> &lt;span style="color:#a6e22e">d&lt;/span>&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;M9 13v-2&amp;#34;&lt;/span>&amp;gt;&amp;lt;/&lt;span style="color:#f92672">path&lt;/span>&amp;gt;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &amp;lt;&lt;span style="color:#f92672">path&lt;/span> &lt;span style="color:#a6e22e">d&lt;/span>&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;M15 11v2&amp;#34;&lt;/span>&amp;gt;&amp;lt;/&lt;span style="color:#f92672">path&lt;/span>&amp;gt;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&amp;lt;/&lt;span style="color:#f92672">svg&lt;/span>&amp;gt;
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>（从别人博客薅的）&lt;br>
+保存即可&lt;/p>
+&lt;p>如果要添加其他网站图标也是这样&lt;/p>
+&lt;h2 id="0x03-文章路径与侧栏">&amp;lt;0x03&amp;gt; 文章路径与侧栏
+&lt;/h2>&lt;p>Hugo的所有文章都是放在&lt;code>./TestBlog/content&lt;/code>里面&lt;/p>
+&lt;p>Hugo支持&lt;code>页面包&lt;/code>来对文章资源进行管理&lt;br>
+页面包就是按路径对文章进行打包，一个文章只能访问自己页面包内的内容&lt;br>
+这样就将每个文章独立开来，不像之前Hexo所有图片都在一个文件夹中&lt;br>
+（或许Hexo也有办法实现，但我不知道）&lt;/p>
+&lt;h3 id="修改默认文章目录">修改默认文章目录
+&lt;/h3>&lt;p>Stack主题默认指定&lt;code>./TestBlog/content/post&lt;/code>为文章目录&lt;br>
+这里我改成了&lt;code>./TestBlog/content/article&lt;/code>&lt;/p>
+&lt;p>在&lt;code>./TestBlog/themes/hugo-theme-stack&lt;/code>，打开文件&lt;code>config.yaml&lt;/code>&lt;br>
+找到&lt;code>mainSections&lt;/code>将值改为&lt;code>article&lt;/code>即可&lt;/p>
+&lt;h3 id="侧栏部分">侧栏部分
+&lt;/h3>&lt;p>这里的配置建议参考Stack主题给的&lt;code>exampleSite&lt;/code>配置&lt;br>
+直接按page里面的结构配置即可&lt;/p>
+&lt;h3 id="文章路径参考">文章路径参考
+&lt;/h3>&lt;p>我这的文章路径是这样的&lt;/p>
+&lt;pre tabindex="0">&lt;code>content
+├── article
+| ├── posts
+| | ├── 随便起的文章名字
+| | | ├── picture
+| | | | └── 1.png
+| | | └── index.md
+| | ├── ...
+| | └── ...
+| └── categories
+| ├── Blog
+| | ├── 随便起的文章名字
+| | | ├── picture
+| | | | └── 1.png
+| | | └── index.md
+| | ├── ...
+| | └── ...
+| ├── ...
+| └── ...
+└── page
+├── about
+| └── index.md
+├── archives
+| └── index.md
+├── links
+| └── index.md
+└── search
+└── index.md
+&lt;/code>&lt;/pre>&lt;h2 id="0x04-obsidian配置">&amp;lt;0x04&amp;gt; obsidian配置
+&lt;/h2>&lt;p>用obsidian在&lt;code>./TestBlog/content&lt;/code>创建仓库&lt;br>
+obsidian里面需要配置的东西不多，主要是把链接设置为相对文件的路径&lt;br>
+&lt;img src="https://mlacookie.github.io/article/categories/blog/%E4%BB%8Ehexo%E5%88%B0hugo-%E8%AE%B0%E5%BD%95%E5%8D%9A%E5%AE%A2%E6%A1%86%E6%9E%B6%E5%88%87%E6%8D%A2/picture/1.png"
+width="753"
+height="285"
+srcset="https://mlacookie.github.io/article/categories/blog/%E4%BB%8Ehexo%E5%88%B0hugo-%E8%AE%B0%E5%BD%95%E5%8D%9A%E5%AE%A2%E6%A1%86%E6%9E%B6%E5%88%87%E6%8D%A2/picture/1_hu260104af4c196c1fdd41955a3b24f56d_53879_480x0_resize_box_3.png 480w, https://mlacookie.github.io/article/categories/blog/%E4%BB%8Ehexo%E5%88%B0hugo-%E8%AE%B0%E5%BD%95%E5%8D%9A%E5%AE%A2%E6%A1%86%E6%9E%B6%E5%88%87%E6%8D%A2/picture/1_hu260104af4c196c1fdd41955a3b24f56d_53879_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="264"
+data-flex-basis="634px"
+>&lt;br>
+这样配置就可以了&lt;/p>
+&lt;p>由于使用页面包进行管理，所以所有的文章文件名都是&lt;code>index.md&lt;/code>&lt;br>
+这个会导致obsidian节点视图之类的功能显示的都是&lt;code>index&lt;/code>，我目前没有很好的办法&lt;/p>
+&lt;h2 id="0x05-部署到github-page上">&amp;lt;0x05&amp;gt; 部署到Github Page上
+&lt;/h2>&lt;p>虽然官方文档有讲，但他们采用的是将整个站点push到github上&lt;br>
+然后采用&lt;code>Github Action&lt;/code>来在上面构建网页&lt;br>
+这样的话如果Action脚本有误可能导致github page行为和本地测试不一样&lt;/p>
+&lt;p>我打算本地构建，然后将构建好的网页push到github上面，这样逻辑跟Hexo那套差不多&lt;br>
+但Hugo没有这样的自动部署配置，所以要自己来&lt;br>
+大致流程是在&lt;code>./TestBlog/public&lt;/code>中初始化git仓库&lt;br>
+添加远程git仓库&lt;br>
+拉取后提交所有更改&lt;br>
+如果需要切换分支的话再切换分支&lt;br>
+之后只要构建后提交更改并上传即可&lt;/p>
+&lt;p>具体命令参考下面的自动化脚本&lt;/p>
+&lt;h2 id="0x06-通过powershell实现自动化">&amp;lt;0x06&amp;gt; 通过PowerShell实现自动化
+&lt;/h2>&lt;p>因为是在windows平台，所以这里采用PowerShell来实现一些自动化&lt;/p>
+&lt;h3 id="统一变量配置">统一变量配置
+&lt;/h3>&lt;p>因为会有好几个脚本，所以需要一个统一的变量配置&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># configs.ps1&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 获取脚本文件夹路径&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>$global:ShellScriptDir &lt;span style="color:#f92672">=&lt;/span> Get-Location
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 主目录&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>$global:SiteDir &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;[...]&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 内容目录&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>$global:ContentDir &lt;span style="color:#f92672">=&lt;/span> Join-Path -Path $global:SiteDir -ChildPath &lt;span style="color:#e6db74">&amp;#34;content&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 文章目录&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>$global:ArticleDir &lt;span style="color:#f92672">=&lt;/span> Join-Path -Path $global:ContentDir -ChildPath &lt;span style="color:#e6db74">&amp;#34;article&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 一般文章目录&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>$global:PostsDir &lt;span style="color:#f92672">=&lt;/span> Join-Path -Path $global:ArticleDir -ChildPath &lt;span style="color:#e6db74">&amp;#34;posts&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 分类文章目录&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>$global:CategoriesDir &lt;span style="color:#f92672">=&lt;/span> Join-Path -Path $global:ArticleDir -ChildPath &lt;span style="color:#e6db74">&amp;#34;categories&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 基础URL&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>$global:BaseURL &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;[...]&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 远程Git仓库链接&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>$global:RemoteGitURL &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;[...]&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 目标分支&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>$global:TargetBranch &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;[...]&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 编辑器路径&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>$global:EditorPath &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;[...]&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="创建文章">创建文章
+&lt;/h3>&lt;p>因为希望每次创建文章都会自动创建对应的页面包，所以也需要一个脚本&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># NewPost.ps1&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>param&lt;span style="color:#f92672">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">[&lt;/span>string&lt;span style="color:#f92672">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">[&lt;/span>ValidateNotNullOrEmpty&lt;span style="color:#f92672">()]&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $PostName,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">[&lt;/span>string&lt;span style="color:#f92672">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $CategoryName,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">[&lt;/span>bool&lt;span style="color:#f92672">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $IsStartServer
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 导入配置变量&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>. .&lt;span style="color:#ae81ff">\c&lt;/span>onfigs.ps1
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 保存当前的工作路径&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>$localDir &lt;span style="color:#f92672">=&lt;/span> Get-Location
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 切换工作路径&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Set-Location $global:SiteDir
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 普通文章创建&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">if&lt;/span> &lt;span style="color:#f92672">(&lt;/span>$CategoryName -eq &lt;span style="color:#e6db74">&amp;#34;&amp;#34;&lt;/span>&lt;span style="color:#f92672">)&lt;/span> &lt;span style="color:#f92672">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># 新建hexo博客&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $newPost &lt;span style="color:#f92672">=&lt;/span> Join-Path -Path &lt;span style="color:#f92672">(&lt;/span>Join-Path -Path &lt;span style="color:#e6db74">&amp;#34;content\article\posts&amp;#34;&lt;/span> -ChildPath $PostName&lt;span style="color:#f92672">)&lt;/span> -ChildPath &lt;span style="color:#e6db74">&amp;#34;index.md&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> hugo new $newPost
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># 创建图片文件夹&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $newPostPicture &lt;span style="color:#f92672">=&lt;/span> Join-Path -Path &lt;span style="color:#f92672">(&lt;/span>Join-Path -Path $global:PostsDir -ChildPath $PostName&lt;span style="color:#f92672">)&lt;/span> -ChildPath &lt;span style="color:#e6db74">&amp;#34;picture&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> mkdir $newPostPicture
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 需要分类的文章&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">else&lt;/span> &lt;span style="color:#f92672">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># 新建hexo博客&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $categoryPath &lt;span style="color:#f92672">=&lt;/span> Join-Path -Path &lt;span style="color:#e6db74">&amp;#34;content\article\categories&amp;#34;&lt;/span> -ChildPath $CategoryName
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $newPost &lt;span style="color:#f92672">=&lt;/span> Join-Path -Path &lt;span style="color:#f92672">(&lt;/span>Join-Path -Path $categoryPath -ChildPath $PostName&lt;span style="color:#f92672">)&lt;/span> -ChildPath &lt;span style="color:#e6db74">&amp;#34;index.md&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> hugo new $newPost
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># 创建图片文件夹&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $categoryPath &lt;span style="color:#f92672">=&lt;/span> Join-Path -Path $global:CategoriesDir -ChildPath $CategoryName
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $newPostPicture &lt;span style="color:#f92672">=&lt;/span> Join-Path -Path &lt;span style="color:#f92672">(&lt;/span>Join-Path -Path $categoryPath -ChildPath $PostName&lt;span style="color:#f92672">)&lt;/span> -ChildPath &lt;span style="color:#e6db74">&amp;#34;picture&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> mkdir $newPostPicture
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 启动编辑器&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># Start-Process $global:EditorPath&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 是否开启服务器预览&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">if&lt;/span> &lt;span style="color:#f92672">(&lt;/span>$IsStartServer&lt;span style="color:#f92672">)&lt;/span> &lt;span style="color:#f92672">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> hugo server
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 返回之前的工作路径&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Set-Location $localDir
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>使用示例&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 创建一篇普通的文章&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>.&lt;span style="color:#ae81ff">\N&lt;/span>ewPost.ps1 -PostName 从Hexo到Hugo-记录博客框架切换
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 创建一篇文章，并分类为Blog&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>.&lt;span style="color:#ae81ff">\N&lt;/span>ewPost.ps1 -PostName 从Hexo到Hugo-记录博客框架切换 -CategoryName Blog
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>运行后会创建对应的页面包&lt;/p>
+&lt;h3 id="发布">发布
+&lt;/h3>&lt;p>这里涉及到两个文件，一个&lt;code>InitGit.ps1&lt;/code>用来初始化git仓库，一个&lt;code>Deploy.ps1&lt;/code>做推送&lt;/p>
+&lt;p>InitGit.ps1如下&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># InitGit.ps1&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>param&lt;span style="color:#f92672">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">[&lt;/span>bool&lt;span style="color:#f92672">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $IsForcePush &lt;span style="color:#f92672">=&lt;/span> $false
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 导入配置变量&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>. .&lt;span style="color:#ae81ff">\c&lt;/span>onfigs.ps1
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 保存当前的工作路径&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>$localDir &lt;span style="color:#f92672">=&lt;/span> Get-Location
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 切换工作路径&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Set-Location &lt;span style="color:#f92672">(&lt;/span>Join-Path -Path $global:SiteDir -ChildPath &lt;span style="color:#e6db74">&amp;#34;public&amp;#34;&lt;/span>&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 初始化git&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>git init
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>git remote add origin $global:RemoteGitURL
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>git pull
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>git add .
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>git commit -m &lt;span style="color:#f92672">(&lt;/span>&lt;span style="color:#e6db74">&amp;#34;Init: &amp;#34;&lt;/span> + &lt;span style="color:#f92672">(&lt;/span>Get-Date -Format &lt;span style="color:#e6db74">&amp;#34;yyMMdd-HH:mm&amp;#34;&lt;/span>&lt;span style="color:#f92672">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>git branch -u $global:TargetBranch
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">if&lt;/span> &lt;span style="color:#f92672">(&lt;/span>$IsForcePush&lt;span style="color:#f92672">)&lt;/span> &lt;span style="color:#f92672">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> git push origin HEAD:$global:TargetBranch --force
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 返回之前的工作路径&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Set-Location $localDir
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Deploy.ps1如下&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># Deploy.ps1&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>param&lt;span style="color:#f92672">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">[&lt;/span>bool&lt;span style="color:#f92672">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $IsForcePush &lt;span style="color:#f92672">=&lt;/span> $false
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 导入配置变量&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>. .&lt;span style="color:#ae81ff">\c&lt;/span>onfigs.ps1
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 保存当前的工作路径&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>$localDir &lt;span style="color:#f92672">=&lt;/span> Get-Location
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 切换工作路径&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Set-Location $global:SiteDir
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 构建网页&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>hugo --gc --minify --baseURL $global:BaseURL
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 准备推送&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Set-Location &lt;span style="color:#f92672">(&lt;/span>Join-Path -Path $global:SiteDir -ChildPath &lt;span style="color:#e6db74">&amp;#34;public&amp;#34;&lt;/span>&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">if&lt;/span> &lt;span style="color:#f92672">(&lt;/span>-not &lt;span style="color:#f92672">(&lt;/span>Test-Path &lt;span style="color:#e6db74">&amp;#34;./git&amp;#34;&lt;/span>&lt;span style="color:#f92672">))&lt;/span> &lt;span style="color:#f92672">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> . Join-Path -Path $global:ShellScriptDir -ChildPath &lt;span style="color:#e6db74">&amp;#34;InitGit.ps1&amp;#34;&lt;/span> -IsForcePush $true
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">else&lt;/span> &lt;span style="color:#f92672">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> git add .
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> git commit -m &lt;span style="color:#f92672">(&lt;/span>&lt;span style="color:#e6db74">&amp;#34;Deploy: &amp;#34;&lt;/span> + &lt;span style="color:#f92672">(&lt;/span>Get-Date -Format &lt;span style="color:#e6db74">&amp;#34;yyMMdd-HH:mm&amp;#34;&lt;/span>&lt;span style="color:#f92672">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># 是否强制推送&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> &lt;span style="color:#f92672">(&lt;/span>$IsForcePush&lt;span style="color:#f92672">)&lt;/span> &lt;span style="color:#f92672">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> git push origin HEAD:$global:TargetBranch --force
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">else&lt;/span> &lt;span style="color:#f92672">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> git push origin HEAD:$global:TargetBranch
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 返回之前的工作路径&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Set-Location $localDir
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>使用示例&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>.&lt;span style="color:#ae81ff">\D&lt;/span>eploy.ps1
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>运行即可推送到GitHub Page上&lt;/p></description></item><item><title>我的hexo配合obsidian的配置</title><link>https://mlacookie.github.io/article/categories/blog/%E6%88%91%E7%9A%84hexo%E9%85%8D%E5%90%88obsidian%E7%9A%84%E9%85%8D%E7%BD%AE/</link><pubDate>Sun, 03 Mar 2024 13:24:40 +0000</pubDate><guid>https://mlacookie.github.io/article/categories/blog/%E6%88%91%E7%9A%84hexo%E9%85%8D%E5%90%88obsidian%E7%9A%84%E9%85%8D%E7%BD%AE/</guid><description>&lt;p>闲着没事想着优化一下hexo的博客配置
 我原来一直都是用&lt;code>vscode&lt;/code>写markdown的，至于体验嘛，能写但不是很舒适
 所以我就尝试换成了现在在用的&lt;code>obsidian&lt;/code>，体验就好多了&lt;/p>
 &lt;p>然后就按网上的教程，尝试配置更加优雅的流程
@@ -90,10 +417,10 @@
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>mklink /d $软连接存放路径 $连接的目标
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>然后就是在&lt;code>obsidian&lt;/code>中编辑时，引用图片的格式应是&lt;code>![](/picture/...)&lt;/code>
 最好把&lt;code>obsidian&lt;/code>的&lt;code>文件与链接&amp;gt; &amp;gt; 自动添加wiki引用&lt;/code>关了，&lt;code>[[]]&lt;/code>格式的连接hexo本身解析不了
-&lt;img src="http://localhost:1313/article/categories/blog/%E6%88%91%E7%9A%84hexo%E9%85%8D%E5%90%88obsidian%E7%9A%84%E9%85%8D%E7%BD%AE/picture/1.png"
+&lt;img src="https://mlacookie.github.io/article/categories/blog/%E6%88%91%E7%9A%84hexo%E9%85%8D%E5%90%88obsidian%E7%9A%84%E9%85%8D%E7%BD%AE/picture/1.png"
 width="784"
 height="76"
-srcset="http://localhost:1313/article/categories/blog/%E6%88%91%E7%9A%84hexo%E9%85%8D%E5%90%88obsidian%E7%9A%84%E9%85%8D%E7%BD%AE/picture/1_huef58a9bd83d99962061fdf703b3f1df2_12417_480x0_resize_box_3.png 480w, http://localhost:1313/article/categories/blog/%E6%88%91%E7%9A%84hexo%E9%85%8D%E5%90%88obsidian%E7%9A%84%E9%85%8D%E7%BD%AE/picture/1_huef58a9bd83d99962061fdf703b3f1df2_12417_1024x0_resize_box_3.png 1024w"
+srcset="https://mlacookie.github.io/article/categories/blog/%E6%88%91%E7%9A%84hexo%E9%85%8D%E5%90%88obsidian%E7%9A%84%E9%85%8D%E7%BD%AE/picture/1_huef58a9bd83d99962061fdf703b3f1df2_12417_480x0_resize_box_3.png 480w, https://mlacookie.github.io/article/categories/blog/%E6%88%91%E7%9A%84hexo%E9%85%8D%E5%90%88obsidian%E7%9A%84%E9%85%8D%E7%BD%AE/picture/1_huef58a9bd83d99962061fdf703b3f1df2_12417_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="1031"
@@ -202,15 +529,15 @@ data-flex-basis="2475px"
 &lt;h2 id="0x06-这套方案的问题">&amp;lt;0x06&amp;gt; 这套方案的问题
 &lt;/h2>&lt;p>不支持Obsidian的wiki链接解析
 也没用上Obsidian自带的模板功能
-文章之间相互引用也很麻烦，要知道文章的具体URL&lt;/p></description></item><item><title>给侧边栏加个B站图标</title><link>http://localhost:1313/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/</link><pubDate>Wed, 26 Apr 2023 21:59:57 +0000</pubDate><guid>http://localhost:1313/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/</guid><description>&lt;p>搭个博客嘛，肯定要加点个人的一些账号。然后呢，我想加个B站的链接，但是在 Anatolo 的模板里没有，这下只能自己动手了。&lt;/p>
+文章之间相互引用也很麻烦，要知道文章的具体URL&lt;/p></description></item><item><title>给侧边栏加个B站图标</title><link>https://mlacookie.github.io/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/</link><pubDate>Wed, 26 Apr 2023 21:59:57 +0000</pubDate><guid>https://mlacookie.github.io/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/</guid><description>&lt;p>搭个博客嘛，肯定要加点个人的一些账号。然后呢，我想加个B站的链接，但是在 Anatolo 的模板里没有，这下只能自己动手了。&lt;/p>
 &lt;h2 id="一些约定的符号">一些约定的符号
 &lt;/h2>&lt;p>&lt;code>./&lt;/code> 表示 hexo 博客的根目录&lt;/p>
 &lt;h2 id="0x00-分析">&amp;lt;0x00&amp;gt; 分析
 &lt;/h2>&lt;p>我先是在 &lt;code>./themes/Anatolo/source/images&lt;/code> 里找，发现里面只有网站的 icon 和主要图标，没有那些社交媒体的图标
-&lt;img src="http://localhost:1313/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/1.jpg"
+&lt;img src="https://mlacookie.github.io/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/1.jpg"
 width="87"
 height="28"
-srcset="http://localhost:1313/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/1_hu808bf1b7a55ea40dafadbefda6e35af9_9775_480x0_resize_q75_box.jpg 480w, http://localhost:1313/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/1_hu808bf1b7a55ea40dafadbefda6e35af9_9775_1024x0_resize_q75_box.jpg 1024w"
+srcset="https://mlacookie.github.io/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/1_hu808bf1b7a55ea40dafadbefda6e35af9_9775_480x0_resize_q75_box.jpg 480w, https://mlacookie.github.io/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/1_hu808bf1b7a55ea40dafadbefda6e35af9_9775_1024x0_resize_q75_box.jpg 1024w"
 loading="lazy"
 alt="演示"
 class="gallery-image"
@@ -293,10 +620,10 @@ i.fa.fa-bilibili
 左上角选择铅笔，然后随便选一个图标，点击 &lt;code>Download(SVG)&lt;/code> 下载这个图标的 &lt;code>.svg&lt;/code> 文件。&lt;/p>
 &lt;p>然后在本地用矢量图编辑器打开，把原来的图清掉，然后再在上面画矢量图就可以了。&lt;/p>
 &lt;p>画的时候注意不要用描边，要用填充来构成图形。如果不小心用描边构成了图形，那么也可以选中路径，然后找到这个&lt;br>
-&lt;img src="http://localhost:1313/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/2.jpg"
+&lt;img src="https://mlacookie.github.io/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/2.jpg"
 width="235"
 height="581"
-srcset="http://localhost:1313/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/2_hu109913a40237cb6190d14dd6d7cf27a8_89168_480x0_resize_q75_box.jpg 480w, http://localhost:1313/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/2_hu109913a40237cb6190d14dd6d7cf27a8_89168_1024x0_resize_q75_box.jpg 1024w"
+srcset="https://mlacookie.github.io/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/2_hu109913a40237cb6190d14dd6d7cf27a8_89168_480x0_resize_q75_box.jpg 480w, https://mlacookie.github.io/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/2_hu109913a40237cb6190d14dd6d7cf27a8_89168_1024x0_resize_q75_box.jpg 1024w"
 loading="lazy"
 alt="路径→描边转路径"
 class="gallery-image"
@@ -307,10 +634,10 @@ data-flex-basis="97px"
 画的时候要尽可能把画布填满，如果上下留白很多的话可以适当减小。&lt;br>
 画布大小可以在&lt;code>文件→文档属性&lt;/code>里修改&lt;br>
 如果贝塞尔曲线画不好的话可以先用有理B样条来画，后者好画一点，但画出来就是比较圆润。
-&lt;img src="http://localhost:1313/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/3.jpg"
+&lt;img src="https://mlacookie.github.io/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/3.jpg"
 width="284"
 height="326"
-srcset="http://localhost:1313/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/3_hu66da9bad32194b9ab295e600fdb67e9a_63586_480x0_resize_q75_box.jpg 480w, http://localhost:1313/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/3_hu66da9bad32194b9ab295e600fdb67e9a_63586_1024x0_resize_q75_box.jpg 1024w"
+srcset="https://mlacookie.github.io/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/3_hu66da9bad32194b9ab295e600fdb67e9a_63586_480x0_resize_q75_box.jpg 480w, https://mlacookie.github.io/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/3_hu66da9bad32194b9ab295e600fdb67e9a_63586_1024x0_resize_q75_box.jpg 1024w"
 loading="lazy"
 alt="第一个是贝塞尔，第三个是B样条"
 class="gallery-image"
@@ -319,10 +646,10 @@ data-flex-basis="209px"
 >&lt;br>
 用贝塞尔曲线画的画，尽可能让每个节点的手柄要么水平，要么垂直，这样画会相对简单一点&lt;br>
 如果图标有一定的对称性，那么节点要对称，而且手柄的长度也要对称&lt;br>
-&lt;img src="http://localhost:1313/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/4.jpg"
+&lt;img src="https://mlacookie.github.io/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/4.jpg"
 width="1928"
 height="1050"
-srcset="http://localhost:1313/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/4_hu747705ed60103c1e25375c7c70351264_420322_480x0_resize_q75_box.jpg 480w, http://localhost:1313/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/4_hu747705ed60103c1e25375c7c70351264_420322_1024x0_resize_q75_box.jpg 1024w"
+srcset="https://mlacookie.github.io/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/4_hu747705ed60103c1e25375c7c70351264_420322_480x0_resize_q75_box.jpg 480w, https://mlacookie.github.io/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/4_hu747705ed60103c1e25375c7c70351264_420322_1024x0_resize_q75_box.jpg 1024w"
 loading="lazy"
 alt="我的成果"
 class="gallery-image"
@@ -331,10 +658,10 @@ data-flex-basis="440px"
 >&lt;br>
 我的成果供大家参考。&lt;/p>
 &lt;p>然后，保存文件，回到之前的网页。导入我们制作的 &lt;code>.svg&lt;/code> 文件。&lt;br>
-&lt;img src="http://localhost:1313/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/5.jpg"
+&lt;img src="https://mlacookie.github.io/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/5.jpg"
 width="1920"
 height="1050"
-srcset="http://localhost:1313/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/5_hu717767c703288dc490ca154b3905764b_163917_480x0_resize_q75_box.jpg 480w, http://localhost:1313/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/5_hu717767c703288dc490ca154b3905764b_163917_1024x0_resize_q75_box.jpg 1024w"
+srcset="https://mlacookie.github.io/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/5_hu717767c703288dc490ca154b3905764b_163917_480x0_resize_q75_box.jpg 480w, https://mlacookie.github.io/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/5_hu717767c703288dc490ca154b3905764b_163917_1024x0_resize_q75_box.jpg 1024w"
 loading="lazy"
 alt="Import to set"
 class="gallery-image"
@@ -342,10 +669,10 @@ data-flex-grow="182"
 data-flex-basis="438px"
 >&lt;br>
 然后选择右上角移动工具&lt;br>
-&lt;img src="http://localhost:1313/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/6.jpg"
+&lt;img src="https://mlacookie.github.io/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/6.jpg"
 width="160"
 height="32"
-srcset="http://localhost:1313/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/6_hu62cc3facce26d64b9ae8fa29969dfb21_12622_480x0_resize_q75_box.jpg 480w, http://localhost:1313/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/6_hu62cc3facce26d64b9ae8fa29969dfb21_12622_1024x0_resize_q75_box.jpg 1024w"
+srcset="https://mlacookie.github.io/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/6_hu62cc3facce26d64b9ae8fa29969dfb21_12622_480x0_resize_q75_box.jpg 480w, https://mlacookie.github.io/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/6_hu62cc3facce26d64b9ae8fa29969dfb21_12622_1024x0_resize_q75_box.jpg 1024w"
 loading="lazy"
 alt="移动工具"
 class="gallery-image"
@@ -388,10 +715,10 @@ data-flex-basis="1200px"
 &lt;h2 id="0x05-部署试试">&amp;lt;0x05&amp;gt; 部署试试
 &lt;/h2>&lt;p>(记得加上&amp;lt;0x02&amp;gt;的多出来的代码)&lt;br>
 编译，部署。访问下网页看看有没有新图标出现。如果没有，清除或禁用网页缓存后再试试。理论上自己加入的图标就会出现。&lt;br>
-&lt;img src="http://localhost:1313/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/7.jpg"
+&lt;img src="https://mlacookie.github.io/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/7.jpg"
 width="232"
 height="100"
-srcset="http://localhost:1313/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/7_hu897f00d9463e4fce6fb5e0ed5669221b_2837_480x0_resize_q75_box.jpg 480w, http://localhost:1313/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/7_hu897f00d9463e4fce6fb5e0ed5669221b_2837_1024x0_resize_q75_box.jpg 1024w"
+srcset="https://mlacookie.github.io/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/7_hu897f00d9463e4fce6fb5e0ed5669221b_2837_480x0_resize_q75_box.jpg 480w, https://mlacookie.github.io/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/7_hu897f00d9463e4fce6fb5e0ed5669221b_2837_1024x0_resize_q75_box.jpg 1024w"
 loading="lazy"
 alt="成功示例"
 class="gallery-image"
@@ -400,7 +727,7 @@ data-flex-basis="556px"
 >&lt;br>
 就像这样。&lt;/p>
 &lt;h2 id="搞定下班">搞定，下班
-&lt;/h2></description></item><item><title>如何一个hexo博客同时部署多git</title><link>http://localhost:1313/article/categories/blog/%E5%A6%82%E4%BD%95%E4%B8%80%E4%B8%AAhexo%E5%8D%9A%E5%AE%A2%E5%90%8C%E6%97%B6%E9%83%A8%E7%BD%B2%E5%A4%9Agit/</link><pubDate>Sun, 23 Apr 2023 16:35:19 +0000</pubDate><guid>http://localhost:1313/article/categories/blog/%E5%A6%82%E4%BD%95%E4%B8%80%E4%B8%AAhexo%E5%8D%9A%E5%AE%A2%E5%90%8C%E6%97%B6%E9%83%A8%E7%BD%B2%E5%A4%9Agit/</guid><description>&lt;h2 id="0x01-如何实现">&amp;lt;0x01&amp;gt; 如何实现
+&lt;/h2></description></item><item><title>如何一个hexo博客同时部署多git</title><link>https://mlacookie.github.io/article/categories/blog/%E5%A6%82%E4%BD%95%E4%B8%80%E4%B8%AAhexo%E5%8D%9A%E5%AE%A2%E5%90%8C%E6%97%B6%E9%83%A8%E7%BD%B2%E5%A4%9Agit/</link><pubDate>Sun, 23 Apr 2023 16:35:19 +0000</pubDate><guid>https://mlacookie.github.io/article/categories/blog/%E5%A6%82%E4%BD%95%E4%B8%80%E4%B8%AAhexo%E5%8D%9A%E5%AE%A2%E5%90%8C%E6%97%B6%E9%83%A8%E7%BD%B2%E5%A4%9Agit/</guid><description>&lt;h2 id="0x01-如何实现">&amp;lt;0x01&amp;gt; 如何实现
 &lt;/h2>&lt;p>思路是本地多写几份 config 文件&lt;br>
 在部署时切换就可以&lt;/p>
 &lt;h2 id="0x02-开搞">&amp;lt;0x02&amp;gt; 开搞
@@ -451,7 +778,7 @@ data-flex-basis="556px"
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">url&lt;/span>: &lt;span style="color:#ae81ff">https://MLAcookie.github.io/&lt;/span>
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>如果仅靠单一文件的话，两个部署的根域名会是一样的&lt;br>
 这样可能会造成一些小问题&lt;/p>
-&lt;p>靠&lt;code>powershell&lt;/code>还可以顺便做部署前的一些操作，挺方便的&lt;/p></description></item><item><title>搭建hexo+gitea的博客站</title><link>http://localhost:1313/article/categories/blog/%E6%90%AD%E5%BB%BAhexo+gitea%E7%9A%84%E5%8D%9A%E5%AE%A2%E7%AB%99/</link><pubDate>Sun, 23 Apr 2023 15:50:19 +0000</pubDate><guid>http://localhost:1313/article/categories/blog/%E6%90%AD%E5%BB%BAhexo+gitea%E7%9A%84%E5%8D%9A%E5%AE%A2%E7%AB%99/</guid><description>&lt;h2 id="0x00-为什么要用gitea--hexo">&amp;lt;0x00&amp;gt; 为什么要用gitea + hexo
+&lt;p>靠&lt;code>powershell&lt;/code>还可以顺便做部署前的一些操作，挺方便的&lt;/p></description></item><item><title>搭建hexo+gitea的博客站</title><link>https://mlacookie.github.io/article/categories/blog/%E6%90%AD%E5%BB%BAhexo+gitea%E7%9A%84%E5%8D%9A%E5%AE%A2%E7%AB%99/</link><pubDate>Sun, 23 Apr 2023 15:50:19 +0000</pubDate><guid>https://mlacookie.github.io/article/categories/blog/%E6%90%AD%E5%BB%BAhexo+gitea%E7%9A%84%E5%8D%9A%E5%AE%A2%E7%AB%99/</guid><description>&lt;h2 id="0x00-为什么要用gitea--hexo">&amp;lt;0x00&amp;gt; 为什么要用gitea + hexo
 &lt;/h2>&lt;p>很简单，gitea 太好用了(才不是因为 git 配置太麻烦)&lt;br>
 而且 hexo 的博客就是静态网页，基本不怎么耗费服务器资源&lt;br>
 如此再搭个 gitea 正好还能当个代码仓库，岂不美哉&lt;/p>
