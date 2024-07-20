@@ -183,8 +183,8 @@
 </span></span><span style=display:flex><span>hugo --gc --minify --baseURL $global:BaseURL
 </span></span><span style=display:flex><span><span style=color:#75715e># 准备推送</span>
 </span></span><span style=display:flex><span>Set-Location <span style=color:#f92672>(</span>Join-Path -Path $global:SiteDir -ChildPath <span style=color:#e6db74>&#34;public&#34;</span><span style=color:#f92672>)</span>
-</span></span><span style=display:flex><span><span style=color:#66d9ef>if</span> <span style=color:#f92672>(</span>-not <span style=color:#f92672>(</span>Test-Path <span style=color:#e6db74>&#34;./git&#34;</span><span style=color:#f92672>))</span> <span style=color:#f92672>{</span>
-</span></span><span style=display:flex><span>    . Join-Path -Path $global:ShellScriptDir -ChildPath <span style=color:#e6db74>&#34;InitGit.ps1&#34;</span> -IsForcePush $true
+</span></span><span style=display:flex><span><span style=color:#66d9ef>if</span> <span style=color:#f92672>(</span>-not <span style=color:#f92672>(</span>Test-Path <span style=color:#e6db74>&#34;.git&#34;</span><span style=color:#f92672>))</span> <span style=color:#f92672>{</span>
+</span></span><span style=display:flex><span>    . <span style=color:#f92672>(</span>Join-Path -Path $global:ShellScriptDir -ChildPath <span style=color:#e6db74>&#34;InitGit.ps1&#34;</span><span style=color:#f92672>)</span> -IsForcePush $true
 </span></span><span style=display:flex><span><span style=color:#f92672>}</span>
 </span></span><span style=display:flex><span><span style=color:#66d9ef>else</span> <span style=color:#f92672>{</span>
 </span></span><span style=display:flex><span>    git add .

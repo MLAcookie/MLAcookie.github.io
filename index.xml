@@ -306,8 +306,8 @@ data-flex-basis="634px"
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>hugo --gc --minify --baseURL $global:BaseURL
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 准备推送&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Set-Location &lt;span style="color:#f92672">(&lt;/span>Join-Path -Path $global:SiteDir -ChildPath &lt;span style="color:#e6db74">&amp;#34;public&amp;#34;&lt;/span>&lt;span style="color:#f92672">)&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">if&lt;/span> &lt;span style="color:#f92672">(&lt;/span>-not &lt;span style="color:#f92672">(&lt;/span>Test-Path &lt;span style="color:#e6db74">&amp;#34;./git&amp;#34;&lt;/span>&lt;span style="color:#f92672">))&lt;/span> &lt;span style="color:#f92672">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> . Join-Path -Path $global:ShellScriptDir -ChildPath &lt;span style="color:#e6db74">&amp;#34;InitGit.ps1&amp;#34;&lt;/span> -IsForcePush $true
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">if&lt;/span> &lt;span style="color:#f92672">(&lt;/span>-not &lt;span style="color:#f92672">(&lt;/span>Test-Path &lt;span style="color:#e6db74">&amp;#34;.git&amp;#34;&lt;/span>&lt;span style="color:#f92672">))&lt;/span> &lt;span style="color:#f92672">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> . &lt;span style="color:#f92672">(&lt;/span>Join-Path -Path $global:ShellScriptDir -ChildPath &lt;span style="color:#e6db74">&amp;#34;InitGit.ps1&amp;#34;&lt;/span>&lt;span style="color:#f92672">)&lt;/span> -IsForcePush $true
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">}&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">else&lt;/span> &lt;span style="color:#f92672">{&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> git add .
