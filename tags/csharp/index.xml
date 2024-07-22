@@ -1,4 +1,176 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>CSharp on MLAcookie</title><link>https://mlacookie.github.io/tags/csharp/</link><description>Recent content in CSharp on MLAcookie</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Mon, 18 Mar 2024 12:59:53 +0000</lastBuildDate><atom:link href="https://mlacookie.github.io/tags/csharp/index.xml" rel="self" type="application/rss+xml"/><item><title>关于我用C#写Opencv这件事-03</title><link>https://mlacookie.github.io/article/categories/opencv/%E5%85%B3%E4%BA%8E%E6%88%91%E7%94%A8c%23%E5%86%99opencv%E8%BF%99%E4%BB%B6%E4%BA%8B-03/</link><pubDate>Mon, 18 Mar 2024 12:59:53 +0000</pubDate><guid>https://mlacookie.github.io/article/categories/opencv/%E5%85%B3%E4%BA%8E%E6%88%91%E7%94%A8c%23%E5%86%99opencv%E8%BF%99%E4%BB%B6%E4%BA%8B-03/</guid><description>&lt;p>（说实话我有点后悔用C#写Opencv了）
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>CSharp on MLAcookie</title><link>https://mlacookie.github.io/tags/csharp/</link><description>Recent content in CSharp on MLAcookie</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Sun, 21 Jul 2024 21:08:14 +0800</lastBuildDate><atom:link href="https://mlacookie.github.io/tags/csharp/index.xml" rel="self" type="application/rss+xml"/><item><title>相对优雅得C#调用Win32API</title><link>https://mlacookie.github.io/article/posts/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97c%23%E8%B0%83%E7%94%A8win32api/</link><pubDate>Sun, 21 Jul 2024 21:08:14 +0800</pubDate><guid>https://mlacookie.github.io/article/posts/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97c%23%E8%B0%83%E7%94%A8win32api/</guid><description>&lt;p>今天有人找我解决一些软件相关的问题，然后发现会牵扯到一些Win32的API&lt;br>
+一般调用Win32API都是用C++方便的，而且微软给的文档也是C++的&lt;br>
+我虽然对C++不是很熟，但对C#熟啊&lt;/p>
+&lt;p>在C#中，我们可以通过&lt;code>P/Invoke&lt;/code>去做动态库的互操作&lt;br>
+但对于Win32API，如果自己写&lt;code>P/Invoke&lt;/code>，里面就有很多不确定的东西&lt;br>
+光是那个DllImport特性里面的参数就不是很好填&lt;/p>
+&lt;p>那C#开发者是不是很难做Win32开发呢，那也不是&lt;br>
+在Nuget上有很多别的大佬包装好的Win32库，安装完可以直接调用&lt;br>
+但Win32中有超级多的API，这会导致代码提示里面会多出非常多东西，确实是有点干扰了&lt;/p>
+&lt;p>但好在微软也提供了一个解决方案，&lt;a class="link" href="https://github.com/microsoft/CsWin32" target="_blank" rel="noopener"
+>CsWin32&lt;/a>&lt;br>
+这个是基于C#&lt;code>源生成器&lt;/code>的Win32API封装器&lt;br>
+就是需要什么API，它就去生成那些API的&lt;code>P/Invoke&lt;/code>代码&lt;br>
+并且生成的质量还挺高的，尽可能去迎合C#的开发体验&lt;/p>
+&lt;h2 id="0x00-安装cswin32">&amp;lt;0x00&amp;gt; 安装CsWin32
+&lt;/h2>&lt;p>因为会用到C#的源生成器，所以最好使用VS2022并且相对新的版本，不然代码提示之类的会出问题&lt;br>
+VSCode的源生成器体验也是不错的，这个直接装&lt;code>C# kit&lt;/code>插件就可以了&lt;/p>
+&lt;p>直接在Nuget中搜索CsWin32，包名是Microsoft.Windows.CsWin32&lt;br>
+这个包最低支持到&lt;code>.net framework 4.5&lt;/code>也即&lt;code>.NET Standard 2.0&lt;/code>&lt;br>
+对于这个版本，还需要安装&lt;code>System.Memory&lt;/code>&lt;br>
+如果是&lt;code>.NET Standard 2.1&lt;/code>及以上，也即&lt;code>.net 5.0&lt;/code>及以上的版本，那么就不需要安装&lt;br>
+（如果是新项目的话应该会用新版本的框架吧）&lt;/p>
+&lt;h2 id="0x01-如何使用">&amp;lt;0x01&amp;gt; 如何使用
+&lt;/h2>&lt;h3 id="添加需要的api">添加需要的API
+&lt;/h3>&lt;p>首先是要告诉源生成器要生成哪些API的封装&lt;br>
+在项目跟目录新建叫&lt;code>NativeMethods.txt&lt;/code>的文件&lt;br>
+&lt;img src="https://mlacookie.github.io/article/posts/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97c"
+width="240"
+height="95"
+srcset="https://mlacookie.github.io/article/posts/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97c 480w, https://mlacookie.github.io/article/posts/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97c 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="252"
+data-flex-basis="606px"
+>&lt;br>
+在里面可以添加你需要添加的Win32函数或者结构的名字&lt;/p>
+&lt;pre tabindex="0">&lt;code>PssCaptureSnapshot
+PssQuerySnapshot
+PSS_PROCESS_INFORMATION
+PSS_HANDLE_INFORMATION
+PSS_VA_CLONE_INFORMATION
+&lt;/code>&lt;/pre>&lt;p>这里的示例是Windows&lt;a class="link" href="https://learn.microsoft.com/zh-cn/windows/win32/api/_proc_snap/" target="_blank" rel="noopener"
+>进程快照&lt;/a>相关的API，使用的API也不多，仅做演示作用&lt;/p>
+&lt;h3 id="简单解释下使用的api">简单解释下使用的API
+&lt;/h3>&lt;h4 id="psscapturesnapshot">PssCaptureSnapshot
+&lt;/h4>&lt;p>捕获目标进程的快照&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-cpp" data-lang="cpp">&lt;span style="display:flex;">&lt;span>DWORD &lt;span style="color:#a6e22e">PssCaptureSnapshot&lt;/span>(
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> [in] HANDLE ProcessHandle,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> [in] PSS_CAPTURE_FLAGS CaptureFlags,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> [in, optional] DWORD ThreadContextFlags,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> [out] HPSS &lt;span style="color:#f92672">*&lt;/span>SnapshotHandle
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>);
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;code>ProcessHandle&lt;/code>目标进程的句柄&lt;br>
+&lt;code>CaptureFlags&lt;/code>指定要捕获的标志&lt;br>
+&lt;code>ThreadContextFlags&lt;/code>如果 CaptureFlags 指定线程上下文，则要捕获的 CONTEXT 记录标志&lt;br>
+&lt;code>SnapshotHandle&lt;/code>返回此函数捕获的快照的句柄&lt;/p>
+&lt;p>函数返回的是&lt;code>winerror.h&lt;/code>中定义的错误代码，无错误是&lt;code>ERROR_SUCCESS&lt;/code>&lt;/p>
+&lt;h4 id="pssquerysnapshot">PssQuerySnapshot
+&lt;/h4>&lt;p>查询捕获的快照的信息&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-cpp" data-lang="cpp">&lt;span style="display:flex;">&lt;span>DWORD &lt;span style="color:#a6e22e">PssQuerySnapshot&lt;/span>(
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> [in] HPSS SnapshotHandle,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> [in] PSS_QUERY_INFORMATION_CLASS InformationClass,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> [out] &lt;span style="color:#66d9ef">void&lt;/span> &lt;span style="color:#f92672">*&lt;/span>Buffer,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> [in] DWORD BufferLength
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>);
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;code>SnapshotHandle&lt;/code>要查询的快照的句柄
+&lt;code>InformationClass&lt;/code>用于选择要查询的信息
+&lt;code>Buffer&lt;/code>此函数提供的信息，类型由&lt;code>InformationClass&lt;/code>决定
+&lt;code>BufferLength&lt;/code>缓冲区的大小（以字节为单位）&lt;/p>
+&lt;p>函数返回的是&lt;code>winerror.h&lt;/code>中定义的错误代码，无错误是&lt;code>ERROR_SUCCESS&lt;/code>&lt;/p>
+&lt;p>剩下的是一些结构，东西多就不细讲了，跟本文关系不大，具体就看文档吧&lt;/p>
+&lt;h3 id="在代码中使用win32api">在代码中使用Win32API
+&lt;/h3>&lt;p>这里做一个使用Win32API查询进程PID的示例&lt;br>
+（虽然C#的Process类对象本身就可以直接查询）&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-cs" data-lang="cs">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">using&lt;/span> System.Diagnostics;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">using&lt;/span> Windows.Win32;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">using&lt;/span> Windows.Win32.System.Diagnostics.ProcessSnapshotting;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">Program&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">static&lt;/span> &lt;span style="color:#66d9ef">void&lt;/span> Main()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 使用C#自带的Process类型获取记事本进程&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Process test = Process.GetProcessesByName(&lt;span style="color:#e6db74">&amp;#34;notepad&amp;#34;&lt;/span>)[&lt;span style="color:#ae81ff">0&lt;/span>];
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 声明一个查询flags&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> PSS_CAPTURE_FLAGS flags = PSS_CAPTURE_FLAGS.PSS_CAPTURE_THREADS;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 使用Win32API来捕获进程快照&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> PInvoke.PssCaptureSnapshot(
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> test.SafeHandle,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> flags,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#ae81ff">0&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">out&lt;/span> HPSS snapshotHandle);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 声明查询进程基本信息的变量&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> PSS_PROCESS_INFORMATION info;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 涉及到指针操作，所以要用unsafe块包装&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">unsafe&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 使用Win32API来查询进程快照信息&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> PInvoke.PssQuerySnapshot(
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> snapshotHandle,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> PSS_QUERY_INFORMATION_CLASS.PSS_QUERY_PROCESS_INFORMATION,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &amp;amp;info,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> (&lt;span style="color:#66d9ef">uint&lt;/span>)&lt;span style="color:#66d9ef">sizeof&lt;/span>(PSS_PROCESS_INFORMATION));
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Console.WriteLine(info.ProcessId);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;img src="https://mlacookie.github.io/article/posts/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97c"
+width="829"
+height="166"
+srcset="https://mlacookie.github.io/article/posts/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97c 480w, https://mlacookie.github.io/article/posts/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97c 1024w"
+loading="lazy"
+alt="运行结果"
+class="gallery-image"
+data-flex-grow="499"
+data-flex-basis="1198px"
+>&lt;/p>
+&lt;p>确实是获取到了记事本的PID&lt;/p>
+&lt;p>而且观察代码，不难发现，CsWin32会非常智能地使用C#自带的类型&lt;br>
+比如说Process类型里面的SafeHandle属性，这个返回的是&lt;code>SafeProcessHandle&lt;/code>&lt;br>
+这个虽然它的命名空间是&lt;code>Microsoft.Win32.SafeHandles&lt;/code>，但确实是C#本身就有的&lt;br>
+对于C#不带的类型，并且使用的API需要这些类型，CsWin32才会去生成对应的代码&lt;/p>
+&lt;h2 id="0x02-一些不知道类型的枚举">&amp;lt;0x02&amp;gt; 一些不知道类型的枚举
+&lt;/h2>&lt;p>如果你需要使用某个枚举，但不知道是什么类型，CsWin32可以自动指出具体类型&lt;br>
+比如前面提到那两个API的返回值是&lt;code>winerror.h&lt;/code>中定义的错误代码，但我们不知道这是什么类&lt;br>
+这时候可以在&lt;code>NativeMethods.txt&lt;/code>里面直接加上&lt;code>ERROR_SUCCESS&lt;/code>&lt;br>
+CsWin32会抛出警告：应该使用正确的声明&lt;br>
+&lt;img src="https://mlacookie.github.io/article/posts/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97c"
+width="615"
+height="24"
+srcset="https://mlacookie.github.io/article/posts/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97c 480w, https://mlacookie.github.io/article/posts/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97c 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="2562"
+data-flex-basis="6150px"
+>&lt;br>
+最后也指出正确的声明是&lt;code>WIN32_ERROR&lt;/code>，文件里改好就行&lt;br>
+这里对上面的代码稍作修改作为示例&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-cs" data-lang="cs">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">using&lt;/span> System.Diagnostics;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">using&lt;/span> Windows.Win32;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">using&lt;/span> Windows.Win32.Foundation;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">using&lt;/span> Windows.Win32.System.Diagnostics.ProcessSnapshotting;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">Program&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">static&lt;/span> &lt;span style="color:#66d9ef">void&lt;/span> Main()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Process test = Process.GetProcessesByName(&lt;span style="color:#e6db74">&amp;#34;notepad&amp;#34;&lt;/span>)[&lt;span style="color:#ae81ff">0&lt;/span>];
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> PSS_CAPTURE_FLAGS flags = PSS_CAPTURE_FLAGS.PSS_CAPTURE_THREADS;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> PInvoke.PssCaptureSnapshot(
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> test.SafeHandle,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> flags,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#ae81ff">0&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">out&lt;/span> HPSS snapshotHandle);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> PSS_PROCESS_INFORMATION info;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 添加错误码的声明&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">uint&lt;/span> errorCode;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">unsafe&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 获取错误码返回值&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> errorCode = PInvoke.PssQuerySnapshot(
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> snapshotHandle,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> PSS_QUERY_INFORMATION_CLASS.PSS_QUERY_PROCESS_INFORMATION,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &amp;amp;info,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> (&lt;span style="color:#66d9ef">uint&lt;/span>)&lt;span style="color:#66d9ef">sizeof&lt;/span>(PSS_PROCESS_INFORMATION));
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Console.WriteLine(info.ProcessId);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 跟WIN32_ERROR.ERROR_SUCCESS做比较，返回True&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Console.WriteLine((WIN32_ERROR)errorCode == WIN32_ERROR.ERROR_SUCCESS);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>当然头铁不改正确的声明也没关系，也是这样使用&lt;/p>
+&lt;p>对于其他不知道怎么声明的枚举也可以这样让CsWin32去找&lt;/p></description></item><item><title>关于我用C#写Opencv这件事-03</title><link>https://mlacookie.github.io/article/categories/opencv/%E5%85%B3%E4%BA%8E%E6%88%91%E7%94%A8c%23%E5%86%99opencv%E8%BF%99%E4%BB%B6%E4%BA%8B-03/</link><pubDate>Mon, 18 Mar 2024 12:59:53 +0000</pubDate><guid>https://mlacookie.github.io/article/categories/opencv/%E5%85%B3%E4%BA%8E%E6%88%91%E7%94%A8c%23%E5%86%99opencv%E8%BF%99%E4%BB%B6%E4%BA%8B-03/</guid><description>&lt;p>（说实话我有点后悔用C#写Opencv了）
 今天我们神秘的数字图像处理做实验了&lt;br>
 虽然东西是挺简单的，但因为我用的是C#，导致很多现成的代码都没法抄&lt;br>
 再加上虽然&lt;code>Opencvsharp4&lt;/code>宣称是和C++的API是对应的&lt;br>
@@ -883,125 +1055,7 @@ alt="演示"
 loading="lazy"
 alt="演示"
 >&lt;/p>
-&lt;p>写这篇博客真的花了不少时间，大家看得开心就好&lt;/p></description></item><item><title>Godot学习笔记01-用C#开发</title><link>https://mlacookie.github.io/article/posts/godot%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B001-%E7%94%A8c%23%E5%BC%80%E5%8F%91/</link><pubDate>Thu, 14 Sep 2023 10:29:18 +0000</pubDate><guid>https://mlacookie.github.io/article/posts/godot%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B001-%E7%94%A8c%23%E5%BC%80%E5%8F%91/</guid><description>&lt;h2 id="0x00-前言">&amp;lt;0x00&amp;gt; 前言
-&lt;/h2>&lt;p>原本计划是搞完&lt;code>WPF&lt;/code>之后学&lt;code>Unity&lt;/code>的，&lt;code>Godot&lt;/code>顶多是个添头&lt;br>
-但众所周知，&lt;code>Unity&lt;/code>改收费模式了，过20w安装且20w刀年收入就要收安装费&lt;br>
-个人版用户收费还挺贵的&lt;br>
-因为这一条我基本就放弃用&lt;code>Unity&lt;/code>做我自己的项目了&lt;br>
-现在收费这块官方算是说明白了，但我还是打算先观望一下
-所以还是先找好退路吧，鬼知道他们还能整什么活&lt;br>
-&lt;code>Unity&lt;/code>还是会学的，但不是现在了(往后稍稍)&lt;/p>
-&lt;h2 id="0x01-简单讲讲godot">&amp;lt;0x01&amp;gt; 简单讲讲Godot
-&lt;/h2>&lt;p>&lt;code>Godot&lt;/code>是个开源(MIT)的游戏引擎，差不多就是随便用只要记得署名&lt;br>
-整个引擎非常轻量，编辑器本体仅114MB&lt;br>
-可以做跨平台开发，&lt;code>Windows&lt;/code>、&lt;code>macOS&lt;/code>、&lt;code>Linux&lt;/code>、&lt;code>Android&lt;/code>、&lt;code>IOS&lt;/code>、&lt;code>Web&lt;/code>都可以&lt;br>
-因为搞跨平台嘛，所以用的图形API是&lt;code>OpenGL ES&lt;/code>和&lt;code>Vulkan&lt;/code>(有这玩意就够了)&lt;br>
-&lt;code>Godot&lt;/code>支持的脚本语言也很多，官方支持&lt;code>C++&lt;/code>、&lt;code>C#&lt;/code>、&lt;code>GDScript&lt;/code>(Godot自己的脚本语言)&lt;br>
-还有更多的社区支持的语言，比如&lt;code>Python&lt;/code>之类的(开源的好处)&lt;br>
-效率方面，&lt;code>C++ &amp;gt; C# &amp;gt; GDScript&lt;/code>&lt;/p>
-&lt;p>本系列用&lt;code>C#&lt;/code>作为脚本语言，&lt;code>Godot&lt;/code>版本为&lt;code>4.1.1-stable-mono&lt;/code>&lt;/p>
-&lt;h2 id="0x02-安装godot并配置编辑器">&amp;lt;0x02&amp;gt; 安装Godot并配置编辑器
-&lt;/h2>&lt;h3 id="下载godot本体">下载Godot本体
-&lt;/h3>&lt;p>找官网下就好了&lt;br>
-但因为我们要用C#作为我们的脚本语言&lt;br>
-所以我们要下载带&lt;code>Mono&lt;/code>的版本，要往下翻一下&lt;br>
-&lt;img src="https://mlacookie.github.io/article/posts/godot%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B001-%E7%94%A8c"
-width="1920"
-height="931"
-srcset="https://mlacookie.github.io/article/posts/godot%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B001-%E7%94%A8c 480w, https://mlacookie.github.io/article/posts/godot%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B001-%E7%94%A8c 1024w"
-loading="lazy"
-alt="找对下载的位置"
-class="gallery-image"
-data-flex-grow="206"
-data-flex-basis="494px"
->&lt;br>
-就是那两个&lt;/p>
-&lt;p>下载下来是一个压缩包，里面就两个&lt;code>.exe&lt;/code>和一个文件夹，不带&lt;code>_console&lt;/code>的&lt;code>.exe&lt;/code>就是编辑器本体&lt;br>
-运行就可以了，没有安装的过程(可以随便丢到你喜欢的地方)&lt;/p>
-&lt;h3 id="安装netsdk">安装.netSDK
-&lt;/h3>&lt;p>开发&lt;code>C#&lt;/code>嘛，肯定要装.netSDK的，版本最好是&lt;code>6.0&lt;/code>&lt;br>
-你说更加新的&lt;code>7.0&lt;/code>行不行呢，也是行的(我用的就是)&lt;br>
-因为&lt;code>Godot&lt;/code>刚用上&lt;code>C#&lt;/code>不久，语法支持到&lt;code>C#7&lt;/code>&lt;br>
-差不多就是&lt;code>6.0&lt;/code>的版本，&lt;code>Godot&lt;/code>也在努力跟上新的&lt;code>.net&lt;/code>版本&lt;/p>
-&lt;h3 id="配置编辑器">配置编辑器
-&lt;/h3>&lt;p>别的编辑器也是可以的，具体配置官网也有教程，这里以&lt;code>VS Code&lt;/code>为例&lt;br>
-Godot本身是带着编辑器的，但对&lt;code>C#&lt;/code>的支持不是很好&lt;br>
-所以还是要配置下对应的外部编辑器&lt;/p>
-&lt;p>(@ 23-09-15 4.0目前仅要求装这一个)&lt;br>
-其实也没啥好讲的，就是装1个插件&lt;br>
-&lt;img src="https://mlacookie.github.io/article/posts/godot%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B001-%E7%94%A8c"
-width="238"
-height="73"
-srcset="https://mlacookie.github.io/article/posts/godot%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B001-%E7%94%A8c 480w, https://mlacookie.github.io/article/posts/godot%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B001-%E7%94%A8c 1024w"
-loading="lazy"
-alt="C#DevKit"
-class="gallery-image"
-data-flex-grow="326"
-data-flex-basis="782px"
->&lt;br>
-然后&lt;code>VS Code&lt;/code>这块就好了&lt;/p>
-&lt;p>之后在&lt;code>Godot&lt;/code>里配置下外部编辑器就好&lt;br>
-&lt;img src="https://mlacookie.github.io/article/posts/godot%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B001-%E7%94%A8c"
-width="454"
-height="362"
-srcset="https://mlacookie.github.io/article/posts/godot%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B001-%E7%94%A8c 480w, https://mlacookie.github.io/article/posts/godot%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B001-%E7%94%A8c 1024w"
-loading="lazy"
-alt="编辑器设置"
-class="gallery-image"
-data-flex-grow="125"
-data-flex-basis="300px"
->&lt;br>
-&lt;img src="https://mlacookie.github.io/article/posts/godot%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B001-%E7%94%A8c"
-width="900"
-height="733"
-srcset="https://mlacookie.github.io/article/posts/godot%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B001-%E7%94%A8c 480w, https://mlacookie.github.io/article/posts/godot%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B001-%E7%94%A8c 1024w"
-loading="lazy"
-alt="指定外部编辑器"
-class="gallery-image"
-data-flex-grow="122"
-data-flex-basis="294px"
->&lt;br>
-然后就完全配置好了&lt;/p>
-&lt;h2 id="0x03-开发一个简单的2d游戏">&amp;lt;0x03&amp;gt; 开发一个简单的2D游戏
-&lt;/h2>&lt;p>基于官方文档&lt;a class="link" href="https://docs.godotengine.org/en/stable/getting_started/first_2d_game/index.html" target="_blank" rel="noopener"
->你的第一款2D游戏&lt;/a>，这里只是些对&lt;code>C#&lt;/code>开发过程的补充&lt;/p>
-&lt;p>现在&lt;code>Godot&lt;/code>还不能很好支持&lt;code>C#&lt;/code>&lt;br>
-所以每次写完&lt;code>C#&lt;/code>的脚本都要点右上角的&lt;code>Build&lt;/code>来更新&lt;br>
-不&lt;code>Build&lt;/code>的话在脚本里新定义的变量同步不过来的&lt;/p>
-&lt;p>还有就是文档些的关于&lt;code>Signal&lt;/code>的部分是针对&lt;code>GDScript&lt;/code>的&lt;br>
-&lt;code>C#&lt;/code>要自己去连接方法&lt;br>
-&lt;img src="https://mlacookie.github.io/article/posts/godot%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B001-%E7%94%A8c"
-width="823"
-height="823"
-srcset="https://mlacookie.github.io/article/posts/godot%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B001-%E7%94%A8c 480w, https://mlacookie.github.io/article/posts/godot%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B001-%E7%94%A8c 1024w"
-loading="lazy"
-alt="连接方法"
-class="gallery-image"
-data-flex-grow="100"
-data-flex-basis="240px"
->&lt;br>
-每个都要自己连接，包括教程里&lt;code>Timer&lt;/code>的&lt;code>timeout&lt;/code>之类的都要自己连接&lt;br>
-不然根本就没有触发&lt;/p>
-&lt;p>还有就是官方文档里写的通过&lt;code>body_entered&lt;/code>信号触发自己写的&lt;code>Hit&lt;/code>信号的代码是这样的&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-cs" data-lang="cs">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">private&lt;/span> &lt;span style="color:#66d9ef">void&lt;/span> OnBodyEntered(PhysicsBody2D body)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Hide(); &lt;span style="color:#75715e">// Player disappears after being hit.&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> EmitSignal(SignalName.Hit);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// Must be deferred as we can&amp;#39;t change physics properties on a physics callback.&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> GetNode&amp;lt;CollisionShape2D&amp;gt;(&lt;span style="color:#e6db74">&amp;#34;CollisionShape2D&amp;#34;&lt;/span>).SetDeferred(CollisionShape2D.PropertyName.Disabled, &lt;span style="color:#66d9ef">true&lt;/span>);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>主要是这句&lt;code>EmitSignal(SignalName.Hit);&lt;/code>会报&lt;code>找不到Hit定义的错误&lt;/code>&lt;br>
-但不影响运行&lt;br>
-看着难受的话可以改成&lt;code>EmitSignal(&amp;quot;Hit&amp;quot;);&lt;/code>，这样不会报错&lt;br>
-我怀疑是这个&lt;code>Hit&lt;/code>的定义是运行时加的，编译期没法检查&lt;br>
-至于怎么加的，感觉像是直接操作&lt;code>CLR&lt;/code>的，不清楚&lt;br>
-(我看API也没带&lt;code>partial&lt;/code>关键字，感觉也不像源生成器)&lt;/p>
-&lt;p>(@ 23-09-15)&lt;br>
-这个问题其实是我插件没装全(之前按3.5的文档要求装的插件)&lt;br>
-(但新的文档还是只要求装一个&lt;code>C#&lt;/code>的插件)&lt;br>
-其实应该装的是前面写的&lt;code>C# Dev Kit&lt;/code>(插件包)，然后就不会报错了&lt;/p>
-&lt;p>跟着教程走的话从完全不会到做完这个2D项目大概花3小时时间&lt;br>
-还是很好上手的一个引擎&lt;/p></description></item><item><title>WPF学习笔记05-怎么用ModernWPF实现带导航的界面</title><link>https://mlacookie.github.io/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B005-%E6%80%8E%E4%B9%88%E7%94%A8modernwpf%E5%AE%9E%E7%8E%B0%E5%B8%A6%E5%AF%BC%E8%88%AA%E7%9A%84%E7%95%8C%E9%9D%A2/</link><pubDate>Wed, 30 Aug 2023 13:28:48 +0000</pubDate><guid>https://mlacookie.github.io/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B005-%E6%80%8E%E4%B9%88%E7%94%A8modernwpf%E5%AE%9E%E7%8E%B0%E5%B8%A6%E5%AF%BC%E8%88%AA%E7%9A%84%E7%95%8C%E9%9D%A2/</guid><description>&lt;h2 id="0x00-介绍下modernwpf">&amp;lt;0x00&amp;gt; 介绍下ModernWPF
+&lt;p>写这篇博客真的花了不少时间，大家看得开心就好&lt;/p></description></item><item><title>WPF学习笔记05-怎么用ModernWPF实现带导航的界面</title><link>https://mlacookie.github.io/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B005-%E6%80%8E%E4%B9%88%E7%94%A8modernwpf%E5%AE%9E%E7%8E%B0%E5%B8%A6%E5%AF%BC%E8%88%AA%E7%9A%84%E7%95%8C%E9%9D%A2/</link><pubDate>Wed, 30 Aug 2023 13:28:48 +0000</pubDate><guid>https://mlacookie.github.io/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B005-%E6%80%8E%E4%B9%88%E7%94%A8modernwpf%E5%AE%9E%E7%8E%B0%E5%B8%A6%E5%AF%BC%E8%88%AA%E7%9A%84%E7%95%8C%E9%9D%A2/</guid><description>&lt;h2 id="0x00-介绍下modernwpf">&amp;lt;0x00&amp;gt; 介绍下ModernWPF
 &lt;/h2>&lt;p>这个其实是个&lt;code>Nuget&lt;/code>包，里面有很多现代化设计的&lt;code>WPF&lt;/code>组件&lt;br>
 不是之前说嘛，在&lt;code>WPF&lt;/code>里面做现代化的&lt;code>UI&lt;/code>设计很复杂&lt;br>
 现在差不多就是别人已经把最复杂的实现写完了，我们只要调用就好了&lt;/p>

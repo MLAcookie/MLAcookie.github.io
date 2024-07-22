@@ -1,4 +1,171 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>CoderRecovery on MLAcookie</title><link>https://mlacookie.github.io/categories/coderrecovery/</link><description>Recent content in CoderRecovery on MLAcookie</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Sat, 20 Jul 2024 23:05:43 +0800</lastBuildDate><atom:link href="https://mlacookie.github.io/categories/coderrecovery/index.xml" rel="self" type="application/rss+xml"/><item><title>算法康复计划 01</title><link>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-01/</link><pubDate>Sat, 20 Jul 2024 23:05:43 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-01/</guid><description>&lt;p>这两年，技术研究得越来越多，但算法基本是没学了&lt;br>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>CoderRecovery on MLAcookie</title><link>https://mlacookie.github.io/categories/coderrecovery/</link><description>Recent content in CoderRecovery on MLAcookie</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Sun, 21 Jul 2024 22:27:25 +0800</lastBuildDate><atom:link href="https://mlacookie.github.io/categories/coderrecovery/index.xml" rel="self" type="application/rss+xml"/><item><title>算法康复计划 03</title><link>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-03/</link><pubDate>Sun, 21 Jul 2024 22:27:25 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-03/</guid><description>&lt;h2 id="0x00-今日题目a-b-数对">&amp;lt;0x00&amp;gt; 今日题目：A-B 数对
+&lt;/h2>&lt;p>&lt;a class="link" href="https://www.luogu.com.cn/problem/P1102" target="_blank" rel="noopener"
+>洛谷的P1102&lt;/a>&lt;/p>
+&lt;h3 id="题目背景">题目背景
+&lt;/h3>&lt;p>出题是一件痛苦的事情！
+相同的题目看多了也会有审美疲劳，于是我舍弃了大家所熟悉的 A+B Problem，改用 A-B 了哈哈！&lt;/p>
+&lt;h3 id="题目描述">题目描述
+&lt;/h3>&lt;p>给出一串正整数数列以及一个正整数 $C$，要求计算出所有满足 $A - B = C$ 的数对的个数（不同位置的数字一样的数对算不同的数对）。&lt;/p>
+&lt;h3 id="输入格式">输入格式
+&lt;/h3>&lt;p>输入共两行。
+第一行，两个正整数 $N,C$。
+第二行，$N$ 个正整数，作为要求处理的那串数。&lt;/p>
+&lt;h3 id="输出格式">输出格式
+&lt;/h3>&lt;p>一行，表示该串正整数中包含的满足 $A - B = C$ 的数对的个数。&lt;/p>
+&lt;h3 id="样例-1">样例 #1
+&lt;/h3>&lt;h4 id="样例输入-1">样例输入 #1
+&lt;/h4>&lt;pre tabindex="0">&lt;code>4 1
+1 1 2 3
+&lt;/code>&lt;/pre>&lt;h4 id="样例输出-1">样例输出 #1
+&lt;/h4>&lt;pre tabindex="0">&lt;code>3
+&lt;/code>&lt;/pre>&lt;h3 id="数据规模与约定">数据规模与约定
+&lt;/h3>&lt;p>对于 $75%$ 的数据，$1 \leq N \leq 2000$。
+对于 $100%$ 的数据，$1 \leq N \leq 2 \times 10^5$，$0 \leq a_i &amp;lt;2^{30}$，$1 \leq C &amp;lt; 2^{30}$。
+2017/4/29 新添数据两组&lt;/p>
+&lt;h2 id="0x01-分析">&amp;lt;0x01&amp;gt; 分析
+&lt;/h2>&lt;p>我的思路有点抽象，这道题是在二分的题单里的&lt;/p>
+&lt;p>因为对于已知B的情况，则A=B+C，这个A是固定的&lt;br>
+本来我是打算对输入数列排序，然后求连续的B有几个&lt;br>
+通过二分求出A的位置上下界，然后上下界相减求出A有几个&lt;br>
+两个数字相乘加入到总的结果中，如此反复，最后求出答案&lt;/p>
+&lt;p>然后我就想，既然这样，为什么不在输入时维护一个数组，保存某数有几个&lt;br>
+这种数据结构更进一步不就是哈希表嘛&lt;br>
+于是这个题就很简单了&lt;br>
+通过哈希表，建立键值对(数, 数的个数)&lt;br>
+然后就是每个B计算A=B+C，两个数的个数相乘即可&lt;/p>
+&lt;p>唯一的坏处是没练习怎么写二分&lt;/p>
+&lt;h2 id="0x02-代码">&amp;lt;0x02&amp;gt; 代码
+&lt;/h2>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-cpp" data-lang="cpp">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;iostream&amp;gt;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;map&amp;gt;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">int&lt;/span> &lt;span style="color:#a6e22e">main&lt;/span>()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 读入
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">int&lt;/span> n;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> size_t c;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>cin &lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> n &lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> c;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>map&lt;span style="color:#f92672">&amp;lt;&lt;/span>size_t, &lt;span style="color:#66d9ef">int&lt;/span>&lt;span style="color:#f92672">&amp;gt;&lt;/span> numInfo;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 处理
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">int&lt;/span> i &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>; i &lt;span style="color:#f92672">&amp;lt;&lt;/span> n; i&lt;span style="color:#f92672">++&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> t;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>cin &lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> t;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> numInfo[t]&lt;span style="color:#f92672">++&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 解题
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> size_t ans &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">auto&lt;/span> &lt;span style="color:#f92672">&amp;amp;&lt;/span>it : numInfo)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> size_t temp &lt;span style="color:#f92672">=&lt;/span> c &lt;span style="color:#f92672">+&lt;/span> it.first;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (numInfo.find(temp) &lt;span style="color:#f92672">!=&lt;/span> numInfo.end())
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 强转保平安
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> ans &lt;span style="color:#f92672">+=&lt;/span> (size_t)numInfo[temp] &lt;span style="color:#f92672">*&lt;/span> (size_t)it.second;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>cout &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> ans;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="0x03-遇到的坑">&amp;lt;0x03&amp;gt; 遇到的坑
+&lt;/h2>&lt;p>又是经典答案爆&lt;code>int&lt;/code>范围了，但这里是在最后的乘法&lt;br>
+两个&lt;code>int&lt;/code>相乘返回的也是&lt;code>int&lt;/code>，如果乘出来的值超过范围，也是会爆的&lt;br>
+所以&lt;code>int&lt;/code>强转&lt;code>size_t&lt;/code>解决&lt;/p></description></item><item><title>算法康复计划 02</title><link>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-02/</link><pubDate>Sun, 21 Jul 2024 10:43:29 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-02/</guid><description>&lt;p>刚开始几天打算先写点简单的&lt;/p>
+&lt;h2 id="0x00-今日题目小a的糖果">&amp;lt;0x00&amp;gt; 今日题目：小A的糖果
+&lt;/h2>&lt;p>&lt;a class="link" href="https://www.luogu.com.cn/problem/P3817" target="_blank" rel="noopener"
+>洛谷的P3817&lt;/a>&lt;/p>
+&lt;h3 id="题目描述">题目描述
+&lt;/h3>&lt;p>小 A 有 $n$ 个糖果盒，第 $i$ 个盒中有 $a_i$ 颗糖果。
+小 A 每次可以从其中一盒糖果中吃掉一颗，他想知道，要让任意两个相邻的盒子中糖的个数之和都不大于 $x$，至少得吃掉几颗糖。&lt;/p>
+&lt;h3 id="输入格式">输入格式
+&lt;/h3>&lt;p>输入的第一行是两个用空格隔开的整数，代表糖果盒的个数 $n$ 和给定的参数 $x$。
+第二行有 $n$ 个用空格隔开的整数，第 $i$ 个整数代表第 $i$ 盒糖的糖果个数 $a_i$。&lt;/p>
+&lt;h3 id="输出格式">输出格式
+&lt;/h3>&lt;p>输出一行一个整数，代表最少要吃掉的糖果的数量。&lt;/p>
+&lt;h3 id="样例-1">样例 #1
+&lt;/h3>&lt;h4 id="样例输入-1">样例输入 #1
+&lt;/h4>&lt;pre tabindex="0">&lt;code>3 3
+2 2 2
+&lt;/code>&lt;/pre>&lt;h4 id="样例输出-1">样例输出 #1
+&lt;/h4>&lt;pre tabindex="0">&lt;code>1
+&lt;/code>&lt;/pre>&lt;h3 id="样例-2">样例 #2
+&lt;/h3>&lt;h4 id="样例输入-2">样例输入 #2
+&lt;/h4>&lt;pre tabindex="0">&lt;code>6 1
+1 6 1 2 0 4
+&lt;/code>&lt;/pre>&lt;h4 id="样例输出-2">样例输出 #2
+&lt;/h4>&lt;pre tabindex="0">&lt;code>11
+&lt;/code>&lt;/pre>&lt;h3 id="样例-3">样例 #3
+&lt;/h3>&lt;h4 id="样例输入-3">样例输入 #3
+&lt;/h4>&lt;pre tabindex="0">&lt;code>5 9
+3 1 4 1 5
+&lt;/code>&lt;/pre>&lt;h4 id="样例输出-3">样例输出 #3
+&lt;/h4>&lt;pre tabindex="0">&lt;code>0
+&lt;/code>&lt;/pre>&lt;h3 id="提示">提示
+&lt;/h3>&lt;h4 id="样例输入输出-1-解释">样例输入输出 1 解释
+&lt;/h4>&lt;p>吃掉第 2 盒中的一个糖果即可。&lt;/p>
+&lt;h4 id="样例输入输出-2-解释">样例输入输出 2 解释
+&lt;/h4>&lt;p>第 2 盒糖吃掉 $6$ 颗，第 4 盒吃掉 $2$ 颗，第 6 盒吃掉 $3$ 颗。&lt;/p>
+&lt;h3 id="数据规模与约定">数据规模与约定
+&lt;/h3>&lt;ul>
+&lt;li>对于 $30%$ 的数据，保证 $n \leq 20$，$a_i, x \leq 100$。&lt;/li>
+&lt;li>对于 $70%$ 的数据，保证 $n \leq 10^3$，$a_i, x \leq 10^5$。&lt;/li>
+&lt;li>对于 $100%$ 的数据，保证 $2 \leq n \leq 10^5$，$0 \leq a_i, x \leq 10^9$。&lt;/li>
+&lt;/ul>
+&lt;h2 id="0x01-分析">&amp;lt;0x01&amp;gt; 分析
+&lt;/h2>&lt;p>这是来着贪心题单的题，那么就是用贪心算法&lt;br>
+怎么贪心呢&lt;/p>
+&lt;p>因为每次考虑的都是相邻的两个盒子，而且要用贪心&lt;br>
+所以应该每次就只用考虑这两个盒子就可以了&lt;/p>
+&lt;p>每次计算中，只有第二个盒子会参与下一次的计算&lt;br>
+既然是要算吃得最少的数目，那么应该要先吃第二个盒子的糖&lt;br>
+这样就可以保证每个相邻的盒子中的糖满足条件且吃的糖的数量是最少的&lt;/p>
+&lt;h2 id="0x02-代码">&amp;lt;0x02&amp;gt; 代码
+&lt;/h2>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-cpp" data-lang="cpp">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;iostream&amp;gt;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;vector&amp;gt;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">int&lt;/span> &lt;span style="color:#a6e22e">main&lt;/span>()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 读入
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">int&lt;/span> n;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> x;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>cin &lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> n &lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> x;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>vector&lt;span style="color:#f92672">&amp;lt;&lt;/span>&lt;span style="color:#66d9ef">int&lt;/span>&lt;span style="color:#f92672">&amp;gt;&lt;/span> list;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> list.resize(n);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">int&lt;/span> i &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>; i &lt;span style="color:#f92672">&amp;lt;&lt;/span> n; i&lt;span style="color:#f92672">++&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>cin &lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> list[i];
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 解题
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> size_t ans &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">int&lt;/span> i &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>; i &lt;span style="color:#f92672">&amp;lt;&lt;/span> n &lt;span style="color:#f92672">-&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>; i&lt;span style="color:#f92672">++&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 按前面分析的思路解题
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">int&lt;/span> temp &lt;span style="color:#f92672">=&lt;/span> list[i] &lt;span style="color:#f92672">+&lt;/span> list[i &lt;span style="color:#f92672">+&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>];
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (temp &lt;span style="color:#f92672">&amp;gt;&lt;/span> x)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 计算满足条件要吃几颗
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">int&lt;/span> d &lt;span style="color:#f92672">=&lt;/span> temp &lt;span style="color:#f92672">-&lt;/span> x;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ans &lt;span style="color:#f92672">+=&lt;/span> d;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 如果第二个盒子糖果不足
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">if&lt;/span> (list[i &lt;span style="color:#f92672">+&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>] &lt;span style="color:#f92672">&amp;lt;&lt;/span> d)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> list[i] &lt;span style="color:#f92672">-=&lt;/span> d &lt;span style="color:#f92672">-&lt;/span> list[i &lt;span style="color:#f92672">+&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>];
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> list[i &lt;span style="color:#f92672">+&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>] &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 否则就直接减去
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">else&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> list[i &lt;span style="color:#f92672">+&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>] &lt;span style="color:#f92672">-=&lt;/span> d;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>cout &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> ans;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="0x03-遇到的坑">&amp;lt;0x03&amp;gt; 遇到的坑
+&lt;/h2>&lt;p>经典最后答案爆数值范围了&lt;br>
+最开始ans是&lt;code>int&lt;/code>类型，然后提交上去发现有两个数据点过不了&lt;br>
+下载下来一看输出就明白了，答案超21亿了&lt;br>
+于是把&lt;code>int&lt;/code>改成&lt;code>size_t&lt;/code>这样就过了&lt;br>
+(&lt;code>size_t&lt;/code>在64位系统中是&lt;code>unsigned long long&lt;/code>)&lt;/p></description></item><item><title>算法康复计划 01</title><link>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-01/</link><pubDate>Sat, 20 Jul 2024 23:05:43 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-01/</guid><description>&lt;p>这两年，技术研究得越来越多，但算法基本是没学了&lt;br>
 让我本就不强的算法能力更是雪上加霜&lt;br>
 于是我就打算趁着暑假的时间，每天做一道算法题&lt;br>
 也不是为了比赛之类的，只是觉得现在确实缺算法方面的能力&lt;br>

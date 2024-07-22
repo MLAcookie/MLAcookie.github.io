@@ -558,7 +558,38 @@ data-flex-basis="2475px"
 &lt;h2 id="0x06-这套方案的问题">&amp;lt;0x06&amp;gt; 这套方案的问题
 &lt;/h2>&lt;p>不支持Obsidian的wiki链接解析
 也没用上Obsidian自带的模板功能
-文章之间相互引用也很麻烦，要知道文章的具体URL&lt;/p></description></item><item><title>给侧边栏加个B站图标</title><link>https://mlacookie.github.io/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/</link><pubDate>Wed, 26 Apr 2023 21:59:57 +0000</pubDate><guid>https://mlacookie.github.io/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/</guid><description>&lt;p>搭个博客嘛，肯定要加点个人的一些账号。然后呢，我想加个B站的链接，但是在 Anatolo 的模板里没有，这下只能自己动手了。&lt;/p>
+文章之间相互引用也很麻烦，要知道文章的具体URL&lt;/p></description></item><item><title>国内阿里云服务器关闭</title><link>https://mlacookie.github.io/article/categories/blog/%E5%9B%BD%E5%86%85%E9%98%BF%E9%87%8C%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%85%B3%E9%97%AD/</link><pubDate>Sun, 19 Nov 2023 22:53:27 +0000</pubDate><guid>https://mlacookie.github.io/article/categories/blog/%E5%9B%BD%E5%86%85%E9%98%BF%E9%87%8C%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%85%B3%E9%97%AD/</guid><description>&lt;p>不打算续费阿里云的服务器了&lt;br>
+(虽然本来就是嫖的7个月)&lt;br>
+为什么呢，主要就是因为成本算下来感觉不合适&lt;br>
+不是说贵，而是事情太多，没时间维护&lt;br>
+应该也发现了，我已经接近1个月没写博客了&lt;br>
+这段时间事情实在是多，但都是好的事情多&lt;br>
+我终于算是找到能为之奋斗的方向了&lt;br>
+于是仔细想想，服务器这块估计是没时间维护了&lt;/p>
+&lt;p>虽然国内的服务器关闭了，但Github Page的还是在的&lt;br>
+(反正免费，就挂着了)&lt;br>
+至于这么干之后受影响最大的是什么&lt;br>
+那应该就是我的那些Git仓库的国内镜像了&lt;br>
+但问题不大，Github上也都是还在的&lt;/p></description></item><item><title>庆祝下备案全通过了</title><link>https://mlacookie.github.io/article/categories/blog/%E5%BA%86%E7%A5%9D%E4%B8%8B%E5%A4%87%E6%A1%88%E5%85%A8%E9%80%9A%E8%BF%87%E4%BA%86/</link><pubDate>Thu, 18 May 2023 14:35:25 +0000</pubDate><guid>https://mlacookie.github.io/article/categories/blog/%E5%BA%86%E7%A5%9D%E4%B8%8B%E5%A4%87%E6%A1%88%E5%85%A8%E9%80%9A%E8%BF%87%E4%BA%86/</guid><description>&lt;h2 id="终于通过所有备案了">终于通过所有备案了
+&lt;/h2>&lt;p>所以之后会慢慢在这个小站上分享我的见闻&lt;br>
+虽然不知道有没有人看，但还是很感谢正在看这个页面的你&lt;/p>
+&lt;h3 id="关于备案流程">关于备案流程
+&lt;/h3>&lt;p>其实主要就是等&lt;br>
+要做&lt;code>ICP备案&lt;/code>和&lt;code>公安备案&lt;/code>&lt;br>
+我的服务器和域名都是阿里云的，所以&lt;code>ICP备案&lt;/code>通过阿里云代办。&lt;code>公安备案&lt;/code>自己填填就可以了&lt;/p>
+&lt;p>首先是&lt;code>ICP备案&lt;/code>，阿里云的ICP备案说得很详细了&lt;br>
+主要的问题就是在拍自己照片的时候要找面白墙&lt;br>
+其他的东西仔细填写就好&lt;br>
+提交完材料后会有人打电话跟你确认，顺便说一下提交的材料有什么问题&lt;br>
+有问题的话都会指出，然后邮箱发给他们就好&lt;br>
+然后再是工信部的短信验证，跟着流程就行
+接下来就是等了，一般10天左右&lt;br>
+一切顺利的话&lt;code>ICP备案&lt;/code>就下来了&lt;/p>
+&lt;p>之后就是&lt;code>公安备案&lt;/code>，这个比较容易，就是登入网页然后填填表就行&lt;br>
+一般第二天就能备案下来&lt;br>
+里面有个&lt;code>业务类型&lt;/code>，如果只是跟我一样搭个博客的话不要勾选&lt;code>交互服务&lt;/code>，然后选&lt;code>www服务&lt;/code>就好&lt;br>
+据说选了交互服务要线下确认，所以能少一事就少一事&lt;/p>
+&lt;p>最后记得在页面下面挂备案号。&lt;/p></description></item><item><title>给侧边栏加个B站图标</title><link>https://mlacookie.github.io/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/</link><pubDate>Wed, 26 Apr 2023 21:59:57 +0000</pubDate><guid>https://mlacookie.github.io/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/</guid><description>&lt;p>搭个博客嘛，肯定要加点个人的一些账号。然后呢，我想加个B站的链接，但是在 Anatolo 的模板里没有，这下只能自己动手了。&lt;/p>
 &lt;h2 id="一些约定的符号">一些约定的符号
 &lt;/h2>&lt;p>&lt;code>./&lt;/code> 表示 hexo 博客的根目录&lt;/p>
 &lt;h2 id="0x00-分析">&amp;lt;0x00&amp;gt; 分析
