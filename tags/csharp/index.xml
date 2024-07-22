@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>CSharp on MLAcookie</title><link>https://mlacookie.github.io/tags/csharp/</link><description>Recent content in CSharp on MLAcookie</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Sun, 21 Jul 2024 21:08:14 +0800</lastBuildDate><atom:link href="https://mlacookie.github.io/tags/csharp/index.xml" rel="self" type="application/rss+xml"/><item><title>相对优雅得C#调用Win32API</title><link>https://mlacookie.github.io/article/posts/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97c%23%E8%B0%83%E7%94%A8win32api/</link><pubDate>Sun, 21 Jul 2024 21:08:14 +0800</pubDate><guid>https://mlacookie.github.io/article/posts/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97c%23%E8%B0%83%E7%94%A8win32api/</guid><description>&lt;p>今天有人找我解决一些软件相关的问题，然后发现会牵扯到一些Win32的API&lt;br>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>CSharp on MLAcookie</title><link>https://mlacookie.github.io/tags/csharp/</link><description>Recent content in CSharp on MLAcookie</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Sun, 21 Jul 2024 21:08:14 +0800</lastBuildDate><atom:link href="https://mlacookie.github.io/tags/csharp/index.xml" rel="self" type="application/rss+xml"/><item><title>相对优雅得C#调用Win32API</title><link>https://mlacookie.github.io/article/posts/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97csharp%E8%B0%83%E7%94%A8win32api/</link><pubDate>Sun, 21 Jul 2024 21:08:14 +0800</pubDate><guid>https://mlacookie.github.io/article/posts/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97csharp%E8%B0%83%E7%94%A8win32api/</guid><description>&lt;p>今天有人找我解决一些软件相关的问题，然后发现会牵扯到一些Win32的API&lt;br>
 一般调用Win32API都是用C++方便的，而且微软给的文档也是C++的&lt;br>
 我虽然对C++不是很熟，但对C#熟啊&lt;/p>
 &lt;p>在C#中，我们可以通过&lt;code>P/Invoke&lt;/code>去做动态库的互操作&lt;br>
@@ -24,10 +24,10 @@ VSCode的源生成器体验也是不错的，这个直接装&lt;code>C# kit&lt;/
 &lt;/h2>&lt;h3 id="添加需要的api">添加需要的API
 &lt;/h3>&lt;p>首先是要告诉源生成器要生成哪些API的封装&lt;br>
 在项目跟目录新建叫&lt;code>NativeMethods.txt&lt;/code>的文件&lt;br>
-&lt;img src="https://mlacookie.github.io/article/posts/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97c"
+&lt;img src="https://mlacookie.github.io/article/posts/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97csharp%E8%B0%83%E7%94%A8win32api/picture/1.png"
 width="240"
 height="95"
-srcset="https://mlacookie.github.io/article/posts/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97c 480w, https://mlacookie.github.io/article/posts/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97c 1024w"
+srcset="https://mlacookie.github.io/article/posts/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97csharp%E8%B0%83%E7%94%A8win32api/picture/1_hu6a09a0ddf8f93eb58b706e0f32bfc667_4003_480x0_resize_box_3.png 480w, https://mlacookie.github.io/article/posts/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97csharp%E8%B0%83%E7%94%A8win32api/picture/1_hu6a09a0ddf8f93eb58b706e0f32bfc667_4003_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="252"
@@ -63,9 +63,9 @@ PSS_VA_CLONE_INFORMATION
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> [out] &lt;span style="color:#66d9ef">void&lt;/span> &lt;span style="color:#f92672">*&lt;/span>Buffer,
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> [in] DWORD BufferLength
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>);
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;code>SnapshotHandle&lt;/code>要查询的快照的句柄
-&lt;code>InformationClass&lt;/code>用于选择要查询的信息
-&lt;code>Buffer&lt;/code>此函数提供的信息，类型由&lt;code>InformationClass&lt;/code>决定
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;code>SnapshotHandle&lt;/code>要查询的快照的句柄&lt;br>
+&lt;code>InformationClass&lt;/code>用于选择要查询的信息&lt;br>
+&lt;code>Buffer&lt;/code>此函数提供的信息，类型由&lt;code>InformationClass&lt;/code>决定&lt;br>
 &lt;code>BufferLength&lt;/code>缓冲区的大小（以字节为单位）&lt;/p>
 &lt;p>函数返回的是&lt;code>winerror.h&lt;/code>中定义的错误代码，无错误是&lt;code>ERROR_SUCCESS&lt;/code>&lt;/p>
 &lt;p>剩下的是一些结构，东西多就不细讲了，跟本文关系不大，具体就看文档吧&lt;/p>
@@ -105,10 +105,10 @@ PSS_VA_CLONE_INFORMATION
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Console.WriteLine(info.ProcessId);
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;img src="https://mlacookie.github.io/article/posts/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97c"
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;img src="https://mlacookie.github.io/article/posts/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97csharp%E8%B0%83%E7%94%A8win32api/picture/3.png"
 width="829"
 height="166"
-srcset="https://mlacookie.github.io/article/posts/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97c 480w, https://mlacookie.github.io/article/posts/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97c 1024w"
+srcset="https://mlacookie.github.io/article/posts/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97csharp%E8%B0%83%E7%94%A8win32api/picture/3_hu5150e39f0ad4eac2ea149b7e9a8aa569_26787_480x0_resize_box_3.png 480w, https://mlacookie.github.io/article/posts/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97csharp%E8%B0%83%E7%94%A8win32api/picture/3_hu5150e39f0ad4eac2ea149b7e9a8aa569_26787_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 alt="运行结果"
 class="gallery-image"
@@ -125,10 +125,10 @@ data-flex-basis="1198px"
 比如前面提到那两个API的返回值是&lt;code>winerror.h&lt;/code>中定义的错误代码，但我们不知道这是什么类&lt;br>
 这时候可以在&lt;code>NativeMethods.txt&lt;/code>里面直接加上&lt;code>ERROR_SUCCESS&lt;/code>&lt;br>
 CsWin32会抛出警告：应该使用正确的声明&lt;br>
-&lt;img src="https://mlacookie.github.io/article/posts/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97c"
+&lt;img src="https://mlacookie.github.io/article/posts/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97csharp%E8%B0%83%E7%94%A8win32api/picture/2.png"
 width="615"
 height="24"
-srcset="https://mlacookie.github.io/article/posts/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97c 480w, https://mlacookie.github.io/article/posts/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97c 1024w"
+srcset="https://mlacookie.github.io/article/posts/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97csharp%E8%B0%83%E7%94%A8win32api/picture/2_hu6e55902184b3a719cc4b872a240dead6_2562_480x0_resize_box_3.png 480w, https://mlacookie.github.io/article/posts/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97csharp%E8%B0%83%E7%94%A8win32api/picture/2_hu6e55902184b3a719cc4b872a240dead6_2562_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="2562"
@@ -1408,7 +1408,7 @@ data-flex-basis="491px"
 具体可以看&lt;a class="link" href="https://www.bilibili.com/video/BV12x4y177qB" target="_blank" rel="noopener"
 >B站up-十月的寒流的视频&lt;/a>&lt;br>
 (人家是真大佬，他的视频做的都很不错的)&lt;br>
-(所以我的博客就摸了😋)&lt;/p></description></item><item><title>浅谈C#转IL语言</title><link>https://mlacookie.github.io/article/posts/%E6%B5%85%E8%B0%88c%23%E8%BD%ACil%E8%AF%AD%E8%A8%80/</link><pubDate>Thu, 03 Aug 2023 02:44:36 +0000</pubDate><guid>https://mlacookie.github.io/article/posts/%E6%B5%85%E8%B0%88c%23%E8%BD%ACil%E8%AF%AD%E8%A8%80/</guid><description>&lt;h2 id="前言">前言
+(所以我的博客就摸了😋)&lt;/p></description></item><item><title>浅谈C#转IL语言</title><link>https://mlacookie.github.io/article/posts/%E6%B5%85%E8%B0%88csharp%E8%BD%ACil%E8%AF%AD%E8%A8%80/</link><pubDate>Thu, 03 Aug 2023 02:44:36 +0000</pubDate><guid>https://mlacookie.github.io/article/posts/%E6%B5%85%E8%B0%88csharp%E8%BD%ACil%E8%AF%AD%E8%A8%80/</guid><description>&lt;h2 id="前言">前言
 &lt;/h2>&lt;p>突发奇想，想研究下IL语言&lt;br>
 本来以为会挺难的，结果发现貌似还行&lt;br>
 注意：本博客不打算详细讲解IL的原理之类的&lt;br>

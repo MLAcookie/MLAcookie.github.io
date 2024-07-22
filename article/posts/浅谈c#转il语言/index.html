@@ -1,192 +1,821 @@
-<!doctype html><html lang=zh-cn dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content='前言\r突发奇想，想研究下IL语言 本来以为会挺难的，结果发现貌似还行 注意：本博客不打算详细讲解IL的原理之类的 只是大概讲讲我研究的成果 这里推荐两篇博客，他们那讲的更详细 一个是来自Zery的IL指令详细 另一个是布鲁克石的30分钟？不需要，轻松读懂IL <0x01> 什么是IL语言\r这就要从.net的运行结构开始讲起 .net框架下面有好多们语言，但.net的运行时就一个 所以这个运行时怎么能同时跑这么多的语言，是每个语言一个实现吗？ 肯定不是，这太麻烦了 所以.net编译器会将它托管的语言先编译成一个中间语言，这个中间语言就是IL .net运行时会动态解释这个IL文件(这个跟Java差不多的流程) 通过IL语言，.net实现了多语言共用一个运行时，也让不同语言能非常方便地整合进一个项目 (反正编译出来的东西都是一样的) 这个具体的过程可以看本叫《CLR via C#》(俗称C#圣经😂，最近在看) 里面讲到过 <0x02> 怎么查看IL语言\r第一种方法，ILDasm Visual Studio自带的反汇编软件(但我没找到) 参考微软的文档就好 第二种方法，sharplab.io 这是个给C#用的实时转换成IL的网页工具 这个还可以转换成编译器优化后的代码甚至是给CLR执行的汇编代码 在线执行也是可以的，而且它可以列出所写代码的所有语法点并列出微软的说明文档链接 不过毕竟是网页工具，并不完全支持所有的FCL库，所以可能有些库用不了 总之这是个非常方便的工具，有什么小测试都可以在上面测试 第三种方法，ILSpy 这个工具也挺好用的，有支持Visual Studio的插件 装上就可以写代码的时候直接反编译 (@ 23-08-22) 只是看核心库源代码的话还有一种办法，官方的源代码网站 具体我没怎么用过，就先补充在这里吧 我现在在用第二种和第三种方法 平时做小测试网页工具用用就好了 但在研究.net的底层api的时候就需要用ILSpy了 (虽然.net core开源了，但自己找效率确实低，反编译哪里不会点哪里) <0x03> C#的编译过程\rC#编译到IL分两步 第一步：编译器优化代码 第二步：编译成IL 在第一步中，编译器将对原代码进行彻头彻尾的改造 比方说代码有一句int a = 5;，在优化过程中会改名为int num = 5; 还有就是将一些编译期就知道结果的值计算出来，比如"a"+"b"就会直接优化成"ab" 在这个过程中，编译器还会加上非常多的，用于跟CLR通信的指令 这些指令主要是指导CLR正确执行代码，具体我也不是很熟，以后再说 第二步编译成IL就看靠编译器了 这两步具体实现可以看Roslyn的源码，在GitHub上 (我还没开始研究这玩意) 另外还有就是C#编译有两种模式 Debug和Release 前者编译出的代码并不是最优化的，里面会有很多的nop指令 (就是执行这条指令啥也不干，方便调试打断点用的)'><title>浅谈C#转IL语言</title>
-<link rel=canonical href=https://mlacookie.github.io/article/posts/%E6%B5%85%E8%B0%88c%23%E8%BD%ACil%E8%AF%AD%E8%A8%80/><link rel=stylesheet href=/scss/style.min.e8c7fca7d1c9294aa7a4f3426c225ee26540f7d94e39be0b5a4a5c8a49ca5a25.css><meta property='og:title' content="浅谈C#转IL语言"><meta property='og:description' content='前言\r突发奇想，想研究下IL语言 本来以为会挺难的，结果发现貌似还行 注意：本博客不打算详细讲解IL的原理之类的 只是大概讲讲我研究的成果 这里推荐两篇博客，他们那讲的更详细 一个是来自Zery的IL指令详细 另一个是布鲁克石的30分钟？不需要，轻松读懂IL <0x01> 什么是IL语言\r这就要从.net的运行结构开始讲起 .net框架下面有好多们语言，但.net的运行时就一个 所以这个运行时怎么能同时跑这么多的语言，是每个语言一个实现吗？ 肯定不是，这太麻烦了 所以.net编译器会将它托管的语言先编译成一个中间语言，这个中间语言就是IL .net运行时会动态解释这个IL文件(这个跟Java差不多的流程) 通过IL语言，.net实现了多语言共用一个运行时，也让不同语言能非常方便地整合进一个项目 (反正编译出来的东西都是一样的) 这个具体的过程可以看本叫《CLR via C#》(俗称C#圣经😂，最近在看) 里面讲到过 <0x02> 怎么查看IL语言\r第一种方法，ILDasm Visual Studio自带的反汇编软件(但我没找到) 参考微软的文档就好 第二种方法，sharplab.io 这是个给C#用的实时转换成IL的网页工具 这个还可以转换成编译器优化后的代码甚至是给CLR执行的汇编代码 在线执行也是可以的，而且它可以列出所写代码的所有语法点并列出微软的说明文档链接 不过毕竟是网页工具，并不完全支持所有的FCL库，所以可能有些库用不了 总之这是个非常方便的工具，有什么小测试都可以在上面测试 第三种方法，ILSpy 这个工具也挺好用的，有支持Visual Studio的插件 装上就可以写代码的时候直接反编译 (@ 23-08-22) 只是看核心库源代码的话还有一种办法，官方的源代码网站 具体我没怎么用过，就先补充在这里吧 我现在在用第二种和第三种方法 平时做小测试网页工具用用就好了 但在研究.net的底层api的时候就需要用ILSpy了 (虽然.net core开源了，但自己找效率确实低，反编译哪里不会点哪里) <0x03> C#的编译过程\rC#编译到IL分两步 第一步：编译器优化代码 第二步：编译成IL 在第一步中，编译器将对原代码进行彻头彻尾的改造 比方说代码有一句int a = 5;，在优化过程中会改名为int num = 5; 还有就是将一些编译期就知道结果的值计算出来，比如"a"+"b"就会直接优化成"ab" 在这个过程中，编译器还会加上非常多的，用于跟CLR通信的指令 这些指令主要是指导CLR正确执行代码，具体我也不是很熟，以后再说 第二步编译成IL就看靠编译器了 这两步具体实现可以看Roslyn的源码，在GitHub上 (我还没开始研究这玩意) 另外还有就是C#编译有两种模式 Debug和Release 前者编译出的代码并不是最优化的，里面会有很多的nop指令 (就是执行这条指令啥也不干，方便调试打断点用的)'><meta property='og:url' content='https://mlacookie.github.io/article/posts/%E6%B5%85%E8%B0%88c%23%E8%BD%ACil%E8%AF%AD%E8%A8%80/'><meta property='og:site_name' content='MLAcookie'><meta property='og:type' content='article'><meta property='article:section' content='Article'><meta property='article:tag' content='CSharp'><meta property='article:published_time' content='2023-08-03T02:44:36+00:00'><meta property='article:modified_time' content='2023-08-03T02:44:36+00:00'><meta name=twitter:title content="浅谈C#转IL语言"><meta name=twitter:description content='前言\r突发奇想，想研究下IL语言 本来以为会挺难的，结果发现貌似还行 注意：本博客不打算详细讲解IL的原理之类的 只是大概讲讲我研究的成果 这里推荐两篇博客，他们那讲的更详细 一个是来自Zery的IL指令详细 另一个是布鲁克石的30分钟？不需要，轻松读懂IL <0x01> 什么是IL语言\r这就要从.net的运行结构开始讲起 .net框架下面有好多们语言，但.net的运行时就一个 所以这个运行时怎么能同时跑这么多的语言，是每个语言一个实现吗？ 肯定不是，这太麻烦了 所以.net编译器会将它托管的语言先编译成一个中间语言，这个中间语言就是IL .net运行时会动态解释这个IL文件(这个跟Java差不多的流程) 通过IL语言，.net实现了多语言共用一个运行时，也让不同语言能非常方便地整合进一个项目 (反正编译出来的东西都是一样的) 这个具体的过程可以看本叫《CLR via C#》(俗称C#圣经😂，最近在看) 里面讲到过 <0x02> 怎么查看IL语言\r第一种方法，ILDasm Visual Studio自带的反汇编软件(但我没找到) 参考微软的文档就好 第二种方法，sharplab.io 这是个给C#用的实时转换成IL的网页工具 这个还可以转换成编译器优化后的代码甚至是给CLR执行的汇编代码 在线执行也是可以的，而且它可以列出所写代码的所有语法点并列出微软的说明文档链接 不过毕竟是网页工具，并不完全支持所有的FCL库，所以可能有些库用不了 总之这是个非常方便的工具，有什么小测试都可以在上面测试 第三种方法，ILSpy 这个工具也挺好用的，有支持Visual Studio的插件 装上就可以写代码的时候直接反编译 (@ 23-08-22) 只是看核心库源代码的话还有一种办法，官方的源代码网站 具体我没怎么用过，就先补充在这里吧 我现在在用第二种和第三种方法 平时做小测试网页工具用用就好了 但在研究.net的底层api的时候就需要用ILSpy了 (虽然.net core开源了，但自己找效率确实低，反编译哪里不会点哪里) <0x03> C#的编译过程\rC#编译到IL分两步 第一步：编译器优化代码 第二步：编译成IL 在第一步中，编译器将对原代码进行彻头彻尾的改造 比方说代码有一句int a = 5;，在优化过程中会改名为int num = 5; 还有就是将一些编译期就知道结果的值计算出来，比如"a"+"b"就会直接优化成"ab" 在这个过程中，编译器还会加上非常多的，用于跟CLR通信的指令 这些指令主要是指导CLR正确执行代码，具体我也不是很熟，以后再说 第二步编译成IL就看靠编译器了 这两步具体实现可以看Roslyn的源码，在GitHub上 (我还没开始研究这玩意) 另外还有就是C#编译有两种模式 Debug和Release 前者编译出的代码并不是最优化的，里面会有很多的nop指令 (就是执行这条指令啥也不干，方便调试打断点用的)'><link rel="shortcut icon" href=/favicon.webp></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label="Toggle Menu">
-<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar_hu01ec501d434397934aa5721ebabee736_552660_300x0_resize_box_3.png width=300 height=300 class=site-logo loading=lazy alt=Avatar>
-</a><span class=emoji>😜</span></figure><div class=site-meta><h1 class=site-name><a href=/>MLAcookie</a></h1><h2 class=site-description>随便记点东西的记事本</h2></div></header><ol class=menu-social><li><a href=https://space.bilibili.com/13629146 target=_blank title=MLA_cookie@bilibili rel=me><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-bilibili"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 10a4 4 0 014-4h10a4 4 0 014 4v6a4 4 0 01-4 4H7a4 4 0 01-4-4v-6z"/><path d="M8 3l2 3"/><path d="M16 3l-2 3"/><path d="M9 13v-2"/><path d="M15 11v2"/></svg></a></li><li><a href=https://github.com/MLAcookie target=_blank title=MLAcookie@Github rel=me><svg class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
-<span>Home</span></a></li><li><a href=/page/about/><svg class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg>
-<span>About</span></a></li><li><a href=/page/archives/><svg class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
-<span>Archives</span></a></li><li><a href=/page/links/><svg class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M10 14a3.5 3.5.0 005 0l4-4a3.5 3.5.0 00-5-5l-.5.5"/><path d="M14 10a3.5 3.5.0 00-5 0l-4 4a3.5 3.5.0 005 5l.5-.5"/></svg>
-<span>Links</span></a></li><li><a href=/page/search/><svg class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg>
-<span>Search</span></a></li><li class=menu-bottom-section><ol class=menu><li id=dark-mode-toggle><svg class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
-<svg class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
-<span>Dark Mode</span></li></ol></li></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">Table of contents</h2><div class=widget--toc><nav id=TableOfContents><ul><li><a href=#前言>前言</a></li><li><a href=#0x01-什么是il语言>&lt;0x01> 什么是IL语言</a></li><li><a href=#0x02-怎么查看il语言>&lt;0x02> 怎么查看IL语言</a></li><li><a href=#0x03-c的编译过程>&lt;0x03> C#的编译过程</a></li><li><a href=#0x04-开始研究il>&lt;0x04> 开始研究IL</a></li></ul></nav></div></section></aside><main class="main full-width"><article class=main-article><header class=article-header><div class=article-details><div class=article-title-wrapper><h2 class=article-title><a href=/article/posts/%E6%B5%85%E8%B0%88c%23%E8%BD%ACil%E8%AF%AD%E8%A8%80/>浅谈C#转IL语言</a></h2></div><footer class=article-time><div><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
-<time class=article-time--published>Aug 03, 2023</time></div></footer></div></header><section class=article-content><h2 id=前言>前言</h2><p>突发奇想，想研究下IL语言<br>本来以为会挺难的，结果发现貌似还行<br>注意：本博客不打算详细讲解IL的原理之类的<br>只是大概讲讲我研究的成果<br>这里推荐两篇博客，他们那讲的更详细<br>一个是来自Zery的<a class=link href=https://www.cnblogs.com/zery/p/3368460.html target=_blank rel=noopener>IL指令详细</a><br>另一个是布鲁克石的<a class=link href=https://www.cnblogs.com/brookshi/p/5225801.html target=_blank rel=noopener>30分钟？不需要，轻松读懂IL</a></p><h2 id=0x01-什么是il语言>&lt;0x01> 什么是IL语言</h2><p>这就要从<code>.net</code>的运行结构开始讲起<br><code>.net</code>框架下面有好多们语言，但<code>.net</code>的运行时就一个<br>所以这个运行时怎么能同时跑这么多的语言，是每个语言一个实现吗？<br>肯定不是，这太麻烦了<br>所以<code>.net</code>编译器会将它托管的语言先编译成一个中间语言，这个中间语言就是IL<br><code>.net</code>运行时会动态解释这个IL文件(这个跟Java差不多的流程)</p><p>通过IL语言，<code>.net</code>实现了多语言共用一个运行时，也让不同语言能非常方便地整合进一个项目<br>(反正编译出来的东西都是一样的)<br>这个具体的过程可以看本叫<code>《CLR via C#》</code>(俗称C#圣经😂，最近在看)<br>里面讲到过</p><h2 id=0x02-怎么查看il语言>&lt;0x02> 怎么查看IL语言</h2><p>第一种方法，<code>ILDasm</code><br><code>Visual Studio</code>自带的反汇编软件(但我没找到)<br>参考<a class=link href=https://learn.microsoft.com/zh-cn/dotnet/framework/tools/ildasm-exe-il-disassembler target=_blank rel=noopener>微软的文档</a>就好</p><p>第二种方法，<a class=link href=https://sharplab.io/ target=_blank rel=noopener>sharplab.io</a><br>这是个给<code>C#</code>用的实时转换成<code>IL</code>的网页工具<br>这个还可以转换成编译器优化后的代码甚至是给<code>CLR</code>执行的汇编代码<br>在线执行也是可以的，而且它可以列出所写代码的所有语法点并列出微软的说明文档链接<br>不过毕竟是网页工具，并不完全支持所有的<code>FCL</code>库，所以可能有些库用不了<br>总之这是个非常方便的工具，有什么小测试都可以在上面测试</p><p>第三种方法，<a class=link href=https://github.com/icsharpcode/ILSpy/tree/master target=_blank rel=noopener>ILSpy</a><br>这个工具也挺好用的，有支持<code>Visual Studio</code>的插件<br>装上就可以写代码的时候直接反编译</p><p>(@ 23-08-22)<br>只是看核心库源代码的话还有一种办法，<a class=link href=https://source.dot.net/ target=_blank rel=noopener>官方的源代码网站</a><br>具体我没怎么用过，就先补充在这里吧</p><p>我现在在用第二种和第三种方法<br>平时做小测试网页工具用用就好了<br>但在研究<code>.net</code>的底层api的时候就需要用<code>ILSpy</code>了<br>(虽然<code>.net core</code>开源了，但自己找效率确实低，反编译哪里不会点哪里)</p><h2 id=0x03-c的编译过程>&lt;0x03> C#的编译过程</h2><p>C#编译到IL分两步<br>第一步：编译器优化代码<br>第二步：编译成IL</p><p>在第一步中，编译器将对原代码进行彻头彻尾的改造<br>比方说代码有一句<code>int a = 5;</code>，在优化过程中会改名为<code>int num = 5;</code><br>还有就是将一些编译期就知道结果的值计算出来，比如<code>"a"+"b"</code>就会直接优化成<code>"ab"</code>
-在这个过程中，编译器还会加上非常多的，用于跟<code>CLR</code>通信的指令<br>这些指令主要是指导<code>CLR</code>正确执行代码，具体我也不是很熟，以后再说</p><p>第二步编译成IL就看靠编译器了</p><p>这两步具体实现可以看<code>Roslyn</code>的源码，在<code>GitHub</code>上<br>(我还没开始研究这玩意)</p><p>另外还有就是C#编译有两种模式<br><code>Debug</code>和<code>Release</code><br>前者编译出的代码并不是最优化的，里面会有很多的<code>nop</code>指令<br>(就是执行这条指令啥也不干，方便调试打断点用的)<br>后者是用来发布的，编译出来的代码是经过编译器完全优化的</p><h2 id=0x04-开始研究il>&lt;0x04> 开始研究IL</h2><p>首先先是一段简单的代码</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cs data-lang=cs><span style=display:flex><span><span style=color:#66d9ef>using</span> System;
-</span></span><span style=display:flex><span><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>C</span> {
-</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>void</span> M() {
-</span></span><span style=display:flex><span>        <span style=color:#66d9ef>int</span> a=<span style=color:#ae81ff>3</span>;
-</span></span><span style=display:flex><span>        <span style=color:#66d9ef>string</span> str=<span style=color:#e6db74>&#34;abc&#34;</span>;
-</span></span><span style=display:flex><span>        Console.WriteLine(a+str);
-</span></span><span style=display:flex><span>    }
-</span></span><span style=display:flex><span>}
-</span></span></code></pre></div><p>看看它编译后的IL语言(Debug下编译)</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cs data-lang=cs><span style=display:flex><span>.assembly _
-</span></span><span style=display:flex><span>{
-</span></span><span style=display:flex><span>    .custom instance <span style=color:#66d9ef>void</span> [System.Runtime]System.Runtime.CompilerServices.CompilationRelaxationsAttribute::.ctor(int32) = (
-</span></span><span style=display:flex><span>        <span style=color:#ae81ff>01</span> <span style=color:#ae81ff>00</span> <span style=color:#ae81ff>08</span> <span style=color:#ae81ff>00</span> <span style=color:#ae81ff>00</span> <span style=color:#ae81ff>00</span> <span style=color:#ae81ff>00</span> <span style=color:#ae81ff>00</span>
-</span></span><span style=display:flex><span>    )
-</span></span><span style=display:flex><span>    .custom instance <span style=color:#66d9ef>void</span> [System.Runtime]System.Runtime.CompilerServices.RuntimeCompatibilityAttribute::.ctor() = (
-</span></span><span style=display:flex><span>        <span style=color:#ae81ff>01</span> <span style=color:#ae81ff>00</span> <span style=color:#ae81ff>01</span> <span style=color:#ae81ff>00</span> <span style=color:#ae81ff>54</span> <span style=color:#ae81ff>02</span> <span style=color:#ae81ff>16</span> <span style=color:#ae81ff>57</span> <span style=color:#ae81ff>72</span> <span style=color:#ae81ff>61</span> <span style=color:#ae81ff>70</span> <span style=color:#ae81ff>4</span>e <span style=color:#ae81ff>6f</span> <span style=color:#ae81ff>6</span>e <span style=color:#ae81ff>45</span> <span style=color:#ae81ff>78</span>
-</span></span><span style=display:flex><span>        <span style=color:#ae81ff>63</span> <span style=color:#ae81ff>65</span> <span style=color:#ae81ff>70</span> <span style=color:#ae81ff>74</span> <span style=color:#ae81ff>69</span> <span style=color:#ae81ff>6f</span> <span style=color:#ae81ff>6</span>e <span style=color:#ae81ff>54</span> <span style=color:#ae81ff>68</span> <span style=color:#ae81ff>72</span> <span style=color:#ae81ff>6f</span> <span style=color:#ae81ff>77</span> <span style=color:#ae81ff>73</span> <span style=color:#ae81ff>01</span>
-</span></span><span style=display:flex><span>    )
-</span></span><span style=display:flex><span>    .custom instance <span style=color:#66d9ef>void</span> [System.Runtime]System.Diagnostics.DebuggableAttribute::.ctor(valuetype [System.Runtime]System.Diagnostics.DebuggableAttribute/DebuggingModes) = (
-</span></span><span style=display:flex><span>        <span style=color:#ae81ff>01</span> <span style=color:#ae81ff>00</span> <span style=color:#ae81ff>07</span> <span style=color:#ae81ff>01</span> <span style=color:#ae81ff>00</span> <span style=color:#ae81ff>00</span> <span style=color:#ae81ff>00</span> <span style=color:#ae81ff>00</span>
-</span></span><span style=display:flex><span>    )
-</span></span><span style=display:flex><span>    .permissionset reqmin = (
-</span></span><span style=display:flex><span>        <span style=color:#ae81ff>2</span>e <span style=color:#ae81ff>01</span> <span style=color:#ae81ff>80</span> <span style=color:#ae81ff>8</span>a <span style=color:#ae81ff>53</span> <span style=color:#ae81ff>79</span> <span style=color:#ae81ff>73</span> <span style=color:#ae81ff>74</span> <span style=color:#ae81ff>65</span> <span style=color:#ae81ff>6d</span> <span style=color:#ae81ff>2</span>e <span style=color:#ae81ff>53</span> <span style=color:#ae81ff>65</span> <span style=color:#ae81ff>63</span> <span style=color:#ae81ff>75</span> <span style=color:#ae81ff>72</span>
-</span></span><span style=display:flex><span>        <span style=color:#ae81ff>69</span> <span style=color:#ae81ff>74</span> <span style=color:#ae81ff>79</span> <span style=color:#ae81ff>2</span>e <span style=color:#ae81ff>50</span> <span style=color:#ae81ff>65</span> <span style=color:#ae81ff>72</span> <span style=color:#ae81ff>6d</span> <span style=color:#ae81ff>69</span> <span style=color:#ae81ff>73</span> <span style=color:#ae81ff>73</span> <span style=color:#ae81ff>69</span> <span style=color:#ae81ff>6f</span> <span style=color:#ae81ff>6</span>e <span style=color:#ae81ff>73</span> <span style=color:#ae81ff>2</span>e
-</span></span><span style=display:flex><span>        <span style=color:#ae81ff>53</span> <span style=color:#ae81ff>65</span> <span style=color:#ae81ff>63</span> <span style=color:#ae81ff>75</span> <span style=color:#ae81ff>72</span> <span style=color:#ae81ff>69</span> <span style=color:#ae81ff>74</span> <span style=color:#ae81ff>79</span> <span style=color:#ae81ff>50</span> <span style=color:#ae81ff>65</span> <span style=color:#ae81ff>72</span> <span style=color:#ae81ff>6d</span> <span style=color:#ae81ff>69</span> <span style=color:#ae81ff>73</span> <span style=color:#ae81ff>73</span> <span style=color:#ae81ff>69</span>
-</span></span><span style=display:flex><span>        <span style=color:#ae81ff>6f</span> <span style=color:#ae81ff>6</span>e <span style=color:#ae81ff>41</span> <span style=color:#ae81ff>74</span> <span style=color:#ae81ff>74</span> <span style=color:#ae81ff>72</span> <span style=color:#ae81ff>69</span> <span style=color:#ae81ff>62</span> <span style=color:#ae81ff>75</span> <span style=color:#ae81ff>74</span> <span style=color:#ae81ff>65</span> <span style=color:#ae81ff>2</span>c <span style=color:#ae81ff>20</span> <span style=color:#ae81ff>53</span> <span style=color:#ae81ff>79</span> <span style=color:#ae81ff>73</span>
-</span></span><span style=display:flex><span>        <span style=color:#ae81ff>74</span> <span style=color:#ae81ff>65</span> <span style=color:#ae81ff>6d</span> <span style=color:#ae81ff>2</span>e <span style=color:#ae81ff>52</span> <span style=color:#ae81ff>75</span> <span style=color:#ae81ff>6</span>e <span style=color:#ae81ff>74</span> <span style=color:#ae81ff>69</span> <span style=color:#ae81ff>6d</span> <span style=color:#ae81ff>65</span> <span style=color:#ae81ff>2</span>c <span style=color:#ae81ff>20</span> <span style=color:#ae81ff>56</span> <span style=color:#ae81ff>65</span> <span style=color:#ae81ff>72</span>
-</span></span><span style=display:flex><span>        <span style=color:#ae81ff>73</span> <span style=color:#ae81ff>69</span> <span style=color:#ae81ff>6f</span> <span style=color:#ae81ff>6</span>e <span style=color:#ae81ff>3d</span> <span style=color:#ae81ff>37</span> <span style=color:#ae81ff>2</span>e <span style=color:#ae81ff>30</span> <span style=color:#ae81ff>2</span>e <span style=color:#ae81ff>30</span> <span style=color:#ae81ff>2</span>e <span style=color:#ae81ff>30</span> <span style=color:#ae81ff>2</span>c <span style=color:#ae81ff>20</span> <span style=color:#ae81ff>43</span> <span style=color:#ae81ff>75</span>
-</span></span><span style=display:flex><span>        <span style=color:#ae81ff>6</span>c <span style=color:#ae81ff>74</span> <span style=color:#ae81ff>75</span> <span style=color:#ae81ff>72</span> <span style=color:#ae81ff>65</span> <span style=color:#ae81ff>3d</span> <span style=color:#ae81ff>6</span>e <span style=color:#ae81ff>65</span> <span style=color:#ae81ff>75</span> <span style=color:#ae81ff>74</span> <span style=color:#ae81ff>72</span> <span style=color:#ae81ff>61</span> <span style=color:#ae81ff>6</span>c <span style=color:#ae81ff>2</span>c <span style=color:#ae81ff>20</span> <span style=color:#ae81ff>50</span>
-</span></span><span style=display:flex><span>        <span style=color:#ae81ff>75</span> <span style=color:#ae81ff>62</span> <span style=color:#ae81ff>6</span>c <span style=color:#ae81ff>69</span> <span style=color:#ae81ff>63</span> <span style=color:#ae81ff>4</span>b <span style=color:#ae81ff>65</span> <span style=color:#ae81ff>79</span> <span style=color:#ae81ff>54</span> <span style=color:#ae81ff>6f</span> <span style=color:#ae81ff>6</span>b <span style=color:#ae81ff>65</span> <span style=color:#ae81ff>6</span>e <span style=color:#ae81ff>3d</span> <span style=color:#ae81ff>62</span> <span style=color:#ae81ff>30</span>
-</span></span><span style=display:flex><span>        <span style=color:#ae81ff>33</span> <span style=color:#ae81ff>66</span> <span style=color:#ae81ff>35</span> <span style=color:#ae81ff>66</span> <span style=color:#ae81ff>37</span> <span style=color:#ae81ff>66</span> <span style=color:#ae81ff>31</span> <span style=color:#ae81ff>31</span> <span style=color:#ae81ff>64</span> <span style=color:#ae81ff>35</span> <span style=color:#ae81ff>30</span> <span style=color:#ae81ff>61</span> <span style=color:#ae81ff>33</span> <span style=color:#ae81ff>61</span> <span style=color:#ae81ff>15</span> <span style=color:#ae81ff>01</span>
-</span></span><span style=display:flex><span>        <span style=color:#ae81ff>54</span> <span style=color:#ae81ff>02</span> <span style=color:#ae81ff>10</span> <span style=color:#ae81ff>53</span> <span style=color:#ae81ff>6</span>b <span style=color:#ae81ff>69</span> <span style=color:#ae81ff>70</span> <span style=color:#ae81ff>56</span> <span style=color:#ae81ff>65</span> <span style=color:#ae81ff>72</span> <span style=color:#ae81ff>69</span> <span style=color:#ae81ff>66</span> <span style=color:#ae81ff>69</span> <span style=color:#ae81ff>63</span> <span style=color:#ae81ff>61</span> <span style=color:#ae81ff>74</span>
-</span></span><span style=display:flex><span>        <span style=color:#ae81ff>69</span> <span style=color:#ae81ff>6f</span> <span style=color:#ae81ff>6</span>e <span style=color:#ae81ff>01</span>
-</span></span><span style=display:flex><span>    )
-</span></span><span style=display:flex><span>    .hash algorithm <span style=color:#ae81ff>0x00008004</span> <span style=color:#75715e>// SHA1</span>
-</span></span><span style=display:flex><span>    .ver <span style=color:#ae81ff>0</span>:<span style=color:#ae81ff>0</span>:<span style=color:#ae81ff>0</span>:<span style=color:#ae81ff>0</span>
-</span></span><span style=display:flex><span>}
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>.<span style=color:#66d9ef>class</span> <span style=color:#a6e22e>private</span> auto ansi <span style=color:#960050;background-color:#1e0010>&#39;</span>&lt;Module&gt;<span style=color:#960050;background-color:#1e0010>&#39;</span>
-</span></span><span style=display:flex><span>{
-</span></span><span style=display:flex><span>} <span style=color:#75715e>// end of class &lt;Module&gt;</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>.<span style=color:#66d9ef>class</span> <span style=color:#a6e22e>public</span> auto ansi beforefieldinit C
-</span></span><span style=display:flex><span>    extends [System.Runtime]System.Object
-</span></span><span style=display:flex><span>{
-</span></span><span style=display:flex><span>    <span style=color:#75715e>// Methods</span>
-</span></span><span style=display:flex><span>    .method <span style=color:#66d9ef>public</span> hidebysig 
-</span></span><span style=display:flex><span>        instance <span style=color:#66d9ef>void</span> M () cil managed 
-</span></span><span style=display:flex><span>    {
-</span></span><span style=display:flex><span>        <span style=color:#75715e>// Method begins at RVA 0x206c</span>
-</span></span><span style=display:flex><span>        <span style=color:#75715e>// Code size 29 (0x1d)</span>
-</span></span><span style=display:flex><span>        .maxstack <span style=color:#ae81ff>2</span>
-</span></span><span style=display:flex><span>        .locals <span style=color:#66d9ef>init</span> (
-</span></span><span style=display:flex><span><span style=color:#a6e22e>            [0]</span> int32 a,
-</span></span><span style=display:flex><span><span style=color:#a6e22e>            [1]</span> <span style=color:#66d9ef>string</span> str
-</span></span><span style=display:flex><span>        )
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>        IL_0000: nop
-</span></span><span style=display:flex><span>        IL_0001: ldc.i4.<span style=color:#ae81ff>3</span>
-</span></span><span style=display:flex><span>        IL_0002: stloc.<span style=color:#ae81ff>0</span>
-</span></span><span style=display:flex><span>        IL_0003: ldstr <span style=color:#e6db74>&#34;abc&#34;</span>
-</span></span><span style=display:flex><span>        IL_0008: stloc.<span style=color:#ae81ff>1</span>
-</span></span><span style=display:flex><span>        IL_0009: ldloca.s <span style=color:#ae81ff>0</span>
-</span></span><span style=display:flex><span>        IL_000b: call instance <span style=color:#66d9ef>string</span> [System.Runtime]System.Int32::ToString()
-</span></span><span style=display:flex><span>        IL_0010: ldloc.<span style=color:#ae81ff>1</span>
-</span></span><span style=display:flex><span>        IL_0011: call <span style=color:#66d9ef>string</span> [System.Runtime]System.String::Concat(<span style=color:#66d9ef>string</span>, <span style=color:#66d9ef>string</span>)
-</span></span><span style=display:flex><span>        IL_0016: call <span style=color:#66d9ef>void</span> [System.Console]System.Console::WriteLine(<span style=color:#66d9ef>string</span>)
-</span></span><span style=display:flex><span>        IL_001b: nop
-</span></span><span style=display:flex><span>        IL_001c: ret
-</span></span><span style=display:flex><span>    } <span style=color:#75715e>// end of method C::M</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>    .method <span style=color:#66d9ef>public</span> hidebysig specialname rtspecialname 
-</span></span><span style=display:flex><span>        instance <span style=color:#66d9ef>void</span> .ctor () cil managed 
-</span></span><span style=display:flex><span>    {
-</span></span><span style=display:flex><span>        <span style=color:#75715e>// Method begins at RVA 0x2095</span>
-</span></span><span style=display:flex><span>        <span style=color:#75715e>// Code size 8 (0x8)</span>
-</span></span><span style=display:flex><span>        .maxstack <span style=color:#ae81ff>8</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>        IL_0000: ldarg.<span style=color:#ae81ff>0</span>
-</span></span><span style=display:flex><span>        IL_0001: call instance <span style=color:#66d9ef>void</span> [System.Runtime]System.Object::.ctor()
-</span></span><span style=display:flex><span>        IL_0006: nop
-</span></span><span style=display:flex><span>        IL_0007: ret
-</span></span><span style=display:flex><span>    } <span style=color:#75715e>// end of method C::.ctor</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>} <span style=color:#75715e>// end of class C</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>.<span style=color:#66d9ef>class</span> <span style=color:#a6e22e>private</span> auto ansi <span style=color:#66d9ef>sealed</span> beforefieldinit Microsoft.CodeAnalysis.EmbeddedAttribute
-</span></span><span style=display:flex><span>    extends [System.Runtime]System.Attribute
-</span></span><span style=display:flex><span>{
-</span></span><span style=display:flex><span>    .custom instance <span style=color:#66d9ef>void</span> [System.Runtime]System.Runtime.CompilerServices.CompilerGeneratedAttribute::.ctor() = (
-</span></span><span style=display:flex><span>        <span style=color:#ae81ff>01</span> <span style=color:#ae81ff>00</span> <span style=color:#ae81ff>00</span> <span style=color:#ae81ff>00</span>
-</span></span><span style=display:flex><span>    )
-</span></span><span style=display:flex><span>    .custom instance <span style=color:#66d9ef>void</span> Microsoft.CodeAnalysis.EmbeddedAttribute::.ctor() = (
-</span></span><span style=display:flex><span>        <span style=color:#ae81ff>01</span> <span style=color:#ae81ff>00</span> <span style=color:#ae81ff>00</span> <span style=color:#ae81ff>00</span>
-</span></span><span style=display:flex><span>    )
-</span></span><span style=display:flex><span>    <span style=color:#75715e>// Methods</span>
-</span></span><span style=display:flex><span>    .method <span style=color:#66d9ef>public</span> hidebysig specialname rtspecialname 
-</span></span><span style=display:flex><span>        instance <span style=color:#66d9ef>void</span> .ctor () cil managed 
-</span></span><span style=display:flex><span>    {
-</span></span><span style=display:flex><span>        <span style=color:#75715e>// Method begins at RVA 0x2050</span>
-</span></span><span style=display:flex><span>        <span style=color:#75715e>// Code size 8 (0x8)</span>
-</span></span><span style=display:flex><span>        .maxstack <span style=color:#ae81ff>8</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>        IL_0000: ldarg.<span style=color:#ae81ff>0</span>
-</span></span><span style=display:flex><span>        IL_0001: call instance <span style=color:#66d9ef>void</span> [System.Runtime]System.Attribute::.ctor()
-</span></span><span style=display:flex><span>        IL_0006: nop
-</span></span><span style=display:flex><span>        IL_0007: ret
-</span></span><span style=display:flex><span>    } <span style=color:#75715e>// end of method EmbeddedAttribute::.ctor</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>} <span style=color:#75715e>// end of class Microsoft.CodeAnalysis.EmbeddedAttribute</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>.<span style=color:#66d9ef>class</span> <span style=color:#a6e22e>private</span> auto ansi <span style=color:#66d9ef>sealed</span> beforefieldinit System.Runtime.CompilerServices.RefSafetyRulesAttribute
-</span></span><span style=display:flex><span>    extends [System.Runtime]System.Attribute
-</span></span><span style=display:flex><span>{
-</span></span><span style=display:flex><span>    .custom instance <span style=color:#66d9ef>void</span> [System.Runtime]System.Runtime.CompilerServices.CompilerGeneratedAttribute::.ctor() = (
-</span></span><span style=display:flex><span>        <span style=color:#ae81ff>01</span> <span style=color:#ae81ff>00</span> <span style=color:#ae81ff>00</span> <span style=color:#ae81ff>00</span>
-</span></span><span style=display:flex><span>    )
-</span></span><span style=display:flex><span>    .custom instance <span style=color:#66d9ef>void</span> Microsoft.CodeAnalysis.EmbeddedAttribute::.ctor() = (
-</span></span><span style=display:flex><span>        <span style=color:#ae81ff>01</span> <span style=color:#ae81ff>00</span> <span style=color:#ae81ff>00</span> <span style=color:#ae81ff>00</span>
-</span></span><span style=display:flex><span>    )
-</span></span><span style=display:flex><span>    .custom instance <span style=color:#66d9ef>void</span> [System.Runtime]System.AttributeUsageAttribute::.ctor(valuetype [System.Runtime]System.AttributeTargets) = (
-</span></span><span style=display:flex><span>        <span style=color:#ae81ff>01</span> <span style=color:#ae81ff>00</span> <span style=color:#ae81ff>02</span> <span style=color:#ae81ff>00</span> <span style=color:#ae81ff>00</span> <span style=color:#ae81ff>00</span> <span style=color:#ae81ff>02</span> <span style=color:#ae81ff>00</span> <span style=color:#ae81ff>54</span> <span style=color:#ae81ff>02</span> <span style=color:#ae81ff>0d</span> <span style=color:#ae81ff>41</span> <span style=color:#ae81ff>6</span>c <span style=color:#ae81ff>6</span>c <span style=color:#ae81ff>6f</span> <span style=color:#ae81ff>77</span>
-</span></span><span style=display:flex><span>        <span style=color:#ae81ff>4d</span> <span style=color:#ae81ff>75</span> <span style=color:#ae81ff>6</span>c <span style=color:#ae81ff>74</span> <span style=color:#ae81ff>69</span> <span style=color:#ae81ff>70</span> <span style=color:#ae81ff>6</span>c <span style=color:#ae81ff>65</span> <span style=color:#ae81ff>00</span> <span style=color:#ae81ff>54</span> <span style=color:#ae81ff>02</span> <span style=color:#ae81ff>09</span> <span style=color:#ae81ff>49</span> <span style=color:#ae81ff>6</span>e <span style=color:#ae81ff>68</span> <span style=color:#ae81ff>65</span>
-</span></span><span style=display:flex><span>        <span style=color:#ae81ff>72</span> <span style=color:#ae81ff>69</span> <span style=color:#ae81ff>74</span> <span style=color:#ae81ff>65</span> <span style=color:#ae81ff>64</span> <span style=color:#ae81ff>00</span>
-</span></span><span style=display:flex><span>    )
-</span></span><span style=display:flex><span>    <span style=color:#75715e>// Fields</span>
-</span></span><span style=display:flex><span>    .field <span style=color:#66d9ef>public</span> initonly int32 Version
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>    <span style=color:#75715e>// Methods</span>
-</span></span><span style=display:flex><span>    .method <span style=color:#66d9ef>public</span> hidebysig specialname rtspecialname 
-</span></span><span style=display:flex><span>        instance <span style=color:#66d9ef>void</span> .ctor (
-</span></span><span style=display:flex><span>            int32 <span style=color:#960050;background-color:#1e0010>&#39;&#39;</span>
-</span></span><span style=display:flex><span>        ) cil managed 
-</span></span><span style=display:flex><span>    {
-</span></span><span style=display:flex><span>        <span style=color:#75715e>// Method begins at RVA 0x2059</span>
-</span></span><span style=display:flex><span>        <span style=color:#75715e>// Code size 15 (0xf)</span>
-</span></span><span style=display:flex><span>        .maxstack <span style=color:#ae81ff>8</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>        IL_0000: ldarg.<span style=color:#ae81ff>0</span>
-</span></span><span style=display:flex><span>        IL_0001: call instance <span style=color:#66d9ef>void</span> [System.Runtime]System.Attribute::.ctor()
-</span></span><span style=display:flex><span>        IL_0006: nop
-</span></span><span style=display:flex><span>        IL_0007: ldarg.<span style=color:#ae81ff>0</span>
-</span></span><span style=display:flex><span>        IL_0008: ldarg.<span style=color:#ae81ff>1</span>
-</span></span><span style=display:flex><span>        IL_0009: stfld int32 System.Runtime.CompilerServices.RefSafetyRulesAttribute::Version
-</span></span><span style=display:flex><span>        IL_000e: ret
-</span></span><span style=display:flex><span>    } <span style=color:#75715e>// end of method RefSafetyRulesAttribute::.ctor</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>} <span style=color:#75715e>// end of class System.Runtime.CompilerServices.RefSafetyRulesAttribute</span>
-</span></span></code></pre></div><p>(注释是<code>Sharpio</code>自动生成的)<br>额，看着是有点多，但其实很多只是自动生成的代码<br>如果只关注我们自己方法实现的话，实际只要看这么点就好</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cs data-lang=cs><span style=display:flex><span>.method <span style=color:#66d9ef>public</span> hidebysig instance <span style=color:#66d9ef>void</span> M () cil managed <span style=color:#75715e>//方法签名</span>
-</span></span><span style=display:flex><span>{
-</span></span><span style=display:flex><span>    .maxstack <span style=color:#ae81ff>2</span> <span style=color:#75715e>//定义计算栈大小</span>
-</span></span><span style=display:flex><span>    .locals <span style=color:#66d9ef>init</span> (
-</span></span><span style=display:flex><span><span style=color:#a6e22e>        [0]</span> int32 a,
-</span></span><span style=display:flex><span><span style=color:#a6e22e>        [1]</span> <span style=color:#66d9ef>string</span> str
-</span></span><span style=display:flex><span>    )   <span style=color:#75715e>//初始化变量链表</span>
-</span></span><span style=display:flex><span>    IL_0000: nop    <span style=color:#75715e>//啥也不干(Debug下编译)</span>
-</span></span><span style=display:flex><span>    IL_0001: ldc.i4.<span style=color:#ae81ff>3</span>   <span style=color:#75715e>//初始化int32的数值3，并加载到计算栈上</span>
-</span></span><span style=display:flex><span>    IL_0002: stloc.<span style=color:#ae81ff>0</span>    <span style=color:#75715e>//弹出一个栈顶元素，并存储到变量列表的0号位上(就是变量a)</span>
-</span></span><span style=display:flex><span>    IL_0003: ldstr <span style=color:#e6db74>&#34;abc&#34;</span>    <span style=color:#75715e>//初始化字符串&#34;abc&#34;，并加载到计算栈上</span>
-</span></span><span style=display:flex><span>    IL_0008: stloc.<span style=color:#ae81ff>1</span>    <span style=color:#75715e>//弹出栈顶元素，存储到变量链表1号上(变量str)</span>
-</span></span><span style=display:flex><span>    IL_0009: ldloca.s <span style=color:#ae81ff>0</span> <span style=color:#75715e>//加载变量列表0号位(变量a)到计算栈上</span>
-</span></span><span style=display:flex><span>    IL_000b: call instance <span style=color:#66d9ef>string</span> [System.Runtime]System.Int32::ToString()
-</span></span><span style=display:flex><span>    <span style=color:#75715e>//调用方法</span>
-</span></span><span style=display:flex><span>    IL_0010: ldloc.<span style=color:#ae81ff>1</span>    <span style=color:#75715e>//加载变量列表1号位(变量str)到计算栈上</span>
-</span></span><span style=display:flex><span>    IL_0011: call <span style=color:#66d9ef>string</span> [System.Runtime]System.String::Concat(<span style=color:#66d9ef>string</span>, <span style=color:#66d9ef>string</span>)
-</span></span><span style=display:flex><span>    <span style=color:#75715e>//调用方法，有几个参就弹出几个栈顶元素，返回值再压入栈</span>
-</span></span><span style=display:flex><span>    IL_0016: call <span style=color:#66d9ef>void</span> [System.Console]System.Console::WriteLine(<span style=color:#66d9ef>string</span>)
-</span></span><span style=display:flex><span>    <span style=color:#75715e>//调用方法</span>
-</span></span><span style=display:flex><span>    IL_001b: nop    <span style=color:#75715e>//啥也不干</span>
-</span></span><span style=display:flex><span>    IL_001c: ret    <span style=color:#75715e>//方法结束，返回</span>
-</span></span><span style=display:flex><span>}
-</span></span></code></pre></div><p>(已经打上了我自己的注释了)<br>所以其实也不是挺难的，就是IL的指令差不多都是简写，乍一看确实不明觉厉<br>(所以会看IL就可以出去装逼了😅)
-IL还有很多指令，具体可以看我最上面推荐的两篇博客<br>这里的计算栈其实就是个可以放任何类型的栈，计算用的<br>具体的<code>CLR</code>执行细节可以看看<code>《CLR via C#》</code>讲的很详细</p></section><footer class=article-footer><section class=article-tags><a href=/tags/csharp/>CSharp</a></section><section class=article-copyright><svg class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg>
-<span>Licensed under CC BY-NC-SA 4.0</span></section></footer><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css integrity=sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV crossorigin=anonymous><script src=https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js integrity=sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8 crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js integrity=sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05 crossorigin=anonymous defer></script><script>window.addEventListener("DOMContentLoaded",()=>{renderMathInElement(document.body,{delimiters:[{left:"$$",right:"$$",display:!0},{left:"$",right:"$",display:!1},{left:"\\(",right:"\\)",display:!1},{left:"\\[",right:"\\]",display:!0}],ignoredClasses:["gist"]})})</script></article><aside class=related-content--wrapper><h2 class=section-title>Related content</h2><div class=related-content><div class="flex article-list--tile"><article><a href=/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B003-mvvm%E6%A8%A1%E5%9E%8B/><div class=article-details><h2 class=article-title>WPF学习笔记03-MVVM模型</h2></div></a></article><article><a href=/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B002-%E7%AE%80%E5%8D%95%E7%BE%8E%E5%8C%96%E8%AE%A1%E7%AE%97%E5%99%A8/><div class=article-details><h2 class=article-title>WPF学习笔记02-简单美化计算器</h2></div></a></article><article><a href=/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B001-%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84%E8%AE%A1%E7%AE%97%E5%99%A8/><div class=article-details><h2 class=article-title>WPF学习笔记01-一个简单的计算器</h2></div></a></article><article><a href=/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7%E7%A6%BB%E6%95%A3%E8%AF%BE%E8%AE%BE%E8%AE%B2%E8%A7%A3/><div class=article-details><h2 class=article-title>浙工大离散课设讲解</h2></div></a></article></div></div></aside><footer class=site-footer><section class=copyright>&copy;
-2023 -
-2024 MLAcookie</section><section class=powerby>Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a><br>Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.26.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a></section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
-<button class="pswp__button pswp__button--share" title=Share></button>
-<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
-<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
-</button>
-<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z+KMkF24hUW8WePSA9HM=" crossorigin=anonymous></script><script type=text/javascript src=/ts/main.js defer></script><script>(function(){const e=document.createElement("link");e.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script></body></html>
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=5521&amp;path=livereload" data-no-instant defer></script><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="前言\r突发奇想，想研究下IL语言 本来以为会挺难的，结果发现貌似还行 注意：本博客不打算详细讲解IL的原理之类的 只是大概讲讲我研究的成果 这里推荐两篇博客，他们那讲的更详细 一个是来自Zery的IL指令详细 另一个是布鲁克石的30分钟？不需要，轻松读懂IL &lt;0x01&gt; 什么是IL语言\r这就要从.net的运行结构开始讲起 .net框架下面有好多们语言，但.net的运行时就一个 所以这个运行时怎么能同时跑这么多的语言，是每个语言一个实现吗？ 肯定不是，这太麻烦了 所以.net编译器会将它托管的语言先编译成一个中间语言，这个中间语言就是IL .net运行时会动态解释这个IL文件(这个跟Java差不多的流程) 通过IL语言，.net实现了多语言共用一个运行时，也让不同语言能非常方便地整合进一个项目 (反正编译出来的东西都是一样的) 这个具体的过程可以看本叫《CLR via C#》(俗称C#圣经😂，最近在看) 里面讲到过 &lt;0x02&gt; 怎么查看IL语言\r第一种方法，ILDasm Visual Studio自带的反汇编软件(但我没找到) 参考微软的文档就好 第二种方法，sharplab.io 这是个给C#用的实时转换成IL的网页工具 这个还可以转换成编译器优化后的代码甚至是给CLR执行的汇编代码 在线执行也是可以的，而且它可以列出所写代码的所有语法点并列出微软的说明文档链接 不过毕竟是网页工具，并不完全支持所有的FCL库，所以可能有些库用不了 总之这是个非常方便的工具，有什么小测试都可以在上面测试 第三种方法，ILSpy 这个工具也挺好用的，有支持Visual Studio的插件 装上就可以写代码的时候直接反编译 (@ 23-08-22) 只是看核心库源代码的话还有一种办法，官方的源代码网站 具体我没怎么用过，就先补充在这里吧 我现在在用第二种和第三种方法 平时做小测试网页工具用用就好了 但在研究.net的底层api的时候就需要用ILSpy了 (虽然.net core开源了，但自己找效率确实低，反编译哪里不会点哪里) &lt;0x03&gt; C#的编译过程\rC#编译到IL分两步 第一步：编译器优化代码 第二步：编译成IL 在第一步中，编译器将对原代码进行彻头彻尾的改造 比方说代码有一句int a = 5;，在优化过程中会改名为int num = 5; 还有就是将一些编译期就知道结果的值计算出来，比如&quot;a&quot;+&quot;b&quot;就会直接优化成&quot;ab&quot; 在这个过程中，编译器还会加上非常多的，用于跟CLR通信的指令 这些指令主要是指导CLR正确执行代码，具体我也不是很熟，以后再说 第二步编译成IL就看靠编译器了 这两步具体实现可以看Roslyn的源码，在GitHub上 (我还没开始研究这玩意) 另外还有就是C#编译有两种模式 Debug和Release 前者编译出的代码并不是最优化的，里面会有很多的nop指令 (就是执行这条指令啥也不干，方便调试打断点用的)">
+<title>浅谈C#转IL语言</title>
+
+<link rel='canonical' href='http://localhost:5521/article/posts/%E6%B5%85%E8%B0%88c%23%E8%BD%ACil%E8%AF%AD%E8%A8%80/'>
+
+<link rel="stylesheet" href="/scss/style.min.e8c7fca7d1c9294aa7a4f3426c225ee26540f7d94e39be0b5a4a5c8a49ca5a25.css"><meta property='og:title' content="浅谈C#转IL语言">
+<meta property='og:description' content="前言\r突发奇想，想研究下IL语言 本来以为会挺难的，结果发现貌似还行 注意：本博客不打算详细讲解IL的原理之类的 只是大概讲讲我研究的成果 这里推荐两篇博客，他们那讲的更详细 一个是来自Zery的IL指令详细 另一个是布鲁克石的30分钟？不需要，轻松读懂IL &lt;0x01&gt; 什么是IL语言\r这就要从.net的运行结构开始讲起 .net框架下面有好多们语言，但.net的运行时就一个 所以这个运行时怎么能同时跑这么多的语言，是每个语言一个实现吗？ 肯定不是，这太麻烦了 所以.net编译器会将它托管的语言先编译成一个中间语言，这个中间语言就是IL .net运行时会动态解释这个IL文件(这个跟Java差不多的流程) 通过IL语言，.net实现了多语言共用一个运行时，也让不同语言能非常方便地整合进一个项目 (反正编译出来的东西都是一样的) 这个具体的过程可以看本叫《CLR via C#》(俗称C#圣经😂，最近在看) 里面讲到过 &lt;0x02&gt; 怎么查看IL语言\r第一种方法，ILDasm Visual Studio自带的反汇编软件(但我没找到) 参考微软的文档就好 第二种方法，sharplab.io 这是个给C#用的实时转换成IL的网页工具 这个还可以转换成编译器优化后的代码甚至是给CLR执行的汇编代码 在线执行也是可以的，而且它可以列出所写代码的所有语法点并列出微软的说明文档链接 不过毕竟是网页工具，并不完全支持所有的FCL库，所以可能有些库用不了 总之这是个非常方便的工具，有什么小测试都可以在上面测试 第三种方法，ILSpy 这个工具也挺好用的，有支持Visual Studio的插件 装上就可以写代码的时候直接反编译 (@ 23-08-22) 只是看核心库源代码的话还有一种办法，官方的源代码网站 具体我没怎么用过，就先补充在这里吧 我现在在用第二种和第三种方法 平时做小测试网页工具用用就好了 但在研究.net的底层api的时候就需要用ILSpy了 (虽然.net core开源了，但自己找效率确实低，反编译哪里不会点哪里) &lt;0x03&gt; C#的编译过程\rC#编译到IL分两步 第一步：编译器优化代码 第二步：编译成IL 在第一步中，编译器将对原代码进行彻头彻尾的改造 比方说代码有一句int a = 5;，在优化过程中会改名为int num = 5; 还有就是将一些编译期就知道结果的值计算出来，比如&quot;a&quot;+&quot;b&quot;就会直接优化成&quot;ab&quot; 在这个过程中，编译器还会加上非常多的，用于跟CLR通信的指令 这些指令主要是指导CLR正确执行代码，具体我也不是很熟，以后再说 第二步编译成IL就看靠编译器了 这两步具体实现可以看Roslyn的源码，在GitHub上 (我还没开始研究这玩意) 另外还有就是C#编译有两种模式 Debug和Release 前者编译出的代码并不是最优化的，里面会有很多的nop指令 (就是执行这条指令啥也不干，方便调试打断点用的)">
+<meta property='og:url' content='http://localhost:5521/article/posts/%E6%B5%85%E8%B0%88c%23%E8%BD%ACil%E8%AF%AD%E8%A8%80/'>
+<meta property='og:site_name' content='MLAcookie'>
+<meta property='og:type' content='article'><meta property='article:section' content='Article' /><meta property='article:tag' content='CSharp' /><meta property='article:published_time' content='2023-08-03T02:44:36&#43;00:00'/><meta property='article:modified_time' content='2023-08-03T02:44:36&#43;00:00'/>
+<meta name="twitter:title" content="浅谈C#转IL语言">
+<meta name="twitter:description" content="前言\r突发奇想，想研究下IL语言 本来以为会挺难的，结果发现貌似还行 注意：本博客不打算详细讲解IL的原理之类的 只是大概讲讲我研究的成果 这里推荐两篇博客，他们那讲的更详细 一个是来自Zery的IL指令详细 另一个是布鲁克石的30分钟？不需要，轻松读懂IL &lt;0x01&gt; 什么是IL语言\r这就要从.net的运行结构开始讲起 .net框架下面有好多们语言，但.net的运行时就一个 所以这个运行时怎么能同时跑这么多的语言，是每个语言一个实现吗？ 肯定不是，这太麻烦了 所以.net编译器会将它托管的语言先编译成一个中间语言，这个中间语言就是IL .net运行时会动态解释这个IL文件(这个跟Java差不多的流程) 通过IL语言，.net实现了多语言共用一个运行时，也让不同语言能非常方便地整合进一个项目 (反正编译出来的东西都是一样的) 这个具体的过程可以看本叫《CLR via C#》(俗称C#圣经😂，最近在看) 里面讲到过 &lt;0x02&gt; 怎么查看IL语言\r第一种方法，ILDasm Visual Studio自带的反汇编软件(但我没找到) 参考微软的文档就好 第二种方法，sharplab.io 这是个给C#用的实时转换成IL的网页工具 这个还可以转换成编译器优化后的代码甚至是给CLR执行的汇编代码 在线执行也是可以的，而且它可以列出所写代码的所有语法点并列出微软的说明文档链接 不过毕竟是网页工具，并不完全支持所有的FCL库，所以可能有些库用不了 总之这是个非常方便的工具，有什么小测试都可以在上面测试 第三种方法，ILSpy 这个工具也挺好用的，有支持Visual Studio的插件 装上就可以写代码的时候直接反编译 (@ 23-08-22) 只是看核心库源代码的话还有一种办法，官方的源代码网站 具体我没怎么用过，就先补充在这里吧 我现在在用第二种和第三种方法 平时做小测试网页工具用用就好了 但在研究.net的底层api的时候就需要用ILSpy了 (虽然.net core开源了，但自己找效率确实低，反编译哪里不会点哪里) &lt;0x03&gt; C#的编译过程\rC#编译到IL分两步 第一步：编译器优化代码 第二步：编译成IL 在第一步中，编译器将对原代码进行彻头彻尾的改造 比方说代码有一句int a = 5;，在优化过程中会改名为int num = 5; 还有就是将一些编译期就知道结果的值计算出来，比如&quot;a&quot;+&quot;b&quot;就会直接优化成&quot;ab&quot; 在这个过程中，编译器还会加上非常多的，用于跟CLR通信的指令 这些指令主要是指导CLR正确执行代码，具体我也不是很熟，以后再说 第二步编译成IL就看靠编译器了 这两步具体实现可以看Roslyn的源码，在GitHub上 (我还没开始研究这玩意) 另外还有就是C#编译有两种模式 Debug和Release 前者编译出的代码并不是最优化的，里面会有很多的nop指令 (就是执行这条指令啥也不干，方便调试打断点用的)">
+    <link rel="shortcut icon" href="/favicon.webp" />
+
+  
+
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu01ec501d434397934aa5721ebabee736_552660_300x0_resize_box_3.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">😜</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">MLAcookie</a></h1>
+            <h2 class="site-description">随便记点东西的记事本</h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://space.bilibili.com/13629146'
+                        target="_blank"
+                        title="MLA_cookie@bilibili"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+  stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+  class="icon icon-tabler icons-tabler-outline icon-tabler-brand-bilibili">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+  <path d="M3 10a4 4 0 014-4h10a4 4 0 014 4v6a4 4 0 01-4 4H7a4 4 0 01-4-4v-6z"></path>
+  <path d="M8 3l2 3"></path>
+  <path d="M16 3l-2 3"></path>
+  <path d="M9 13v-2"></path>
+  <path d="M15 11v2"></path>
+</svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://github.com/MLAcookie'
+                        target="_blank"
+                        title="MLAcookie@Github"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/about/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>About</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/links/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>Links</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>Dark Mode</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">Table of contents</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#前言">前言</a></li>
+    <li><a href="#0x01-什么是il语言">&lt;0x01&gt; 什么是IL语言</a></li>
+    <li><a href="#0x02-怎么查看il语言">&lt;0x02&gt; 怎么查看IL语言</a></li>
+    <li><a href="#0x03-c的编译过程">&lt;0x03&gt; C#的编译过程</a></li>
+    <li><a href="#0x04-开始研究il">&lt;0x04&gt; 开始研究IL</a></li>
+  </ul>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/article/posts/%E6%B5%85%E8%B0%88c%23%E8%BD%ACil%E8%AF%AD%E8%A8%80/">浅谈C#转IL语言</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Aug 03, 2023</time>
+            </div>
+        
+
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h2 id="前言">前言
+</h2><p>突发奇想，想研究下IL语言<br>
+本来以为会挺难的，结果发现貌似还行<br>
+注意：本博客不打算详细讲解IL的原理之类的<br>
+只是大概讲讲我研究的成果<br>
+这里推荐两篇博客，他们那讲的更详细<br>
+一个是来自Zery的<a class="link" href="https://www.cnblogs.com/zery/p/3368460.html"  target="_blank" rel="noopener"
+    >IL指令详细</a><br>
+另一个是布鲁克石的<a class="link" href="https://www.cnblogs.com/brookshi/p/5225801.html"  target="_blank" rel="noopener"
+    >30分钟？不需要，轻松读懂IL</a></p>
+<h2 id="0x01-什么是il语言">&lt;0x01&gt; 什么是IL语言
+</h2><p>这就要从<code>.net</code>的运行结构开始讲起<br>
+<code>.net</code>框架下面有好多们语言，但<code>.net</code>的运行时就一个<br>
+所以这个运行时怎么能同时跑这么多的语言，是每个语言一个实现吗？<br>
+肯定不是，这太麻烦了<br>
+所以<code>.net</code>编译器会将它托管的语言先编译成一个中间语言，这个中间语言就是IL<br>
+<code>.net</code>运行时会动态解释这个IL文件(这个跟Java差不多的流程)</p>
+<p>通过IL语言，<code>.net</code>实现了多语言共用一个运行时，也让不同语言能非常方便地整合进一个项目<br>
+(反正编译出来的东西都是一样的)<br>
+这个具体的过程可以看本叫<code>《CLR via C#》</code>(俗称C#圣经😂，最近在看)<br>
+里面讲到过</p>
+<h2 id="0x02-怎么查看il语言">&lt;0x02&gt; 怎么查看IL语言
+</h2><p>第一种方法，<code>ILDasm</code><br>
+<code>Visual Studio</code>自带的反汇编软件(但我没找到)<br>
+参考<a class="link" href="https://learn.microsoft.com/zh-cn/dotnet/framework/tools/ildasm-exe-il-disassembler"  target="_blank" rel="noopener"
+    >微软的文档</a>就好</p>
+<p>第二种方法，<a class="link" href="https://sharplab.io/"  target="_blank" rel="noopener"
+    >sharplab.io</a><br>
+这是个给<code>C#</code>用的实时转换成<code>IL</code>的网页工具<br>
+这个还可以转换成编译器优化后的代码甚至是给<code>CLR</code>执行的汇编代码<br>
+在线执行也是可以的，而且它可以列出所写代码的所有语法点并列出微软的说明文档链接<br>
+不过毕竟是网页工具，并不完全支持所有的<code>FCL</code>库，所以可能有些库用不了<br>
+总之这是个非常方便的工具，有什么小测试都可以在上面测试</p>
+<p>第三种方法，<a class="link" href="https://github.com/icsharpcode/ILSpy/tree/master"  target="_blank" rel="noopener"
+    >ILSpy</a><br>
+这个工具也挺好用的，有支持<code>Visual Studio</code>的插件<br>
+装上就可以写代码的时候直接反编译</p>
+<p>(@ 23-08-22)<br>
+只是看核心库源代码的话还有一种办法，<a class="link" href="https://source.dot.net/"  target="_blank" rel="noopener"
+    >官方的源代码网站</a><br>
+具体我没怎么用过，就先补充在这里吧</p>
+<p>我现在在用第二种和第三种方法<br>
+平时做小测试网页工具用用就好了<br>
+但在研究<code>.net</code>的底层api的时候就需要用<code>ILSpy</code>了<br>
+(虽然<code>.net core</code>开源了，但自己找效率确实低，反编译哪里不会点哪里)</p>
+<h2 id="0x03-c的编译过程">&lt;0x03&gt; C#的编译过程
+</h2><p>C#编译到IL分两步<br>
+第一步：编译器优化代码<br>
+第二步：编译成IL</p>
+<p>在第一步中，编译器将对原代码进行彻头彻尾的改造<br>
+比方说代码有一句<code>int a = 5;</code>，在优化过程中会改名为<code>int num = 5;</code><br>
+还有就是将一些编译期就知道结果的值计算出来，比如<code>&quot;a&quot;+&quot;b&quot;</code>就会直接优化成<code>&quot;ab&quot;</code>
+在这个过程中，编译器还会加上非常多的，用于跟<code>CLR</code>通信的指令<br>
+这些指令主要是指导<code>CLR</code>正确执行代码，具体我也不是很熟，以后再说</p>
+<p>第二步编译成IL就看靠编译器了</p>
+<p>这两步具体实现可以看<code>Roslyn</code>的源码，在<code>GitHub</code>上<br>
+(我还没开始研究这玩意)</p>
+<p>另外还有就是C#编译有两种模式<br>
+<code>Debug</code>和<code>Release</code><br>
+前者编译出的代码并不是最优化的，里面会有很多的<code>nop</code>指令<br>
+(就是执行这条指令啥也不干，方便调试打断点用的)<br>
+后者是用来发布的，编译出来的代码是经过编译器完全优化的</p>
+<h2 id="0x04-开始研究il">&lt;0x04&gt; 开始研究IL
+</h2><p>首先先是一段简单的代码</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span><span style="color:#66d9ef">using</span> System;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">C</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> M() {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> a=<span style="color:#ae81ff">3</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">string</span> str=<span style="color:#e6db74">&#34;abc&#34;</span>;
+</span></span><span style="display:flex;"><span>        Console.WriteLine(a+str);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>看看它编译后的IL语言(Debug下编译)</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span>.assembly _
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    .custom instance <span style="color:#66d9ef">void</span> [System.Runtime]System.Runtime.CompilerServices.CompilationRelaxationsAttribute::.ctor(int32) = (
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">01</span> <span style="color:#ae81ff">00</span> <span style="color:#ae81ff">08</span> <span style="color:#ae81ff">00</span> <span style="color:#ae81ff">00</span> <span style="color:#ae81ff">00</span> <span style="color:#ae81ff">00</span> <span style="color:#ae81ff">00</span>
+</span></span><span style="display:flex;"><span>    )
+</span></span><span style="display:flex;"><span>    .custom instance <span style="color:#66d9ef">void</span> [System.Runtime]System.Runtime.CompilerServices.RuntimeCompatibilityAttribute::.ctor() = (
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">01</span> <span style="color:#ae81ff">00</span> <span style="color:#ae81ff">01</span> <span style="color:#ae81ff">00</span> <span style="color:#ae81ff">54</span> <span style="color:#ae81ff">02</span> <span style="color:#ae81ff">16</span> <span style="color:#ae81ff">57</span> <span style="color:#ae81ff">72</span> <span style="color:#ae81ff">61</span> <span style="color:#ae81ff">70</span> <span style="color:#ae81ff">4</span>e <span style="color:#ae81ff">6f</span> <span style="color:#ae81ff">6</span>e <span style="color:#ae81ff">45</span> <span style="color:#ae81ff">78</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">63</span> <span style="color:#ae81ff">65</span> <span style="color:#ae81ff">70</span> <span style="color:#ae81ff">74</span> <span style="color:#ae81ff">69</span> <span style="color:#ae81ff">6f</span> <span style="color:#ae81ff">6</span>e <span style="color:#ae81ff">54</span> <span style="color:#ae81ff">68</span> <span style="color:#ae81ff">72</span> <span style="color:#ae81ff">6f</span> <span style="color:#ae81ff">77</span> <span style="color:#ae81ff">73</span> <span style="color:#ae81ff">01</span>
+</span></span><span style="display:flex;"><span>    )
+</span></span><span style="display:flex;"><span>    .custom instance <span style="color:#66d9ef">void</span> [System.Runtime]System.Diagnostics.DebuggableAttribute::.ctor(valuetype [System.Runtime]System.Diagnostics.DebuggableAttribute/DebuggingModes) = (
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">01</span> <span style="color:#ae81ff">00</span> <span style="color:#ae81ff">07</span> <span style="color:#ae81ff">01</span> <span style="color:#ae81ff">00</span> <span style="color:#ae81ff">00</span> <span style="color:#ae81ff">00</span> <span style="color:#ae81ff">00</span>
+</span></span><span style="display:flex;"><span>    )
+</span></span><span style="display:flex;"><span>    .permissionset reqmin = (
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">2</span>e <span style="color:#ae81ff">01</span> <span style="color:#ae81ff">80</span> <span style="color:#ae81ff">8</span>a <span style="color:#ae81ff">53</span> <span style="color:#ae81ff">79</span> <span style="color:#ae81ff">73</span> <span style="color:#ae81ff">74</span> <span style="color:#ae81ff">65</span> <span style="color:#ae81ff">6d</span> <span style="color:#ae81ff">2</span>e <span style="color:#ae81ff">53</span> <span style="color:#ae81ff">65</span> <span style="color:#ae81ff">63</span> <span style="color:#ae81ff">75</span> <span style="color:#ae81ff">72</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">69</span> <span style="color:#ae81ff">74</span> <span style="color:#ae81ff">79</span> <span style="color:#ae81ff">2</span>e <span style="color:#ae81ff">50</span> <span style="color:#ae81ff">65</span> <span style="color:#ae81ff">72</span> <span style="color:#ae81ff">6d</span> <span style="color:#ae81ff">69</span> <span style="color:#ae81ff">73</span> <span style="color:#ae81ff">73</span> <span style="color:#ae81ff">69</span> <span style="color:#ae81ff">6f</span> <span style="color:#ae81ff">6</span>e <span style="color:#ae81ff">73</span> <span style="color:#ae81ff">2</span>e
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">53</span> <span style="color:#ae81ff">65</span> <span style="color:#ae81ff">63</span> <span style="color:#ae81ff">75</span> <span style="color:#ae81ff">72</span> <span style="color:#ae81ff">69</span> <span style="color:#ae81ff">74</span> <span style="color:#ae81ff">79</span> <span style="color:#ae81ff">50</span> <span style="color:#ae81ff">65</span> <span style="color:#ae81ff">72</span> <span style="color:#ae81ff">6d</span> <span style="color:#ae81ff">69</span> <span style="color:#ae81ff">73</span> <span style="color:#ae81ff">73</span> <span style="color:#ae81ff">69</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">6f</span> <span style="color:#ae81ff">6</span>e <span style="color:#ae81ff">41</span> <span style="color:#ae81ff">74</span> <span style="color:#ae81ff">74</span> <span style="color:#ae81ff">72</span> <span style="color:#ae81ff">69</span> <span style="color:#ae81ff">62</span> <span style="color:#ae81ff">75</span> <span style="color:#ae81ff">74</span> <span style="color:#ae81ff">65</span> <span style="color:#ae81ff">2</span>c <span style="color:#ae81ff">20</span> <span style="color:#ae81ff">53</span> <span style="color:#ae81ff">79</span> <span style="color:#ae81ff">73</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">74</span> <span style="color:#ae81ff">65</span> <span style="color:#ae81ff">6d</span> <span style="color:#ae81ff">2</span>e <span style="color:#ae81ff">52</span> <span style="color:#ae81ff">75</span> <span style="color:#ae81ff">6</span>e <span style="color:#ae81ff">74</span> <span style="color:#ae81ff">69</span> <span style="color:#ae81ff">6d</span> <span style="color:#ae81ff">65</span> <span style="color:#ae81ff">2</span>c <span style="color:#ae81ff">20</span> <span style="color:#ae81ff">56</span> <span style="color:#ae81ff">65</span> <span style="color:#ae81ff">72</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">73</span> <span style="color:#ae81ff">69</span> <span style="color:#ae81ff">6f</span> <span style="color:#ae81ff">6</span>e <span style="color:#ae81ff">3d</span> <span style="color:#ae81ff">37</span> <span style="color:#ae81ff">2</span>e <span style="color:#ae81ff">30</span> <span style="color:#ae81ff">2</span>e <span style="color:#ae81ff">30</span> <span style="color:#ae81ff">2</span>e <span style="color:#ae81ff">30</span> <span style="color:#ae81ff">2</span>c <span style="color:#ae81ff">20</span> <span style="color:#ae81ff">43</span> <span style="color:#ae81ff">75</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">6</span>c <span style="color:#ae81ff">74</span> <span style="color:#ae81ff">75</span> <span style="color:#ae81ff">72</span> <span style="color:#ae81ff">65</span> <span style="color:#ae81ff">3d</span> <span style="color:#ae81ff">6</span>e <span style="color:#ae81ff">65</span> <span style="color:#ae81ff">75</span> <span style="color:#ae81ff">74</span> <span style="color:#ae81ff">72</span> <span style="color:#ae81ff">61</span> <span style="color:#ae81ff">6</span>c <span style="color:#ae81ff">2</span>c <span style="color:#ae81ff">20</span> <span style="color:#ae81ff">50</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">75</span> <span style="color:#ae81ff">62</span> <span style="color:#ae81ff">6</span>c <span style="color:#ae81ff">69</span> <span style="color:#ae81ff">63</span> <span style="color:#ae81ff">4</span>b <span style="color:#ae81ff">65</span> <span style="color:#ae81ff">79</span> <span style="color:#ae81ff">54</span> <span style="color:#ae81ff">6f</span> <span style="color:#ae81ff">6</span>b <span style="color:#ae81ff">65</span> <span style="color:#ae81ff">6</span>e <span style="color:#ae81ff">3d</span> <span style="color:#ae81ff">62</span> <span style="color:#ae81ff">30</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">33</span> <span style="color:#ae81ff">66</span> <span style="color:#ae81ff">35</span> <span style="color:#ae81ff">66</span> <span style="color:#ae81ff">37</span> <span style="color:#ae81ff">66</span> <span style="color:#ae81ff">31</span> <span style="color:#ae81ff">31</span> <span style="color:#ae81ff">64</span> <span style="color:#ae81ff">35</span> <span style="color:#ae81ff">30</span> <span style="color:#ae81ff">61</span> <span style="color:#ae81ff">33</span> <span style="color:#ae81ff">61</span> <span style="color:#ae81ff">15</span> <span style="color:#ae81ff">01</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">54</span> <span style="color:#ae81ff">02</span> <span style="color:#ae81ff">10</span> <span style="color:#ae81ff">53</span> <span style="color:#ae81ff">6</span>b <span style="color:#ae81ff">69</span> <span style="color:#ae81ff">70</span> <span style="color:#ae81ff">56</span> <span style="color:#ae81ff">65</span> <span style="color:#ae81ff">72</span> <span style="color:#ae81ff">69</span> <span style="color:#ae81ff">66</span> <span style="color:#ae81ff">69</span> <span style="color:#ae81ff">63</span> <span style="color:#ae81ff">61</span> <span style="color:#ae81ff">74</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">69</span> <span style="color:#ae81ff">6f</span> <span style="color:#ae81ff">6</span>e <span style="color:#ae81ff">01</span>
+</span></span><span style="display:flex;"><span>    )
+</span></span><span style="display:flex;"><span>    .hash algorithm <span style="color:#ae81ff">0x00008004</span> <span style="color:#75715e">// SHA1</span>
+</span></span><span style="display:flex;"><span>    .ver <span style="color:#ae81ff">0</span>:<span style="color:#ae81ff">0</span>:<span style="color:#ae81ff">0</span>:<span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>.<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">private</span> auto ansi <span style="color:#960050;background-color:#1e0010">&#39;</span>&lt;Module&gt;<span style="color:#960050;background-color:#1e0010">&#39;</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>} <span style="color:#75715e">// end of class &lt;Module&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>.<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">public</span> auto ansi beforefieldinit C
+</span></span><span style="display:flex;"><span>    extends [System.Runtime]System.Object
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Methods</span>
+</span></span><span style="display:flex;"><span>    .method <span style="color:#66d9ef">public</span> hidebysig 
+</span></span><span style="display:flex;"><span>        instance <span style="color:#66d9ef">void</span> M () cil managed 
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// Method begins at RVA 0x206c</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// Code size 29 (0x1d)</span>
+</span></span><span style="display:flex;"><span>        .maxstack <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>        .locals <span style="color:#66d9ef">init</span> (
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">            [0]</span> int32 a,
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">            [1]</span> <span style="color:#66d9ef">string</span> str
+</span></span><span style="display:flex;"><span>        )
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        IL_0000: nop
+</span></span><span style="display:flex;"><span>        IL_0001: ldc.i4.<span style="color:#ae81ff">3</span>
+</span></span><span style="display:flex;"><span>        IL_0002: stloc.<span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>        IL_0003: ldstr <span style="color:#e6db74">&#34;abc&#34;</span>
+</span></span><span style="display:flex;"><span>        IL_0008: stloc.<span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>        IL_0009: ldloca.s <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>        IL_000b: call instance <span style="color:#66d9ef">string</span> [System.Runtime]System.Int32::ToString()
+</span></span><span style="display:flex;"><span>        IL_0010: ldloc.<span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>        IL_0011: call <span style="color:#66d9ef">string</span> [System.Runtime]System.String::Concat(<span style="color:#66d9ef">string</span>, <span style="color:#66d9ef">string</span>)
+</span></span><span style="display:flex;"><span>        IL_0016: call <span style="color:#66d9ef">void</span> [System.Console]System.Console::WriteLine(<span style="color:#66d9ef">string</span>)
+</span></span><span style="display:flex;"><span>        IL_001b: nop
+</span></span><span style="display:flex;"><span>        IL_001c: ret
+</span></span><span style="display:flex;"><span>    } <span style="color:#75715e">// end of method C::M</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    .method <span style="color:#66d9ef">public</span> hidebysig specialname rtspecialname 
+</span></span><span style="display:flex;"><span>        instance <span style="color:#66d9ef">void</span> .ctor () cil managed 
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// Method begins at RVA 0x2095</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// Code size 8 (0x8)</span>
+</span></span><span style="display:flex;"><span>        .maxstack <span style="color:#ae81ff">8</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        IL_0000: ldarg.<span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>        IL_0001: call instance <span style="color:#66d9ef">void</span> [System.Runtime]System.Object::.ctor()
+</span></span><span style="display:flex;"><span>        IL_0006: nop
+</span></span><span style="display:flex;"><span>        IL_0007: ret
+</span></span><span style="display:flex;"><span>    } <span style="color:#75715e">// end of method C::.ctor</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>} <span style="color:#75715e">// end of class C</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>.<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">private</span> auto ansi <span style="color:#66d9ef">sealed</span> beforefieldinit Microsoft.CodeAnalysis.EmbeddedAttribute
+</span></span><span style="display:flex;"><span>    extends [System.Runtime]System.Attribute
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    .custom instance <span style="color:#66d9ef">void</span> [System.Runtime]System.Runtime.CompilerServices.CompilerGeneratedAttribute::.ctor() = (
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">01</span> <span style="color:#ae81ff">00</span> <span style="color:#ae81ff">00</span> <span style="color:#ae81ff">00</span>
+</span></span><span style="display:flex;"><span>    )
+</span></span><span style="display:flex;"><span>    .custom instance <span style="color:#66d9ef">void</span> Microsoft.CodeAnalysis.EmbeddedAttribute::.ctor() = (
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">01</span> <span style="color:#ae81ff">00</span> <span style="color:#ae81ff">00</span> <span style="color:#ae81ff">00</span>
+</span></span><span style="display:flex;"><span>    )
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Methods</span>
+</span></span><span style="display:flex;"><span>    .method <span style="color:#66d9ef">public</span> hidebysig specialname rtspecialname 
+</span></span><span style="display:flex;"><span>        instance <span style="color:#66d9ef">void</span> .ctor () cil managed 
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// Method begins at RVA 0x2050</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// Code size 8 (0x8)</span>
+</span></span><span style="display:flex;"><span>        .maxstack <span style="color:#ae81ff">8</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        IL_0000: ldarg.<span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>        IL_0001: call instance <span style="color:#66d9ef">void</span> [System.Runtime]System.Attribute::.ctor()
+</span></span><span style="display:flex;"><span>        IL_0006: nop
+</span></span><span style="display:flex;"><span>        IL_0007: ret
+</span></span><span style="display:flex;"><span>    } <span style="color:#75715e">// end of method EmbeddedAttribute::.ctor</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>} <span style="color:#75715e">// end of class Microsoft.CodeAnalysis.EmbeddedAttribute</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>.<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">private</span> auto ansi <span style="color:#66d9ef">sealed</span> beforefieldinit System.Runtime.CompilerServices.RefSafetyRulesAttribute
+</span></span><span style="display:flex;"><span>    extends [System.Runtime]System.Attribute
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    .custom instance <span style="color:#66d9ef">void</span> [System.Runtime]System.Runtime.CompilerServices.CompilerGeneratedAttribute::.ctor() = (
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">01</span> <span style="color:#ae81ff">00</span> <span style="color:#ae81ff">00</span> <span style="color:#ae81ff">00</span>
+</span></span><span style="display:flex;"><span>    )
+</span></span><span style="display:flex;"><span>    .custom instance <span style="color:#66d9ef">void</span> Microsoft.CodeAnalysis.EmbeddedAttribute::.ctor() = (
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">01</span> <span style="color:#ae81ff">00</span> <span style="color:#ae81ff">00</span> <span style="color:#ae81ff">00</span>
+</span></span><span style="display:flex;"><span>    )
+</span></span><span style="display:flex;"><span>    .custom instance <span style="color:#66d9ef">void</span> [System.Runtime]System.AttributeUsageAttribute::.ctor(valuetype [System.Runtime]System.AttributeTargets) = (
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">01</span> <span style="color:#ae81ff">00</span> <span style="color:#ae81ff">02</span> <span style="color:#ae81ff">00</span> <span style="color:#ae81ff">00</span> <span style="color:#ae81ff">00</span> <span style="color:#ae81ff">02</span> <span style="color:#ae81ff">00</span> <span style="color:#ae81ff">54</span> <span style="color:#ae81ff">02</span> <span style="color:#ae81ff">0d</span> <span style="color:#ae81ff">41</span> <span style="color:#ae81ff">6</span>c <span style="color:#ae81ff">6</span>c <span style="color:#ae81ff">6f</span> <span style="color:#ae81ff">77</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">4d</span> <span style="color:#ae81ff">75</span> <span style="color:#ae81ff">6</span>c <span style="color:#ae81ff">74</span> <span style="color:#ae81ff">69</span> <span style="color:#ae81ff">70</span> <span style="color:#ae81ff">6</span>c <span style="color:#ae81ff">65</span> <span style="color:#ae81ff">00</span> <span style="color:#ae81ff">54</span> <span style="color:#ae81ff">02</span> <span style="color:#ae81ff">09</span> <span style="color:#ae81ff">49</span> <span style="color:#ae81ff">6</span>e <span style="color:#ae81ff">68</span> <span style="color:#ae81ff">65</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">72</span> <span style="color:#ae81ff">69</span> <span style="color:#ae81ff">74</span> <span style="color:#ae81ff">65</span> <span style="color:#ae81ff">64</span> <span style="color:#ae81ff">00</span>
+</span></span><span style="display:flex;"><span>    )
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Fields</span>
+</span></span><span style="display:flex;"><span>    .field <span style="color:#66d9ef">public</span> initonly int32 Version
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Methods</span>
+</span></span><span style="display:flex;"><span>    .method <span style="color:#66d9ef">public</span> hidebysig specialname rtspecialname 
+</span></span><span style="display:flex;"><span>        instance <span style="color:#66d9ef">void</span> .ctor (
+</span></span><span style="display:flex;"><span>            int32 <span style="color:#960050;background-color:#1e0010">&#39;&#39;</span>
+</span></span><span style="display:flex;"><span>        ) cil managed 
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// Method begins at RVA 0x2059</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// Code size 15 (0xf)</span>
+</span></span><span style="display:flex;"><span>        .maxstack <span style="color:#ae81ff">8</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        IL_0000: ldarg.<span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>        IL_0001: call instance <span style="color:#66d9ef">void</span> [System.Runtime]System.Attribute::.ctor()
+</span></span><span style="display:flex;"><span>        IL_0006: nop
+</span></span><span style="display:flex;"><span>        IL_0007: ldarg.<span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>        IL_0008: ldarg.<span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>        IL_0009: stfld int32 System.Runtime.CompilerServices.RefSafetyRulesAttribute::Version
+</span></span><span style="display:flex;"><span>        IL_000e: ret
+</span></span><span style="display:flex;"><span>    } <span style="color:#75715e">// end of method RefSafetyRulesAttribute::.ctor</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>} <span style="color:#75715e">// end of class System.Runtime.CompilerServices.RefSafetyRulesAttribute</span>
+</span></span></code></pre></div><p>(注释是<code>Sharpio</code>自动生成的)<br>
+额，看着是有点多，但其实很多只是自动生成的代码<br>
+如果只关注我们自己方法实现的话，实际只要看这么点就好</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span>.method <span style="color:#66d9ef">public</span> hidebysig instance <span style="color:#66d9ef">void</span> M () cil managed <span style="color:#75715e">//方法签名</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    .maxstack <span style="color:#ae81ff">2</span> <span style="color:#75715e">//定义计算栈大小</span>
+</span></span><span style="display:flex;"><span>    .locals <span style="color:#66d9ef">init</span> (
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">        [0]</span> int32 a,
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">        [1]</span> <span style="color:#66d9ef">string</span> str
+</span></span><span style="display:flex;"><span>    )   <span style="color:#75715e">//初始化变量链表</span>
+</span></span><span style="display:flex;"><span>    IL_0000: nop    <span style="color:#75715e">//啥也不干(Debug下编译)</span>
+</span></span><span style="display:flex;"><span>    IL_0001: ldc.i4.<span style="color:#ae81ff">3</span>   <span style="color:#75715e">//初始化int32的数值3，并加载到计算栈上</span>
+</span></span><span style="display:flex;"><span>    IL_0002: stloc.<span style="color:#ae81ff">0</span>    <span style="color:#75715e">//弹出一个栈顶元素，并存储到变量列表的0号位上(就是变量a)</span>
+</span></span><span style="display:flex;"><span>    IL_0003: ldstr <span style="color:#e6db74">&#34;abc&#34;</span>    <span style="color:#75715e">//初始化字符串&#34;abc&#34;，并加载到计算栈上</span>
+</span></span><span style="display:flex;"><span>    IL_0008: stloc.<span style="color:#ae81ff">1</span>    <span style="color:#75715e">//弹出栈顶元素，存储到变量链表1号上(变量str)</span>
+</span></span><span style="display:flex;"><span>    IL_0009: ldloca.s <span style="color:#ae81ff">0</span> <span style="color:#75715e">//加载变量列表0号位(变量a)到计算栈上</span>
+</span></span><span style="display:flex;"><span>    IL_000b: call instance <span style="color:#66d9ef">string</span> [System.Runtime]System.Int32::ToString()
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//调用方法</span>
+</span></span><span style="display:flex;"><span>    IL_0010: ldloc.<span style="color:#ae81ff">1</span>    <span style="color:#75715e">//加载变量列表1号位(变量str)到计算栈上</span>
+</span></span><span style="display:flex;"><span>    IL_0011: call <span style="color:#66d9ef">string</span> [System.Runtime]System.String::Concat(<span style="color:#66d9ef">string</span>, <span style="color:#66d9ef">string</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//调用方法，有几个参就弹出几个栈顶元素，返回值再压入栈</span>
+</span></span><span style="display:flex;"><span>    IL_0016: call <span style="color:#66d9ef">void</span> [System.Console]System.Console::WriteLine(<span style="color:#66d9ef">string</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//调用方法</span>
+</span></span><span style="display:flex;"><span>    IL_001b: nop    <span style="color:#75715e">//啥也不干</span>
+</span></span><span style="display:flex;"><span>    IL_001c: ret    <span style="color:#75715e">//方法结束，返回</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>(已经打上了我自己的注释了)<br>
+所以其实也不是挺难的，就是IL的指令差不多都是简写，乍一看确实不明觉厉<br>
+(所以会看IL就可以出去装逼了😅)
+IL还有很多指令，具体可以看我最上面推荐的两篇博客<br>
+这里的计算栈其实就是个可以放任何类型的栈，计算用的<br>
+具体的<code>CLR</code>执行细节可以看看<code>《CLR via C#》</code>讲的很详细</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/csharp/">CSharp</a>
+        
+    </section>
+
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+        <link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI&#43;WdtXRGWt2kTvGFasHpSy3SV"crossorigin="anonymous"
+            ><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG&#43;vnGctmUb0ZY0l8"crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"integrity="sha384-&#43;VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4&#43;/RRE05"crossorigin="anonymous"
+                defer
+                >
+            </script><script>
+    window.addEventListener("DOMContentLoaded", () => {
+        renderMathInElement(document.body, {
+            delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: "$", right: "$", display: false },
+                { left: "\\(", right: "\\)", display: false },
+                { left: "\\[", right: "\\]", display: true }
+            ],
+            ignoredClasses: ["gist"]
+        });})
+</script>
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B003-mvvm%E6%A8%A1%E5%9E%8B/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">WPF学习笔记03-MVVM模型</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B002-%E7%AE%80%E5%8D%95%E7%BE%8E%E5%8C%96%E8%AE%A1%E7%AE%97%E5%99%A8/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">WPF学习笔记02-简单美化计算器</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B001-%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84%E8%AE%A1%E7%AE%97%E5%99%A8/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">WPF学习笔记01-一个简单的计算器</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7%E7%A6%BB%E6%95%A3%E8%AF%BE%E8%AE%BE%E8%AE%B2%E8%A7%A3/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">浙工大离散课设讲解</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2023 - 
+        
+        2024 MLAcookie
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.26.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>
