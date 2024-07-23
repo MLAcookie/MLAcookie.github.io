@@ -170,14 +170,14 @@ data-flex-basis="6150px"
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>当然头铁不改正确的声明也没关系，也是这样使用&lt;/p>
-&lt;p>对于其他不知道怎么声明的枚举也可以这样让CsWin32去找&lt;/p></description></item><item><title>在win10LTSC上安装截图与草图</title><link>https://mlacookie.github.io/article/posts/%E5%9C%A8win10ltsc%E4%B8%8A%E5%AE%89%E8%A3%85%E6%88%AA%E5%9B%BE%E4%B8%8E%E8%8D%89%E5%9B%BE/</link><pubDate>Sun, 03 Mar 2024 01:57:13 +0000</pubDate><guid>https://mlacookie.github.io/article/posts/%E5%9C%A8win10ltsc%E4%B8%8A%E5%AE%89%E8%A3%85%E6%88%AA%E5%9B%BE%E4%B8%8E%E8%8D%89%E5%9B%BE/</guid><description>&lt;p>众所周知，Win10的LTSC非常精简
-精简到原本的&lt;code>截图与草图&lt;/code>的工具都没了
+&lt;p>对于其他不知道怎么声明的枚举也可以这样让CsWin32去找&lt;/p></description></item><item><title>在Win10LTSC上安装截图与草图</title><link>https://mlacookie.github.io/article/posts/%E5%9C%A8win10ltsc%E4%B8%8A%E5%AE%89%E8%A3%85%E6%88%AA%E5%9B%BE%E4%B8%8E%E8%8D%89%E5%9B%BE/</link><pubDate>Sun, 03 Mar 2024 01:57:13 +0000</pubDate><guid>https://mlacookie.github.io/article/posts/%E5%9C%A8win10ltsc%E4%B8%8A%E5%AE%89%E8%A3%85%E6%88%AA%E5%9B%BE%E4%B8%8E%E8%8D%89%E5%9B%BE/</guid><description>&lt;p>众所周知，Win10的LTSC非常精简&lt;br>
+精简到原本的&lt;code>截图与草图&lt;/code>的工具都没了&lt;br>
 系统里只能截图，然后自动保存在剪贴板中&lt;/p>
-&lt;p>但这不是很方便，比方说要保存到某个目录中，或者做些标记
+&lt;p>但这不是很方便，比方说要保存到某个目录中，或者做些标记&lt;br>
 所以还是挺需要原本的截图与草图工具的&lt;/p>
-&lt;p>&lt;code>截图与草图&lt;/code>工具可以在微软的软件商店中下载到
-但问题是，Win10LTSC也没有软件商店
-这个可以靠配置&lt;code>winget&lt;/code>来解决
+&lt;p>&lt;code>截图与草图&lt;/code>工具可以在微软的软件商店中下载到&lt;br>
+但问题是，Win10LTSC也没有软件商店&lt;br>
+这个可以靠配置&lt;code>winget&lt;/code>来解决&lt;br>
 （这个的配置这里暂时不讲，网上的教程很多）&lt;/p>
 &lt;p>如果需要安装&lt;code>截图与草图&lt;/code>，需要在命令行中输入下面的指令&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>winget install &lt;span style="color:#e6db74">&amp;#34;Snipping Tool&amp;#34;&lt;/span>

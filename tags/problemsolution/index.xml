@@ -9,18 +9,18 @@
 据说是因为分布类的问题，实际编译时生成的代码是正确的
 但是&lt;code>IntelliCode&lt;/code>依赖的文件可能没更新上
 然后就开始误报找不到&lt;code>InitializeComponent()&lt;/code>&lt;/p>
-&lt;p>总之还是一个很神秘的问题&lt;/p></description></item><item><title>在win10LTSC上安装截图与草图</title><link>https://mlacookie.github.io/article/posts/%E5%9C%A8win10ltsc%E4%B8%8A%E5%AE%89%E8%A3%85%E6%88%AA%E5%9B%BE%E4%B8%8E%E8%8D%89%E5%9B%BE/</link><pubDate>Sun, 03 Mar 2024 01:57:13 +0000</pubDate><guid>https://mlacookie.github.io/article/posts/%E5%9C%A8win10ltsc%E4%B8%8A%E5%AE%89%E8%A3%85%E6%88%AA%E5%9B%BE%E4%B8%8E%E8%8D%89%E5%9B%BE/</guid><description>&lt;p>众所周知，Win10的LTSC非常精简
-精简到原本的&lt;code>截图与草图&lt;/code>的工具都没了
+&lt;p>总之还是一个很神秘的问题&lt;/p></description></item><item><title>在Win10LTSC上安装截图与草图</title><link>https://mlacookie.github.io/article/posts/%E5%9C%A8win10ltsc%E4%B8%8A%E5%AE%89%E8%A3%85%E6%88%AA%E5%9B%BE%E4%B8%8E%E8%8D%89%E5%9B%BE/</link><pubDate>Sun, 03 Mar 2024 01:57:13 +0000</pubDate><guid>https://mlacookie.github.io/article/posts/%E5%9C%A8win10ltsc%E4%B8%8A%E5%AE%89%E8%A3%85%E6%88%AA%E5%9B%BE%E4%B8%8E%E8%8D%89%E5%9B%BE/</guid><description>&lt;p>众所周知，Win10的LTSC非常精简&lt;br>
+精简到原本的&lt;code>截图与草图&lt;/code>的工具都没了&lt;br>
 系统里只能截图，然后自动保存在剪贴板中&lt;/p>
-&lt;p>但这不是很方便，比方说要保存到某个目录中，或者做些标记
+&lt;p>但这不是很方便，比方说要保存到某个目录中，或者做些标记&lt;br>
 所以还是挺需要原本的截图与草图工具的&lt;/p>
-&lt;p>&lt;code>截图与草图&lt;/code>工具可以在微软的软件商店中下载到
-但问题是，Win10LTSC也没有软件商店
-这个可以靠配置&lt;code>winget&lt;/code>来解决
+&lt;p>&lt;code>截图与草图&lt;/code>工具可以在微软的软件商店中下载到&lt;br>
+但问题是，Win10LTSC也没有软件商店&lt;br>
+这个可以靠配置&lt;code>winget&lt;/code>来解决&lt;br>
 （这个的配置这里暂时不讲，网上的教程很多）&lt;/p>
 &lt;p>如果需要安装&lt;code>截图与草图&lt;/code>，需要在命令行中输入下面的指令&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>winget install &lt;span style="color:#e6db74">&amp;#34;Snipping Tool&amp;#34;&lt;/span>
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>回车等待就好了，安装完就能用了&lt;/p></description></item><item><title>如何将firefox改成垂直标签页</title><link>https://mlacookie.github.io/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/</link><pubDate>Tue, 02 Jan 2024 21:34:53 +0000</pubDate><guid>https://mlacookie.github.io/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/</guid><description>&lt;p>我经常会开一堆网页，如果采用水平的标签页的话会经常找不到标签页&lt;br>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>回车等待就好了，安装完就能用了&lt;/p></description></item><item><title>如何将Firefox改成垂直标签页</title><link>https://mlacookie.github.io/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/</link><pubDate>Tue, 02 Jan 2024 21:34:53 +0000</pubDate><guid>https://mlacookie.github.io/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/</guid><description>&lt;p>我经常会开一堆网页，如果采用水平的标签页的话会经常找不到标签页&lt;br>
 而火狐又不像别的浏览器，起码到目前为止都没有官方的垂直标签页的支持&lt;br>
 经过一番探索，实际上是可以自己改出来的&lt;/p>
 &lt;h2 id="0x00-效果展示">&amp;lt;0x00&amp;gt; 效果展示

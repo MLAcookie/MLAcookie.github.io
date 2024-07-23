@@ -1,4 +1,413 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Articles on MLAcookie</title><link>https://mlacookie.github.io/article/</link><description>Recent content in Articles on MLAcookie</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Sun, 21 Jul 2024 22:27:25 +0800</lastBuildDate><atom:link href="https://mlacookie.github.io/article/index.xml" rel="self" type="application/rss+xml"/><item><title>算法康复计划 03</title><link>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-03/</link><pubDate>Sun, 21 Jul 2024 22:27:25 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-03/</guid><description>&lt;h2 id="0x00-今日题目a-b-数对">&amp;lt;0x00&amp;gt; 今日题目：A-B 数对
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Articles on MLAcookie</title><link>https://mlacookie.github.io/article/</link><description>Recent content in Articles on MLAcookie</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Tue, 23 Jul 2024 01:51:37 +0800</lastBuildDate><atom:link href="https://mlacookie.github.io/article/index.xml" rel="self" type="application/rss+xml"/><item><title>算法康复计划 05</title><link>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-05/</link><pubDate>Tue, 23 Jul 2024 01:51:37 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-05/</guid><description>&lt;p>这道题我想的太抽象了，导致我在复杂的方向上花了很多时间&lt;br>
+（因为那个思路确实不能说错吧，毕竟确实是能解决问题的）&lt;/p>
+&lt;h2 id="0x00-今日题目逛画展">&amp;lt;0x00&amp;gt; 今日题目：逛画展
+&lt;/h2>&lt;p>&lt;a class="link" href="https://www.luogu.com.cn/problem/P1638" target="_blank" rel="noopener"
+>洛谷的P1638&lt;/a>&lt;/p>
+&lt;h3 id="题目描述">题目描述
+&lt;/h3>&lt;p>博览馆正在展出由世上最佳的 $m$ 位画家所画的图画。&lt;br>
+游客在购买门票时必须说明两个数字，$a$ 和 $b$&lt;br>
+代表他要看展览中的第 $a$ 幅至第 $b$ 幅画（包含 $a,b$）之间的所有图画，而门票的价钱就是一张图画一元。&lt;br>
+Sept 希望入场后可以看到所有名师的图画。当然，他想最小化购买门票的价格。&lt;br>
+请求出他购买门票时应选择的 $a,b$，数据保证一定有解。&lt;br>
+若存在多组解，&lt;strong>输出 $a$ 最小的那组&lt;/strong>。&lt;/p>
+&lt;h3 id="输入格式">输入格式
+&lt;/h3>&lt;p>第一行两个整数 $n,m$，分别表示博览馆内的图画总数及这些图画是由多少位名师的画所绘画的。&lt;br>
+第二行包含 $n$ 个整数 $a_i$，代表画第 $i$ 幅画的名师的编号。&lt;/p>
+&lt;h3 id="输出格式">输出格式
+&lt;/h3>&lt;p>一行两个整数 $a,b$。&lt;/p>
+&lt;h3 id="样例">样例
+&lt;/h3>&lt;h4 id="样例输入">样例输入
+&lt;/h4>&lt;pre tabindex="0">&lt;code>12 5
+2 5 3 1 3 2 4 1 1 5 4 3
+&lt;/code>&lt;/pre>&lt;h4 id="样例输出">样例输出
+&lt;/h4>&lt;pre tabindex="0">&lt;code>2 7
+&lt;/code>&lt;/pre>&lt;h3 id="数据规模与约定">数据规模与约定
+&lt;/h3>&lt;ul>
+&lt;li>对于 $30%$ 的数据，有 $n\le200$，$m\le20$。&lt;/li>
+&lt;li>对于 $60%$ 的数据，有 $n\le10^5$，$m\le10^3$。&lt;/li>
+&lt;li>对于 $100%$ 的数据，有 $1\leq n\le10^6$，$1 \leq a_i \leq m\le2\times10^3$。&lt;/li>
+&lt;/ul>
+&lt;h2 id="0x01-分析">&amp;lt;0x01&amp;gt; 分析
+&lt;/h2>&lt;p>这里先讲正确的思路&lt;/p>
+&lt;h2 id="0x02-代码">&amp;lt;0x02&amp;gt; 代码
+&lt;/h2>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-cpp" data-lang="cpp">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;iostream&amp;gt;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;vector&amp;gt;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">int&lt;/span> &lt;span style="color:#a6e22e">main&lt;/span>()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> n, m;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> count &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> ansLength &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">1e7&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> ansStart &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#f92672">-&lt;/span>&lt;span style="color:#ae81ff">1&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> ansEnd &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#f92672">-&lt;/span>&lt;span style="color:#ae81ff">1&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>cin &lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> n &lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> m;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>vector&lt;span style="color:#f92672">&amp;lt;&lt;/span>&lt;span style="color:#66d9ef">int&lt;/span>&lt;span style="color:#f92672">&amp;gt;&lt;/span> nums;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> nums.resize(n &lt;span style="color:#f92672">+&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>vector&lt;span style="color:#f92672">&amp;lt;&lt;/span>&lt;span style="color:#66d9ef">int&lt;/span>&lt;span style="color:#f92672">&amp;gt;&lt;/span> positions;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> positions.resize(m &lt;span style="color:#f92672">+&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>, &lt;span style="color:#f92672">-&lt;/span>&lt;span style="color:#ae81ff">1&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> start &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">int&lt;/span> end &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>; end &lt;span style="color:#f92672">&amp;lt;=&lt;/span> n; end&lt;span style="color:#f92672">++&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> temp;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>cin &lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> temp;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> nums[end] &lt;span style="color:#f92672">=&lt;/span> temp;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (positions[temp] &lt;span style="color:#f92672">==&lt;/span> &lt;span style="color:#f92672">-&lt;/span>&lt;span style="color:#ae81ff">1&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> count&lt;span style="color:#f92672">++&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> positions[temp] &lt;span style="color:#f92672">=&lt;/span> end;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">while&lt;/span> (start &lt;span style="color:#f92672">&amp;lt;&lt;/span> end &lt;span style="color:#f92672">&amp;amp;&amp;amp;&lt;/span> start &lt;span style="color:#f92672">&amp;lt;&lt;/span> positions[nums[start]])
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> start&lt;span style="color:#f92672">++&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (count &lt;span style="color:#f92672">==&lt;/span> m &lt;span style="color:#f92672">&amp;amp;&amp;amp;&lt;/span> end &lt;span style="color:#f92672">-&lt;/span> start &lt;span style="color:#f92672">&amp;lt;&lt;/span> ansLength)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ansLength &lt;span style="color:#f92672">=&lt;/span> end &lt;span style="color:#f92672">-&lt;/span> start;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ansStart &lt;span style="color:#f92672">=&lt;/span> start;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ansEnd &lt;span style="color:#f92672">=&lt;/span> end;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>cout &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> ansStart &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> &lt;span style="color:#e6db74">&amp;#34; &amp;#34;&lt;/span> &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> ansEnd &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> &lt;span style="color:#e6db74">&amp;#34;&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="0x03-遇到的坑">&amp;lt;0x03&amp;gt; 遇到的坑
+&lt;/h2>&lt;h2 id="0x04-我的神秘前缀和思路">&amp;lt;0x04&amp;gt; 我的神秘前缀和思路
+&lt;/h2>&lt;p>因为最近也在看一些前缀和相关的东西，所以这道题就往前缀和的思路去想了&lt;br>
+而且确实能想出来怎么用前缀和去解这道题&lt;/p>
+&lt;p>这里用样例的数据解释&lt;/p>
+&lt;pre tabindex="0">&lt;code>12 5
+2 5 3 1 3 2 4 1 1 5 4 3
+&lt;/code>&lt;/pre>&lt;p>对于每个数字，我们可以附加一个&lt;code>list&lt;/code>表示前面不同的画出现了几次&lt;br>
+对于这个输入，得到的&lt;code>list&lt;/code>是这样的&lt;/p>
+&lt;pre tabindex="0">&lt;code>index list num
+1 0 1 0 0 0 2
+2 0 1 0 0 1 5
+3 0 1 1 0 1 3
+4 1 1 1 0 1 1
+5 1 1 2 0 1 3
+6 1 2 2 0 1 2
+7 1 2 2 1 1 4
+8 2 2 2 1 1 1
+9 3 2 2 1 1 1
+10 3 2 2 1 2 5
+11 3 2 2 2 2 4
+12 3 2 3 2 2 3
+&lt;/code>&lt;/pre>&lt;p>然后就可以选取&lt;code>start&lt;/code>和&lt;code>end&lt;/code>，&lt;code>end&lt;/code>的&lt;code>list&lt;/code>减去&lt;code>start&lt;/code>的&lt;code>list&lt;/code>，如果没有0，那就是满足要求的&lt;br>
+比如说&lt;code>2 7&lt;/code>这对，对应选&lt;code>start = 1&lt;/code>和&lt;code>end = 7&lt;/code>，相减的结果就是&lt;code>1 1 2 1 1&lt;/code>没有零&lt;/p>
+&lt;p>算法开始时，先从&lt;code>index = 1&lt;/code>开始遍历，先去搜第一个解&lt;br>
+搜到第一个解后，也得到了第一个解的长度&lt;code>length&lt;/code>&lt;br>
+后面只要直接检查某个&lt;code>index&lt;/code>的&lt;code>list&lt;/code>和&lt;code>index-length&lt;/code>的&lt;code>list&lt;/code>的差是否有0就行&lt;br>
+没有0的话就求出这个最小解然后替换长度之类的&lt;/p>
+&lt;p>总的算下来时间复杂度大概是O(n)，我想是没问题的&lt;br>
+（不考虑空间复杂度的后果）&lt;/p>
+&lt;p>然后就丢洛谷去跑了，发现爆内存了&lt;br>
+经过优化变量类型之类的操作，能过的数据点多了几个但没AC&lt;br>
+发现代码运行时间还行，就开始用时间换空间&lt;br>
+原来是缓存全部的&lt;code>list&lt;/code>，最后改成了每30个缓存一个，其他的靠现场计算&lt;br>
+结果是只剩最后一个数据点没过，超时并且内存也差点超限(1.2s/127MB)&lt;br>
+到这我才反应过来思路有点问题&lt;/p>
+&lt;p>主要也确实不甘心，鬼知道算法题原本的思路是什么，况且这样写的代码还真能过大部分数据点&lt;br>
+我就以为是我优化没做好，不会是思路本身出了问题&lt;br>
+最后没办法，看了看题解，发现完全是我想复杂了&lt;/p>
+&lt;p>代码如下，稍微有点长，毕竟我习惯封装&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-cpp" data-lang="cpp">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;iostream&amp;gt;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;stdint.h&amp;gt;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;vector&amp;gt;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">// 设置缓存频数
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#66d9ef">int&lt;/span> bufferSlice &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">30&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">// 封装的画出现次数的类型
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">SumInfo&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>vector&lt;span style="color:#f92672">&amp;lt;&lt;/span>&lt;span style="color:#66d9ef">uint16_t&lt;/span>&lt;span style="color:#f92672">&amp;gt;&lt;/span> count;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">public&lt;/span>&lt;span style="color:#f92672">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> SumInfo(&lt;span style="color:#66d9ef">const&lt;/span> SumInfo &lt;span style="color:#f92672">&amp;amp;&lt;/span>c)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> count.assign(c.count.begin(), c.count.end());
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> SumInfo(&lt;span style="color:#66d9ef">int&lt;/span> length)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> count.resize(length, &lt;span style="color:#ae81ff">0&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> SumInfo(&lt;span style="color:#66d9ef">const&lt;/span> SumInfo &lt;span style="color:#f92672">&amp;amp;&lt;/span>c, &lt;span style="color:#66d9ef">int&lt;/span> index)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> count.assign(c.count.begin(), c.count.end());
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> count[index]&lt;span style="color:#f92672">++&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 判断开始结束位置是否满足要求
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">static&lt;/span> &lt;span style="color:#66d9ef">bool&lt;/span> &lt;span style="color:#a6e22e">Judge&lt;/span>(&lt;span style="color:#66d9ef">const&lt;/span> SumInfo &lt;span style="color:#f92672">&amp;amp;&lt;/span>start, &lt;span style="color:#66d9ef">const&lt;/span> SumInfo &lt;span style="color:#f92672">&amp;amp;&lt;/span>end)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> length &lt;span style="color:#f92672">=&lt;/span> end.count.size();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">int&lt;/span> i &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>; i &lt;span style="color:#f92672">&amp;lt;&lt;/span> length; i&lt;span style="color:#f92672">++&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (end.count[i] &lt;span style="color:#f92672">-&lt;/span> start.count[i] &lt;span style="color:#f92672">&amp;lt;&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> false;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> true;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 判断是否所有画都出现过
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">static&lt;/span> &lt;span style="color:#66d9ef">bool&lt;/span> &lt;span style="color:#a6e22e">Check&lt;/span>(&lt;span style="color:#66d9ef">const&lt;/span> SumInfo &lt;span style="color:#f92672">&amp;amp;&lt;/span>sum)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">auto&lt;/span> &lt;span style="color:#f92672">&amp;amp;&lt;/span>i : sum.count)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (i &lt;span style="color:#f92672">&amp;lt;&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> false;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> true;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>};
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>std&lt;span style="color:#f92672">::&lt;/span>vector&lt;span style="color:#f92672">&amp;lt;&lt;/span>SumInfo&lt;span style="color:#f92672">&amp;gt;&lt;/span> frontSum;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>std&lt;span style="color:#f92672">::&lt;/span>vector&lt;span style="color:#f92672">&amp;lt;&lt;/span>&lt;span style="color:#66d9ef">uint16_t&lt;/span>&lt;span style="color:#f92672">&amp;gt;&lt;/span> input;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">// 获取缓存或计算的函数
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>SumInfo &lt;span style="color:#a6e22e">GetSumInfo&lt;/span>(&lt;span style="color:#66d9ef">int&lt;/span> index)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (index &lt;span style="color:#f92672">%&lt;/span> bufferSlice &lt;span style="color:#f92672">==&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> frontSum[index &lt;span style="color:#f92672">/&lt;/span> bufferSlice];
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">else&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> SumInfo(GetSumInfo(index &lt;span style="color:#f92672">-&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>), input[index] &lt;span style="color:#f92672">-&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">int&lt;/span> &lt;span style="color:#a6e22e">main&lt;/span>()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> n, m;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>cin &lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> n &lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> m;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> SumInfo tempSum(m);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> input.push_back(&lt;span style="color:#ae81ff">0&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> frontSum.push_back(tempSum);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">int&lt;/span> i &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>; i &lt;span style="color:#f92672">&amp;lt;=&lt;/span> n; i&lt;span style="color:#f92672">++&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">uint16_t&lt;/span> num;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>cin &lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> num;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> input.push_back(num);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> tempSum &lt;span style="color:#f92672">=&lt;/span> SumInfo(tempSum, num &lt;span style="color:#f92672">-&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (i &lt;span style="color:#f92672">%&lt;/span> bufferSlice &lt;span style="color:#f92672">==&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> frontSum.push_back(SumInfo(tempSum));
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> index &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> ansStart &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#f92672">-&lt;/span>&lt;span style="color:#ae81ff">1&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> ansEnd &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#f92672">-&lt;/span>&lt;span style="color:#ae81ff">1&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> ansLength &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#f92672">-&lt;/span>&lt;span style="color:#ae81ff">1&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">while&lt;/span> (index &lt;span style="color:#f92672">&amp;lt;&lt;/span> input.size())
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 搜索第一个解
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">if&lt;/span> (ansEnd &lt;span style="color:#f92672">==&lt;/span> &lt;span style="color:#f92672">-&lt;/span>&lt;span style="color:#ae81ff">1&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 找到首次所有大师的画都出现的情况
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">if&lt;/span> (SumInfo&lt;span style="color:#f92672">::&lt;/span>Check(GetSumInfo(index)))
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ansEnd &lt;span style="color:#f92672">=&lt;/span> index;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">int&lt;/span> i &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>; i &lt;span style="color:#f92672">&amp;lt;&lt;/span> index; i&lt;span style="color:#f92672">++&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (&lt;span style="color:#f92672">!&lt;/span>SumInfo&lt;span style="color:#f92672">::&lt;/span>Judge(GetSumInfo(i), GetSumInfo(ansEnd)))
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ansStart &lt;span style="color:#f92672">=&lt;/span> i;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">break&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ansLength &lt;span style="color:#f92672">=&lt;/span> ansEnd &lt;span style="color:#f92672">-&lt;/span> ansStart;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 遍历剩下的，看看有没有别的解
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">else&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 发现有长度更小的解
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">if&lt;/span> (SumInfo&lt;span style="color:#f92672">::&lt;/span>Judge(GetSumInfo(index &lt;span style="color:#f92672">-&lt;/span> ansLength), GetSumInfo(index)))
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 求解
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> ansEnd &lt;span style="color:#f92672">=&lt;/span> index;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> tempStart &lt;span style="color:#f92672">=&lt;/span> index &lt;span style="color:#f92672">-&lt;/span> ansLength;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">int&lt;/span> i &lt;span style="color:#f92672">=&lt;/span> tempStart; i &lt;span style="color:#f92672">&amp;lt;&lt;/span> index; i&lt;span style="color:#f92672">++&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (&lt;span style="color:#f92672">!&lt;/span>SumInfo&lt;span style="color:#f92672">::&lt;/span>Judge(GetSumInfo(i), GetSumInfo(ansEnd)))
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ansStart &lt;span style="color:#f92672">=&lt;/span> i;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">break&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ansLength &lt;span style="color:#f92672">=&lt;/span> ansEnd &lt;span style="color:#f92672">-&lt;/span> ansStart;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (ansLength &lt;span style="color:#f92672">+&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span> &lt;span style="color:#f92672">==&lt;/span> m)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">break&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> index&lt;span style="color:#f92672">++&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>cout &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> ansStart &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> &lt;span style="color:#e6db74">&amp;#34; &amp;#34;&lt;/span> &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> ansEnd;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div></description></item><item><title>算法康复计划 04</title><link>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-04/</link><pubDate>Mon, 22 Jul 2024 12:59:04 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-04/</guid><description>&lt;p>偶然发现居然有道很久之前写的题没有AC，那就写这题了&lt;/p>
+&lt;h2 id="0x00-今日题目数楼梯">&amp;lt;0x00&amp;gt; 今日题目：数楼梯
+&lt;/h2>&lt;p>&lt;a class="link" href="https://www.luogu.com.cn/problem/P1255" target="_blank" rel="noopener"
+>洛谷的P1255&lt;/a>&lt;/p>
+&lt;h3 id="题目描述">题目描述
+&lt;/h3>&lt;p>楼梯有 $N$ 阶，上楼可以一步上一阶，也可以一步上二阶。&lt;br>
+编一个程序，计算共有多少种不同的走法。&lt;/p>
+&lt;h3 id="输入格式">输入格式
+&lt;/h3>&lt;p>一个数字，楼梯数。&lt;/p>
+&lt;h3 id="输出格式">输出格式
+&lt;/h3>&lt;p>输出走的方式总数。&lt;/p>
+&lt;h3 id="样例">样例
+&lt;/h3>&lt;h4 id="样例输入">样例输入
+&lt;/h4>&lt;pre tabindex="0">&lt;code>4
+&lt;/code>&lt;/pre>&lt;h4 id="样例输出">样例输出
+&lt;/h4>&lt;pre tabindex="0">&lt;code>5
+&lt;/code>&lt;/pre>&lt;h3 id="数据规模与约定">数据规模与约定
+&lt;/h3>&lt;ul>
+&lt;li>对于 $60%$ 的数据，$N \leq 50$；&lt;/li>
+&lt;li>对于 $100%$ 的数据，$1 \le N \leq 5000$。&lt;/li>
+&lt;/ul>
+&lt;h2 id="0x01-分析">&amp;lt;0x01&amp;gt; 分析
+&lt;/h2>&lt;p>思路应该是不难的&lt;br>
+现在有4层楼梯，每次上一层或者两层&lt;br>
+那先走个一层，这样还有3层楼梯&lt;br>
+3层也能上一层或者两层，那这次上两层&amp;hellip;&lt;br>
+如此类推，我们可以得到一个决策树&lt;/p>
+&lt;pre tabindex="0">&lt;code>4
+├── 3
+| ├── 2
+| | ├── 1 ── 0
+| | └── 0
+| └── 1 ── 0
+└── 2
+├── 1 ── 0
+└── 0
+&lt;/code>&lt;/pre>&lt;p>我们可以发现存在一些相同的子树&lt;br>
+这些相同的子树带来的走法是一样的&lt;br>
+所以要求4层楼梯有几种走法，可以先求3层有几种，2层有几种&amp;hellip;&lt;br>
+求到最后就是只有1层楼梯和2层楼梯有几种走法，这两种情况的答案是显然的&lt;/p>
+&lt;p>更进一步，我们可以得到一个递推式：$f(n) = f(n-1) + f(n-2), f(1) = 1, f(2) = 2$&lt;br>
+对于这样的递推式，一般可以用递归的方式来解决&lt;/p>
+&lt;p>因为$f(n)$的值仅与$n$有关，所以对于每次求值，没必要完整计算一遍整个递推式&lt;br>
+我们可以用一个&lt;code>list&lt;/code>去暂存我们已经计算好的值&lt;br>
+在计算新的值的过程中，如果发现有些值已经计算过了，直接用就可以&lt;br>
+这样可以大大提高运行速度&lt;/p>
+&lt;h2 id="0x02-代码">&amp;lt;0x02&amp;gt; 代码
+&lt;/h2>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-cpp" data-lang="cpp">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;iostream&amp;gt;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;vector&amp;gt;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">// 数据量会非常大，所以要有高精度计算
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">BigInteger&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">public&lt;/span>&lt;span style="color:#f92672">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> BigInteger() &lt;span style="color:#f92672">:&lt;/span> digits(&lt;span style="color:#ae81ff">1&lt;/span>, &lt;span style="color:#ae81ff">0&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> BigInteger(&lt;span style="color:#66d9ef">const&lt;/span> std&lt;span style="color:#f92672">::&lt;/span>string &lt;span style="color:#f92672">&amp;amp;&lt;/span>number)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">int&lt;/span> i &lt;span style="color:#f92672">=&lt;/span> number.size() &lt;span style="color:#f92672">-&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>; i &lt;span style="color:#f92672">&amp;gt;=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>; &lt;span style="color:#f92672">--&lt;/span>i)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (isdigit(number[i]))
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> digits.push_back(number[i] &lt;span style="color:#f92672">-&lt;/span> &lt;span style="color:#e6db74">&amp;#39;0&amp;#39;&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 有加法就够了
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> BigInteger &lt;span style="color:#66d9ef">operator&lt;/span>&lt;span style="color:#f92672">+&lt;/span>(&lt;span style="color:#66d9ef">const&lt;/span> BigInteger &lt;span style="color:#f92672">&amp;amp;&lt;/span>other) &lt;span style="color:#66d9ef">const&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> BigInteger result;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> result.digits.clear();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> carry &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> size_t maxSize &lt;span style="color:#f92672">=&lt;/span> std&lt;span style="color:#f92672">::&lt;/span>max(digits.size(), other.digits.size());
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> (size_t i &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>; i &lt;span style="color:#f92672">&amp;lt;&lt;/span> maxSize &lt;span style="color:#f92672">||&lt;/span> carry; &lt;span style="color:#f92672">++&lt;/span>i)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> sum &lt;span style="color:#f92672">=&lt;/span> carry;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (i &lt;span style="color:#f92672">&amp;lt;&lt;/span> digits.size())
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> sum &lt;span style="color:#f92672">+=&lt;/span> digits[i];
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (i &lt;span style="color:#f92672">&amp;lt;&lt;/span> other.digits.size())
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> sum &lt;span style="color:#f92672">+=&lt;/span> other.digits[i];
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> result.digits.push_back(sum &lt;span style="color:#f92672">%&lt;/span> &lt;span style="color:#ae81ff">10&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> carry &lt;span style="color:#f92672">=&lt;/span> sum &lt;span style="color:#f92672">/&lt;/span> &lt;span style="color:#ae81ff">10&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> result;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 重载输出流
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">friend&lt;/span> std&lt;span style="color:#f92672">::&lt;/span>ostream &lt;span style="color:#f92672">&amp;amp;&lt;/span>&lt;span style="color:#66d9ef">operator&lt;/span>&lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span>(std&lt;span style="color:#f92672">::&lt;/span>ostream &lt;span style="color:#f92672">&amp;amp;&lt;/span>os, &lt;span style="color:#66d9ef">const&lt;/span> BigInteger &lt;span style="color:#f92672">&amp;amp;&lt;/span>number)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">int&lt;/span> i &lt;span style="color:#f92672">=&lt;/span> number.digits.size() &lt;span style="color:#f92672">-&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>; i &lt;span style="color:#f92672">&amp;gt;=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>; &lt;span style="color:#f92672">--&lt;/span>i)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> os &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> number.digits[i];
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> os;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 判零用
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">bool&lt;/span> &lt;span style="color:#a6e22e">IsZero&lt;/span>()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (digits.size() &lt;span style="color:#f92672">==&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> true;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> false;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">private&lt;/span>&lt;span style="color:#f92672">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>vector&lt;span style="color:#f92672">&amp;lt;&lt;/span>&lt;span style="color:#66d9ef">int&lt;/span>&lt;span style="color:#f92672">&amp;gt;&lt;/span> digits;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>};
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">// 初始化全局缓存的答案
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>BigInteger ans[&lt;span style="color:#ae81ff">5001&lt;/span>] &lt;span style="color:#f92672">=&lt;/span> {BigInteger()};
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">// 解题
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>BigInteger &lt;span style="color:#a6e22e">Step&lt;/span>(&lt;span style="color:#66d9ef">int&lt;/span> n)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 边界条件
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">if&lt;/span> (n &lt;span style="color:#f92672">==&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> BigInteger(&lt;span style="color:#e6db74">&amp;#34;1&amp;#34;&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (n &lt;span style="color:#f92672">==&lt;/span> &lt;span style="color:#ae81ff">2&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> BigInteger(&lt;span style="color:#e6db74">&amp;#34;2&amp;#34;&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 已经计算出来的就直接返回
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">if&lt;/span> (&lt;span style="color:#f92672">!&lt;/span>ans[n].IsZero())
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> ans[n];
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 递归计算
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">return&lt;/span> Step(n &lt;span style="color:#f92672">-&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>) &lt;span style="color:#f92672">+&lt;/span> Step(n &lt;span style="color:#f92672">-&lt;/span> &lt;span style="color:#ae81ff">2&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">int&lt;/span> &lt;span style="color:#a6e22e">main&lt;/span>()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 打表计算所有的答案
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">int&lt;/span> i &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>; i &lt;span style="color:#f92672">&amp;lt;&lt;/span> &lt;span style="color:#ae81ff">5001&lt;/span>; i&lt;span style="color:#f92672">++&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ans[i] &lt;span style="color:#f92672">=&lt;/span> Step(i);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 读入
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">int&lt;/span> n;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>cin &lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> n;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 直接就能输出了
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> std&lt;span style="color:#f92672">::&lt;/span>cout &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> ans[n];
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="0x03-遇到的坑">&amp;lt;0x03&amp;gt; 遇到的坑
+&lt;/h2>&lt;p>本来以为是没啥问题的题，很快就写出了算法&lt;br>
+然后跑评测，能过一半的数据&lt;br>
+我就纳闷啊，把输入输出下载下来一看，输入到没啥，输出倒是老长一串数字&lt;br>
+那这数字size_t都扛不住，要上高精度计算了&lt;br>
+所以这道题看似考递推递归，实际上考的是高精度计算&lt;/p>
+&lt;p>然后本来想逃课用C#的BigIntager的，但不知道为什么，洛谷的评测机上面没有BigIntager这个类&lt;br>
+所以最后就写了个高精度计算，也就用到个加法，问题不大&lt;/p></description></item><item><title>算法康复计划 03</title><link>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-03/</link><pubDate>Sun, 21 Jul 2024 22:27:25 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-03/</guid><description>&lt;h2 id="0x00-今日题目a-b-数对">&amp;lt;0x00&amp;gt; 今日题目：A-B 数对
 &lt;/h2>&lt;p>&lt;a class="link" href="https://www.luogu.com.cn/problem/P1102" target="_blank" rel="noopener"
 >洛谷的P1102&lt;/a>&lt;/p>
 &lt;h3 id="题目背景">题目背景
@@ -12,11 +421,11 @@
 第二行，$N$ 个正整数，作为要求处理的那串数。&lt;/p>
 &lt;h3 id="输出格式">输出格式
 &lt;/h3>&lt;p>一行，表示该串正整数中包含的满足 $A - B = C$ 的数对的个数。&lt;/p>
-&lt;h3 id="样例-1">样例 #1
-&lt;/h3>&lt;h4 id="样例输入-1">样例输入 #1
+&lt;h3 id="样例">样例
+&lt;/h3>&lt;h4 id="样例输入">样例输入
 &lt;/h4>&lt;pre tabindex="0">&lt;code>4 1
 1 1 2 3
-&lt;/code>&lt;/pre>&lt;h4 id="样例输出-1">样例输出 #1
+&lt;/code>&lt;/pre>&lt;h4 id="样例输出">样例输出
 &lt;/h4>&lt;pre tabindex="0">&lt;code>3
 &lt;/code>&lt;/pre>&lt;h3 id="数据规模与约定">数据规模与约定
 &lt;/h3>&lt;p>对于 $75%$ 的数据，$1 \leq N \leq 2000$。
@@ -342,7 +751,8 @@ data-flex-basis="6150px"
 于是我就打算趁着暑假的时间，每天做一道算法题&lt;br>
 也不是为了比赛之类的，只是觉得现在确实缺算法方面的能力&lt;br>
 顺便也当练练C++了，我C++熟练度也不够&lt;/p>
-&lt;p>需要写在前面的是，我的代码会有很多封装，这样性能肯定不是最佳的&lt;/p>
+&lt;p>需要写在前面的是，我的代码会有很多封装，这样性能肯定不是最佳的&lt;br>
+而且因为每天要干的事情也是挺多的，所以文章不会讲得很细，就当是个过程记录吧&lt;/p>
 &lt;h2 id="0x00-今日题目马的遍历">&amp;lt;0x00&amp;gt; 今日题目：马的遍历
 &lt;/h2>&lt;p>&lt;a class="link" href="https://www.luogu.com.cn/problem/P1443" target="_blank" rel="noopener"
 >洛谷的P1443&lt;/a>&lt;/p>
@@ -352,10 +762,10 @@ data-flex-basis="6150px"
 &lt;/h3>&lt;p>输入只有一行四个整数，分别为 $n, m, x, y$。&lt;/p>
 &lt;h3 id="输出格式">输出格式
 &lt;/h3>&lt;p>一个 $n \times m$ 的矩阵，代表马到达某个点最少要走几步（不能到达则输出 $-1$）。&lt;/p>
-&lt;h3 id="样例-1">样例 #1
-&lt;/h3>&lt;h5 id="样例输入-1">样例输入 #1
+&lt;h3 id="样例">样例
+&lt;/h3>&lt;h5 id="样例输入">样例输入
 &lt;/h5>&lt;pre tabindex="0">&lt;code>3 3 1 1
-&lt;/code>&lt;/pre>&lt;h5 id="样例输出-1">样例输出 #1
+&lt;/code>&lt;/pre>&lt;h5 id="样例输出">样例输出
 &lt;/h5>&lt;pre tabindex="0">&lt;code>0 3 2
 3 -1 1
 2 1 4
@@ -525,7 +935,7 @@ data-flex-basis="6150px"
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="0x03-遇到的坑">&amp;lt;0x03&amp;gt; 遇到的坑
 &lt;/h2>&lt;p>主要也就是最后输出的时候矩阵反了&lt;br>
-因为题目给的样例最后答案也是沿对角线对称的，一开始还真没发现&lt;/p></description></item><item><title>从Hexo到Hugo 记录博客框架切换</title><link>https://mlacookie.github.io/article/categories/blog/%E4%BB%8Ehexo%E5%88%B0hugo-%E8%AE%B0%E5%BD%95%E5%8D%9A%E5%AE%A2%E6%A1%86%E6%9E%B6%E5%88%87%E6%8D%A2/</link><pubDate>Sat, 20 Jul 2024 15:02:34 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/blog/%E4%BB%8Ehexo%E5%88%B0hugo-%E8%AE%B0%E5%BD%95%E5%8D%9A%E5%AE%A2%E6%A1%86%E6%9E%B6%E5%88%87%E6%8D%A2/</guid><description>&lt;p>嘶，总算是学校的事情忙完了，终于有点时间写写博客了&lt;br>
+因为题目给的样例答案也是沿对角线对称的，一开始还真没发现&lt;/p></description></item><item><title>从Hexo到Hugo 记录博客框架切换</title><link>https://mlacookie.github.io/article/categories/blog/%E4%BB%8Ehexo%E5%88%B0hugo-%E8%AE%B0%E5%BD%95%E5%8D%9A%E5%AE%A2%E6%A1%86%E6%9E%B6%E5%88%87%E6%8D%A2/</link><pubDate>Sat, 20 Jul 2024 15:02:34 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/blog/%E4%BB%8Ehexo%E5%88%B0hugo-%E8%AE%B0%E5%BD%95%E5%8D%9A%E5%AE%A2%E6%A1%86%E6%9E%B6%E5%88%87%E6%8D%A2/</guid><description>&lt;p>嘶，总算是学校的事情忙完了，终于有点时间写写博客了&lt;br>
 这个学期感觉一直都在和时间赛跑，没啥时间写博客，自己的项目也基本都断了&lt;br>
 当然这些都是另外的话题了&lt;/p>
 &lt;p>如果之前有看过我博客的人，应该会发现现在网页大变样了&lt;br>
@@ -1309,76 +1719,18 @@ data-flex-basis="2475px"
 &lt;h2 id="0x06-这套方案的问题">&amp;lt;0x06&amp;gt; 这套方案的问题
 &lt;/h2>&lt;p>不支持Obsidian的wiki链接解析
 也没用上Obsidian自带的模板功能
-文章之间相互引用也很麻烦，要知道文章的具体URL&lt;/p></description></item><item><title>在win10LTSC上安装截图与草图</title><link>https://mlacookie.github.io/article/posts/%E5%9C%A8win10ltsc%E4%B8%8A%E5%AE%89%E8%A3%85%E6%88%AA%E5%9B%BE%E4%B8%8E%E8%8D%89%E5%9B%BE/</link><pubDate>Sun, 03 Mar 2024 01:57:13 +0000</pubDate><guid>https://mlacookie.github.io/article/posts/%E5%9C%A8win10ltsc%E4%B8%8A%E5%AE%89%E8%A3%85%E6%88%AA%E5%9B%BE%E4%B8%8E%E8%8D%89%E5%9B%BE/</guid><description>&lt;p>众所周知，Win10的LTSC非常精简
-精简到原本的&lt;code>截图与草图&lt;/code>的工具都没了
+文章之间相互引用也很麻烦，要知道文章的具体URL&lt;/p></description></item><item><title>在Win10LTSC上安装截图与草图</title><link>https://mlacookie.github.io/article/posts/%E5%9C%A8win10ltsc%E4%B8%8A%E5%AE%89%E8%A3%85%E6%88%AA%E5%9B%BE%E4%B8%8E%E8%8D%89%E5%9B%BE/</link><pubDate>Sun, 03 Mar 2024 01:57:13 +0000</pubDate><guid>https://mlacookie.github.io/article/posts/%E5%9C%A8win10ltsc%E4%B8%8A%E5%AE%89%E8%A3%85%E6%88%AA%E5%9B%BE%E4%B8%8E%E8%8D%89%E5%9B%BE/</guid><description>&lt;p>众所周知，Win10的LTSC非常精简&lt;br>
+精简到原本的&lt;code>截图与草图&lt;/code>的工具都没了&lt;br>
 系统里只能截图，然后自动保存在剪贴板中&lt;/p>
-&lt;p>但这不是很方便，比方说要保存到某个目录中，或者做些标记
+&lt;p>但这不是很方便，比方说要保存到某个目录中，或者做些标记&lt;br>
 所以还是挺需要原本的截图与草图工具的&lt;/p>
-&lt;p>&lt;code>截图与草图&lt;/code>工具可以在微软的软件商店中下载到
-但问题是，Win10LTSC也没有软件商店
-这个可以靠配置&lt;code>winget&lt;/code>来解决
+&lt;p>&lt;code>截图与草图&lt;/code>工具可以在微软的软件商店中下载到&lt;br>
+但问题是，Win10LTSC也没有软件商店&lt;br>
+这个可以靠配置&lt;code>winget&lt;/code>来解决&lt;br>
 （这个的配置这里暂时不讲，网上的教程很多）&lt;/p>
 &lt;p>如果需要安装&lt;code>截图与草图&lt;/code>，需要在命令行中输入下面的指令&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>winget install &lt;span style="color:#e6db74">&amp;#34;Snipping Tool&amp;#34;&lt;/span>
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>回车等待就好了，安装完就能用了&lt;/p></description></item><item><title>各位新年新气象</title><link>https://mlacookie.github.io/article/posts/%E5%90%84%E4%BD%8D%E6%96%B0%E5%B9%B4%E6%96%B0%E6%B0%94%E8%B1%A1/</link><pubDate>Fri, 09 Feb 2024 00:42:37 +0000</pubDate><guid>https://mlacookie.github.io/article/posts/%E5%90%84%E4%BD%8D%E6%96%B0%E5%B9%B4%E6%96%B0%E6%B0%94%E8%B1%A1/</guid><description>&lt;p>新年了，时间真的好快&lt;br>
-转眼间博客站也开了快一年了&lt;br>
-在这一年中，分享了很多知识，也开了很多新坑&lt;br>
-（我超级写不完😂）&lt;/p>
-&lt;p>WPF之后还是会写的，最起码把M9AWPF项目的经验讲完&lt;br>
-别的一些经验还是会分享的&lt;br>
-（就是更新得不会很勤快了）&lt;/p>
-&lt;p>至于说为什么这段时间博客写的少了&lt;br>
-之前也有提到过，我最近都在写一些系统性的文档&lt;br>
-（C#入门，设计模式，现代C++等等）&lt;br>
-&lt;img src="https://mlacookie.github.io/article/posts/%E5%90%84%E4%BD%8D%E6%96%B0%E5%B9%B4%E6%96%B0%E6%B0%94%E8%B1%A1/picture/1.png"
-width="1059"
-height="283"
-srcset="https://mlacookie.github.io/article/posts/%E5%90%84%E4%BD%8D%E6%96%B0%E5%B9%B4%E6%96%B0%E6%B0%94%E8%B1%A1/picture/1_hu8550f81559b75e71b0aa71f8587cff48_32066_480x0_resize_box_3.png 480w, https://mlacookie.github.io/article/posts/%E5%90%84%E4%BD%8D%E6%96%B0%E5%B9%B4%E6%96%B0%E6%B0%94%E8%B1%A1/picture/1_hu8550f81559b75e71b0aa71f8587cff48_32066_1024x0_resize_box_3.png 1024w"
-loading="lazy"
-alt="截图为证"
-class="gallery-image"
-data-flex-grow="374"
-data-flex-basis="898px"
->&lt;br>
-（从去年10月开始用语雀，写了6万多字）&lt;br>
-所以就没啥时间去写博客了&lt;br>
-这些系统性的文档暂时都是我们社团的独占内容&lt;br>
-（急着看可以直接加入我们社团看😄）&lt;br>
-但等到内容严谨完善时，我也会公开的&lt;/p>
-&lt;p>其实真正的原因还是我整个人的想法在这一年里发生了很大的变化&lt;br>
-这个博客站是在我最迷茫的时候开的，不知道做什么，想着找点事情做&lt;br>
-所以三两天，从不会Linux到会点基础的命令，从没干过网页到磕磕碰碰建起网站&lt;br>
-再用几天时间，申请了域名，做了ICP备案（虽然现在因为没时间折腾撤销了）&lt;br>
-那几天，几乎到哪里都是握着ssh，在研究怎么搭，挺有意思的&lt;br>
-（我室友那时候也都在搭博客，然后吵了几天用哪个框架好）&lt;br>
-最后我选择了hexo，简单，能用markdown，能挂GithubPage&lt;br>
-（扯远了）&lt;/p>
-&lt;p>总之，前面的文章也有提到，自从我们游戏社团成立后，我也算是找到了一个着力点&lt;br>
-我是真的想把社团发展壮大，让每个人不至于被编程的问题难到&lt;br>
-还有就是我们工地的车万群现在真的可以说是朝气蓬勃&lt;br>
-大家都很想做些车万的二创，那我自然也是很想的&lt;/p>
-&lt;p>所以，原来还在钻研的WPF，现在在钻研Unity、Godot&lt;br>
-原来忙着写点博客，现在忙着写这些系统文档&lt;br>
-加上还要重新拾起一些因为中学学业而被迫放下的一些兴趣爱好&lt;br>
-所以是真的没啥时间写博客了&lt;br>
-不过，我还是会尽力的&lt;br>
-（实在不行就当QQ空间多发电了😊）&lt;/p>
-&lt;p>说起这个，之前写了篇讲780m在Blender中不能用Cycles渲染器的博客&lt;br>
-于是有个网友顺着这个博客找到了我的B站号私信我，问我些问题&lt;br>
-我那时候真的又惊喜又激动，我一直以为我写的博客没人看的&lt;br>
-所以哪怕第二天要期末考，我也先帮忙把他的问题解决了&lt;br>
-真的，就是这种成就感，让我知道，我写的博客并不是毫无意义&lt;/p>
-&lt;p>我为什么要写博客，是为了践行开源精神&lt;br>
-计算机的繁荣，离不开&lt;code>开源&lt;/code>二字&lt;br>
-那些愿意把知识分享给素未蒙面的网友的人，本身就是在开源那些知识&lt;br>
-所以我也想成为这样的人，把我会的，我踩过的坑，讲给各位&lt;br>
-这样不仅仅是分享了知识，也是传递开源精神与文化&lt;br>
-我自认为我是一个理想主义的人&lt;br>
-虽然我不能成为天上最耀眼的那颗星，但我愿意把我的一切经验都传授给后人&lt;br>
-我可能没有能力达成我的理想，但你，我的朋友，你可能因为这些知识，能够成就你的梦想&lt;/p>
-&lt;p>这篇博客写得实在是太跳跃了，总之很感想您能看到这里，听我年末的碎碎念&lt;br>
-感谢各位给这个互联网不起眼的小窝捧点人场&lt;br>
-愿诸位，运赛因幡，福胜寅丸，新的一年一定要吉祥如意啊~&lt;/p></description></item><item><title>如何将firefox改成垂直标签页</title><link>https://mlacookie.github.io/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/</link><pubDate>Tue, 02 Jan 2024 21:34:53 +0000</pubDate><guid>https://mlacookie.github.io/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/</guid><description>&lt;p>我经常会开一堆网页，如果采用水平的标签页的话会经常找不到标签页&lt;br>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>回车等待就好了，安装完就能用了&lt;/p></description></item><item><title>如何将Firefox改成垂直标签页</title><link>https://mlacookie.github.io/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/</link><pubDate>Tue, 02 Jan 2024 21:34:53 +0000</pubDate><guid>https://mlacookie.github.io/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/</guid><description>&lt;p>我经常会开一堆网页，如果采用水平的标签页的话会经常找不到标签页&lt;br>
 而火狐又不像别的浏览器，起码到目前为止都没有官方的垂直标签页的支持&lt;br>
 经过一番探索，实际上是可以自己改出来的&lt;/p>
 &lt;h2 id="0x00-效果展示">&amp;lt;0x00&amp;gt; 效果展示
@@ -1649,12 +2001,10 @@ WinPcap调用不了无线网卡
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Console.WriteLine();
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>这里的&lt;code>e&lt;/code>就是捕获到的包，然后就可用进行一系列的处理了&lt;/p></description></item><item><title>radeon780m核显跑blender相关的问题</title><link>https://mlacookie.github.io/article/posts/radeon780m%E6%A0%B8%E6%98%BE%E8%B7%91blender%E7%9B%B8%E5%85%B3%E7%9A%84%E9%97%AE%E9%A2%98/</link><pubDate>Wed, 29 Nov 2023 22:39:09 +0000</pubDate><guid>https://mlacookie.github.io/article/posts/radeon780m%E6%A0%B8%E6%98%BE%E8%B7%91blender%E7%9B%B8%E5%85%B3%E7%9A%84%E9%97%AE%E9%A2%98/</guid><description>&lt;p>(@ 24-01-12)&lt;br>
-这篇博客目前写的有点简练，之后会再补充的&lt;/p>
-&lt;h2 id="0x01-先描述下问题">&amp;lt;0x01&amp;gt; 先描述下问题
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>这里的&lt;code>e&lt;/code>就是捕获到的包，然后就可用进行一系列的处理了&lt;/p></description></item><item><title>Radeon780m核显跑Blender相关的问题</title><link>https://mlacookie.github.io/article/posts/radeon780m%E6%A0%B8%E6%98%BE%E8%B7%91blender%E7%9B%B8%E5%85%B3%E7%9A%84%E9%97%AE%E9%A2%98/</link><pubDate>Wed, 29 Nov 2023 22:39:09 +0000</pubDate><guid>https://mlacookie.github.io/article/posts/radeon780m%E6%A0%B8%E6%98%BE%E8%B7%91blender%E7%9B%B8%E5%85%B3%E7%9A%84%E9%97%AE%E9%A2%98/</guid><description>&lt;h2 id="问题">问题
 &lt;/h2>&lt;p>最近入了台笔记本，7840HS的，CPU强核显也强&lt;br>
 （主要是没米了）&lt;br>
-然后毕竟是做游戏相关的，Blender总得装上吧
+然后毕竟是做游戏相关的，Blender总得装上吧&lt;br>
 然后发现，跑Cycles渲染器会报错&lt;br>
 &lt;code>HIP binary kernel for this graphics card compute capability (11.0) not found&lt;/code>&lt;br>
 就会报这个错误&lt;/p>
@@ -5700,7 +6050,7 @@ data-flex-basis="556px"
 >&lt;br>
 就像这样。&lt;/p>
 &lt;h2 id="搞定下班">搞定，下班
-&lt;/h2></description></item><item><title>HP-PrimePaint-V1.0</title><link>https://mlacookie.github.io/article/posts/hp-primepaint-v1.0/</link><pubDate>Wed, 26 Apr 2023 21:53:36 +0000</pubDate><guid>https://mlacookie.github.io/article/posts/hp-primepaint-v1.0/</guid><description>&lt;h2 id="适用于hp-prime的绘图软件">适用于HP Prime的绘图软件
+&lt;/h2></description></item><item><title>HP-PrimePaint-V1.0</title><link>https://mlacookie.github.io/article/posts/hp-primepaint-v1.0/</link><pubDate>Wed, 26 Apr 2023 21:53:36 +0000</pubDate><guid>https://mlacookie.github.io/article/posts/hp-primepaint-v1.0/</guid><description>&lt;h2 id="用于hp-prime的绘图软件">用于HP Prime的绘图软件
 &lt;/h2>&lt;p>(@ 24-02-09)&lt;br>
 原本的服务器已经不续费了，现在只有Github的了&lt;/p>
 &lt;p>&lt;a class="link" href="https://github.com/MLAcookie/PrimePaint/releases/tag/official" target="_blank" rel="noopener"
@@ -5840,9 +6190,9 @@ hexo 的界面靠 nginx 反代
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#安装各种包前先更新是好文明 &lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>sudo apt update
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>sudo apt upgrade
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#安装git &lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#安装git &lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>sudo apt install git
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#安装mysql &lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#安装mysql &lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>wget https://dev.mysql.com/get/mysql-apt-config_0.8.22-1_all.deb
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>sudo dpkg -i mysql-apt-config_0.8.22-1_all.deb
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#这里可能会跳出个界面，直接选最后的ok就可以&lt;/span>
