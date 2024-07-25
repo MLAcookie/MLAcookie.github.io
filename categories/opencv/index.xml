@@ -1,4 +1,21 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>OpenCV on MLAcookie</title><link>https://mlacookie.github.io/categories/opencv/</link><description>Recent content in OpenCV on MLAcookie</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Mon, 18 Mar 2024 12:59:53 +0000</lastBuildDate><atom:link href="https://mlacookie.github.io/categories/opencv/index.xml" rel="self" type="application/rss+xml"/><item><title>关于我用C#写Opencv这件事-03</title><link>https://mlacookie.github.io/article/categories/opencv/%E5%85%B3%E4%BA%8E%E6%88%91%E7%94%A8c%23%E5%86%99opencv%E8%BF%99%E4%BB%B6%E4%BA%8B-03/</link><pubDate>Mon, 18 Mar 2024 12:59:53 +0000</pubDate><guid>https://mlacookie.github.io/article/categories/opencv/%E5%85%B3%E4%BA%8E%E6%88%91%E7%94%A8c%23%E5%86%99opencv%E8%BF%99%E4%BB%B6%E4%BA%8B-03/</guid><description>&lt;p>（说实话我有点后悔用C#写Opencv了）
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>OpenCV on MLAcookie</title><link>https://mlacookie.github.io/categories/opencv/</link><description>Recent content in OpenCV on MLAcookie</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Tue, 23 Jul 2024 12:23:45 +0800</lastBuildDate><atom:link href="https://mlacookie.github.io/categories/opencv/index.xml" rel="self" type="application/rss+xml"/><item><title>浙工大数字图像处理课设记录</title><link>https://mlacookie.github.io/article/categories/opencv/%E6%B5%99%E5%B7%A5%E5%A4%A7%E6%95%B0%E5%AD%97%E5%9B%BE%E5%83%8F%E5%A4%84%E7%90%86%E8%AF%BE%E8%AE%BE%E8%AE%B0%E5%BD%95/</link><pubDate>Tue, 23 Jul 2024 12:23:45 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/opencv/%E6%B5%99%E5%B7%A5%E5%A4%A7%E6%95%B0%E5%AD%97%E5%9B%BE%E5%83%8F%E5%A4%84%E7%90%86%E8%AF%BE%E8%AE%BE%E8%AE%B0%E5%BD%95/</guid><description>&lt;p>数字图像处理我们主要是讲&lt;code>OpenCV&lt;/code>的（虽然实际上代码讲的不多）&lt;br>
+然后作为期末的课程设计，要求我们写一个OpenCV的程序&lt;br>
+主要就是用OpenCV去解决一些现实中的问题，然后要带图形界面&lt;br>
+允许组队，而且在学期初就要定课设的题目&lt;/p>
+&lt;h2 id="0x00-我们做了什么">&amp;lt;0x00&amp;gt; 我们做了什么
+&lt;/h2>&lt;p>本来打算做一个用OpenCV做相机反求，Godot做渲染的AR项目&lt;br>
+（所以前面有几篇研究怎么用C#做OpenCV开发）&lt;br>
+引擎这块基本都搭完完了，然后估计了下感觉写不完了&lt;br>
+（C#写OpenCV的代码参考太少了，很多代码都是试出来的，开发效率太低了）&lt;/p>
+&lt;p>好在我们还有一个&lt;code>Plan B&lt;/code>，就是参考MIT的运动放大的论文去写一个应用&lt;br>
+（主要是看了Steve Mould的&lt;a class="link" href="https://www.bilibili.com/video/BV1au411c7YJ/?spm_id_from=333.999.0.0" target="_blank" rel="noopener"
+>视频&lt;/a>）&lt;br>
+这样的话，语言也换成了参考够多的Python，效率高了不少&lt;br>
+问题也有，就是我们Python都不熟，但比起没代码参考好太多了&lt;/p>
+&lt;p>&lt;a class="link" href="https://github.com/MLAcookie/EvmPlayground" target="_blank" rel="noopener"
+>项目地址&lt;/a>&lt;/p>
+&lt;h2 id="0x0-一些感想">&amp;lt;0x0&amp;gt; 一些感想
+&lt;/h2></description></item><item><title>关于我用C#写Opencv这件事-03</title><link>https://mlacookie.github.io/article/categories/opencv/%E5%85%B3%E4%BA%8E%E6%88%91%E7%94%A8c%23%E5%86%99opencv%E8%BF%99%E4%BB%B6%E4%BA%8B-03/</link><pubDate>Mon, 18 Mar 2024 12:59:53 +0000</pubDate><guid>https://mlacookie.github.io/article/categories/opencv/%E5%85%B3%E4%BA%8E%E6%88%91%E7%94%A8c%23%E5%86%99opencv%E8%BF%99%E4%BB%B6%E4%BA%8B-03/</guid><description>&lt;p>（说实话我有点后悔用C#写Opencv了）
 今天我们神秘的数字图像处理做实验了&lt;br>
 虽然东西是挺简单的，但因为我用的是C#，导致很多现成的代码都没法抄&lt;br>
 再加上虽然&lt;code>Opencvsharp4&lt;/code>宣称是和C++的API是对应的&lt;br>

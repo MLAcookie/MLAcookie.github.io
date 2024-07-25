@@ -181,7 +181,6 @@ data-flex-basis="634px"
 &lt;h3 id="统一变量配置">统一变量配置
 &lt;/h3>&lt;p>因为会有好几个脚本，所以需要一个统一的变量配置&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># configs.ps1&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 获取脚本文件夹路径&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>$global:ShellScriptDir &lt;span style="color:#f92672">=&lt;/span> Get-Location
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
@@ -215,8 +214,57 @@ data-flex-basis="634px"
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">[&lt;/span>string&lt;span style="color:#f92672">]&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $CategoryName,
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">[&lt;/span>bool&lt;span style="color:#f92672">]&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $IsStartServer
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $IsStartServer &lt;span style="color:#f92672">=&lt;/span> $false,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">[&lt;/span>bool&lt;span style="color:#f92672">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $IsCreatePictureFolder &lt;span style="color:#f92672">=&lt;/span> $false
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">function&lt;/span> ValidatedName &lt;span style="color:#f92672">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> param &lt;span style="color:#f92672">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">[&lt;/span>string&lt;span style="color:#f92672">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">[&lt;/span>ValidateNotNullOrEmpty&lt;span style="color:#f92672">()]&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $Name
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># 其他的特殊字符&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $SpecialCharacters &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#f92672">[&lt;/span>char&lt;span style="color:#f92672">[]]&lt;/span>@&lt;span style="color:#f92672">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;` &amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;`!&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;`&lt;/span>$&lt;span style="color:#e6db74">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;`%&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;`&amp;amp;&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;`&amp;#39;&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;(&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;)&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;*&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;,&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;-&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;/&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;:&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;;&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;&amp;lt;&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;=&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;&amp;gt;&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;?&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;@&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;[&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;]&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;^&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;_&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;``&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;{&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;|&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;}&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;~&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># 因为我会写C#相关的文章，#有一些意义，对#做特殊替换&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $Name &lt;span style="color:#f92672">=&lt;/span> $Name.Replace&lt;span style="color:#f92672">(&lt;/span>&lt;span style="color:#e6db74">&amp;#34;`#&amp;#34;&lt;/span>, &lt;span style="color:#e6db74">&amp;#34;sharp&amp;#34;&lt;/span>&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># 先每个替换成-&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> foreach &lt;span style="color:#f92672">(&lt;/span>$Character in $SpecialCharacters&lt;span style="color:#f92672">)&lt;/span> &lt;span style="color:#f92672">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $Name &lt;span style="color:#f92672">=&lt;/span> $Name.Replace&lt;span style="color:#f92672">(&lt;/span>$Character, &lt;span style="color:#e6db74">&amp;#34;-&amp;#34;&lt;/span>&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># 返回时使用正则表达式匹配连续的-，并替换为单个-&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> $Name -Replace &lt;span style="color:#e6db74">&amp;#39;([-])+&amp;#39;&lt;/span>, &lt;span style="color:#e6db74">&amp;#39;-&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">}&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 导入配置变量&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>. .&lt;span style="color:#ae81ff">\c&lt;/span>onfigs.ps1
@@ -224,25 +272,30 @@ data-flex-basis="634px"
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>$localDir &lt;span style="color:#f92672">=&lt;/span> Get-Location
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 切换工作路径&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Set-Location $global:SiteDir
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 合法化路径名，不然图片会出问题&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>$ValidPathName &lt;span style="color:#f92672">=&lt;/span> ValidatedName -Name $PostName
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 普通文章创建&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">if&lt;/span> &lt;span style="color:#f92672">(&lt;/span>$CategoryName -eq &lt;span style="color:#e6db74">&amp;#34;&amp;#34;&lt;/span>&lt;span style="color:#f92672">)&lt;/span> &lt;span style="color:#f92672">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># 新建hexo博客&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $newPost &lt;span style="color:#f92672">=&lt;/span> Join-Path -Path &lt;span style="color:#f92672">(&lt;/span>Join-Path -Path &lt;span style="color:#e6db74">&amp;#34;content\article\posts&amp;#34;&lt;/span> -ChildPath $PostName&lt;span style="color:#f92672">)&lt;/span> -ChildPath &lt;span style="color:#e6db74">&amp;#34;index.md&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># 新建Hugo文章&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $newPost &lt;span style="color:#f92672">=&lt;/span> Join-Path -Path &lt;span style="color:#f92672">(&lt;/span>Join-Path -Path &lt;span style="color:#e6db74">&amp;#34;content\article\posts&amp;#34;&lt;/span> -ChildPath $ValidPathName&lt;span style="color:#f92672">)&lt;/span> -ChildPath &lt;span style="color:#e6db74">&amp;#34;index.md&amp;#34;&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> hugo new $newPost
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># 创建图片文件夹&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $newPostPicture &lt;span style="color:#f92672">=&lt;/span> Join-Path -Path &lt;span style="color:#f92672">(&lt;/span>Join-Path -Path $global:PostsDir -ChildPath $PostName&lt;span style="color:#f92672">)&lt;/span> -ChildPath &lt;span style="color:#e6db74">&amp;#34;picture&amp;#34;&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> mkdir $newPostPicture
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># 生成图片文件夹路径&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $newPostPicture &lt;span style="color:#f92672">=&lt;/span> Join-Path -Path &lt;span style="color:#f92672">(&lt;/span>Join-Path -Path $global:PostsDir -ChildPath $ValidPathName&lt;span style="color:#f92672">)&lt;/span> -ChildPath &lt;span style="color:#e6db74">&amp;#34;picture&amp;#34;&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">}&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 需要分类的文章&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">else&lt;/span> &lt;span style="color:#f92672">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># 新建hexo博客&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># 新建Hugo文章&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $categoryPath &lt;span style="color:#f92672">=&lt;/span> Join-Path -Path &lt;span style="color:#e6db74">&amp;#34;content\article\categories&amp;#34;&lt;/span> -ChildPath $CategoryName
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $newPost &lt;span style="color:#f92672">=&lt;/span> Join-Path -Path &lt;span style="color:#f92672">(&lt;/span>Join-Path -Path $categoryPath -ChildPath $PostName&lt;span style="color:#f92672">)&lt;/span> -ChildPath &lt;span style="color:#e6db74">&amp;#34;index.md&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $newPost &lt;span style="color:#f92672">=&lt;/span> Join-Path -Path &lt;span style="color:#f92672">(&lt;/span>Join-Path -Path $categoryPath -ChildPath $ValidPathName&lt;span style="color:#f92672">)&lt;/span> -ChildPath &lt;span style="color:#e6db74">&amp;#34;index.md&amp;#34;&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> hugo new $newPost
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># 创建图片文件夹&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># 生成图片文件夹路径&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $categoryPath &lt;span style="color:#f92672">=&lt;/span> Join-Path -Path $global:CategoriesDir -ChildPath $CategoryName
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $newPostPicture &lt;span style="color:#f92672">=&lt;/span> Join-Path -Path &lt;span style="color:#f92672">(&lt;/span>Join-Path -Path $categoryPath -ChildPath $PostName&lt;span style="color:#f92672">)&lt;/span> -ChildPath &lt;span style="color:#e6db74">&amp;#34;picture&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $newPostPicture &lt;span style="color:#f92672">=&lt;/span> Join-Path -Path &lt;span style="color:#f92672">(&lt;/span>Join-Path -Path $categoryPath -ChildPath $ValidPathName&lt;span style="color:#f92672">)&lt;/span> -ChildPath &lt;span style="color:#e6db74">&amp;#34;picture&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 因为我在obsidian设置了默认的附件目录，粘贴图像会自动创建图片文件夹&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 需要创建图片文件夹的话就创建&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">if&lt;/span> &lt;span style="color:#f92672">(&lt;/span>$IsCreatePictureFolder&lt;span style="color:#f92672">)&lt;/span> &lt;span style="color:#f92672">{&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> mkdir $newPostPicture
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">}&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 启动编辑器&lt;/span>
@@ -292,7 +345,9 @@ data-flex-basis="634px"
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># Deploy.ps1&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>param&lt;span style="color:#f92672">(&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">[&lt;/span>bool&lt;span style="color:#f92672">]&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $IsForcePush &lt;span style="color:#f92672">=&lt;/span> $false
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $IsForcePush &lt;span style="color:#f92672">=&lt;/span> $false,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">[&lt;/span>bool&lt;span style="color:#f92672">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $IsClearDeploy &lt;span style="color:#f92672">=&lt;/span> $false
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">)&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 导入配置变量&lt;/span>
@@ -301,11 +356,16 @@ data-flex-basis="634px"
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>$localDir &lt;span style="color:#f92672">=&lt;/span> Get-Location
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 切换工作路径&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Set-Location $global:SiteDir
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 清除Hugo构建缓存&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">if&lt;/span> &lt;span style="color:#f92672">(&lt;/span>$IsClearDeploy&lt;span style="color:#f92672">)&lt;/span> &lt;span style="color:#f92672">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># 递归删除所有文件&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Remove-Item -Path &lt;span style="color:#f92672">(&lt;/span>Join-Path -Path $global:PublicDir -ChildPath &lt;span style="color:#e6db74">&amp;#34;*&amp;#34;&lt;/span>&lt;span style="color:#f92672">)&lt;/span> -Recurse
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">}&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 构建网页&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>hugo --gc --minify --baseURL $global:BaseURL
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 准备推送&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Set-Location &lt;span style="color:#f92672">(&lt;/span>Join-Path -Path $global:SiteDir -ChildPath &lt;span style="color:#e6db74">&amp;#34;public&amp;#34;&lt;/span>&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Set-Location $global:PublicDir
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 没有初始化git的化就先初始化并强制推送&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">if&lt;/span> &lt;span style="color:#f92672">(&lt;/span>-not &lt;span style="color:#f92672">(&lt;/span>Test-Path &lt;span style="color:#e6db74">&amp;#34;.git&amp;#34;&lt;/span>&lt;span style="color:#f92672">))&lt;/span> &lt;span style="color:#f92672">{&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> . &lt;span style="color:#f92672">(&lt;/span>Join-Path -Path $global:ShellScriptDir -ChildPath &lt;span style="color:#e6db74">&amp;#34;InitGit.ps1&amp;#34;&lt;/span>&lt;span style="color:#f92672">)&lt;/span> -IsForcePush $true
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">}&lt;/span>
@@ -324,7 +384,10 @@ data-flex-basis="634px"
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 返回之前的工作路径&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Set-Location $localDir
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>使用示例&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>.&lt;span style="color:#ae81ff">\D&lt;/span>eploy.ps1
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 正常的发布&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>.&lt;span style="color:#ae81ff">\D&lt;/span>eploy.ps1
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 清空所有构建缓存发布&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>.&lt;span style="color:#ae81ff">\D&lt;/span>eploy.ps1 -IsClearDeploy
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>运行即可推送到GitHub Page上&lt;/p>
 &lt;h3 id="批量创建页面包路径结构">批量创建页面包路径结构
 &lt;/h3>&lt;p>因为之前使用的是hexo，里面都是单独的markdown文件&lt;br>

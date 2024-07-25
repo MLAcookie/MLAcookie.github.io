@@ -126,7 +126,34 @@ data-flex-basis="387px"
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>#TabsToolbar {
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">visibility&lt;/span>: &lt;span style="color:#66d9ef">collapse&lt;/span> &lt;span style="color:#75715e">!important&lt;/span>;
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>然后重启火狐理论上就生效了&lt;/p></description></item><item><title>Python在VSCode中代码提示异常问题</title><link>https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/</link><pubDate>Mon, 05 Jun 2023 00:16:03 +0000</pubDate><guid>https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/</guid><description>&lt;h2 id="0x00-这就是个很神秘的问题">&amp;lt;0x00&amp;gt; 这就是个很神秘的问题
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>然后重启火狐理论上就生效了&lt;/p></description></item><item><title>Radeon780m核显跑Blender相关的问题</title><link>https://mlacookie.github.io/article/posts/radeon780m%E6%A0%B8%E6%98%BE%E8%B7%91blender%E7%9B%B8%E5%85%B3%E7%9A%84%E9%97%AE%E9%A2%98/</link><pubDate>Wed, 29 Nov 2023 22:39:09 +0000</pubDate><guid>https://mlacookie.github.io/article/posts/radeon780m%E6%A0%B8%E6%98%BE%E8%B7%91blender%E7%9B%B8%E5%85%B3%E7%9A%84%E9%97%AE%E9%A2%98/</guid><description>&lt;h2 id="问题">问题
+&lt;/h2>&lt;p>最近入了台笔记本，7840HS的，CPU强核显也强&lt;br>
+（主要是没米了）&lt;br>
+然后毕竟是做游戏相关的，Blender总得装上吧&lt;br>
+然后发现，跑Cycles渲染器会报错&lt;br>
+&lt;code>HIP binary kernel for this graphics card compute capability (11.0) not found&lt;/code>&lt;br>
+就会报这个错误&lt;/p>
+&lt;h2 id="解决办法">解决办法
+&lt;/h2>&lt;p>从网站上下源码编译Blender就好&lt;br>
+&lt;a class="link" href="https://wiki.blender.org/wiki/Building_Blender/Windows" target="_blank" rel="noopener"
+>Build Blender On Windows&lt;/a>&lt;br>
+需要安装&lt;/p>
+&lt;ul>
+&lt;li>VS2022的C++桌面开发工作负载&lt;/li>
+&lt;li>TortoiseSVN&lt;/li>
+&lt;li>Git&lt;/li>
+&lt;li>CMake&lt;/li>
+&lt;li>perl&lt;/li>
+&lt;li>python&lt;/li>
+&lt;/ul>
+&lt;p>然后就按官方文章讲的，在cmd里面运行&lt;code>make update&lt;/code>和&lt;code>make&lt;/code>就好&lt;br>
+（powershell也不是不行，改成&lt;code>./make&lt;/code>，但没试过）&lt;/p>
+&lt;h2 id="问题分析">问题分析
+&lt;/h2>&lt;p>就是这么个问题&lt;br>
+radeon780m对应得代码是gfx1103&lt;br>
+但是blender正常下载的版本还没有带对应这个代码的驱动文件&lt;br>
+在最新的代码中，已经包含了生成代号gfx1103的驱动文件的代码了&lt;br>
+（其实就是CMakeList里面加了个gfx1103）&lt;/p></description></item><item><title>Python在VSCode中代码提示异常问题</title><link>https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/</link><pubDate>Mon, 05 Jun 2023 00:16:03 +0000</pubDate><guid>https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/</guid><description>&lt;h2 id="0x00-这就是个很神秘的问题">&amp;lt;0x00&amp;gt; 这就是个很神秘的问题
 &lt;/h2>&lt;p>突然想写一段 python 代码，然后打开 vscode&lt;br>
 就很神秘，明明啥配置都没改，代码提示又寄了&lt;br>
 网上搜索了一番，大概总结了3种可能的问题&lt;/p>

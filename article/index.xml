@@ -1,4 +1,321 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Articles on MLAcookie</title><link>https://mlacookie.github.io/article/</link><description>Recent content in Articles on MLAcookie</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Tue, 23 Jul 2024 01:51:37 +0800</lastBuildDate><atom:link href="https://mlacookie.github.io/article/index.xml" rel="self" type="application/rss+xml"/><item><title>算法康复计划 05</title><link>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-05/</link><pubDate>Tue, 23 Jul 2024 01:51:37 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-05/</guid><description>&lt;p>这道题我想的太抽象了，导致我在复杂的方向上花了很多时间&lt;br>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Articles on MLAcookie</title><link>https://mlacookie.github.io/article/</link><description>Recent content in Articles on MLAcookie</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Thu, 25 Jul 2024 21:33:45 +0800</lastBuildDate><atom:link href="https://mlacookie.github.io/article/index.xml" rel="self" type="application/rss+xml"/><item><title>算法康复计划 08</title><link>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-08/</link><pubDate>Thu, 25 Jul 2024 21:33:45 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-08/</guid><description>&lt;p>急着看今晚的OW比赛，所以就随便写个前缀和的题目&lt;/p>
+&lt;h2 id="0x00-今日题目求区间和">&amp;lt;0x00&amp;gt; 今日题目：求区间和
+&lt;/h2>&lt;p>&lt;a class="link" href="https://www.luogu.com.cn/problem/P8218" target="_blank" rel="noopener"
+>洛谷的P8218&lt;/a>&lt;/p>
+&lt;h3 id="题目描述">题目描述
+&lt;/h3>&lt;p>给定 $n$ 个正整数组成的数列 $a_1, a_2, \cdots, a_n$ 和 $m$ 个区间 $[l_i,r_i]$，分别求这 $m$ 个区间的区间和&lt;br>
+对于所有测试数据，$n,m\le10^5,a_i\le 10^4$&lt;/p>
+&lt;h3 id="输入格式">输入格式
+&lt;/h3>&lt;p>第一行，为一个正整数 $n$&lt;br>
+第二行，为 $n$ 个正整数 $a_1,a_2, \cdots ,a_n$&lt;br>
+第三行，为一个正整数 $m$&lt;br>
+接下来 $m$ 行，每行为两个正整数 $l_i,r_i$ ，满足$1\le l_i\le r_i\le n$&lt;/p>
+&lt;h3 id="输出格式">输出格式
+&lt;/h3>&lt;p>共 $m$ 行&lt;br>
+第 $i$ 行为第 $i$ 组答案的询问&lt;/p>
+&lt;h3 id="样例">样例
+&lt;/h3>&lt;h4 id="样例输入">样例输入
+&lt;/h4>&lt;pre tabindex="0">&lt;code>4
+4 3 2 1
+2
+1 4
+2 3
+&lt;/code>&lt;/pre>&lt;h4 id="样例输出">样例输出
+&lt;/h4>&lt;pre tabindex="0">&lt;code>10
+5
+&lt;/code>&lt;/pre>&lt;h3 id="数据规模与约定">数据规模与约定
+&lt;/h3>&lt;p>对于 $50 %$ 的数据：$n,m\le 1000$；&lt;br>
+对于 $100 %$ 的数据：$1 \le n, m\le 10^5$，$1 \le a_i\le 10^4$&lt;/p>
+&lt;h2 id="0x01-分析">&amp;lt;0x01&amp;gt; 分析
+&lt;/h2>&lt;p>数据输入后没有更改行为，所以可以直接维护一个到当前位置的和&lt;br>
+相当于数组内容是$[0,i]$的总和&lt;br>
+查询的话对应位置相减即可&lt;/p>
+&lt;h2 id="0x02-代码">&amp;lt;0x02&amp;gt; 代码
+&lt;/h2>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-cpp" data-lang="cpp">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;iostream&amp;gt;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;vector&amp;gt;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">int&lt;/span> &lt;span style="color:#a6e22e">main&lt;/span>()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 读入数据数
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">int&lt;/span> n;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>cin &lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> n;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 初始化与扩容
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> std&lt;span style="color:#f92672">::&lt;/span>vector&lt;span style="color:#f92672">&amp;lt;&lt;/span>size_t&lt;span style="color:#f92672">&amp;gt;&lt;/span> list;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> list.resize(n &lt;span style="color:#f92672">+&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>, &lt;span style="color:#ae81ff">0&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">int&lt;/span> i &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>; i &lt;span style="color:#f92672">&amp;lt;=&lt;/span> n; i&lt;span style="color:#f92672">++&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> temp;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>cin &lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> temp;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 维护[0,i]得和
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> list[i] &lt;span style="color:#f92672">=&lt;/span> list[i &lt;span style="color:#f92672">-&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>] &lt;span style="color:#f92672">+&lt;/span> temp;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 读入查询数
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">int&lt;/span> m;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>cin &lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> m;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">int&lt;/span> i &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>; i &lt;span style="color:#f92672">&amp;lt;&lt;/span> m; i&lt;span style="color:#f92672">++&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> a, b;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>cin &lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> a &lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> b;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 相减即可
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> std&lt;span style="color:#f92672">::&lt;/span>cout &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> list[b] &lt;span style="color:#f92672">-&lt;/span> list[a &lt;span style="color:#f92672">-&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>] &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> &lt;span style="color:#e6db74">&amp;#34;&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="0x03-遇到的坑">&amp;lt;0x03&amp;gt; 遇到的坑
+&lt;/h2>&lt;p>没啥坑，就是今天的题选得确实水了&lt;/p></description></item><item><title>算法康复计划 07</title><link>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-07/</link><pubDate>Thu, 25 Jul 2024 14:52:18 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-07/</guid><description>&lt;p>今天挑一道经典题目来学学动态规划&lt;/p>
+&lt;h2 id="0x00-今日题目采药">&amp;lt;0x00&amp;gt; 今日题目：采药
+&lt;/h2>&lt;p>&lt;a class="link" href="https://www.luogu.com.cn/problem/P1048" target="_blank" rel="noopener"
+>洛谷的P1048&lt;/a>&lt;/p>
+&lt;h3 id="题目描述">题目描述
+&lt;/h3>&lt;p>辰辰是个天资聪颖的孩子，他的梦想是成为世界上最伟大的医师&lt;br>
+为此，他想拜附近最有威望的医师为师。医师为了判断他的资质，给他出了一个难题&lt;br>
+医师把他带到一个到处都是草药的山洞里对他说：“孩子，这个山洞里有一些不同的草药，采每一株都需要一些时间，每一株也有它自身的价值。我会给你一段时间，在这段时间里，你可以采到一些草药。如果你是一个聪明的孩子，你应该可以让采到的草药的总价值最大。”&lt;/p>
+&lt;p>如果你是辰辰，你能完成这个任务吗？&lt;/p>
+&lt;h3 id="输入格式">输入格式
+&lt;/h3>&lt;p>第一行有 $2$ 个整数 $T$（$1 \le T \le 1000$）和 $M$（$1 \le M \le 100$）&lt;br>
+用一个空格隔开，$T$ 代表总共能够用来采药的时间，$M$ 代表山洞里的草药的数目&lt;br>
+接下来的 $M$ 行每行包括两个在 $1$ 到 $100$ 之间（包括 $1$ 和 $100$）的整数&lt;br>
+分别表示采摘某株草药的时间和这株草药的价值。&lt;/p>
+&lt;h3 id="输出格式">输出格式
+&lt;/h3>&lt;p>输出在规定的时间内可以采到的草药的最大总价值。&lt;/p>
+&lt;h3 id="样例">样例
+&lt;/h3>&lt;h4 id="样例输入">样例输入
+&lt;/h4>&lt;pre tabindex="0">&lt;code>70 3
+71 100
+69 1
+1 2
+&lt;/code>&lt;/pre>&lt;h4 id="样例输出">样例输出
+&lt;/h4>&lt;pre tabindex="0">&lt;code>3
+&lt;/code>&lt;/pre>&lt;h3 id="数据规模与约定">数据规模与约定
+&lt;/h3>&lt;ul>
+&lt;li>对于 $30%$ 的数据，$M \le 10$；&lt;/li>
+&lt;li>对于全部的数据，$M \le 100$。&lt;/li>
+&lt;/ul>
+&lt;h2 id="0x01-分析">&amp;lt;0x01&amp;gt; 分析
+&lt;/h2>&lt;p>背包DP的经典题目，关键在于理解什么是动态规划&lt;br>
+如果采用暴力枚举的方式，那么时间复杂度是在$O(2^{T})$，这是完全不能接受的&lt;br>
+如果采用贪心呢，貌似可以先选择单位价值高的，但由于草药不能无限细分，这样不能保证总体最优&lt;br>
+而动态规划的思路可以保证总体最优解&lt;/p>
+&lt;p>动态规划有点像贪心，都是先将问题拆解，然后看子问题怎么解决&lt;br>
+但贪心的思路通常是一条路顺下来的，通常不会判断会不会有更好的解法&lt;br>
+而动态规划将一个个子问题视为一个个状态，将问题求解看作子问题之间的转移&lt;br>
+所以一般动态规划的题关键是想出那个状态转移方程&lt;/p>
+&lt;p>这道题的话，我们令状态转移方程为$f(i,j)$&lt;br>
+其中$i$表示已经处理了前$i$个草药数据，$j$表示背包还能装$j$重量的草药&lt;br>
+那么，这个状态转移方程就是$f(i,j)=max(f(i-1,j),f(i-1,j-w)+v)$&lt;br>
+$f(i-1,j)$表示不放进去，$f(i-1,j-w)+v$表示放进去，$w$表示加入草药的重量，$v$表示加入草药的价值&lt;br>
+并且由于处理下一个草药数据时，完全不会用到之前状态的数据，所以可以把第一维省略&lt;br>
+这时候状态转移方程就变成了$f(j)=max(f(j),f(j-w)+v)$&lt;br>
+有这个方程之后只要写好遍历就可以了&lt;/p>
+&lt;h2 id="0x02-代码">&amp;lt;0x02&amp;gt; 代码
+&lt;/h2>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-cpp" data-lang="cpp">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;iostream&amp;gt;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;vector&amp;gt;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">// 定义草药的数据
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">Herb&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">public&lt;/span>&lt;span style="color:#f92672">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> weight;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> value;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Herb(&lt;span style="color:#66d9ef">int&lt;/span> weight, &lt;span style="color:#66d9ef">int&lt;/span> value)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">this&lt;/span>&lt;span style="color:#f92672">-&amp;gt;&lt;/span>weight &lt;span style="color:#f92672">=&lt;/span> weight;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">this&lt;/span>&lt;span style="color:#f92672">-&amp;gt;&lt;/span>value &lt;span style="color:#f92672">=&lt;/span> value;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>};
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">// 解题
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#66d9ef">int&lt;/span> &lt;span style="color:#a6e22e">main&lt;/span>()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 解题
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">int&lt;/span> t, m;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>cin &lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> t &lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> m;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 草药列表和dp表
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> std&lt;span style="color:#f92672">::&lt;/span>vector&lt;span style="color:#f92672">&amp;lt;&lt;/span>Herb&lt;span style="color:#f92672">&amp;gt;&lt;/span> list;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>vector&lt;span style="color:#f92672">&amp;lt;&lt;/span>&lt;span style="color:#66d9ef">int&lt;/span>&lt;span style="color:#f92672">&amp;gt;&lt;/span> dp;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> dp.resize(t &lt;span style="color:#f92672">+&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>, &lt;span style="color:#ae81ff">0&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">int&lt;/span> i &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>; i &lt;span style="color:#f92672">&amp;lt;&lt;/span> m; i&lt;span style="color:#f92672">++&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> tw, tv;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>cin &lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> tw &lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> tv;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> list.push_back(Herb(tw, tv));
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 通过状态转移方程计算最佳解法
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">int&lt;/span> index &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>; index &lt;span style="color:#f92672">&amp;lt;&lt;/span> m; index&lt;span style="color:#f92672">++&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">int&lt;/span> l &lt;span style="color:#f92672">=&lt;/span> t; l &lt;span style="color:#f92672">&amp;gt;=&lt;/span> list[index].weight; l&lt;span style="color:#f92672">--&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> dp[l] &lt;span style="color:#f92672">=&lt;/span> std&lt;span style="color:#f92672">::&lt;/span>max(dp[l], dp[l &lt;span style="color:#f92672">-&lt;/span> list[index].weight] &lt;span style="color:#f92672">+&lt;/span> list[index].value);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 最后再遍历一遍取最大值
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">int&lt;/span> ans &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">auto&lt;/span> &lt;span style="color:#f92672">&amp;amp;&lt;/span>i : dp)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ans &lt;span style="color:#f92672">=&lt;/span> std&lt;span style="color:#f92672">::&lt;/span>max(ans, i);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>cout &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> ans &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> &lt;span style="color:#e6db74">&amp;#34;&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="0x03-遇到的坑">&amp;lt;0x03&amp;gt; 遇到的坑
+&lt;/h2>&lt;p>这道题基本上想明白状态转移方程就可以了，所以基本没啥坑点&lt;/p></description></item><item><title>算法康复计划 06</title><link>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-06/</link><pubDate>Wed, 24 Jul 2024 00:23:00 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-06/</guid><description>&lt;p>今天别的事情多，所以就挑一道简单的题写写&lt;/p>
+&lt;h2 id="0x00-今日题目跳跳">&amp;lt;0x00&amp;gt; 今日题目：跳跳！
+&lt;/h2>&lt;p>&lt;a class="link" href="https://www.luogu.com.cn/problem/P4995" target="_blank" rel="noopener"
+>洛谷的P4995&lt;/a>&lt;/p>
+&lt;h3 id="题目描述">题目描述
+&lt;/h3>&lt;p>你是一只小跳蛙，你特别擅长在各种地方跳来跳去。&lt;br>
+这一天，你和朋友小 F 一起出去玩耍的时候，遇到了一堆高矮不同的石头&lt;br>
+其中第 $i$ 块的石头高度为 $h_i$，地面的高度是 $h_0 = 0$&lt;br>
+你估计着，从第 $i$ 块石头跳到第 $j$ 块石头上耗费的体力值为 $(h_i - h_j) ^ 2$，从地面跳到第 $i$ 块石头耗费的体力值是 $(h_i) ^ 2$&lt;/p>
+&lt;p>为了给小 F 展现你超级跳的本领，你决定跳到每个石头上各一次&lt;br>
+并最终停在任意一块石头上，并且小跳蛙想耗费&lt;strong>尽可能多&lt;/strong>的体力值&lt;br>
+当然，你只是一只小跳蛙，你只会跳，不知道怎么跳才能让本领更充分地展现&lt;br>
+不过你有救啦！小 F 给你递来了一个写着 AK 的电脑，你可以使用计算机程序帮你解决这个问题，万能的计算机会告诉你怎么跳。&lt;br>
+那就请你——会写代码的小跳蛙——写下这个程序，为你 NOIp AK 踏出坚实的一步吧！&lt;/p>
+&lt;h3 id="输入格式">输入格式
+&lt;/h3>&lt;p>输入一行一个正整数 $n$，表示石头个数。&lt;br>
+输入第二行 $n$ 个正整数，表示第 $i$ 块石头的高度 $h_i$。&lt;/p>
+&lt;h3 id="输出格式">输出格式
+&lt;/h3>&lt;p>输出一行一个正整数，表示你可以耗费的体力值的最大值。&lt;/p>
+&lt;h3 id="样例-1">样例 #1
+&lt;/h3>&lt;h4 id="样例输入-1">样例输入 #1
+&lt;/h4>&lt;pre tabindex="0">&lt;code>2
+2 1
+&lt;/code>&lt;/pre>&lt;h4 id="样例输出-1">样例输出 #1
+&lt;/h4>&lt;pre tabindex="0">&lt;code>5
+&lt;/code>&lt;/pre>&lt;h3 id="样例-2">样例 #2
+&lt;/h3>&lt;h4 id="样例输入-2">样例输入 #2
+&lt;/h4>&lt;pre tabindex="0">&lt;code>3
+6 3 5
+&lt;/code>&lt;/pre>&lt;h4 id="样例输出-2">样例输出 #2
+&lt;/h4>&lt;pre tabindex="0">&lt;code>49
+&lt;/code>&lt;/pre>&lt;h3 id="提示">提示
+&lt;/h3>&lt;h4 id="样例解释">样例解释
+&lt;/h4>&lt;p>两个样例按照输入给定的顺序依次跳上去就可以得到最优方案之一。&lt;/p>
+&lt;h3 id="数据规模与约定">数据规模与约定
+&lt;/h3>&lt;p>对于 $1 \leq i \leq n$，有 $0 &amp;lt; h_i \leq 10 ^ 4$，且保证 $h_i$ 互不相同。&lt;br>
+对于 $10%$ 的数据，$n \leq 3$；&lt;br>
+对于 $20%$ 的数据，$n \leq 10$；&lt;br>
+对于 $50%$ 的数据，$n \leq 20$；&lt;br>
+对于 $80%$ 的数据，$n \leq 50$；&lt;br>
+对于 $100%$ 的数据，$n \leq 300$。&lt;/p>
+&lt;h2 id="0x01-分析">&amp;lt;0x01&amp;gt; 分析
+&lt;/h2>&lt;p>既然是要求可消耗的体力最大值，那就是怎么麻烦怎么来&lt;br>
+因为对于两块石头间的体力消耗，是用差的平方算的&lt;br>
+所以高度相差越大越好&lt;br>
+那最好的办法是从低跳到最高的，从高的跳到最低的&lt;br>
+由于输入的石头高度序列是无序的，并且保证高度互不相同&lt;br>
+所以采用计数排序的思路标flag，速度最快&lt;/p>
+&lt;h2 id="0x02-代码">&amp;lt;0x02&amp;gt; 代码
+&lt;/h2>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-cpp" data-lang="cpp">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;iostream&amp;gt;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;vector&amp;gt;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">// 保存是否有这个高度
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>std&lt;span style="color:#f92672">::&lt;/span>vector&lt;span style="color:#f92672">&amp;lt;&lt;/span>&lt;span style="color:#66d9ef">bool&lt;/span>&lt;span style="color:#f92672">&amp;gt;&lt;/span> isExist;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">int&lt;/span> max &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">int&lt;/span> min &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">// 找下一个最大值
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#66d9ef">void&lt;/span> &lt;span style="color:#a6e22e">FindNextMax&lt;/span>()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> max&lt;span style="color:#f92672">--&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">while&lt;/span> (&lt;span style="color:#f92672">!&lt;/span>isExist[max])
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> max&lt;span style="color:#f92672">--&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">// 找下一个最小值
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#66d9ef">void&lt;/span> &lt;span style="color:#a6e22e">FindNextMin&lt;/span>()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> min&lt;span style="color:#f92672">++&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">while&lt;/span> (&lt;span style="color:#f92672">!&lt;/span>isExist[min])
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> min&lt;span style="color:#f92672">++&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">// 算平方
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>size_t &lt;span style="color:#a6e22e">Sqr&lt;/span>(size_t n)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> n &lt;span style="color:#f92672">*&lt;/span> n;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">// 算差
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>size_t &lt;span style="color:#a6e22e">DiffSqr&lt;/span>(size_t a, size_t b)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (a &lt;span style="color:#f92672">&amp;gt;&lt;/span> b)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> Sqr(a &lt;span style="color:#f92672">-&lt;/span> b);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">else&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> Sqr(b &lt;span style="color:#f92672">-&lt;/span> a);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">// 解题
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#66d9ef">int&lt;/span> &lt;span style="color:#a6e22e">main&lt;/span>()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 初始化
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> isExist.resize(&lt;span style="color:#ae81ff">10001&lt;/span>, false);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 从平地跳算高度0
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> isExist[&lt;span style="color:#ae81ff">0&lt;/span>] &lt;span style="color:#f92672">=&lt;/span> true;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 读入
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">int&lt;/span> n;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>cin &lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> n;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">int&lt;/span> i &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>; i &lt;span style="color:#f92672">&amp;lt;&lt;/span> n; i&lt;span style="color:#f92672">++&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> temp;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>cin &lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> temp;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> isExist[temp] &lt;span style="color:#f92672">=&lt;/span> true;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 更新最大值
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">if&lt;/span> (temp &lt;span style="color:#f92672">&amp;gt;&lt;/span> max)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> max &lt;span style="color:#f92672">=&lt;/span> temp;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> size_t ans &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 从高度0开始
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">int&lt;/span> p &lt;span style="color:#f92672">=&lt;/span> min;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">bool&lt;/span> isFindMin &lt;span style="color:#f92672">=&lt;/span> false;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">while&lt;/span> (min &lt;span style="color:#f92672">&amp;lt;=&lt;/span> max)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (isFindMin)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ans &lt;span style="color:#f92672">+=&lt;/span> DiffSqr(p, min);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> p &lt;span style="color:#f92672">=&lt;/span> min;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> FindNextMax();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> isFindMin &lt;span style="color:#f92672">=&lt;/span> false;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">else&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ans &lt;span style="color:#f92672">+=&lt;/span> DiffSqr(p, max);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> p &lt;span style="color:#f92672">=&lt;/span> max;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> FindNextMin();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> isFindMin &lt;span style="color:#f92672">=&lt;/span> true;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>cout &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> ans &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> &lt;span style="color:#e6db74">&amp;#34;&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="0x03-遇到的坑">&amp;lt;0x03&amp;gt; 遇到的坑
+&lt;/h2>&lt;p>这次没啥坑的，代码一遍过了&lt;br>
+（所以这次代码逻辑挺乱的）&lt;/p></description></item><item><title>浙工大数字图像处理课设记录</title><link>https://mlacookie.github.io/article/categories/opencv/%E6%B5%99%E5%B7%A5%E5%A4%A7%E6%95%B0%E5%AD%97%E5%9B%BE%E5%83%8F%E5%A4%84%E7%90%86%E8%AF%BE%E8%AE%BE%E8%AE%B0%E5%BD%95/</link><pubDate>Tue, 23 Jul 2024 12:23:45 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/opencv/%E6%B5%99%E5%B7%A5%E5%A4%A7%E6%95%B0%E5%AD%97%E5%9B%BE%E5%83%8F%E5%A4%84%E7%90%86%E8%AF%BE%E8%AE%BE%E8%AE%B0%E5%BD%95/</guid><description>&lt;p>数字图像处理我们主要是讲&lt;code>OpenCV&lt;/code>的（虽然实际上代码讲的不多）&lt;br>
+然后作为期末的课程设计，要求我们写一个OpenCV的程序&lt;br>
+主要就是用OpenCV去解决一些现实中的问题，然后要带图形界面&lt;br>
+允许组队，而且在学期初就要定课设的题目&lt;/p>
+&lt;h2 id="0x00-我们做了什么">&amp;lt;0x00&amp;gt; 我们做了什么
+&lt;/h2>&lt;p>本来打算做一个用OpenCV做相机反求，Godot做渲染的AR项目&lt;br>
+（所以前面有几篇研究怎么用C#做OpenCV开发）&lt;br>
+引擎这块基本都搭完完了，然后估计了下感觉写不完了&lt;br>
+（C#写OpenCV的代码参考太少了，很多代码都是试出来的，开发效率太低了）&lt;/p>
+&lt;p>好在我们还有一个&lt;code>Plan B&lt;/code>，就是参考MIT的运动放大的论文去写一个应用&lt;br>
+（主要是看了Steve Mould的&lt;a class="link" href="https://www.bilibili.com/video/BV1au411c7YJ/?spm_id_from=333.999.0.0" target="_blank" rel="noopener"
+>视频&lt;/a>）&lt;br>
+这样的话，语言也换成了参考够多的Python，效率高了不少&lt;br>
+问题也有，就是我们Python都不熟，但比起没代码参考好太多了&lt;/p>
+&lt;p>&lt;a class="link" href="https://github.com/MLAcookie/EvmPlayground" target="_blank" rel="noopener"
+>项目地址&lt;/a>&lt;/p>
+&lt;h2 id="0x0-一些感想">&amp;lt;0x0&amp;gt; 一些感想
+&lt;/h2></description></item><item><title>算法康复计划 05</title><link>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-05/</link><pubDate>Tue, 23 Jul 2024 01:51:37 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-05/</guid><description>&lt;p>这道题我想的太抽象了，导致我在复杂的方向上花了很多时间&lt;br>
 （因为那个思路确实不能说错吧，毕竟确实是能解决问题的）&lt;/p>
 &lt;h2 id="0x00-今日题目逛画展">&amp;lt;0x00&amp;gt; 今日题目：逛画展
 &lt;/h2>&lt;p>&lt;a class="link" href="https://www.luogu.com.cn/problem/P1638" target="_blank" rel="noopener"
@@ -28,7 +345,14 @@ Sept 希望入场后可以看到所有名师的图画。当然，他想最小化
 &lt;li>对于 $100%$ 的数据，有 $1\leq n\le10^6$，$1 \leq a_i \leq m\le2\times10^3$。&lt;/li>
 &lt;/ul>
 &lt;h2 id="0x01-分析">&amp;lt;0x01&amp;gt; 分析
-&lt;/h2>&lt;p>这里先讲正确的思路&lt;/p>
+&lt;/h2>&lt;p>这里先讲正确的思路&lt;br>
+首先先看看怎么求最小的区间&lt;br>
+这个可以用贪心的方式&lt;br>
+我们可以维护一个某大师的画最后出现位置的数组&lt;br>
+那么，对于一个固定的end&lt;br>
+最小区间的start一定小于等于所有最后出现位置并且尽可能大的&lt;br>
+end可以从1开始遍历，然后计算start的值&lt;br>
+后面就是看哪个短就取哪段了&lt;/p>
 &lt;h2 id="0x02-代码">&amp;lt;0x02&amp;gt; 代码
 &lt;/h2>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-cpp" data-lang="cpp">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;iostream&amp;gt;&lt;/span>&lt;span style="color:#75715e">
 &lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;vector&amp;gt;&lt;/span>&lt;span style="color:#75715e">
@@ -36,14 +360,14 @@ Sept 希望入场后可以看到所有名师的图画。当然，他想最小化
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">int&lt;/span> &lt;span style="color:#a6e22e">main&lt;/span>()
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> n, m;
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> count &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>;
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> ansLength &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">1e7&lt;/span>;
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> ansStart &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#f92672">-&lt;/span>&lt;span style="color:#ae81ff">1&lt;/span>;
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> ansEnd &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#f92672">-&lt;/span>&lt;span style="color:#ae81ff">1&lt;/span>;
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>cin &lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> n &lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> m;
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>vector&lt;span style="color:#f92672">&amp;lt;&lt;/span>&lt;span style="color:#66d9ef">int&lt;/span>&lt;span style="color:#f92672">&amp;gt;&lt;/span> nums;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 读入
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> std&lt;span style="color:#f92672">::&lt;/span>cin &lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> n &lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> m;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 初始化
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> std&lt;span style="color:#f92672">::&lt;/span>vector&lt;span style="color:#f92672">&amp;lt;&lt;/span>&lt;span style="color:#66d9ef">int&lt;/span>&lt;span style="color:#f92672">&amp;gt;&lt;/span> nums;
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> nums.resize(n &lt;span style="color:#f92672">+&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>);
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>vector&lt;span style="color:#f92672">&amp;lt;&lt;/span>&lt;span style="color:#66d9ef">int&lt;/span>&lt;span style="color:#f92672">&amp;gt;&lt;/span> positions;
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> positions.resize(m &lt;span style="color:#f92672">+&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>, &lt;span style="color:#f92672">-&lt;/span>&lt;span style="color:#ae81ff">1&lt;/span>);
@@ -52,20 +376,20 @@ Sept 希望入场后可以看到所有名师的图画。当然，他想最小化
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> temp;
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>cin &lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> temp;
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> nums[end] &lt;span style="color:#f92672">=&lt;/span> temp;
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (positions[temp] &lt;span style="color:#f92672">==&lt;/span> &lt;span style="color:#f92672">-&lt;/span>&lt;span style="color:#ae81ff">1&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 如果这个大师的画还没出现过
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">if&lt;/span> (positions[temp] &lt;span style="color:#f92672">==&lt;/span> &lt;span style="color:#f92672">-&lt;/span>&lt;span style="color:#ae81ff">1&lt;/span>)
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> count&lt;span style="color:#f92672">++&lt;/span>;
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> positions[temp] &lt;span style="color:#f92672">=&lt;/span> end;
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">while&lt;/span> (start &lt;span style="color:#f92672">&amp;lt;&lt;/span> end &lt;span style="color:#f92672">&amp;amp;&amp;amp;&lt;/span> start &lt;span style="color:#f92672">&amp;lt;&lt;/span> positions[nums[start]])
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 计算当前位置为尾部的最小解
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">while&lt;/span> (start &lt;span style="color:#f92672">&amp;lt;&lt;/span> end &lt;span style="color:#f92672">&amp;amp;&amp;amp;&lt;/span> start &lt;span style="color:#f92672">&amp;lt;&lt;/span> positions[nums[start]])
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> start&lt;span style="color:#f92672">++&lt;/span>;
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (count &lt;span style="color:#f92672">==&lt;/span> m &lt;span style="color:#f92672">&amp;amp;&amp;amp;&lt;/span> end &lt;span style="color:#f92672">-&lt;/span> start &lt;span style="color:#f92672">&amp;lt;&lt;/span> ansLength)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 有新的最小解就更新
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">if&lt;/span> (count &lt;span style="color:#f92672">==&lt;/span> m &lt;span style="color:#f92672">&amp;amp;&amp;amp;&lt;/span> end &lt;span style="color:#f92672">-&lt;/span> start &lt;span style="color:#f92672">&amp;lt;&lt;/span> ansLength)
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ansLength &lt;span style="color:#f92672">=&lt;/span> end &lt;span style="color:#f92672">-&lt;/span> start;
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ansStart &lt;span style="color:#f92672">=&lt;/span> start;
@@ -76,7 +400,10 @@ Sept 希望入场后可以看到所有名师的图画。当然，他想最小化
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>;
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="0x03-遇到的坑">&amp;lt;0x03&amp;gt; 遇到的坑
-&lt;/h2>&lt;h2 id="0x04-我的神秘前缀和思路">&amp;lt;0x04&amp;gt; 我的神秘前缀和思路
+&lt;/h2>&lt;p>一开始这个临时的&lt;code>start&lt;/code>我是放在while里面的&lt;br>
+这导致&lt;code>start&lt;/code>每次都是从1开始遍历，浪费了很多时间&lt;br>
+因为都是找新的解，&lt;code>start&lt;/code>没必要从1开始，放while外面就行&lt;/p>
+&lt;h2 id="0x04-我的神秘前缀和思路">&amp;lt;0x04&amp;gt; 我的神秘前缀和思路
 &lt;/h2>&lt;p>因为最近也在看一些前缀和相关的东西，所以这道题就往前缀和的思路去想了&lt;br>
 而且确实能想出来怎么用前缀和去解这道题&lt;/p>
 &lt;p>这里用样例的数据解释&lt;/p>
@@ -186,7 +513,8 @@ Sept 希望入场后可以看到所有名师的图画。当然，他想最小化
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">int&lt;/span> &lt;span style="color:#a6e22e">main&lt;/span>()
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> n, m;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 读入
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">int&lt;/span> n, m;
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>cin &lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> n &lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> m;
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> SumInfo tempSum(m);
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> input.push_back(&lt;span style="color:#ae81ff">0&lt;/span>);
@@ -197,7 +525,8 @@ Sept 希望入场后可以看到所有名师的图画。当然，他想最小化
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>cin &lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> num;
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> input.push_back(num);
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> tempSum &lt;span style="color:#f92672">=&lt;/span> SumInfo(tempSum, num &lt;span style="color:#f92672">-&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (i &lt;span style="color:#f92672">%&lt;/span> bufferSlice &lt;span style="color:#f92672">==&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 做频数缓存
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">if&lt;/span> (i &lt;span style="color:#f92672">%&lt;/span> bufferSlice &lt;span style="color:#f92672">==&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>)
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> frontSum.push_back(SumInfo(tempSum));
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
@@ -490,7 +819,7 @@ Sept 希望入场后可以看到所有名师的图画。当然，他想最小化
 >CsWin32&lt;/a>&lt;br>
 这个是基于C#&lt;code>源生成器&lt;/code>的Win32API封装器&lt;br>
 就是需要什么API，它就去生成那些API的&lt;code>P/Invoke&lt;/code>代码&lt;br>
-并且生成的质量还挺高的，尽可能去迎合C#的开发体验&lt;/p>
+并且生成的质量还挺高的，保留原本的调用风格的同时，尽可能去迎合C#的开发体验&lt;/p>
 &lt;h2 id="0x00-安装cswin32">&amp;lt;0x00&amp;gt; 安装CsWin32
 &lt;/h2>&lt;p>因为会用到C#的源生成器，所以最好使用VS2022并且相对新的版本，不然代码提示之类的会出问题&lt;br>
 VSCode的源生成器体验也是不错的，这个直接装&lt;code>C# kit&lt;/code>插件就可以了&lt;/p>
@@ -598,7 +927,7 @@ data-flex-basis="1198px"
 &lt;p>而且观察代码，不难发现，CsWin32会非常智能地使用C#自带的类型&lt;br>
 比如说Process类型里面的SafeHandle属性，这个返回的是&lt;code>SafeProcessHandle&lt;/code>&lt;br>
 这个虽然它的命名空间是&lt;code>Microsoft.Win32.SafeHandles&lt;/code>，但确实是C#本身就有的&lt;br>
-对于C#不带的类型，并且使用的API需要这些类型，CsWin32才会去生成对应的代码&lt;/p>
+对于C#不带的类型，只有使用的API需要这些类型传参，CsWin32才会去生成对应的代码&lt;/p>
 &lt;h2 id="0x02-一些不知道类型的枚举">&amp;lt;0x02&amp;gt; 一些不知道类型的枚举
 &lt;/h2>&lt;p>如果你需要使用某个枚举，但不知道是什么类型，CsWin32可以自动指出具体类型&lt;br>
 比如前面提到那两个API的返回值是&lt;code>winerror.h&lt;/code>中定义的错误代码，但我们不知道这是什么类&lt;br>
@@ -1118,7 +1447,6 @@ data-flex-basis="634px"
 &lt;h3 id="统一变量配置">统一变量配置
 &lt;/h3>&lt;p>因为会有好几个脚本，所以需要一个统一的变量配置&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># configs.ps1&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 获取脚本文件夹路径&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>$global:ShellScriptDir &lt;span style="color:#f92672">=&lt;/span> Get-Location
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
@@ -1152,8 +1480,57 @@ data-flex-basis="634px"
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">[&lt;/span>string&lt;span style="color:#f92672">]&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $CategoryName,
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">[&lt;/span>bool&lt;span style="color:#f92672">]&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $IsStartServer
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $IsStartServer &lt;span style="color:#f92672">=&lt;/span> $false,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">[&lt;/span>bool&lt;span style="color:#f92672">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $IsCreatePictureFolder &lt;span style="color:#f92672">=&lt;/span> $false
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">function&lt;/span> ValidatedName &lt;span style="color:#f92672">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> param &lt;span style="color:#f92672">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">[&lt;/span>string&lt;span style="color:#f92672">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">[&lt;/span>ValidateNotNullOrEmpty&lt;span style="color:#f92672">()]&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $Name
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># 其他的特殊字符&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $SpecialCharacters &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#f92672">[&lt;/span>char&lt;span style="color:#f92672">[]]&lt;/span>@&lt;span style="color:#f92672">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;` &amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;`!&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;`&lt;/span>$&lt;span style="color:#e6db74">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;`%&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;`&amp;amp;&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;`&amp;#39;&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;(&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;)&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;*&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;,&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;-&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;/&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;:&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;;&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;&amp;lt;&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;=&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;&amp;gt;&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;?&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;@&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;[&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;]&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;^&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;_&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;``&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;{&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;|&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;}&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;~&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># 因为我会写C#相关的文章，#有一些意义，对#做特殊替换&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $Name &lt;span style="color:#f92672">=&lt;/span> $Name.Replace&lt;span style="color:#f92672">(&lt;/span>&lt;span style="color:#e6db74">&amp;#34;`#&amp;#34;&lt;/span>, &lt;span style="color:#e6db74">&amp;#34;sharp&amp;#34;&lt;/span>&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># 先每个替换成-&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> foreach &lt;span style="color:#f92672">(&lt;/span>$Character in $SpecialCharacters&lt;span style="color:#f92672">)&lt;/span> &lt;span style="color:#f92672">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $Name &lt;span style="color:#f92672">=&lt;/span> $Name.Replace&lt;span style="color:#f92672">(&lt;/span>$Character, &lt;span style="color:#e6db74">&amp;#34;-&amp;#34;&lt;/span>&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># 返回时使用正则表达式匹配连续的-，并替换为单个-&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> $Name -Replace &lt;span style="color:#e6db74">&amp;#39;([-])+&amp;#39;&lt;/span>, &lt;span style="color:#e6db74">&amp;#39;-&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">}&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 导入配置变量&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>. .&lt;span style="color:#ae81ff">\c&lt;/span>onfigs.ps1
@@ -1161,25 +1538,30 @@ data-flex-basis="634px"
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>$localDir &lt;span style="color:#f92672">=&lt;/span> Get-Location
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 切换工作路径&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Set-Location $global:SiteDir
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 合法化路径名，不然图片会出问题&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>$ValidPathName &lt;span style="color:#f92672">=&lt;/span> ValidatedName -Name $PostName
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 普通文章创建&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">if&lt;/span> &lt;span style="color:#f92672">(&lt;/span>$CategoryName -eq &lt;span style="color:#e6db74">&amp;#34;&amp;#34;&lt;/span>&lt;span style="color:#f92672">)&lt;/span> &lt;span style="color:#f92672">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># 新建hexo博客&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $newPost &lt;span style="color:#f92672">=&lt;/span> Join-Path -Path &lt;span style="color:#f92672">(&lt;/span>Join-Path -Path &lt;span style="color:#e6db74">&amp;#34;content\article\posts&amp;#34;&lt;/span> -ChildPath $PostName&lt;span style="color:#f92672">)&lt;/span> -ChildPath &lt;span style="color:#e6db74">&amp;#34;index.md&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># 新建Hugo文章&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $newPost &lt;span style="color:#f92672">=&lt;/span> Join-Path -Path &lt;span style="color:#f92672">(&lt;/span>Join-Path -Path &lt;span style="color:#e6db74">&amp;#34;content\article\posts&amp;#34;&lt;/span> -ChildPath $ValidPathName&lt;span style="color:#f92672">)&lt;/span> -ChildPath &lt;span style="color:#e6db74">&amp;#34;index.md&amp;#34;&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> hugo new $newPost
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># 创建图片文件夹&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $newPostPicture &lt;span style="color:#f92672">=&lt;/span> Join-Path -Path &lt;span style="color:#f92672">(&lt;/span>Join-Path -Path $global:PostsDir -ChildPath $PostName&lt;span style="color:#f92672">)&lt;/span> -ChildPath &lt;span style="color:#e6db74">&amp;#34;picture&amp;#34;&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> mkdir $newPostPicture
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># 生成图片文件夹路径&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $newPostPicture &lt;span style="color:#f92672">=&lt;/span> Join-Path -Path &lt;span style="color:#f92672">(&lt;/span>Join-Path -Path $global:PostsDir -ChildPath $ValidPathName&lt;span style="color:#f92672">)&lt;/span> -ChildPath &lt;span style="color:#e6db74">&amp;#34;picture&amp;#34;&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">}&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 需要分类的文章&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">else&lt;/span> &lt;span style="color:#f92672">{&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># 新建hexo博客&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># 新建Hugo文章&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $categoryPath &lt;span style="color:#f92672">=&lt;/span> Join-Path -Path &lt;span style="color:#e6db74">&amp;#34;content\article\categories&amp;#34;&lt;/span> -ChildPath $CategoryName
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $newPost &lt;span style="color:#f92672">=&lt;/span> Join-Path -Path &lt;span style="color:#f92672">(&lt;/span>Join-Path -Path $categoryPath -ChildPath $PostName&lt;span style="color:#f92672">)&lt;/span> -ChildPath &lt;span style="color:#e6db74">&amp;#34;index.md&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $newPost &lt;span style="color:#f92672">=&lt;/span> Join-Path -Path &lt;span style="color:#f92672">(&lt;/span>Join-Path -Path $categoryPath -ChildPath $ValidPathName&lt;span style="color:#f92672">)&lt;/span> -ChildPath &lt;span style="color:#e6db74">&amp;#34;index.md&amp;#34;&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> hugo new $newPost
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># 创建图片文件夹&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># 生成图片文件夹路径&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $categoryPath &lt;span style="color:#f92672">=&lt;/span> Join-Path -Path $global:CategoriesDir -ChildPath $CategoryName
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $newPostPicture &lt;span style="color:#f92672">=&lt;/span> Join-Path -Path &lt;span style="color:#f92672">(&lt;/span>Join-Path -Path $categoryPath -ChildPath $PostName&lt;span style="color:#f92672">)&lt;/span> -ChildPath &lt;span style="color:#e6db74">&amp;#34;picture&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $newPostPicture &lt;span style="color:#f92672">=&lt;/span> Join-Path -Path &lt;span style="color:#f92672">(&lt;/span>Join-Path -Path $categoryPath -ChildPath $ValidPathName&lt;span style="color:#f92672">)&lt;/span> -ChildPath &lt;span style="color:#e6db74">&amp;#34;picture&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 因为我在obsidian设置了默认的附件目录，粘贴图像会自动创建图片文件夹&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 需要创建图片文件夹的话就创建&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">if&lt;/span> &lt;span style="color:#f92672">(&lt;/span>$IsCreatePictureFolder&lt;span style="color:#f92672">)&lt;/span> &lt;span style="color:#f92672">{&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> mkdir $newPostPicture
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">}&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 启动编辑器&lt;/span>
@@ -1229,7 +1611,9 @@ data-flex-basis="634px"
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># Deploy.ps1&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>param&lt;span style="color:#f92672">(&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">[&lt;/span>bool&lt;span style="color:#f92672">]&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $IsForcePush &lt;span style="color:#f92672">=&lt;/span> $false
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $IsForcePush &lt;span style="color:#f92672">=&lt;/span> $false,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">[&lt;/span>bool&lt;span style="color:#f92672">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $IsClearDeploy &lt;span style="color:#f92672">=&lt;/span> $false
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">)&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 导入配置变量&lt;/span>
@@ -1238,11 +1622,16 @@ data-flex-basis="634px"
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>$localDir &lt;span style="color:#f92672">=&lt;/span> Get-Location
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 切换工作路径&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Set-Location $global:SiteDir
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 清除Hugo构建缓存&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">if&lt;/span> &lt;span style="color:#f92672">(&lt;/span>$IsClearDeploy&lt;span style="color:#f92672">)&lt;/span> &lt;span style="color:#f92672">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># 递归删除所有文件&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Remove-Item -Path &lt;span style="color:#f92672">(&lt;/span>Join-Path -Path $global:PublicDir -ChildPath &lt;span style="color:#e6db74">&amp;#34;*&amp;#34;&lt;/span>&lt;span style="color:#f92672">)&lt;/span> -Recurse
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">}&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 构建网页&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>hugo --gc --minify --baseURL $global:BaseURL
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 准备推送&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Set-Location &lt;span style="color:#f92672">(&lt;/span>Join-Path -Path $global:SiteDir -ChildPath &lt;span style="color:#e6db74">&amp;#34;public&amp;#34;&lt;/span>&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Set-Location $global:PublicDir
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 没有初始化git的化就先初始化并强制推送&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">if&lt;/span> &lt;span style="color:#f92672">(&lt;/span>-not &lt;span style="color:#f92672">(&lt;/span>Test-Path &lt;span style="color:#e6db74">&amp;#34;.git&amp;#34;&lt;/span>&lt;span style="color:#f92672">))&lt;/span> &lt;span style="color:#f92672">{&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> . &lt;span style="color:#f92672">(&lt;/span>Join-Path -Path $global:ShellScriptDir -ChildPath &lt;span style="color:#e6db74">&amp;#34;InitGit.ps1&amp;#34;&lt;/span>&lt;span style="color:#f92672">)&lt;/span> -IsForcePush $true
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">}&lt;/span>
@@ -1261,7 +1650,10 @@ data-flex-basis="634px"
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 返回之前的工作路径&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Set-Location $localDir
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>使用示例&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>.&lt;span style="color:#ae81ff">\D&lt;/span>eploy.ps1
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 正常的发布&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>.&lt;span style="color:#ae81ff">\D&lt;/span>eploy.ps1
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 清空所有构建缓存发布&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>.&lt;span style="color:#ae81ff">\D&lt;/span>eploy.ps1 -IsClearDeploy
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>运行即可推送到GitHub Page上&lt;/p>
 &lt;h3 id="批量创建页面包路径结构">批量创建页面包路径结构
 &lt;/h3>&lt;p>因为之前使用的是hexo，里面都是单独的markdown文件&lt;br>
@@ -2538,161 +2930,7 @@ alt="演示"
 >&lt;/p>
 &lt;p>写这篇博客真的花了不少时间，大家看得开心就好&lt;/p></description></item><item><title>地球online在线时长20周年纪念</title><link>https://mlacookie.github.io/article/posts/%E5%9C%B0%E7%90%83online%E5%9C%A8%E7%BA%BF%E6%97%B6%E9%95%BF20%E5%91%A8%E5%B9%B4%E7%BA%AA%E5%BF%B5/</link><pubDate>Sat, 16 Sep 2023 20:55:27 +0000</pubDate><guid>https://mlacookie.github.io/article/posts/%E5%9C%B0%E7%90%83online%E5%9C%A8%E7%BA%BF%E6%97%B6%E9%95%BF20%E5%91%A8%E5%B9%B4%E7%BA%AA%E5%BF%B5/</guid><description>&lt;h2 id="20周岁生日了挺好的">20周岁生日了，挺好的
 &lt;/h2>&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted --></description></item><item><title>23年苹果秋季发布会省流</title><link>https://mlacookie.github.io/article/posts/23%E5%B9%B4%E8%8B%B9%E6%9E%9C%E7%A7%8B%E5%AD%A3%E5%8F%91%E5%B8%83%E4%BC%9A%E7%9C%81%E6%B5%81/</link><pubDate>Wed, 13 Sep 2023 01:10:46 +0000</pubDate><guid>https://mlacookie.github.io/article/posts/23%E5%B9%B4%E8%8B%B9%E6%9E%9C%E7%A7%8B%E5%AD%A3%E5%8F%91%E5%B8%83%E4%BC%9A%E7%9C%81%E6%B5%81/</guid><description>&lt;h2 id="前言">前言
-&lt;/h2>&lt;p>这篇博客是我边看发布会边写的&lt;br>
-虽然已经尽可能得减少错误，但仍可能留存些问题，望海涵&lt;/p>
-&lt;h2 id="开场">开场
-&lt;/h2>&lt;p>经典凌晨一点&lt;code>&amp;quot;Good morning&amp;quot;&lt;/code>&lt;br>
-差不多就是简要总结了下今年&lt;code>WWDC&lt;/code>的成果&lt;br>
-然后吹了下15寸的&lt;code>MacBook Air&lt;/code>&lt;/p>
-&lt;h2 id="watch-series9">Watch series9
-&lt;/h2>&lt;p>价格：399$ 起&lt;br>
-(顺带一提，&lt;code>Watch SE&lt;/code> 249$ 起)&lt;/p>
-&lt;p>&lt;img src="https://mlacookie.github.io/article/posts/23%E5%B9%B4%E8%8B%B9%E6%9E%9C%E7%A7%8B%E5%AD%A3%E5%8F%91%E5%B8%83%E4%BC%9A%E7%9C%81%E6%B5%81/picture/1.png"
-width="940"
-height="531"
-srcset="https://mlacookie.github.io/article/posts/23%E5%B9%B4%E8%8B%B9%E6%9E%9C%E7%A7%8B%E5%AD%A3%E5%8F%91%E5%B8%83%E4%BC%9A%E7%9C%81%E6%B5%81/picture/1_hu4c9bd8e3f61fe0c44c546e46d98f5140_365657_480x0_resize_box_3.png 480w, https://mlacookie.github.io/article/posts/23%E5%B9%B4%E8%8B%B9%E6%9E%9C%E7%A7%8B%E5%AD%A3%E5%8F%91%E5%B8%83%E4%BC%9A%E7%9C%81%E6%B5%81/picture/1_hu4c9bd8e3f61fe0c44c546e46d98f5140_365657_1024x0_resize_box_3.png 1024w"
-loading="lazy"
-alt="WatchS9省流一图流"
-class="gallery-image"
-data-flex-grow="177"
-data-flex-basis="424px"
->&lt;/p>
-&lt;h3 id="亮点">亮点
-&lt;/h3>&lt;p>采用全新&lt;code>S9&lt;/code>芯片(更强的性能)&lt;br>
-有新一代&lt;code>U2&lt;/code>芯片(更精确的苹果设备定位)&lt;br>
-加入新的一碰传名片功能&lt;br>
-全天候显示，但新屏幕亮度可低至1nit，而且更亮&lt;br>
-新手势，佩戴手表时轻碰食指和拇指两下可实现一系列功能，比如接打电话之类的&lt;br>
-(靠神经网络实现的)&lt;br>
-加入了很多人工智能的功能(没来得及记)&lt;br>
-&lt;code>WatchOS10&lt;/code>优化了骑行检测，可以接蓝牙设备检测&lt;/p>
-&lt;h3 id="介绍苹果的环保计划">介绍苹果的环保计划
-&lt;/h3>&lt;p>通过短片介绍了苹果当前的环保进度&lt;br>
-2030年前实现所有业务碳中和&lt;br>
-(尽可能多的使用回收材料)&lt;br>
-宣布&lt;code>Watch series9&lt;/code>将采用100%的清洁能源生产&lt;br>
-减小手表的包装盒(环保嘛)&lt;br>
-&lt;code>Watch series9&lt;/code>是苹果第一个碳中和的产品&lt;br>
-(后面的产品或多或少都讲了环保，就不讲了，大致就是用了些回收材料)&lt;/p>
-&lt;h3 id="表带">表带
-&lt;/h3>&lt;p>有和&lt;code>Hermes&lt;/code>合作的表带&lt;br>
-和&lt;code>Nike&lt;/code>合作的表带&lt;/p>
-&lt;h2 id="watch-ultra2">Watch Ultra2
-&lt;/h2>&lt;p>价格：799$ 起&lt;/p>
-&lt;p>&lt;img src="https://mlacookie.github.io/article/posts/23%E5%B9%B4%E8%8B%B9%E6%9E%9C%E7%A7%8B%E5%AD%A3%E5%8F%91%E5%B8%83%E4%BC%9A%E7%9C%81%E6%B5%81/picture/2.png"
-width="940"
-height="530"
-srcset="https://mlacookie.github.io/article/posts/23%E5%B9%B4%E8%8B%B9%E6%9E%9C%E7%A7%8B%E5%AD%A3%E5%8F%91%E5%B8%83%E4%BC%9A%E7%9C%81%E6%B5%81/picture/2_hufd49e18c4d9642572be10069625a92fa_526684_480x0_resize_box_3.png 480w, https://mlacookie.github.io/article/posts/23%E5%B9%B4%E8%8B%B9%E6%9E%9C%E7%A7%8B%E5%AD%A3%E5%8F%91%E5%B8%83%E4%BC%9A%E7%9C%81%E6%B5%81/picture/2_hufd49e18c4d9642572be10069625a92fa_526684_1024x0_resize_box_3.png 1024w"
-loading="lazy"
-alt="WatchU2省流一图流"
-class="gallery-image"
-data-flex-grow="177"
-data-flex-basis="425px"
->&lt;/p>
-&lt;h3 id="亮点-1">亮点
-&lt;/h3>&lt;p>(有些&lt;code>Watch series9&lt;/code>也有的就不讲了)
-使用&lt;code>S9&lt;/code>和&lt;code>U2&lt;/code>&lt;br>
-屏幕更亮，有3000nits&lt;/p>
-&lt;h2 id="iphone15-和-iphone15-plus">IPhone15 和 IPhone15 Plus
-&lt;/h2>&lt;p>价格：799$ 起&lt;br>
-Plus版价格：899$ 起&lt;br>
-(顺带一提，SE版 429$ 起)&lt;/p>
-&lt;p>&lt;img src="https://mlacookie.github.io/article/posts/23%E5%B9%B4%E8%8B%B9%E6%9E%9C%E7%A7%8B%E5%AD%A3%E5%8F%91%E5%B8%83%E4%BC%9A%E7%9C%81%E6%B5%81/picture/3.png"
-width="941"
-height="530"
-srcset="https://mlacookie.github.io/article/posts/23%E5%B9%B4%E8%8B%B9%E6%9E%9C%E7%A7%8B%E5%AD%A3%E5%8F%91%E5%B8%83%E4%BC%9A%E7%9C%81%E6%B5%81/picture/3_hu593497f542467ab1db90974959de7181_492482_480x0_resize_box_3.png 480w, https://mlacookie.github.io/article/posts/23%E5%B9%B4%E8%8B%B9%E6%9E%9C%E7%A7%8B%E5%AD%A3%E5%8F%91%E5%B8%83%E4%BC%9A%E7%9C%81%E6%B5%81/picture/3_hu593497f542467ab1db90974959de7181_492482_1024x0_resize_box_3.png 1024w"
-loading="lazy"
-alt="IPhone15影像省流一图流"
-class="gallery-image"
-data-flex-grow="177"
-data-flex-basis="426px"
->&lt;br>
-&lt;img src="https://mlacookie.github.io/article/posts/23%E5%B9%B4%E8%8B%B9%E6%9E%9C%E7%A7%8B%E5%AD%A3%E5%8F%91%E5%B8%83%E4%BC%9A%E7%9C%81%E6%B5%81/picture/4.png"
-width="941"
-height="529"
-srcset="https://mlacookie.github.io/article/posts/23%E5%B9%B4%E8%8B%B9%E6%9E%9C%E7%A7%8B%E5%AD%A3%E5%8F%91%E5%B8%83%E4%BC%9A%E7%9C%81%E6%B5%81/picture/4_hu849e8d0b52dc218019affb092df9e1b5_437747_480x0_resize_box_3.png 480w, https://mlacookie.github.io/article/posts/23%E5%B9%B4%E8%8B%B9%E6%9E%9C%E7%A7%8B%E5%AD%A3%E5%8F%91%E5%B8%83%E4%BC%9A%E7%9C%81%E6%B5%81/picture/4_hu849e8d0b52dc218019affb092df9e1b5_437747_1024x0_resize_box_3.png 1024w"
-loading="lazy"
-alt="IPhone15省流一图流"
-class="gallery-image"
-data-flex-grow="177"
-data-flex-basis="426px"
->&lt;/p>
-&lt;h3 id="亮点-2">亮点
-&lt;/h3>&lt;p>有&lt;code>灵动岛&lt;/code>(我不好评价这玩意)&lt;br>
-屏幕更亮，1500nitsHDR亮度，2000nits峰值亮度&lt;br>
-手感提升，航空级铝边(玄学)&lt;br>
-背板采用融色玻璃，色彩更好(新的颜色确实不错)，蚀刻哑光工艺，抗污不粘指纹&lt;br>
-官方钦定苹果更保值(这个是真想不到的)&lt;br>
-4800w四合一像素后摄主摄&lt;br>
-经典后摄色彩统一&lt;br>
-新的&lt;code>HDR模式&lt;/code>，优化了照片的色彩(样片嘛，看着肯定好看)&lt;br>
-采用&lt;code>A16&lt;/code>芯片(内存带宽提升50%，能耗降低20%)&lt;br>
-搭载&lt;code>U2&lt;/code>芯片，苹果间设备连接性提升(距离更远了)&lt;br>
-基于机器学习的通话降噪&lt;br>
-接口改&lt;code>type-c&lt;/code>(终于，但速度是2.0)&lt;br>
-配&lt;code>MagSafe&lt;/code>&lt;/p>
-&lt;h3 id="卫星方面刚好讲到了">卫星方面（刚好讲到了）
-&lt;/h3>&lt;p>卫星通话业务扩展到14个国家（没中国）&lt;br>
-推出&lt;code>卫星呼叫道路救援&lt;/code>功能&lt;br>
-卫星呼叫服务将在iPhone15系列上免费提供2年&lt;/p>
-&lt;h2 id="iphone15-pro-和-iphone15-pro-max">IPhone15 Pro 和 IPhone15 Pro Max
-&lt;/h2>&lt;p>价格：999$ 起&lt;br>
-Max版价格：1199$ 起&lt;/p>
-&lt;p>&lt;img src="https://mlacookie.github.io/article/posts/23%E5%B9%B4%E8%8B%B9%E6%9E%9C%E7%A7%8B%E5%AD%A3%E5%8F%91%E5%B8%83%E4%BC%9A%E7%9C%81%E6%B5%81/picture/5.png"
-width="941"
-height="530"
-srcset="https://mlacookie.github.io/article/posts/23%E5%B9%B4%E8%8B%B9%E6%9E%9C%E7%A7%8B%E5%AD%A3%E5%8F%91%E5%B8%83%E4%BC%9A%E7%9C%81%E6%B5%81/picture/5_hu5eb4adfbbb6b328ed93fead745a31180_415404_480x0_resize_box_3.png 480w, https://mlacookie.github.io/article/posts/23%E5%B9%B4%E8%8B%B9%E6%9E%9C%E7%A7%8B%E5%AD%A3%E5%8F%91%E5%B8%83%E4%BC%9A%E7%9C%81%E6%B5%81/picture/5_hu5eb4adfbbb6b328ed93fead745a31180_415404_1024x0_resize_box_3.png 1024w"
-loading="lazy"
-alt="IPhone15Pro省流一图流"
-class="gallery-image"
-data-flex-grow="177"
-data-flex-basis="426px"
->&lt;/p>
-&lt;h3 id="亮点-3">亮点
-&lt;/h3>&lt;p>(有些IPhone15有的这里也不讲了)&lt;br>
-全新&lt;code>钛金属材质&lt;/code>，造就最轻的IPhone(官网186g)，最窄的边框&lt;br>
-最坚固的玻璃，超瓷晶玻璃&lt;br>
-钛合金阳极氧化后有PVD图层保护&lt;br>
-新的框架结构可更方便地更换背板玻璃(苹果会让用户自己修？)&lt;br>
-经典静音键没了，改成一个&lt;code>可自定义操作的按键&lt;/code>&lt;br>
-带&lt;code>ProMotion&lt;/code>，待机显示(全天候显示)&lt;br>
-搭载A17 Pro(怎么A17还带Pro的)&lt;/p>
-&lt;h3 id="a17pro部分">A17Pro部分
-&lt;/h3>&lt;p>&lt;code>3nm&lt;/code>工艺&lt;br>
-6核心(2p+4e设计)，最多10%单核性能提升(嗯，挤牙膏)&lt;br>
-&lt;code>神经网络引擎&lt;/code>升级，强化客户端处理能力&lt;br>
-搭载多个专用处理引擎(&lt;code>ProRes编码&lt;/code>，&lt;code>AV1解码&lt;/code>，&lt;code>屏幕驱动引擎&lt;/code>)&lt;br>
-搭载USB3控制器，带来20x的传输速度提升(可不嘛，非Pro还是2.0速度)&lt;br>
-Pro级GPU，六核设计，有&lt;code>硬件光追&lt;/code>(真的意外，看来换架构了)&lt;br>
-&lt;code>上采样技术&lt;/code>(感觉上像DLSS的技术，有用到神经网络引擎)&lt;br>
-(讲游戏环节有农，原，星铁，生化4)&lt;br>
-(大伟哥亲自上台讲解)&lt;br>
-将会在IPhone上发行最新的主机级刺客信条(刺客信条幻景)&lt;/p>
-&lt;h3 id="摄影部分">摄影部分
-&lt;/h3>&lt;p>4800w主摄有更大的底&lt;br>
-&lt;code>Pro Max&lt;/code>搭载&lt;code>5x潜望式长焦&lt;/code>(四次折光结构)(等效120mm)&lt;br>
-(&lt;code>Pro&lt;/code>是3x的长焦)&lt;br>
-&lt;code>微距模式&lt;/code>&lt;br>
-&lt;code>Log模式&lt;/code>编码，有&lt;code>ACES&lt;/code>色彩认证&lt;br>
-可以&lt;code>拍摄空间视频&lt;/code>了(晚些开放该功能)&lt;/p>
-&lt;h3 id="icloud-正好讲到">iCloud+ (正好讲到)
-&lt;/h3>&lt;p>添加6TB和12TB的挡位&lt;/p>
-&lt;h2 id="然后就没了">然后就没了
-&lt;/h2>&lt;p>没错，就开了一个半小时不到就没了&lt;br>
-我的评价是不如今年的&lt;code>WWDC&lt;/code>有意思&lt;br>
-太平淡了，我都快看睡过去了&lt;br>
-东西都是常规升级，没啥震撼的升级&lt;/p>
-&lt;p>U2的升级还是不错的，苹果的很多独特的体验都源自这个芯片&lt;br>
-但别的升级只能说中规中矩&lt;br>
-期待的芯片升级感觉就跟挤牙膏一样(光追是挺意外的，但从演示看感觉只是有了而已)&lt;br>
-还有约1/3的内容在讲环保，苹果嘛&lt;/p>
-&lt;p>没有&lt;code>Ipad&lt;/code>系列更新，没有&lt;code>Mac&lt;/code>系列的更新(这个到也合理，&lt;code>WWDC&lt;/code>刚更新过)&lt;br>
-也难怪只开一个半小时，就更新这两个的话确实没啥可讲的&lt;br>
-还是挺失望的，以为&lt;code>WWDC&lt;/code>搞那么大会在发布会上整点大的&lt;br>
-结果拿出来的东西和前代差别不大，挤牙膏式升级(对普通用户而言)&lt;/p>
-&lt;p>RNM，退钱，太失望了，我超&lt;br>
-已经结束嘞&lt;/p></description></item><item><title>我为什么放弃使用IPad</title><link>https://mlacookie.github.io/article/posts/%E6%88%91%E4%B8%BA%E4%BB%80%E4%B9%88%E6%94%BE%E5%BC%83%E4%BD%BF%E7%94%A8ipad/</link><pubDate>Wed, 06 Sep 2023 15:21:11 +0000</pubDate><guid>https://mlacookie.github.io/article/posts/%E6%88%91%E4%B8%BA%E4%BB%80%E4%B9%88%E6%94%BE%E5%BC%83%E4%BD%BF%E7%94%A8ipad/</guid><description>&lt;h2 id="前言">前言
+&lt;!-- raw HTML omitted --></description></item><item><title>我为什么放弃使用IPad</title><link>https://mlacookie.github.io/article/posts/%E6%88%91%E4%B8%BA%E4%BB%80%E4%B9%88%E6%94%BE%E5%BC%83%E4%BD%BF%E7%94%A8ipad/</link><pubDate>Wed, 06 Sep 2023 15:21:11 +0000</pubDate><guid>https://mlacookie.github.io/article/posts/%E6%88%91%E4%B8%BA%E4%BB%80%E4%B9%88%E6%94%BE%E5%BC%83%E4%BD%BF%E7%94%A8ipad/</guid><description>&lt;h2 id="前言">前言
 &lt;/h2>&lt;p>我在半年前已经将我的IPad出手了，所以这里写的体验都是基于半年前的&lt;code>IPadOS16.1&lt;/code>&lt;br>
 为什么半年后还写这个呢，主要是想练练手，没怎么写过评测类的文章，顺便分享下我的体验&lt;/p>
 &lt;h2 id="0x01-为什么选择ipad">&amp;lt;0x01&amp;gt; 为什么选择IPad
@@ -4654,7 +4892,7 @@ data-flex-basis="235px"
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>逻辑就是随性写的，不保证完全没Bug，应该是没严重Bug的&lt;br>
 (所以也没写高精度的运算处理)&lt;br>
-(写这篇博客比我写代码的时间都长😂)&lt;/p></description></item><item><title>浙工大离散课设讲解</title><link>https://mlacookie.github.io/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7%E7%A6%BB%E6%95%A3%E8%AF%BE%E8%AE%BE%E8%AE%B2%E8%A7%A3/</link><pubDate>Tue, 04 Jul 2023 13:14:00 +0000</pubDate><guid>https://mlacookie.github.io/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7%E7%A6%BB%E6%95%A3%E8%AF%BE%E8%AE%BE%E8%AE%B2%E8%A7%A3/</guid><description>&lt;h2 id="前言">前言
+(写这篇博客比我写代码的时间都长😂)&lt;/p></description></item><item><title>浙工大离散课设讲解</title><link>https://mlacookie.github.io/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7%E7%A6%BB%E6%95%A3%E8%AF%BE%E8%AE%BE%E8%AE%B0%E5%BD%95/</link><pubDate>Tue, 04 Jul 2023 13:14:00 +0000</pubDate><guid>https://mlacookie.github.io/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7%E7%A6%BB%E6%95%A3%E8%AF%BE%E8%AE%BE%E8%AE%B0%E5%BD%95/</guid><description>&lt;h2 id="前言">前言
 &lt;/h2>&lt;p>一般来说离散的课设都是给一大堆题目然后自己选的&lt;br>
 我选的是合式公式的真值表和成真成假赋值&lt;br>
 算是里面相对难的&lt;br>
@@ -4682,10 +4920,10 @@ data-flex-basis="235px"
 每次弹出都是弹出一个运算符与两个运算数，并将运算结果再压入运算符栈中&lt;br>
 重复弹出，直到当前运算符优先级大于运算符栈顶的运算符优先级为止&lt;br>
 如果遍历过程中遇到&lt;code>)&lt;/code>，则反复进行弹出操作，直到弹出一个&lt;code>(&lt;/code>为止&lt;/p>
-&lt;p>&lt;img src="https://mlacookie.github.io/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7%E7%A6%BB%E6%95%A3%E8%AF%BE%E8%AE%BE%E8%AE%B2%E8%A7%A3/picture/1.gif"
+&lt;p>&lt;img src="https://mlacookie.github.io/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7%E7%A6%BB%E6%95%A3%E8%AF%BE%E8%AE%BE%E8%AE%B0%E5%BD%95/picture/1.gif"
 width="400"
 height="400"
-srcset="https://mlacookie.github.io/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7%E7%A6%BB%E6%95%A3%E8%AF%BE%E8%AE%BE%E8%AE%B2%E8%A7%A3/picture/1_hu258ec33d35618ac3195ff0565a7c9b2d_11767406_480x0_resize_box_1.gif 480w, https://mlacookie.github.io/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7%E7%A6%BB%E6%95%A3%E8%AF%BE%E8%AE%BE%E8%AE%B2%E8%A7%A3/picture/1_hu258ec33d35618ac3195ff0565a7c9b2d_11767406_1024x0_resize_box_1.gif 1024w"
+srcset="https://mlacookie.github.io/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7%E7%A6%BB%E6%95%A3%E8%AF%BE%E8%AE%BE%E8%AE%B0%E5%BD%95/picture/1_hu258ec33d35618ac3195ff0565a7c9b2d_11767406_480x0_resize_box_1.gif 480w, https://mlacookie.github.io/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7%E7%A6%BB%E6%95%A3%E8%AF%BE%E8%AE%BE%E8%AE%B0%E5%BD%95/picture/1_hu258ec33d35618ac3195ff0565a7c9b2d_11767406_1024x0_resize_box_1.gif 1024w"
 loading="lazy"
 alt="演示动画"
 class="gallery-image"
@@ -4726,10 +4964,10 @@ data-flex-basis="240px"
 操作数由运算符连接，合成一个新节点&lt;br>
 如此嵌套，最后连接在一个根节点上&lt;br>
 每次计算时，先给操作数真假指派，然后走遍计算树，根节点的值就是公式的计算结果&lt;/p>
-&lt;p>&lt;img src="https://mlacookie.github.io/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7%E7%A6%BB%E6%95%A3%E8%AF%BE%E8%AE%BE%E8%AE%B2%E8%A7%A3/picture/2.png"
+&lt;p>&lt;img src="https://mlacookie.github.io/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7%E7%A6%BB%E6%95%A3%E8%AF%BE%E8%AE%BE%E8%AE%B0%E5%BD%95/picture/2.png"
 width="381"
 height="279"
-srcset="https://mlacookie.github.io/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7%E7%A6%BB%E6%95%A3%E8%AF%BE%E8%AE%BE%E8%AE%B2%E8%A7%A3/picture/2_hu215fccaeef457934695ea3694b27b0df_34017_480x0_resize_box_3.png 480w, https://mlacookie.github.io/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7%E7%A6%BB%E6%95%A3%E8%AF%BE%E8%AE%BE%E8%AE%B2%E8%A7%A3/picture/2_hu215fccaeef457934695ea3694b27b0df_34017_1024x0_resize_box_3.png 1024w"
+srcset="https://mlacookie.github.io/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7%E7%A6%BB%E6%95%A3%E8%AF%BE%E8%AE%BE%E8%AE%B0%E5%BD%95/picture/2_hu215fccaeef457934695ea3694b27b0df_34017_480x0_resize_box_3.png 480w, https://mlacookie.github.io/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7%E7%A6%BB%E6%95%A3%E8%AF%BE%E8%AE%BE%E8%AE%B0%E5%BD%95/picture/2_hu215fccaeef457934695ea3694b27b0df_34017_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 alt="计算树结构"
 class="gallery-image"
@@ -5345,7 +5583,7 @@ data-flex-basis="327px"
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div></description></item><item><title>浙工大c++课设讲解</title><link>https://mlacookie.github.io/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7c++%E8%AF%BE%E8%AE%BE%E8%AE%B2%E8%A7%A3/</link><pubDate>Thu, 15 Jun 2023 23:42:16 +0000</pubDate><guid>https://mlacookie.github.io/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7c++%E8%AF%BE%E8%AE%BE%E8%AE%B2%E8%A7%A3/</guid><description>&lt;h2 id="0x00-前言">&amp;lt;0x00&amp;gt; 前言
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div></description></item><item><title>浙工大c++课设讲解</title><link>https://mlacookie.github.io/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7c++%E8%AF%BE%E8%AE%BE%E8%AE%B0%E5%BD%95/</link><pubDate>Thu, 15 Jun 2023 23:42:16 +0000</pubDate><guid>https://mlacookie.github.io/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7c++%E8%AF%BE%E8%AE%BE%E8%AE%B0%E5%BD%95/</guid><description>&lt;h2 id="0x00-前言">&amp;lt;0x00&amp;gt; 前言
 &lt;/h2>&lt;p>我的题目是幼儿园的信息管理系统(第29号)&lt;br>
 运行在&lt;code>Cmake 3.25.3&lt;/code>+&lt;code>mingw 12.2.0&lt;/code>上&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-txt" data-lang="txt">&lt;span style="display:flex;">&lt;span>基本要求：
@@ -5425,10 +5663,10 @@ data-flex-basis="327px"
 为了首尾插入效率与保险起见，这个双向列表带有空的首尾节点&lt;br>
 (但最终代码没有完成对末尾插入的优化，忘了&lt;/p>
 &lt;p>总之，数据结构图如下&lt;br>
-&lt;img src="https://mlacookie.github.io/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7c&amp;#43;&amp;#43;%E8%AF%BE%E8%AE%BE%E8%AE%B2%E8%A7%A3/picture/1.png"
+&lt;img src="https://mlacookie.github.io/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7c&amp;#43;&amp;#43;%E8%AF%BE%E8%AE%BE%E8%AE%B0%E5%BD%95/picture/1.png"
 width="554"
 height="117"
-srcset="https://mlacookie.github.io/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7c&amp;#43;&amp;#43;%E8%AF%BE%E8%AE%BE%E8%AE%B2%E8%A7%A3/picture/1_hub2e23a13c4ffb794c035d632afb50c12_17676_480x0_resize_box_3.png 480w, https://mlacookie.github.io/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7c&amp;#43;&amp;#43;%E8%AF%BE%E8%AE%BE%E8%AE%B2%E8%A7%A3/picture/1_hub2e23a13c4ffb794c035d632afb50c12_17676_1024x0_resize_box_3.png 1024w"
+srcset="https://mlacookie.github.io/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7c&amp;#43;&amp;#43;%E8%AF%BE%E8%AE%BE%E8%AE%B0%E5%BD%95/picture/1_hub2e23a13c4ffb794c035d632afb50c12_17676_480x0_resize_box_3.png 480w, https://mlacookie.github.io/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7c&amp;#43;&amp;#43;%E8%AF%BE%E8%AE%BE%E8%AE%B0%E5%BD%95/picture/1_hub2e23a13c4ffb794c035d632afb50c12_17676_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 alt="数据结构"
 class="gallery-image"
@@ -5693,7 +5931,7 @@ data-flex-basis="1389px"
 &lt;h2 id="碎碎念">碎碎念
 &lt;/h2>&lt;p>还是Pychram好用😅，一站式解决所有的问题&lt;/p>
 &lt;p>(@ 24-07-19)
-现在vscode写python体验很不错了，这种问题之后也没遇到过了&lt;/p></description></item><item><title>从Cmake换到Xmake</title><link>https://mlacookie.github.io/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/</link><pubDate>Fri, 02 Jun 2023 19:45:28 +0000</pubDate><guid>https://mlacookie.github.io/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/</guid><description>&lt;h2 id="0x00-为啥不用cmake了">&amp;lt;0x00&amp;gt; 为啥不用Cmake了
+现在vscode写python体验很不错了，这种问题之后也没遇到过了&lt;/p></description></item><item><title>从Cmake换到Xmake</title><link>https://mlacookie.github.io/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/</link><pubDate>Fri, 02 Jun 2023 19:45:28 +0000</pubDate><guid>https://mlacookie.github.io/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/</guid><description>&lt;h2 id="0x00-为啥不用cmake">&amp;lt;0x00&amp;gt; 为啥不用Cmake
 &lt;/h2>&lt;p>怎么说呢，&lt;code>Cmake&lt;/code> 确实不是很好用，虽然说我还是稍微懂点 shell 命令的，但用着就是感觉很怪&lt;br>
 虽然 &lt;code>Cmake&lt;/code> 很强大，而且经过这么多年的发展，&lt;code>Cmake&lt;/code> 的社区支持也非常丰富&lt;br>
 但对于初学者，Cmake 的各种函数还是显得略微晦涩难懂&lt;br>

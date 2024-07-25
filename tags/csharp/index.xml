@@ -11,7 +11,7 @@
 >CsWin32&lt;/a>&lt;br>
 这个是基于C#&lt;code>源生成器&lt;/code>的Win32API封装器&lt;br>
 就是需要什么API，它就去生成那些API的&lt;code>P/Invoke&lt;/code>代码&lt;br>
-并且生成的质量还挺高的，尽可能去迎合C#的开发体验&lt;/p>
+并且生成的质量还挺高的，保留原本的调用风格的同时，尽可能去迎合C#的开发体验&lt;/p>
 &lt;h2 id="0x00-安装cswin32">&amp;lt;0x00&amp;gt; 安装CsWin32
 &lt;/h2>&lt;p>因为会用到C#的源生成器，所以最好使用VS2022并且相对新的版本，不然代码提示之类的会出问题&lt;br>
 VSCode的源生成器体验也是不错的，这个直接装&lt;code>C# kit&lt;/code>插件就可以了&lt;/p>
@@ -119,7 +119,7 @@ data-flex-basis="1198px"
 &lt;p>而且观察代码，不难发现，CsWin32会非常智能地使用C#自带的类型&lt;br>
 比如说Process类型里面的SafeHandle属性，这个返回的是&lt;code>SafeProcessHandle&lt;/code>&lt;br>
 这个虽然它的命名空间是&lt;code>Microsoft.Win32.SafeHandles&lt;/code>，但确实是C#本身就有的&lt;br>
-对于C#不带的类型，并且使用的API需要这些类型，CsWin32才会去生成对应的代码&lt;/p>
+对于C#不带的类型，只有使用的API需要这些类型传参，CsWin32才会去生成对应的代码&lt;/p>
 &lt;h2 id="0x02-一些不知道类型的枚举">&amp;lt;0x02&amp;gt; 一些不知道类型的枚举
 &lt;/h2>&lt;p>如果你需要使用某个枚举，但不知道是什么类型，CsWin32可以自动指出具体类型&lt;br>
 比如前面提到那两个API的返回值是&lt;code>winerror.h&lt;/code>中定义的错误代码，但我们不知道这是什么类&lt;br>
@@ -2830,7 +2830,7 @@ data-flex-basis="235px"
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>逻辑就是随性写的，不保证完全没Bug，应该是没严重Bug的&lt;br>
 (所以也没写高精度的运算处理)&lt;br>
-(写这篇博客比我写代码的时间都长😂)&lt;/p></description></item><item><title>浙工大离散课设讲解</title><link>https://mlacookie.github.io/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7%E7%A6%BB%E6%95%A3%E8%AF%BE%E8%AE%BE%E8%AE%B2%E8%A7%A3/</link><pubDate>Tue, 04 Jul 2023 13:14:00 +0000</pubDate><guid>https://mlacookie.github.io/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7%E7%A6%BB%E6%95%A3%E8%AF%BE%E8%AE%BE%E8%AE%B2%E8%A7%A3/</guid><description>&lt;h2 id="前言">前言
+(写这篇博客比我写代码的时间都长😂)&lt;/p></description></item><item><title>浙工大离散课设讲解</title><link>https://mlacookie.github.io/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7%E7%A6%BB%E6%95%A3%E8%AF%BE%E8%AE%BE%E8%AE%B0%E5%BD%95/</link><pubDate>Tue, 04 Jul 2023 13:14:00 +0000</pubDate><guid>https://mlacookie.github.io/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7%E7%A6%BB%E6%95%A3%E8%AF%BE%E8%AE%BE%E8%AE%B0%E5%BD%95/</guid><description>&lt;h2 id="前言">前言
 &lt;/h2>&lt;p>一般来说离散的课设都是给一大堆题目然后自己选的&lt;br>
 我选的是合式公式的真值表和成真成假赋值&lt;br>
 算是里面相对难的&lt;br>
@@ -2858,10 +2858,10 @@ data-flex-basis="235px"
 每次弹出都是弹出一个运算符与两个运算数，并将运算结果再压入运算符栈中&lt;br>
 重复弹出，直到当前运算符优先级大于运算符栈顶的运算符优先级为止&lt;br>
 如果遍历过程中遇到&lt;code>)&lt;/code>，则反复进行弹出操作，直到弹出一个&lt;code>(&lt;/code>为止&lt;/p>
-&lt;p>&lt;img src="https://mlacookie.github.io/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7%E7%A6%BB%E6%95%A3%E8%AF%BE%E8%AE%BE%E8%AE%B2%E8%A7%A3/picture/1.gif"
+&lt;p>&lt;img src="https://mlacookie.github.io/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7%E7%A6%BB%E6%95%A3%E8%AF%BE%E8%AE%BE%E8%AE%B0%E5%BD%95/picture/1.gif"
 width="400"
 height="400"
-srcset="https://mlacookie.github.io/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7%E7%A6%BB%E6%95%A3%E8%AF%BE%E8%AE%BE%E8%AE%B2%E8%A7%A3/picture/1_hu258ec33d35618ac3195ff0565a7c9b2d_11767406_480x0_resize_box_1.gif 480w, https://mlacookie.github.io/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7%E7%A6%BB%E6%95%A3%E8%AF%BE%E8%AE%BE%E8%AE%B2%E8%A7%A3/picture/1_hu258ec33d35618ac3195ff0565a7c9b2d_11767406_1024x0_resize_box_1.gif 1024w"
+srcset="https://mlacookie.github.io/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7%E7%A6%BB%E6%95%A3%E8%AF%BE%E8%AE%BE%E8%AE%B0%E5%BD%95/picture/1_hu258ec33d35618ac3195ff0565a7c9b2d_11767406_480x0_resize_box_1.gif 480w, https://mlacookie.github.io/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7%E7%A6%BB%E6%95%A3%E8%AF%BE%E8%AE%BE%E8%AE%B0%E5%BD%95/picture/1_hu258ec33d35618ac3195ff0565a7c9b2d_11767406_1024x0_resize_box_1.gif 1024w"
 loading="lazy"
 alt="演示动画"
 class="gallery-image"
@@ -2902,10 +2902,10 @@ data-flex-basis="240px"
 操作数由运算符连接，合成一个新节点&lt;br>
 如此嵌套，最后连接在一个根节点上&lt;br>
 每次计算时，先给操作数真假指派，然后走遍计算树，根节点的值就是公式的计算结果&lt;/p>
-&lt;p>&lt;img src="https://mlacookie.github.io/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7%E7%A6%BB%E6%95%A3%E8%AF%BE%E8%AE%BE%E8%AE%B2%E8%A7%A3/picture/2.png"
+&lt;p>&lt;img src="https://mlacookie.github.io/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7%E7%A6%BB%E6%95%A3%E8%AF%BE%E8%AE%BE%E8%AE%B0%E5%BD%95/picture/2.png"
 width="381"
 height="279"
-srcset="https://mlacookie.github.io/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7%E7%A6%BB%E6%95%A3%E8%AF%BE%E8%AE%BE%E8%AE%B2%E8%A7%A3/picture/2_hu215fccaeef457934695ea3694b27b0df_34017_480x0_resize_box_3.png 480w, https://mlacookie.github.io/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7%E7%A6%BB%E6%95%A3%E8%AF%BE%E8%AE%BE%E8%AE%B2%E8%A7%A3/picture/2_hu215fccaeef457934695ea3694b27b0df_34017_1024x0_resize_box_3.png 1024w"
+srcset="https://mlacookie.github.io/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7%E7%A6%BB%E6%95%A3%E8%AF%BE%E8%AE%BE%E8%AE%B0%E5%BD%95/picture/2_hu215fccaeef457934695ea3694b27b0df_34017_480x0_resize_box_3.png 480w, https://mlacookie.github.io/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7%E7%A6%BB%E6%95%A3%E8%AF%BE%E8%AE%BE%E8%AE%B0%E5%BD%95/picture/2_hu215fccaeef457934695ea3694b27b0df_34017_1024x0_resize_box_3.png 1024w"
 loading="lazy"
 alt="计算树结构"
 class="gallery-image"

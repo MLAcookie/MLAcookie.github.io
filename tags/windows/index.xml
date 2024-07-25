@@ -11,7 +11,7 @@
 >CsWin32&lt;/a>&lt;br>
 这个是基于C#&lt;code>源生成器&lt;/code>的Win32API封装器&lt;br>
 就是需要什么API，它就去生成那些API的&lt;code>P/Invoke&lt;/code>代码&lt;br>
-并且生成的质量还挺高的，尽可能去迎合C#的开发体验&lt;/p>
+并且生成的质量还挺高的，保留原本的调用风格的同时，尽可能去迎合C#的开发体验&lt;/p>
 &lt;h2 id="0x00-安装cswin32">&amp;lt;0x00&amp;gt; 安装CsWin32
 &lt;/h2>&lt;p>因为会用到C#的源生成器，所以最好使用VS2022并且相对新的版本，不然代码提示之类的会出问题&lt;br>
 VSCode的源生成器体验也是不错的，这个直接装&lt;code>C# kit&lt;/code>插件就可以了&lt;/p>
@@ -119,7 +119,7 @@ data-flex-basis="1198px"
 &lt;p>而且观察代码，不难发现，CsWin32会非常智能地使用C#自带的类型&lt;br>
 比如说Process类型里面的SafeHandle属性，这个返回的是&lt;code>SafeProcessHandle&lt;/code>&lt;br>
 这个虽然它的命名空间是&lt;code>Microsoft.Win32.SafeHandles&lt;/code>，但确实是C#本身就有的&lt;br>
-对于C#不带的类型，并且使用的API需要这些类型，CsWin32才会去生成对应的代码&lt;/p>
+对于C#不带的类型，只有使用的API需要这些类型传参，CsWin32才会去生成对应的代码&lt;/p>
 &lt;h2 id="0x02-一些不知道类型的枚举">&amp;lt;0x02&amp;gt; 一些不知道类型的枚举
 &lt;/h2>&lt;p>如果你需要使用某个枚举，但不知道是什么类型，CsWin32可以自动指出具体类型&lt;br>
 比如前面提到那两个API的返回值是&lt;code>winerror.h&lt;/code>中定义的错误代码，但我们不知道这是什么类&lt;br>
