@@ -14,7 +14,8 @@
 问题也有，就是我们Python都不熟，但比起没代码参考好太多了&lt;/p>
 &lt;p>&lt;a class="link" href="https://github.com/MLAcookie/EvmPlayground" target="_blank" rel="noopener"
 >项目地址&lt;/a>&lt;/p>
-&lt;h2 id="0x0-一些感想">&amp;lt;0x0&amp;gt; 一些感想
+&lt;h2 id="0x0-evm原理">&amp;lt;0x0&amp;gt; EVM原理
+&lt;/h2>&lt;h2 id="0x0-一些感想">&amp;lt;0x0&amp;gt; 一些感想
 &lt;/h2></description></item><item><title>Python在VSCode中代码提示异常问题</title><link>https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/</link><pubDate>Mon, 05 Jun 2023 00:16:03 +0000</pubDate><guid>https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/</guid><description>&lt;h2 id="0x00-这就是个很神秘的问题">&amp;lt;0x00&amp;gt; 这就是个很神秘的问题
 &lt;/h2>&lt;p>突然想写一段 python 代码，然后打开 vscode&lt;br>
 就很神秘，明明啥配置都没改，代码提示又寄了&lt;br>

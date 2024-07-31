@@ -1,4 +1,289 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>CoderRecovery on MLAcookie</title><link>https://mlacookie.github.io/categories/coderrecovery/</link><description>Recent content in CoderRecovery on MLAcookie</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Thu, 25 Jul 2024 21:33:45 +0800</lastBuildDate><atom:link href="https://mlacookie.github.io/categories/coderrecovery/index.xml" rel="self" type="application/rss+xml"/><item><title>算法康复计划 08</title><link>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-08/</link><pubDate>Thu, 25 Jul 2024 21:33:45 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-08/</guid><description>&lt;p>急着看今晚的OW比赛，所以就随便写个前缀和的题目&lt;/p>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>CoderRecovery on MLAcookie</title><link>https://mlacookie.github.io/categories/coderrecovery/</link><description>Recent content in CoderRecovery on MLAcookie</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Sat, 27 Jul 2024 23:47:27 +0800</lastBuildDate><atom:link href="https://mlacookie.github.io/categories/coderrecovery/index.xml" rel="self" type="application/rss+xml"/><item><title>算法康复计划 10</title><link>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-10/</link><pubDate>Sat, 27 Jul 2024 23:47:27 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-10/</guid><description>&lt;p>不知不觉写了10天了，目前只能说C++没之前这么手生了&lt;/p>
+&lt;h2 id="0x00-今日题目过河卒">&amp;lt;0x00&amp;gt; 今日题目：过河卒
+&lt;/h2>&lt;p>&lt;a class="link" href="https://www.luogu.com.cn/problem/P1002" target="_blank" rel="noopener"
+>洛谷的P1002&lt;/a>&lt;/p>
+&lt;h3 id="题目描述">题目描述
+&lt;/h3>&lt;p>棋盘上 $A$ 点有一个过河卒，需要走到目标 $B$ 点&lt;br>
+卒行走的规则：可以向下、或者向右。同时在棋盘上 $C$ 点有一个对方的马，该马所在的点和所有跳跃一步可达的点称为对方马的控制点&lt;br>
+因此称之为“马拦过河卒”。&lt;/p>
+&lt;p>棋盘用坐标表示，$A$ 点 $(0, 0)$、$B$ 点 $(n, m)$，同样马的位置坐标是需要给出的&lt;/p>
+&lt;p>达 $B$ 点的路径的条数，假设马的位置是固定不动的，并不是卒走一步马走一步&lt;/p>
+&lt;h3 id="输入格式">输入格式
+&lt;/h3>&lt;p>一行四个正整数，分别表示 $B$ 点坐标和马的坐标。&lt;/p>
+&lt;h3 id="输出格式">输出格式
+&lt;/h3>&lt;p>一个整数，表示所有的路径条数。&lt;/p>
+&lt;h3 id="样例">样例
+&lt;/h3>&lt;h4 id="样例输入">样例输入
+&lt;/h4>&lt;pre tabindex="0">&lt;code>6 6 3 3
+&lt;/code>&lt;/pre>&lt;h4 id="样例输出">样例输出
+&lt;/h4>&lt;pre tabindex="0">&lt;code>6
+&lt;/code>&lt;/pre>&lt;h3 id="数据规模与约定">数据规模与约定
+&lt;/h3>&lt;p>对于 $100 %$ 的数据，$1 \le n, m \le 20$，$0 \le$ 马的坐标 $\le 20$。&lt;/p>
+&lt;h2 id="0x01-分析">&amp;lt;0x01&amp;gt; 分析
+&lt;/h2>&lt;p>可以当成动态规划题目来看&lt;br>
+因为只能往下/往右走，不存在回头的可能&lt;br>
+所以可以将问题分解成到上一格怎么走，上上格怎么走&lt;br>
+比方说&lt;code>(0,0)→(3,2)&lt;/code>就可以分解成&lt;code>(0,0)→(2,2)+(3,1)→(3,2)&lt;/code>，以此类推&lt;br>
+这样就很像之前写的数楼梯的题了&lt;/p>
+&lt;p>记&lt;code>(0,0)→(0,0)&lt;/code>的路径数为1&lt;br>
+那么可以写出状态转移方程$f(x,y)=f(x-1,y)+f(x,y-1),f(0,0)=1$&lt;br>
+这样的话遍历一遍整个地图就可以了&lt;/p>
+&lt;h2 id="0x02-代码">&amp;lt;0x02&amp;gt; 代码
+&lt;/h2>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-cpp" data-lang="cpp">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;iostream&amp;gt;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;vector&amp;gt;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">// 我习惯封装一个地图
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">Map&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>vector&lt;span style="color:#f92672">&amp;lt;&lt;/span>std&lt;span style="color:#f92672">::&lt;/span>vector&lt;span style="color:#f92672">&amp;lt;&lt;/span>&lt;span style="color:#66d9ef">int&lt;/span>&lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> mat;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">public&lt;/span>&lt;span style="color:#f92672">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Map(&lt;span style="color:#66d9ef">int&lt;/span> n)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> mat.resize(n);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">int&lt;/span> i &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>; i &lt;span style="color:#f92672">&amp;lt;&lt;/span> n; i&lt;span style="color:#f92672">++&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> mat[i].resize(n, &lt;span style="color:#ae81ff">0&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> &lt;span style="color:#f92672">&amp;amp;&lt;/span>At(&lt;span style="color:#66d9ef">int&lt;/span> x, &lt;span style="color:#66d9ef">int&lt;/span> y)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> mat[y][x];
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">void&lt;/span> &lt;span style="color:#a6e22e">Set&lt;/span>(&lt;span style="color:#66d9ef">int&lt;/span> x, &lt;span style="color:#66d9ef">int&lt;/span> y, &lt;span style="color:#66d9ef">int&lt;/span> num)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (x &lt;span style="color:#f92672">&amp;lt;&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span> &lt;span style="color:#f92672">||&lt;/span> y &lt;span style="color:#f92672">&amp;lt;&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (x &lt;span style="color:#f92672">&amp;gt;=&lt;/span> mat.size() &lt;span style="color:#f92672">||&lt;/span> y &lt;span style="color:#f92672">&amp;gt;=&lt;/span> mat.size())
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> mat[y][x] &lt;span style="color:#f92672">=&lt;/span> num;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> &lt;span style="color:#a6e22e">Length&lt;/span>()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> mat.size();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>};
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Map &lt;span style="color:#a6e22e">map&lt;/span>(&lt;span style="color:#ae81ff">22&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">int&lt;/span> ex, ey;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>size_t dp[&lt;span style="color:#ae81ff">22&lt;/span>][&lt;span style="color:#ae81ff">22&lt;/span>];
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">int&lt;/span> &lt;span style="color:#a6e22e">main&lt;/span>()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> hx, hy;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>cin &lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> ex &lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> ey &lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> hx &lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> hy;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 这样方便算递推
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> dp[&lt;span style="color:#ae81ff">1&lt;/span>][&lt;span style="color:#ae81ff">1&lt;/span>] &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ex&lt;span style="color:#f92672">++&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ey&lt;span style="color:#f92672">++&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> hx&lt;span style="color:#f92672">++&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> hy&lt;span style="color:#f92672">++&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> map.At(hx, hy) &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 设置马的8个方向
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> map.Set(hx &lt;span style="color:#f92672">-&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>, hy &lt;span style="color:#f92672">-&lt;/span> &lt;span style="color:#ae81ff">2&lt;/span>, &lt;span style="color:#ae81ff">1&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> map.Set(hx &lt;span style="color:#f92672">+&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>, hy &lt;span style="color:#f92672">-&lt;/span> &lt;span style="color:#ae81ff">2&lt;/span>, &lt;span style="color:#ae81ff">1&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> map.Set(hx &lt;span style="color:#f92672">+&lt;/span> &lt;span style="color:#ae81ff">2&lt;/span>, hy &lt;span style="color:#f92672">-&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>, &lt;span style="color:#ae81ff">1&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> map.Set(hx &lt;span style="color:#f92672">+&lt;/span> &lt;span style="color:#ae81ff">2&lt;/span>, hy &lt;span style="color:#f92672">+&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>, &lt;span style="color:#ae81ff">1&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> map.Set(hx &lt;span style="color:#f92672">-&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>, hy &lt;span style="color:#f92672">+&lt;/span> &lt;span style="color:#ae81ff">2&lt;/span>, &lt;span style="color:#ae81ff">1&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> map.Set(hx &lt;span style="color:#f92672">+&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>, hy &lt;span style="color:#f92672">+&lt;/span> &lt;span style="color:#ae81ff">2&lt;/span>, &lt;span style="color:#ae81ff">1&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> map.Set(hx &lt;span style="color:#f92672">-&lt;/span> &lt;span style="color:#ae81ff">2&lt;/span>, hy &lt;span style="color:#f92672">-&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>, &lt;span style="color:#ae81ff">1&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> map.Set(hx &lt;span style="color:#f92672">-&lt;/span> &lt;span style="color:#ae81ff">2&lt;/span>, hy &lt;span style="color:#f92672">+&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>, &lt;span style="color:#ae81ff">1&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 开始递推
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">int&lt;/span> i &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>; i &lt;span style="color:#f92672">&amp;lt;=&lt;/span> ex; i&lt;span style="color:#f92672">++&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">int&lt;/span> j &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>; j &lt;span style="color:#f92672">&amp;lt;=&lt;/span> ey; j&lt;span style="color:#f92672">++&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 跳过第一个点
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">if&lt;/span> (i &lt;span style="color:#f92672">==&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span> &lt;span style="color:#f92672">&amp;amp;&amp;amp;&lt;/span> j &lt;span style="color:#f92672">==&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">continue&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (map.At(i, j) &lt;span style="color:#f92672">!=&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> dp[i][j] &lt;span style="color:#f92672">=&lt;/span> dp[i &lt;span style="color:#f92672">-&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>][j] &lt;span style="color:#f92672">+&lt;/span> dp[i][j &lt;span style="color:#f92672">-&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>];
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>cout &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> dp[ex][ey] &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> &lt;span style="color:#e6db74">&amp;#34;&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="0x03-遇到的坑">&amp;lt;0x03&amp;gt; 遇到的坑
+&lt;/h2>&lt;p>我最开始看到这道题我以为问题不大&lt;br>
+所以就直接拿出DFS了，DFS也算递归嘛&lt;br>
+然后就有两个数据点没过&lt;br>
+后来一想就发现问题了，既然不要求路径，那也没必要用DFS，直接递推就可以了&lt;/p></description></item><item><title>算法康复计划 09</title><link>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-09/</link><pubDate>Sat, 27 Jul 2024 01:10:32 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-09/</guid><description>&lt;h2 id="0x00-今日题目挖地雷">&amp;lt;0x00&amp;gt; 今日题目：挖地雷
+&lt;/h2>&lt;p>&lt;a class="link" href="https://www.luogu.com.cn/problem/P2196" target="_blank" rel="noopener"
+>洛谷的P2196&lt;/a>&lt;/p>
+&lt;h3 id="题目描述">题目描述
+&lt;/h3>&lt;p>在一个地图上有 $N\ (N \le 20)$ 个地窖，每个地窖中埋有一定数量的地雷&lt;br>
+同时，给出地窖之间的连接路径&lt;br>
+当地窖及其连接的数据给出之后，某人可以从任一处开始挖地雷，然后可以沿着指出的连接往下挖（仅能选择一条路径）&lt;br>
+当无连接时挖地雷工作结束&lt;br>
+设计一个挖地雷的方案，使某人能挖到最多的地雷&lt;/p>
+&lt;h3 id="输入格式">输入格式
+&lt;/h3>&lt;p>有若干行。&lt;br>
+第 $1$ 行只有一个数字，表示地窖的个数 $N$&lt;br>
+第 $2$ 行有 $N$ 个数，分别表示每个地窖中的地雷个数&lt;/p>
+&lt;p>第 $3$ 行至第 $N+1$ 行表示地窖之间的连接情况：&lt;br>
+第 $3$ 行有 $n-1$ 个数（$0$ 或 $1$），表示第一个地窖至第 $2$ 个、第 $3$ 个 $\dots$ 第 $n$ 个地窖有否路径连接&lt;br>
+如第 $3$ 行为 $11000\cdots 0$，则表示第 $1$ 个地窖至第 $2$ 个地窖有路径，至第 $3$ 个地窖有路径，至第 $4$ 个地窖、第 $5$ 个 $\dots$ 第 $n$ 个地窖没有路径&lt;br>
+第 $4$ 行有 $n-2$ 个数，表示第二个地窖至第 $3$ 个、第 $4$ 个 $\dots$ 第 $n$ 个地窖有否路径连接&lt;br>
+……&lt;/p>
+&lt;p>第 $n+1$ 行有 $1$ 个数，表示第 $n-1$ 个地窖至第 $n$ 个地窖有否路径连接&lt;br>
+（为 $0$ 表示没有路径，为 $1$ 表示有路径）&lt;/p>
+&lt;h3 id="输出格式">输出格式
+&lt;/h3>&lt;p>第一行表示挖得最多地雷时的挖地雷的顺序，各地窖序号间以一个空格分隔，不得有多余的空格&lt;br>
+第二行只有一个数，表示能挖到的最多地雷数&lt;/p>
+&lt;h3 id="样例">样例
+&lt;/h3>&lt;h4 id="样例输入">样例输入
+&lt;/h4>&lt;pre tabindex="0">&lt;code>5
+10 8 4 7 6
+1 1 1 0
+0 0 0
+1 1
+1
+&lt;/code>&lt;/pre>&lt;h4 id="样例输出">样例输出
+&lt;/h4>&lt;pre tabindex="0">&lt;code>1 3 4 5
+27
+&lt;/code>&lt;/pre>&lt;h2 id="0x01-分析">&amp;lt;0x01&amp;gt; 分析
+&lt;/h2>&lt;p>貌似可以用DFS过（题解也有人说能），但为了练动态规划就没去用&lt;/p>
+&lt;p>怎么动态规划呢，关键还是状态转移方程&lt;br>
+令状态转移方程为$f(i)$，$i$表示到下标为$i$的地窖停止&lt;br>
+令下标为$i$的地窖有地雷$a_i$个&lt;br>
+所以状态转移方程为$f(i)=a_i+max(a_1,&amp;hellip;,a_{i-1})$&lt;/p>
+&lt;h2 id="0x02-代码">&amp;lt;0x02&amp;gt; 代码
+&lt;/h2>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-cpp" data-lang="cpp">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;iostream&amp;gt;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;vector&amp;gt;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">int&lt;/span> n;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>std&lt;span style="color:#f92672">::&lt;/span>vector&lt;span style="color:#f92672">&amp;lt;&lt;/span>&lt;span style="color:#66d9ef">int&lt;/span>&lt;span style="color:#f92672">&amp;gt;&lt;/span> nums;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">// 定义搜索信息类
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">SearchInfo&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>vector&lt;span style="color:#f92672">&amp;lt;&lt;/span>&lt;span style="color:#66d9ef">int&lt;/span>&lt;span style="color:#f92672">&amp;gt;&lt;/span> searchList;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> count &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">public&lt;/span>&lt;span style="color:#f92672">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> SearchInfo()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> searchList.clear();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> SearchInfo(&lt;span style="color:#66d9ef">int&lt;/span> index)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> searchList.push_back(index);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> count &lt;span style="color:#f92672">+=&lt;/span> nums[index];
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> SearchInfo(&lt;span style="color:#66d9ef">const&lt;/span> SearchInfo &lt;span style="color:#f92672">&amp;amp;&lt;/span>c)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> searchList.assign(c.searchList.begin(), c.searchList.end());
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> count &lt;span style="color:#f92672">=&lt;/span> c.count;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">void&lt;/span> &lt;span style="color:#a6e22e">Println&lt;/span>()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">auto&lt;/span> &lt;span style="color:#f92672">&amp;amp;&lt;/span>i : searchList)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>cout &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> i &lt;span style="color:#f92672">+&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span> &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> &lt;span style="color:#e6db74">&amp;#34; &amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>cout &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> &lt;span style="color:#e6db74">&amp;#34;&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>cout &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> count &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> &lt;span style="color:#e6db74">&amp;#34;&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">bool&lt;/span> &lt;span style="color:#66d9ef">operator&lt;/span>&lt;span style="color:#f92672">&amp;gt;&lt;/span>(&lt;span style="color:#66d9ef">const&lt;/span> SearchInfo &lt;span style="color:#f92672">&amp;amp;&lt;/span>r) &lt;span style="color:#66d9ef">const&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> count &lt;span style="color:#f92672">&amp;gt;&lt;/span> r.count;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">bool&lt;/span> &lt;span style="color:#66d9ef">operator&lt;/span>&lt;span style="color:#f92672">&amp;lt;&lt;/span>(&lt;span style="color:#66d9ef">const&lt;/span> SearchInfo &lt;span style="color:#f92672">&amp;amp;&lt;/span>r) &lt;span style="color:#66d9ef">const&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> count &lt;span style="color:#f92672">&amp;lt;&lt;/span> r.count;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> SearchInfo &lt;span style="color:#a6e22e">Append&lt;/span>(&lt;span style="color:#66d9ef">int&lt;/span> index)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> SearchInfo ans(&lt;span style="color:#f92672">*&lt;/span>&lt;span style="color:#66d9ef">this&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ans.searchList.push_back(index);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ans.count &lt;span style="color:#f92672">+=&lt;/span> nums[index];
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> ans;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">static&lt;/span> SearchInfo &lt;span style="color:#a6e22e">Max&lt;/span>(SearchInfo a, SearchInfo b)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> a &lt;span style="color:#f92672">&amp;gt;&lt;/span> b &lt;span style="color:#f92672">?&lt;/span> a : b;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>};
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>std&lt;span style="color:#f92672">::&lt;/span>vector&lt;span style="color:#f92672">&amp;lt;&lt;/span>std&lt;span style="color:#f92672">::&lt;/span>vector&lt;span style="color:#f92672">&amp;lt;&lt;/span>&lt;span style="color:#66d9ef">bool&lt;/span>&lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> map;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>std&lt;span style="color:#f92672">::&lt;/span>vector&lt;span style="color:#f92672">&amp;lt;&lt;/span>SearchInfo&lt;span style="color:#f92672">&amp;gt;&lt;/span> dp;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">int&lt;/span> &lt;span style="color:#a6e22e">main&lt;/span>()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>cin &lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> n;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> nums.resize(n);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> map.resize(n);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> dp.resize(n);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">int&lt;/span> i &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>; i &lt;span style="color:#f92672">&amp;lt;&lt;/span> n; i&lt;span style="color:#f92672">++&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>cin &lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> nums[i];
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> map[i].resize(n, false);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">int&lt;/span> i &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>; i &lt;span style="color:#f92672">&amp;lt;&lt;/span> n &lt;span style="color:#f92672">-&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>; i&lt;span style="color:#f92672">++&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">int&lt;/span> j &lt;span style="color:#f92672">=&lt;/span> i &lt;span style="color:#f92672">+&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>; j &lt;span style="color:#f92672">&amp;lt;&lt;/span> n; j&lt;span style="color:#f92672">++&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> temp;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>cin &lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> temp;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> map[i][j] &lt;span style="color:#f92672">=&lt;/span> temp &lt;span style="color:#f92672">==&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span> &lt;span style="color:#f92672">?&lt;/span> false &lt;span style="color:#f92672">:&lt;/span> true;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> map[j][i] &lt;span style="color:#f92672">=&lt;/span> temp &lt;span style="color:#f92672">==&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span> &lt;span style="color:#f92672">?&lt;/span> false &lt;span style="color:#f92672">:&lt;/span> true;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> dp[&lt;span style="color:#ae81ff">0&lt;/span>] &lt;span style="color:#f92672">=&lt;/span> SearchInfo(&lt;span style="color:#ae81ff">0&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 关键DP方程
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">int&lt;/span> i &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>; i &lt;span style="color:#f92672">&amp;lt;&lt;/span> n; i&lt;span style="color:#f92672">++&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">int&lt;/span> j &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>; j &lt;span style="color:#f92672">&amp;lt;&lt;/span> i; j&lt;span style="color:#f92672">++&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 有路的时候
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">if&lt;/span> (map[i][j])
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> dp[i] &lt;span style="color:#f92672">=&lt;/span> SearchInfo&lt;span style="color:#f92672">::&lt;/span>Max(dp[i], dp[j]);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 附加上
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> dp[i] &lt;span style="color:#f92672">=&lt;/span> dp[i].Append(i);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> SearchInfo max;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">int&lt;/span> i &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>; i &lt;span style="color:#f92672">&amp;lt;&lt;/span> n; i&lt;span style="color:#f92672">++&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (dp[i] &lt;span style="color:#f92672">&amp;gt;&lt;/span> max)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> max &lt;span style="color:#f92672">=&lt;/span> dp[i];
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> max.Println();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="0x03-遇到的坑">&amp;lt;0x03&amp;gt; 遇到的坑
+&lt;/h2>&lt;p>经验不足，想状态转移方程方向出了点问题&lt;br>
+我原本是认为是定义$f(i,j)$其中$i$表示扫了几个房间的雷，$j$表示从哪个房间开始&lt;br>
+没想出来。所以稍微看了眼题解的状态转移方程，恍然大悟&lt;br>
+这个也没啥办法，动态规划只是一种思想，要熟练得多练&lt;/p>
+&lt;p>还有，这题貌似是单向的搜索，因为按照代码的思路，是得不出&lt;code>1 3 2 5 4&lt;/code>这样的路径的&lt;br>
+这里给出测试样例&lt;/p>
+&lt;pre tabindex="0">&lt;code>5
+1 2 3 4 5
+0 1 0 0
+1 0 1
+0 0
+1
+&lt;/code>&lt;/pre>&lt;p>按道理挖雷最大化路径就是&lt;code>1 3 2 5 4&lt;/code>，但代码会给出&lt;code>4 5&lt;/code>&lt;br>
+考虑到洛谷那边确实是过了，那应该是我之前的理解也有问题&lt;br>
+我默认当成是一笔画问题去考虑，想状态方程也是重点往这方面想，一直也想不出来&lt;br>
+估计做这题还是记忆化搜索保险，要真是一笔画思路的话这样写就过不了了&lt;/p></description></item><item><title>算法康复计划 08</title><link>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-08/</link><pubDate>Thu, 25 Jul 2024 21:33:45 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-08/</guid><description>&lt;p>急着看今晚的OW比赛，所以就随便写个前缀和的题目&lt;br>
+（OA猛）&lt;/p>
 &lt;h2 id="0x00-今日题目求区间和">&amp;lt;0x00&amp;gt; 今日题目：求区间和
 &lt;/h2>&lt;p>&lt;a class="link" href="https://www.luogu.com.cn/problem/P8218" target="_blank" rel="noopener"
 >洛谷的P8218&lt;/a>&lt;/p>

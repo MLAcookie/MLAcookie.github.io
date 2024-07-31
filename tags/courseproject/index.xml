@@ -14,7 +14,8 @@
 问题也有，就是我们Python都不熟，但比起没代码参考好太多了&lt;/p>
 &lt;p>&lt;a class="link" href="https://github.com/MLAcookie/EvmPlayground" target="_blank" rel="noopener"
 >项目地址&lt;/a>&lt;/p>
-&lt;h2 id="0x0-一些感想">&amp;lt;0x0&amp;gt; 一些感想
+&lt;h2 id="0x0-evm原理">&amp;lt;0x0&amp;gt; EVM原理
+&lt;/h2>&lt;h2 id="0x0-一些感想">&amp;lt;0x0&amp;gt; 一些感想
 &lt;/h2></description></item><item><title>浙工大离散课设讲解</title><link>https://mlacookie.github.io/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7%E7%A6%BB%E6%95%A3%E8%AF%BE%E8%AE%BE%E8%AE%B0%E5%BD%95/</link><pubDate>Tue, 04 Jul 2023 13:14:00 +0000</pubDate><guid>https://mlacookie.github.io/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7%E7%A6%BB%E6%95%A3%E8%AF%BE%E8%AE%BE%E8%AE%B0%E5%BD%95/</guid><description>&lt;h2 id="前言">前言
 &lt;/h2>&lt;p>一般来说离散的课设都是给一大堆题目然后自己选的&lt;br>
 我选的是合式公式的真值表和成真成假赋值&lt;br>

@@ -14,7 +14,8 @@
 问题也有，就是我们Python都不熟，但比起没代码参考好太多了&lt;/p>
 &lt;p>&lt;a class="link" href="https://github.com/MLAcookie/EvmPlayground" target="_blank" rel="noopener"
 >项目地址&lt;/a>&lt;/p>
-&lt;h2 id="0x0-一些感想">&amp;lt;0x0&amp;gt; 一些感想
+&lt;h2 id="0x0-evm原理">&amp;lt;0x0&amp;gt; EVM原理
+&lt;/h2>&lt;h2 id="0x0-一些感想">&amp;lt;0x0&amp;gt; 一些感想
 &lt;/h2></description></item><item><title>关于我用C#写Opencv这件事-03</title><link>https://mlacookie.github.io/article/categories/opencv/%E5%85%B3%E4%BA%8E%E6%88%91%E7%94%A8c%23%E5%86%99opencv%E8%BF%99%E4%BB%B6%E4%BA%8B-03/</link><pubDate>Mon, 18 Mar 2024 12:59:53 +0000</pubDate><guid>https://mlacookie.github.io/article/categories/opencv/%E5%85%B3%E4%BA%8E%E6%88%91%E7%94%A8c%23%E5%86%99opencv%E8%BF%99%E4%BB%B6%E4%BA%8B-03/</guid><description>&lt;p>（说实话我有点后悔用C#写Opencv了）
 今天我们神秘的数字图像处理做实验了&lt;br>
 虽然东西是挺简单的，但因为我用的是C#，导致很多现成的代码都没法抄&lt;br>
