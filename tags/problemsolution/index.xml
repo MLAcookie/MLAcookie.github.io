@@ -62,7 +62,7 @@ Gnome一些习惯我适应不了，xfce不是很适合高分屏，其他的没�
 所以之后软件的安装/升级/删除都可以交给yay&lt;br>
 需要注意的是yay安装软件时不需要sudo，在需要权限提升时，它会要求输入密码的&lt;/p>
 &lt;p>然后安装软件的时候，如果后缀有带bin的，一般说明是二进制版本，优先选择这个&lt;br>
-这样的话就不用从源代码编译了&lt;/p>
+这样的话就不用从源代码编译了，安装会快很多&lt;/p>
 &lt;h3 id="配置fcitx5">配置fcitx5
 &lt;/h3>&lt;p>&lt;code>fcitx5&lt;/code>是一个输入法框架，装上后再配置下就可以输入中文了&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>sudo pacman -S fcitx5 fcitx5-configtool fcitx5-breeze fcitx5-chinese-addons fcitx5-gtk fcitx5-qt
@@ -92,16 +92,14 @@ Gnome一些习惯我适应不了，xfce不是很适合高分屏，其他的没�
 &lt;/h2>&lt;h3 id="vs-code">VS Code
 &lt;/h3>&lt;p>经常用的开发环境&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>yay visual-studio-code-bin
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h4 id="启用wayland">启用Wayland
-&lt;/h4>&lt;p>总之就是想办法把这两句命令行参数传进去&lt;/p>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>安装完修改启动参数来启用wayland&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>--enable-features&lt;span style="color:#f92672">=&lt;/span>UseOzonePlatform
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>--ozone-platform&lt;span style="color:#f92672">=&lt;/span>wayland
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>--enable-wayland-ime
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="edge">Edge
 &lt;/h3>&lt;p>目前我的大部分浏览器数据在Edge上&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>yay microsoft-edge-stable-bin
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h4 id="启用wayland-1">启用Wayland
-&lt;/h4>&lt;p>跟VSCode一样的命令行参数&lt;/p>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>安装完修改启动参数来启用wayland，参数跟上面的&lt;code>VS Code&lt;/code>一样&lt;/p>
 &lt;h3 id="hiddify">hiddify
 &lt;/h3>&lt;p>魔法学，不细讲&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>yay hiddify-next-bin
@@ -112,7 +110,8 @@ Gnome一些习惯我适应不了，xfce不是很适合高分屏，其他的没�
 &lt;/h3>&lt;p>对于高分屏，wayland的支持是好得多的&lt;br>
 即使KDE跑x11应用时，由于允许应用自行缩放，所以大部分情况下还是清晰的&lt;br>
 但跑在wayland下可以杜绝大部分控件缩放问题&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>qdbus org.kde.KWin /KWin org.kde.KWin.showDebugConsole
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># qdbus可能不存在，改为qdbus6&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>qdbus org.kde.KWin /KWin org.kde.KWin.showDebugConsole
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>运行后会跳出一个小工具，用来查看所有窗口运行在哪个服务上&lt;/p>
 &lt;h2 id="0x05-遇到的奇怪闪屏问题">&amp;lt;0x05&amp;gt; 遇到的奇怪闪屏问题
 &lt;/h2>&lt;p>不知道为什么，我安装完系统后发现系统总会有奇怪的闪屏&lt;br>

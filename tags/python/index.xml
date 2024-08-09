@@ -10,13 +10,64 @@
 &lt;p>好在我们还有一个&lt;code>Plan B&lt;/code>，就是参考MIT的运动放大的论文去写一个应用&lt;br>
 （主要是看了Steve Mould的&lt;a class="link" href="https://www.bilibili.com/video/BV1au411c7YJ/?spm_id_from=333.999.0.0" target="_blank" rel="noopener"
 >视频&lt;/a>）&lt;br>
-这样的话，语言也换成了参考够多的Python，效率高了不少&lt;br>
+这样的话，语言也干脆换成了参考够多的Python，效率高了不少&lt;br>
 问题也有，就是我们Python都不熟，但比起没代码参考好太多了&lt;/p>
 &lt;p>&lt;a class="link" href="https://github.com/MLAcookie/EvmPlayground" target="_blank" rel="noopener"
 >项目地址&lt;/a>&lt;/p>
 &lt;h2 id="0x0-evm原理">&amp;lt;0x0&amp;gt; EVM原理
 &lt;/h2>&lt;h2 id="0x0-一些感想">&amp;lt;0x0&amp;gt; 一些感想
-&lt;/h2></description></item><item><title>Python在VSCode中代码提示异常问题</title><link>https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/</link><pubDate>Mon, 05 Jun 2023 00:16:03 +0000</pubDate><guid>https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/</guid><description>&lt;h2 id="0x00-这就是个很神秘的问题">&amp;lt;0x00&amp;gt; 这就是个很神秘的问题
+&lt;/h2>&lt;h3 id="关于知识">关于知识
+&lt;/h3>&lt;p>首先就是确实感觉知道的东西多反而是一种诅咒&lt;br>
+为什么这么说呢，知道的东西多了之后，遇到新的问题总是会用自己知道的知识解决&lt;br>
+这道是正常的，毕竟这也是学习的目的&lt;br>
+但问题是，当知道的东西多了之后，我总是觉得这个问题用已知知识是能解决的&lt;br>
+然后就这样去开发，走一半，会发现这个项目按原计划开发会遇到非常多的问题&lt;br>
+两个选择，要么花很多时间去解决，要么项目推倒重来重新设计架构&lt;br>
+这两个选择都是痛苦的&lt;/p>
+&lt;p>像这个课设，我就犯这样的错误&lt;br>
+一开始我是打算用C#做Opencv开发，然后WPF做前端&lt;br>
+本来确实觉得没啥问题，因为Opencv在C#的实现我还是熟的，WPF我也是熟的&lt;br>
+开发到后来发现，EVM需要用到傅里叶变换，Opencv中肯定是不带这种东西的&lt;br>
+这时候其实可以考虑切换到python开发，但我并没有这么做，我选择来了花时间解决&lt;br>
+然而，在我头铁写完了傅里叶变换的流程后，我发现整个算法的运行效率低得很&lt;br>
+（中间的类型转换太多了，我对Mat类型了解也不够）&lt;br>
+这时候又遇到一个抉择，推到重来换python还是花时间研究C#操作Mat类型&lt;br>
+好在这次我选择了推到重来换python，最后完成开发&lt;/p>
+&lt;p>这个问题其实说到底，还是知道的不够多，毕竟这种开发中的问题懂的多了之后，是可以在开发前预知到的&lt;br>
+但还是有一个矛盾，对一块知识，究竟了解到什么程度才能算懂得够多，我不知道&lt;br>
+学的东西多了，确实是能比别人看到更远的东西，但也比别人看到更少的东西&lt;br>
+如果我是新手，这个项目我肯定就用python开发了，哪还要折腾C#啊&lt;br>
+就是因为我了解C#，稍微思考下C#也确实能实现，我才一开始用C#开发&lt;/p>
+&lt;h3 id="关于团队">关于团队
+&lt;/h3>&lt;p>这个课设虽然可以组队，但这个项目基本是我一个人完成的&lt;br>
+那我的队友在干什么呢？他们在做别的可以组队的项目，并且是一人一个项目&lt;/p>
+&lt;p>我发现，对于计算机的学生来说，可能最好的合作方式就是一人一个项目&lt;br>
+程序开发不是人越多越快的&lt;br>
+如果说有n个人，那么单位时间内代码量是$O(n)$，但沟通成本是$O(n^2)$&lt;br>
+因为程序员开发软件需要的是连贯的思路，脑中需要保存所有代码的逻辑结构&lt;br>
+对于别人写的代码，自己看是很花时间的，只有说问原来的开发者代码功能才是最快的&lt;br>
+更何况程序有BUG，命名规范等等之类的增加沟通成本的问题&lt;br>
+这方面可以看下《人月神话》这本书&lt;/p>
+&lt;p>一个人一个项目，整个项目都在一个人的掌握之中，这样的效率是更高的&lt;br>
+当然，这样的合作方式不是适合所有队伍的&lt;br>
+你需要确保你的队友没有摆子，并且队每个人都可以分到适合其水平的项目&lt;br>
+最重要的，足够的信任，在队友没请求帮助前就尽量不插手队友的工作&lt;br>
+否则还是正常合作吧，这样起码可以保证项目可以写完&lt;/p>
+&lt;h3 id="关于python">关于python
+&lt;/h3>&lt;p>最后这个课设用python完成的&lt;br>
+我在这个课设之前，可以说我是看不起python的&lt;br>
+总觉得这个语言效率低，语法过于抽象&lt;/p>
+&lt;p>虽然我看习惯了传统的C系代码，看python这种靠tab分隔层次的语言确实需要时间适应&lt;br>
+但挺过阵痛期后，我发现python还挺好用
+整个语言的设计完全是为解决问题去的&lt;br>
+通过丰富的包，让很多问题几行代码就搞定了&lt;/p>
+&lt;p>不过还是有一些小问题的，但这也不是python的问题，应该说是弱类型语言的问题&lt;br>
+因为弱类型，导致很多问题不能在编译期查出&lt;br>
+虽然是可以给变量打注解，但问题也是编译期不检查这个&lt;br>
+所有实际开发中经常出现传参类型出问题，排查好一会儿&lt;/p>
+&lt;p>总之，python这门语言感觉就像是共享单车，解决的是程序最后怎么运行的问题&lt;br>
+当脚本语言是非常合适的&lt;/p>
+&lt;p>所以说，没有最好的语言，只有最适合的语言&lt;/p></description></item><item><title>Python在VSCode中代码提示异常问题</title><link>https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/</link><pubDate>Mon, 05 Jun 2023 00:16:03 +0000</pubDate><guid>https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/</guid><description>&lt;h2 id="0x00-这就是个很神秘的问题">&amp;lt;0x00&amp;gt; 这就是个很神秘的问题
 &lt;/h2>&lt;p>突然想写一段 python 代码，然后打开 vscode&lt;br>
 就很神秘，明明啥配置都没改，代码提示又寄了&lt;br>
 网上搜索了一番，大概总结了3种可能的问题&lt;/p>
