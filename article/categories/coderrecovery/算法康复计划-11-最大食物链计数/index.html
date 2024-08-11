@@ -1,0 +1,198 @@
+<!doctype html><html lang=zh-cn dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content="这几天有别的事情忙，所以算法练习就搁置了几天 <0x00> 今日题目：最大食物链计数\r洛谷的P4017 题目背景\r你知道食物链吗？Delia 生物考试的时候，数食物链条数的题目全都错了 因为她总是重复数了几条或漏掉了几条 于是她来就来求助你，然而你也不会啊！写一个程序来帮帮她吧。 题目描述\r给你一个食物网，你要求出这个食物网中最大食物链的数量。 （这里的“最大食物链”，指的是生物学意义上的食物链，即最左端是不会捕食其他生物的生产者，最右端是不会被其他生物捕食的消费者。） Delia 非常急，所以你只有 $1$ 秒的时间。 由于这个结果可能过大，你只需要输出总数模上 $80112002$ 的结果。 输入格式\r第一行，两个正整数 $n、m$，表示生物种类 $n$ 和吃与被吃的关系数 $m$。 接下来 $m$ 行，每行两个正整数，表示被吃的生物A和吃A的生物B。 输出格式\r一行一个整数，为最大食物链数量模上 $80112002$ 的结果。 样例\r样例输入\r5 7 1 2 1 3 2 3 3 5 2 5 4 5 3 4 样例输出\r5 数据规模与约定\r数据中不会出现环，满足生物学的要求。 <0x01> 分析\r这道题的关键在于拓扑排序 拓扑排序的概念可以看OI Wiki的介绍 为什么要拓扑排序呢，因为对于这种很像之前写的过河卒的题目 递推公式可以是这样$f(v)=\\sum_{i是可以到达v的顶点}(f(i))$ 拓扑排序可以获得这样的顺序，保证我们在计算某节点时，需要的数据都已经计算过 得到顺序之后还需要获得原图的逆转图 因为我们需要可以到达某顶点的信息，如果遍历全图去找的化开销太大 还不如直接从逆转图中获取 最后根据递推公式计算出到达终点的路径总数 因为题目没说只有一个终点，所以还需要把所有终点的值加起来 记得按要求取模，答案也就出来了 <0x02> 代码\r// 因为带各种封装，所以代码就有点长 #include <iostream> #include <stack> #include <vector> // 表示图的类 class Graph { // 存储图的数据，采用邻接表数组表示 std::vector<std::vector<int>> _list; // 记录每个顶点的出度 std::vector<int> _out; // 顶点总数 int _vertexCount; public: Graph(int num) { _vertexCount = num; _list."><title>算法康复计划 11 最大食物链计数</title>
+<link rel=canonical href=https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-11-%E6%9C%80%E5%A4%A7%E9%A3%9F%E7%89%A9%E9%93%BE%E8%AE%A1%E6%95%B0/><link rel=stylesheet href=/scss/style.min.e8c7fca7d1c9294aa7a4f3426c225ee26540f7d94e39be0b5a4a5c8a49ca5a25.css><meta property='og:title' content="算法康复计划 11 最大食物链计数"><meta property='og:description' content="这几天有别的事情忙，所以算法练习就搁置了几天 <0x00> 今日题目：最大食物链计数\r洛谷的P4017 题目背景\r你知道食物链吗？Delia 生物考试的时候，数食物链条数的题目全都错了 因为她总是重复数了几条或漏掉了几条 于是她来就来求助你，然而你也不会啊！写一个程序来帮帮她吧。 题目描述\r给你一个食物网，你要求出这个食物网中最大食物链的数量。 （这里的“最大食物链”，指的是生物学意义上的食物链，即最左端是不会捕食其他生物的生产者，最右端是不会被其他生物捕食的消费者。） Delia 非常急，所以你只有 $1$ 秒的时间。 由于这个结果可能过大，你只需要输出总数模上 $80112002$ 的结果。 输入格式\r第一行，两个正整数 $n、m$，表示生物种类 $n$ 和吃与被吃的关系数 $m$。 接下来 $m$ 行，每行两个正整数，表示被吃的生物A和吃A的生物B。 输出格式\r一行一个整数，为最大食物链数量模上 $80112002$ 的结果。 样例\r样例输入\r5 7 1 2 1 3 2 3 3 5 2 5 4 5 3 4 样例输出\r5 数据规模与约定\r数据中不会出现环，满足生物学的要求。 <0x01> 分析\r这道题的关键在于拓扑排序 拓扑排序的概念可以看OI Wiki的介绍 为什么要拓扑排序呢，因为对于这种很像之前写的过河卒的题目 递推公式可以是这样$f(v)=\\sum_{i是可以到达v的顶点}(f(i))$ 拓扑排序可以获得这样的顺序，保证我们在计算某节点时，需要的数据都已经计算过 得到顺序之后还需要获得原图的逆转图 因为我们需要可以到达某顶点的信息，如果遍历全图去找的化开销太大 还不如直接从逆转图中获取 最后根据递推公式计算出到达终点的路径总数 因为题目没说只有一个终点，所以还需要把所有终点的值加起来 记得按要求取模，答案也就出来了 <0x02> 代码\r// 因为带各种封装，所以代码就有点长 #include <iostream> #include <stack> #include <vector> // 表示图的类 class Graph { // 存储图的数据，采用邻接表数组表示 std::vector<std::vector<int>> _list; // 记录每个顶点的出度 std::vector<int> _out; // 顶点总数 int _vertexCount; public: Graph(int num) { _vertexCount = num; _list."><meta property='og:url' content='https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-11-%E6%9C%80%E5%A4%A7%E9%A3%9F%E7%89%A9%E9%93%BE%E8%AE%A1%E6%95%B0/'><meta property='og:site_name' content='MLAcookie'><meta property='og:type' content='article'><meta property='article:section' content='Article'><meta property='article:tag' content='Cpp'><meta property='article:published_time' content='2024-08-08T23:44:57+08:00'><meta property='article:modified_time' content='2024-08-08T23:44:57+08:00'><meta name=twitter:title content="算法康复计划 11 最大食物链计数"><meta name=twitter:description content="这几天有别的事情忙，所以算法练习就搁置了几天 <0x00> 今日题目：最大食物链计数\r洛谷的P4017 题目背景\r你知道食物链吗？Delia 生物考试的时候，数食物链条数的题目全都错了 因为她总是重复数了几条或漏掉了几条 于是她来就来求助你，然而你也不会啊！写一个程序来帮帮她吧。 题目描述\r给你一个食物网，你要求出这个食物网中最大食物链的数量。 （这里的“最大食物链”，指的是生物学意义上的食物链，即最左端是不会捕食其他生物的生产者，最右端是不会被其他生物捕食的消费者。） Delia 非常急，所以你只有 $1$ 秒的时间。 由于这个结果可能过大，你只需要输出总数模上 $80112002$ 的结果。 输入格式\r第一行，两个正整数 $n、m$，表示生物种类 $n$ 和吃与被吃的关系数 $m$。 接下来 $m$ 行，每行两个正整数，表示被吃的生物A和吃A的生物B。 输出格式\r一行一个整数，为最大食物链数量模上 $80112002$ 的结果。 样例\r样例输入\r5 7 1 2 1 3 2 3 3 5 2 5 4 5 3 4 样例输出\r5 数据规模与约定\r数据中不会出现环，满足生物学的要求。 <0x01> 分析\r这道题的关键在于拓扑排序 拓扑排序的概念可以看OI Wiki的介绍 为什么要拓扑排序呢，因为对于这种很像之前写的过河卒的题目 递推公式可以是这样$f(v)=\\sum_{i是可以到达v的顶点}(f(i))$ 拓扑排序可以获得这样的顺序，保证我们在计算某节点时，需要的数据都已经计算过 得到顺序之后还需要获得原图的逆转图 因为我们需要可以到达某顶点的信息，如果遍历全图去找的化开销太大 还不如直接从逆转图中获取 最后根据递推公式计算出到达终点的路径总数 因为题目没说只有一个终点，所以还需要把所有终点的值加起来 记得按要求取模，答案也就出来了 <0x02> 代码\r// 因为带各种封装，所以代码就有点长 #include <iostream> #include <stack> #include <vector> // 表示图的类 class Graph { // 存储图的数据，采用邻接表数组表示 std::vector<std::vector<int>> _list; // 记录每个顶点的出度 std::vector<int> _out; // 顶点总数 int _vertexCount; public: Graph(int num) { _vertexCount = num; _list."><link rel="shortcut icon" href=/favicon.webp></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label="Toggle Menu">
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar_hu01ec501d434397934aa5721ebabee736_552660_300x0_resize_box_3.png width=300 height=300 class=site-logo loading=lazy alt=Avatar>
+</a><span class=emoji>😜</span></figure><div class=site-meta><h1 class=site-name><a href=/>MLAcookie</a></h1><h2 class=site-description>随便记点东西的记事本</h2></div></header><ol class=menu-social><li><a href=https://space.bilibili.com/13629146 target=_blank title=MLA_cookie@bilibili rel=me><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-bilibili"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 10a4 4 0 014-4h10a4 4 0 014 4v6a4 4 0 01-4 4H7a4 4 0 01-4-4v-6z"/><path d="M8 3l2 3"/><path d="M16 3l-2 3"/><path d="M9 13v-2"/><path d="M15 11v2"/></svg></a></li><li><a href=https://github.com/MLAcookie target=_blank title=MLAcookie@Github rel=me><svg class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
+<span>Home</span></a></li><li><a href=/page/about/><svg class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg>
+<span>About</span></a></li><li><a href=/page/archives/><svg class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+<span>Archives</span></a></li><li><a href=/page/links/><svg class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M10 14a3.5 3.5.0 005 0l4-4a3.5 3.5.0 00-5-5l-.5.5"/><path d="M14 10a3.5 3.5.0 00-5 0l-4 4a3.5 3.5.0 005 5l.5-.5"/></svg>
+<span>Links</span></a></li><li><a href=/page/search/><svg class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg>
+<span>Search</span></a></li><li class=menu-bottom-section><ol class=menu><li id=dark-mode-toggle><svg class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<svg class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<span>Dark Mode</span></li></ol></li></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">Table of contents</h2><div class=widget--toc><nav id=TableOfContents><ul><li><a href=#0x00-今日题目最大食物链计数>&lt;0x00> 今日题目：最大食物链计数</a><ul><li><a href=#题目背景>题目背景</a></li><li><a href=#题目描述>题目描述</a></li><li><a href=#输入格式>输入格式</a></li><li><a href=#输出格式>输出格式</a></li><li><a href=#样例>样例</a></li><li><a href=#数据规模与约定>数据规模与约定</a></li></ul></li><li><a href=#0x01-分析>&lt;0x01> 分析</a></li><li><a href=#0x02-代码>&lt;0x02> 代码</a></li></ul></nav></div></section></aside><main class="main full-width"><article class=main-article><header class=article-header><div class=article-details><header class=article-category><a href=/categories/coderrecovery/>CoderRecovery</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-11-%E6%9C%80%E5%A4%A7%E9%A3%9F%E7%89%A9%E9%93%BE%E8%AE%A1%E6%95%B0/>算法康复计划 11 最大食物链计数</a></h2></div><footer class=article-time><div><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
+<time class=article-time--published>Aug 08, 2024</time></div></footer></div></header><section class=article-content><p>这几天有别的事情忙，所以算法练习就搁置了几天</p><h2 id=0x00-今日题目最大食物链计数>&lt;0x00> 今日题目：最大食物链计数</h2><p><a class=link href=https://www.luogu.com.cn/problem/P4017 target=_blank rel=noopener>洛谷的P4017</a></p><h3 id=题目背景>题目背景</h3><p>你知道食物链吗？Delia 生物考试的时候，数食物链条数的题目全都错了<br>因为她总是重复数了几条或漏掉了几条 于是她来就来求助你，然而你也不会啊！写一个程序来帮帮她吧。</p><h3 id=题目描述>题目描述</h3><p>给你一个食物网，你要求出这个食物网中最大食物链的数量。<br>（这里的“最大食物链”，指的是<strong>生物学意义上的食物链</strong>，即<strong>最左端是不会捕食其他生物的生产者，最右端是不会被其他生物捕食的消费者</strong>。）<br>Delia 非常急，所以你只有 $1$ 秒的时间。<br>由于这个结果可能过大，你只需要输出总数模上 $80112002$ 的结果。</p><h3 id=输入格式>输入格式</h3><p>第一行，两个正整数 $n、m$，表示生物种类 $n$ 和吃与被吃的关系数 $m$。<br>接下来 $m$ 行，每行两个正整数，表示被吃的生物A和吃A的生物B。</p><h3 id=输出格式>输出格式</h3><p>一行一个整数，为最大食物链数量模上 $80112002$ 的结果。</p><h3 id=样例>样例</h3><h4 id=样例输入>样例输入</h4><pre tabindex=0><code>5 7
+1 2
+1 3
+2 3
+3 5
+2 5
+4 5
+3 4
+</code></pre><h4 id=样例输出>样例输出</h4><pre tabindex=0><code>5
+</code></pre><h3 id=数据规模与约定>数据规模与约定</h3><p><img src=https://cdn.luogu.com.cn/upload/pic/12011.png loading=lazy><br>数据中不会出现环，满足生物学的要求。</p><h2 id=0x01-分析>&lt;0x01> 分析</h2><p>这道题的关键在于拓扑排序<br>拓扑排序的概念可以看<a class=link href=https://oi-wiki.org/graph/topo/ target=_blank rel=noopener>OI Wiki</a>的介绍</p><p>为什么要拓扑排序呢，因为对于这种很像之前写的过河卒的题目<br>递推公式可以是这样$f(v)=\sum_{i是可以到达v的顶点}(f(i))$<br>拓扑排序可以获得这样的顺序，保证我们在计算某节点时，需要的数据都已经计算过</p><p>得到顺序之后还需要获得原图的逆转图<br>因为我们需要可以到达某顶点的信息，如果遍历全图去找的化开销太大<br>还不如直接从逆转图中获取</p><p>最后根据递推公式计算出到达终点的路径总数<br>因为题目没说只有一个终点，所以还需要把所有终点的值加起来<br>记得按要求取模，答案也就出来了</p><h2 id=0x02-代码>&lt;0x02> 代码</h2><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cpp data-lang=cpp><span style=display:flex><span><span style=color:#75715e>// 因为带各种封装，所以代码就有点长
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;iostream&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;stack&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;vector&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#75715e>// 表示图的类
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>Graph</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>	<span style=color:#75715e>// 存储图的数据，采用邻接表数组表示
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    std<span style=color:#f92672>::</span>vector<span style=color:#f92672>&lt;</span>std<span style=color:#f92672>::</span>vector<span style=color:#f92672>&lt;</span><span style=color:#66d9ef>int</span><span style=color:#f92672>&gt;&gt;</span> _list;
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// 记录每个顶点的出度
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    std<span style=color:#f92672>::</span>vector<span style=color:#f92672>&lt;</span><span style=color:#66d9ef>int</span><span style=color:#f92672>&gt;</span> _out;
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// 顶点总数
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#66d9ef>int</span> _vertexCount;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>public</span><span style=color:#f92672>:</span>
+</span></span><span style=display:flex><span>    Graph(<span style=color:#66d9ef>int</span> num)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        _vertexCount <span style=color:#f92672>=</span> num;
+</span></span><span style=display:flex><span>        _list.resize(num);
+</span></span><span style=display:flex><span>        _in.resize(num, <span style=color:#ae81ff>0</span>);
+</span></span><span style=display:flex><span>        _out.resize(num, <span style=color:#ae81ff>0</span>);
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>int</span> <span style=color:#a6e22e>VertexCount</span>() <span style=color:#66d9ef>const</span>
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> _vertexCount;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// 添加边
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>AddEdge</span>(<span style=color:#66d9ef>int</span> v, <span style=color:#66d9ef>int</span> w)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>auto</span> i : _list[v])
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>if</span> (i <span style=color:#f92672>==</span> w)
+</span></span><span style=display:flex><span>            {
+</span></span><span style=display:flex><span>                <span style=color:#66d9ef>return</span>;
+</span></span><span style=display:flex><span>            }
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>        _list[v].push_back(w);
+</span></span><span style=display:flex><span>        _out[v]<span style=color:#f92672>++</span>;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// 获取出度为0的顶点
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    std<span style=color:#f92672>::</span>vector<span style=color:#f92672>&lt;</span><span style=color:#66d9ef>int</span><span style=color:#f92672>&gt;</span> GetEnd()
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        std<span style=color:#f92672>::</span>vector<span style=color:#f92672>&lt;</span><span style=color:#66d9ef>int</span><span style=color:#f92672>&gt;</span> ans;
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>int</span> i <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>; i <span style=color:#f92672>&lt;</span> _out.size(); i<span style=color:#f92672>++</span>)
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>if</span> (_out[i] <span style=color:#f92672>==</span> <span style=color:#ae81ff>0</span>)
+</span></span><span style=display:flex><span>            {
+</span></span><span style=display:flex><span>                ans.push_back(i);
+</span></span><span style=display:flex><span>            }
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> ans;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// 获取从该顶点的可到达的下一个顶点
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    std<span style=color:#f92672>::</span>vector<span style=color:#f92672>&lt;</span><span style=color:#66d9ef>int</span><span style=color:#f92672>&gt;</span> AdjoinVertex(<span style=color:#66d9ef>int</span> v) <span style=color:#66d9ef>const</span>
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> std<span style=color:#f92672>::</span>vector<span style=color:#f92672>&lt;</span><span style=color:#66d9ef>int</span><span style=color:#f92672>&gt;</span>(_list[v]);
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// 获取反向的图
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    Graph <span style=color:#a6e22e>InverseGraph</span>(<span style=color:#66d9ef>const</span> Graph <span style=color:#f92672>&amp;</span>G)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>int</span> length <span style=color:#f92672>=</span> G._vertexCount;
+</span></span><span style=display:flex><span>        Graph ans(length);
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>int</span> v <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>; v <span style=color:#f92672>&lt;</span> length; v<span style=color:#f92672>++</span>)
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>auto</span> w : _list[v])
+</span></span><span style=display:flex><span>            {
+</span></span><span style=display:flex><span>                ans.AddEdge(w, v);
+</span></span><span style=display:flex><span>            }
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> ans;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>};
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>// 拓扑排序的类
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>Topological</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>	<span style=color:#75715e>// 记录逆后续
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    std<span style=color:#f92672>::</span>stack<span style=color:#f92672>&lt;</span><span style=color:#66d9ef>int</span><span style=color:#f92672>&gt;</span> _reversePost;
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// 记录答案
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    std<span style=color:#f92672>::</span>vector<span style=color:#f92672>&lt;</span><span style=color:#66d9ef>int</span><span style=color:#f92672>&gt;</span> _list;
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// 标记是否走过
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    std<span style=color:#f92672>::</span>vector<span style=color:#f92672>&lt;</span><span style=color:#66d9ef>bool</span><span style=color:#f92672>&gt;</span> _marked;
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>	<span style=color:#75715e>// 通过DFS法获得拓扑排序
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>DFS</span>(<span style=color:#66d9ef>const</span> Graph <span style=color:#f92672>&amp;</span>G, <span style=color:#66d9ef>int</span> v)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        _marked[v] <span style=color:#f92672>=</span> true;
+</span></span><span style=display:flex><span>        std<span style=color:#f92672>::</span>vector<span style=color:#f92672>&lt;</span><span style=color:#66d9ef>int</span><span style=color:#f92672>&gt;</span> temp <span style=color:#f92672>=</span> G.AdjoinVertex(v);
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>auto</span> w : temp)
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>if</span> (<span style=color:#f92672>!</span>_marked[w])
+</span></span><span style=display:flex><span>            {
+</span></span><span style=display:flex><span>                DFS(G, w);
+</span></span><span style=display:flex><span>            }
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>        _reversePost.push(v);
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>public</span><span style=color:#f92672>:</span>
+</span></span><span style=display:flex><span>	<span style=color:#75715e>// 构造函数中就完成拓扑排序
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    Topological(<span style=color:#66d9ef>const</span> Graph <span style=color:#f92672>&amp;</span>G)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>int</span> length <span style=color:#f92672>=</span> G.VertexCount();
+</span></span><span style=display:flex><span>        _marked.resize(length, false);
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>int</span> i <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>; i <span style=color:#f92672>&lt;</span> length; i<span style=color:#f92672>++</span>)
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>if</span> (<span style=color:#f92672>!</span>_marked[i])
+</span></span><span style=display:flex><span>            {
+</span></span><span style=display:flex><span>                DFS(G, i);
+</span></span><span style=display:flex><span>            }
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>        <span style=color:#75715e>// DFS结束后保存结果
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>        <span style=color:#66d9ef>while</span> (<span style=color:#f92672>!</span>_reversePost.empty())
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            _list.push_back(_reversePost.top());
+</span></span><span style=display:flex><span>            _reversePost.pop();
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>    std<span style=color:#f92672>::</span>vector<span style=color:#f92672>&lt;</span><span style=color:#66d9ef>int</span><span style=color:#f92672>&gt;</span> GetAns()
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> _list;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>};
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>int</span> <span style=color:#a6e22e>main</span>()
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>	<span style=color:#75715e>// 读入
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#66d9ef>int</span> n, m;
+</span></span><span style=display:flex><span>    std<span style=color:#f92672>::</span>cin <span style=color:#f92672>&gt;&gt;</span> n <span style=color:#f92672>&gt;&gt;</span> m;
+</span></span><span style=display:flex><span>    Graph g(n);
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>int</span> v, w;
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>int</span> i <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>; i <span style=color:#f92672>&lt;</span> m; i<span style=color:#f92672>++</span>)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        std<span style=color:#f92672>::</span>cin <span style=color:#f92672>&gt;&gt;</span> v <span style=color:#f92672>&gt;&gt;</span> w;
+</span></span><span style=display:flex><span>        <span style=color:#75715e>// 记得减一
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>        g.AddEdge(v <span style=color:#f92672>-</span> <span style=color:#ae81ff>1</span>, w <span style=color:#f92672>-</span> <span style=color:#ae81ff>1</span>);
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// 求出拓扑排序
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    Topological topo(g);
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>auto</span> order <span style=color:#f92672>=</span> topo.GetAns();
+</span></span><span style=display:flex><span>    Graph ig <span style=color:#f92672>=</span> g.InverseGraph(g);
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// 初始化递推
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    std<span style=color:#f92672>::</span>vector<span style=color:#f92672>&lt;</span>size_t<span style=color:#f92672>&gt;</span> ans;
+</span></span><span style=display:flex><span>    ans.resize(n, <span style=color:#ae81ff>0</span>);
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>auto</span> i : order)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        std<span style=color:#f92672>::</span>vector<span style=color:#f92672>&lt;</span><span style=color:#66d9ef>int</span><span style=color:#f92672>&gt;</span> temp <span style=color:#f92672>=</span> ig.AdjoinVertex(i);
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>if</span> (temp.size() <span style=color:#f92672>==</span> <span style=color:#ae81ff>0</span>)
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            ans[i] <span style=color:#f92672>=</span> <span style=color:#ae81ff>1</span>;
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>continue</span>;
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>auto</span> j : temp)
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            ans[i] <span style=color:#f92672>+=</span> ans[j];
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>        ans[i] <span style=color:#f92672>%=</span> <span style=color:#ae81ff>80112002</span>;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>    size_t o <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>;
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// 因为题目没说只有一个终点，所以还要这样遍历一下
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>auto</span> i : g.GetEnd())
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        o <span style=color:#f92672>+=</span> ans[i];
+</span></span><span style=display:flex><span>        o <span style=color:#f92672>%=</span> <span style=color:#ae81ff>80112002</span>;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>    std<span style=color:#f92672>::</span>cout <span style=color:#f92672>&lt;&lt;</span> o <span style=color:#f92672>&lt;&lt;</span> <span style=color:#e6db74>&#34;</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>;
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> <span style=color:#ae81ff>0</span>;
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div></section><footer class=article-footer><section class=article-tags><a href=/tags/cpp/>Cpp</a></section><section class=article-copyright><svg class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg>
+<span>Licensed under CC BY-NC-SA 4.0</span></section></footer><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css integrity=sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV crossorigin=anonymous><script src=https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js integrity=sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8 crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js integrity=sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05 crossorigin=anonymous defer></script><script>window.addEventListener("DOMContentLoaded",()=>{renderMathInElement(document.body,{delimiters:[{left:"$$",right:"$$",display:!0},{left:"$",right:"$",display:!1},{left:"\\(",right:"\\)",display:!1},{left:"\\[",right:"\\]",display:!0}],ignoredClasses:["gist"]})})</script></article><aside class=related-content--wrapper><h2 class=section-title>Related content</h2><div class=related-content><div class="flex article-list--tile"><article><a href=/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-10-%E8%BF%87%E6%B2%B3%E5%8D%92/><div class=article-details><h2 class=article-title>算法康复计划 10 过河卒</h2></div></a></article><article><a href=/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-09-%E6%8C%96%E5%9C%B0%E9%9B%B7/><div class=article-details><h2 class=article-title>算法康复计划 09 挖地雷</h2></div></a></article><article><a href=/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-08-%E6%B1%82%E5%8C%BA%E9%97%B4%E5%92%8C/><div class=article-details><h2 class=article-title>算法康复计划 08 求区间和</h2></div></a></article><article><a href=/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-07-%E9%87%87%E8%8D%AF/><div class=article-details><h2 class=article-title>算法康复计划 07 采药</h2></div></a></article><article><a href=/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-06-%E8%B7%B3%E8%B7%B3/><div class=article-details><h2 class=article-title>算法康复计划 06 跳跳！</h2></div></a></article></div></div></aside><footer class=site-footer><section class=copyright>&copy;
+2023 -
+2024 MLAcookie</section><section class=powerby>Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a><br>Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.26.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a></section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+</button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z+KMkF24hUW8WePSA9HM=" crossorigin=anonymous></script><script type=text/javascript src=/ts/main.js defer></script><script>(function(){const e=document.createElement("link");e.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script></body></html>

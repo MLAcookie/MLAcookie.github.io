@@ -117,7 +117,7 @@ Gnome一些习惯我适应不了，xfce不是很适合高分屏，其他的没�
 &lt;/h2>&lt;p>不知道为什么，我安装完系统后发现系统总会有奇怪的闪屏&lt;br>
 换了其他桌面系统后多少都会有点&lt;br>
 目前定位到可能跟AMDGPU的节能选项有关（插上电就基本消失了）&lt;br>
-也可能跟Wayland有关（xfce用X11就基本没闪屏）
+也可能跟Wayland有关（xfce用X11就基本没闪屏）&lt;br>
 也可能跟Vulkan有关（装上Vulkan驱动也差不多消失了）&lt;br>
 总是很神秘，这里就先记录一下&lt;/p></description></item><item><title>WPF开发过程中InitializeComponent()神秘报错</title><link>https://mlacookie.github.io/article/categories/wpf/wpf%E5%BC%80%E5%8F%91%E8%BF%87%E7%A8%8B%E4%B8%ADinitializecomponent-%E7%A5%9E%E7%A7%98%E6%8A%A5%E9%94%99/</link><pubDate>Thu, 07 Mar 2024 01:10:14 +0000</pubDate><guid>https://mlacookie.github.io/article/categories/wpf/wpf%E5%BC%80%E5%8F%91%E8%BF%87%E7%A8%8B%E4%B8%ADinitializecomponent-%E7%A5%9E%E7%A7%98%E6%8A%A5%E9%94%99/</guid><description>&lt;p>最近在写一个WPF项目，然后今天遇到个非常神秘的问题
 就是界面的&lt;code>InitializeComponent()&lt;/code>莫名奇妙报错找不到方法了

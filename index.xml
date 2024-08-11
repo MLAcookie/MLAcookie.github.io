@@ -1,4 +1,129 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>MLAcookie</title><link>https://mlacookie.github.io/</link><description>Recent content on MLAcookie</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Sat, 10 Aug 2024 00:04:37 +0800</lastBuildDate><atom:link href="https://mlacookie.github.io/index.xml" rel="self" type="application/rss+xml"/><item><title>算法康复计划 12</title><link>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-12/</link><pubDate>Sat, 10 Aug 2024 00:04:15 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-12/</guid><description>&lt;h2 id="0x00-今日题目摆花">&amp;lt;0x00&amp;gt; 今日题目：摆花
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>MLAcookie</title><link>https://mlacookie.github.io/</link><description>Recent content on MLAcookie</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Mon, 12 Aug 2024 01:00:02 +0800</lastBuildDate><atom:link href="https://mlacookie.github.io/index.xml" rel="self" type="application/rss+xml"/><item><title>算法康复计划 13 5倍经验日</title><link>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-13-5%E5%80%8D%E7%BB%8F%E9%AA%8C%E6%97%A5/</link><pubDate>Mon, 12 Aug 2024 01:00:02 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-13-5%E5%80%8D%E7%BB%8F%E9%AA%8C%E6%97%A5/</guid><description>&lt;h2 id="0x00-今日题目5倍经验日">&amp;lt;0x00&amp;gt; 今日题目：5倍经验日
+&lt;/h2>&lt;p>&lt;a class="link" href="https://www.luogu.com.cn/problem/P1802" target="_blank" rel="noopener"
+>洛谷的P1802&lt;/a>&lt;/p>
+&lt;h3 id="题目背景">题目背景
+&lt;/h3>&lt;p>现在乐斗有活动了！每打一个人可以获得 5 倍经验！&lt;br>
+absi2011 却无奈的看着那一些比他等级高的好友，想着能否把他们干掉。干掉能拿不少经验的。&lt;/p>
+&lt;h3 id="题目描述">题目描述
+&lt;/h3>&lt;p>现在 absi2011 拿出了 $x$ 个迷你装药物（嗑药打人可耻…），准备开始与那些人打了。&lt;/p>
+&lt;p>由于迷你装药物每个只能用一次，所以 absi2011 要谨慎的使用这些药。&lt;br>
+悲剧的是，用药量没达到最少打败该人所需的属性药药量，则打这个人必输。&lt;br>
+例如他用 $2$ 个药去打别人，别人却表明 $3$ 个药才能打过，那么相当于你输了并且这两个属性药浪费了。&lt;br>
+现在有 $n$ 个好友，给定失败时可获得的经验、胜利时可获得的经验，打败他至少需要的药量。&lt;br>
+要求求出最大经验 $s$，输出 $5s$。&lt;/p>
+&lt;h3 id="输入格式">输入格式
+&lt;/h3>&lt;p>第一行两个数，$n$ 和 $x$&lt;br>
+后面 $n$ 行每行三个数，分别表示失败时获得的经验 $\mathit{lose}_i$&lt;br>
+胜利时获得的经验 $\mathit{win}_i$ 和打过要至少使用的药数量 $\mathit{use}_i$。&lt;/p>
+&lt;h3 id="输出格式">输出格式
+&lt;/h3>&lt;p>一个整数，最多获得的经验的五倍。&lt;/p>
+&lt;h3 id="样例">样例
+&lt;/h3>&lt;h4 id="样例输入">样例输入
+&lt;/h4>&lt;pre tabindex="0">&lt;code>6 8
+21 52 1
+21 70 5
+21 48 2
+14 38 3
+14 36 1
+14 36 2
+&lt;/code>&lt;/pre>&lt;h4 id="样例输出">样例输出
+&lt;/h4>&lt;pre tabindex="0">&lt;code>1060
+&lt;/code>&lt;/pre>&lt;h3 id="提示">提示
+&lt;/h3>&lt;p>&lt;strong>【Hint】&lt;/strong>&lt;br>
+五倍经验活动的时候，absi2011 总是吃体力药水而不是这种属性药。&lt;/p>
+&lt;p>&lt;strong>【题目来源】&lt;/strong>&lt;br>
+fight.pet.qq.com&lt;br>
+absi2011 授权题目&lt;/p>
+&lt;h3 id="数据规模与约定">数据规模与约定
+&lt;/h3>&lt;ul>
+&lt;li>对于 $10%$ 的数据，保证 $x=0$。&lt;/li>
+&lt;li>对于 $30%$ 的数据，保证 $0\le n\le 10$，$0\le x\le 20$。&lt;/li>
+&lt;li>对于 $60%$ 的数据，保证 $0\le n,x\le 100$， $10&amp;lt;lose_i,win_i\le 100$，$0\le use_i\le 5$。&lt;/li>
+&lt;li>对于 $100%$ 的数据，保证 $0\le n,x\le 10^3$，$0&amp;lt;lose_i\le win_i\le 10^6$，$0\le use_i\le 10^3$。&lt;/li>
+&lt;/ul>
+&lt;h2 id="0x01-分析">&amp;lt;0x01&amp;gt; 分析
+&lt;/h2>&lt;p>嗯，动态规划，我们都知道&lt;br>
+但是怎么动态规划呢&lt;br>
+看到这样的题，首先要去想状态转移方程会是怎么样的&lt;br>
+根据之前的经验，大概是这样$f(i,j)$&lt;br>
+其中$i$表示处理前$i$个数据，$j$表示已经用了$j$瓶药&lt;br>
+那总体的逻辑就很像背包dp了&lt;/p>
+&lt;p>但这个也不同于经典背包dp，还需要处理输了的情况&lt;br>
+这就导致状态转移不止一个式子，我这里写不明白就不写了&lt;/p>
+&lt;h2 id="0x02-代码">&amp;lt;0x02&amp;gt; 代码
+&lt;/h2>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-cpp" data-lang="cpp">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;iostream&amp;gt;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;vector&amp;gt;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">// 封装一个敌人类
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">Enemy&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">public&lt;/span>&lt;span style="color:#f92672">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> lose;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> win;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> use;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Enemy(&lt;span style="color:#66d9ef">int&lt;/span> lose, &lt;span style="color:#66d9ef">int&lt;/span> win, &lt;span style="color:#66d9ef">int&lt;/span> use)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">this&lt;/span>&lt;span style="color:#f92672">-&amp;gt;&lt;/span>lose &lt;span style="color:#f92672">=&lt;/span> lose;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">this&lt;/span>&lt;span style="color:#f92672">-&amp;gt;&lt;/span>win &lt;span style="color:#f92672">=&lt;/span> win;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">this&lt;/span>&lt;span style="color:#f92672">-&amp;gt;&lt;/span>use &lt;span style="color:#f92672">=&lt;/span> use;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>};
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">int&lt;/span> &lt;span style="color:#a6e22e">main&lt;/span>()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 读入
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">int&lt;/span> n, x;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>cin &lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> n &lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> x;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>vector&lt;span style="color:#f92672">&amp;lt;&lt;/span>Enemy&lt;span style="color:#f92672">&amp;gt;&lt;/span> list;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">int&lt;/span> i &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>; i &lt;span style="color:#f92672">&amp;lt;&lt;/span> n; i&lt;span style="color:#f92672">++&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> a, b, c;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>cin &lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> a &lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> b &lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> c;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> list.push_back(Enemy(a, b, c));
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 初始化第一个状态
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> std&lt;span style="color:#f92672">::&lt;/span>vector&lt;span style="color:#f92672">&amp;lt;&lt;/span>size_t&lt;span style="color:#f92672">&amp;gt;&lt;/span> map(x &lt;span style="color:#f92672">+&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> map[&lt;span style="color:#ae81ff">0&lt;/span>] &lt;span style="color:#f92672">=&lt;/span> list[&lt;span style="color:#ae81ff">0&lt;/span>].lose;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (list[&lt;span style="color:#ae81ff">0&lt;/span>].use &lt;span style="color:#f92672">&amp;lt;=&lt;/span> x)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> map[list[&lt;span style="color:#ae81ff">0&lt;/span>].use] &lt;span style="color:#f92672">=&lt;/span> list[&lt;span style="color:#ae81ff">0&lt;/span>].win;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 开始dp
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">int&lt;/span> i &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>; i &lt;span style="color:#f92672">&amp;lt;&lt;/span> n; i&lt;span style="color:#f92672">++&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 注意循环方向
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">int&lt;/span> j &lt;span style="color:#f92672">=&lt;/span> x; j &lt;span style="color:#f92672">&amp;gt;=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>; j&lt;span style="color:#f92672">--&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (map[j] &lt;span style="color:#f92672">==&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">continue&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 处理剩下的药够嗑的情况
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">if&lt;/span> (j &lt;span style="color:#f92672">+&lt;/span> list[i].use &lt;span style="color:#f92672">&amp;lt;=&lt;/span> x)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> map[j &lt;span style="color:#f92672">+&lt;/span> list[i].use] &lt;span style="color:#f92672">=&lt;/span> std&lt;span style="color:#f92672">::&lt;/span>max(map[j &lt;span style="color:#f92672">+&lt;/span> list[i].use], map[j] &lt;span style="color:#f92672">+&lt;/span> list[i].win);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 处理不需要嗑药的情况
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">if&lt;/span> (list[i].use &lt;span style="color:#f92672">!=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> map[j] &lt;span style="color:#f92672">+=&lt;/span> list[i].lose;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 遍历最大值
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> size_t ans &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">auto&lt;/span> i : map)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ans &lt;span style="color:#f92672">=&lt;/span> std&lt;span style="color:#f92672">::&lt;/span>max(ans, i);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 乘5输出
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> std&lt;span style="color:#f92672">::&lt;/span>cout &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> ans &lt;span style="color:#f92672">*&lt;/span> &lt;span style="color:#ae81ff">5&lt;/span> &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> &lt;span style="color:#e6db74">&amp;#34;&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="0x03-遇到的坑">&amp;lt;0x03&amp;gt; 遇到的坑
+&lt;/h2>&lt;p>因为省略状态转移方程的第一个参数，所以要注意循环方向&lt;br>
+还有就是当某个敌人不需要嗑药也能打过的时候需要特殊处理&lt;br>
+如果不处理会导致赢了和输了都计算一遍&lt;/p></description></item><item><title>算法康复计划 12 摆花</title><link>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-12-%E6%91%86%E8%8A%B1/</link><pubDate>Sat, 10 Aug 2024 00:04:15 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-12-%E6%91%86%E8%8A%B1/</guid><description>&lt;h2 id="0x00-今日题目摆花">&amp;lt;0x00&amp;gt; 今日题目：摆花
 &lt;/h2>&lt;p>&lt;a class="link" href="https://www.luogu.com.cn/problem/P1077" target="_blank" rel="noopener"
 >洛谷的P1077&lt;/a>&lt;/p>
 &lt;h3 id="题目描述">题目描述
@@ -23,9 +148,10 @@
 对于 $50%$ 数据，有 $0&amp;lt;n \le 20,0&amp;lt;m \le 20,0 \le a_i \le 20$。&lt;br>
 对于 $100%$ 数据，有 $0&amp;lt;n \le 100,0&amp;lt;m \le 100,0 \le a_i \le 100$。&lt;/p>
 &lt;h2 id="0x01-分析">&amp;lt;0x01&amp;gt; 分析
-&lt;/h2>&lt;p>这是一道动态规划题&lt;br>
+&lt;/h2>&lt;p>（也可以用记忆化搜索，不过考虑到练dp这里就不使用）&lt;/p>
+&lt;p>这是一道动态规划题&lt;br>
 虽然看着不像是动态规划，倒是挺像递推的题&lt;br>
-实际上也确实是递推的思路，属于是计数dp的类型&lt;/p>
+属于是计数dp的类型，思路上确实接近递推&lt;/p>
 &lt;p>定义状态转移方程$f(i,j)=\sum_{t=0}^{a_i}f(i-1,j-t)$&lt;br>
 其中$i$表示前$i$种花，$j$表示已经放了$j$盆花&lt;/p>
 &lt;p>怎么理解这个状态转移方程呢&lt;br>
@@ -72,7 +198,7 @@
 &lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> std&lt;span style="color:#f92672">::&lt;/span>cout &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> map[n &lt;span style="color:#f92672">-&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>][m] &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> &lt;span style="color:#e6db74">&amp;#34;&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>;
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>;
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div></description></item><item><title>算法康复计划 11</title><link>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-11/</link><pubDate>Thu, 08 Aug 2024 23:44:57 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-11/</guid><description>&lt;p>这几天有别的事情忙，所以算法练习就搁置了几天&lt;/p>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div></description></item><item><title>算法康复计划 11 最大食物链计数</title><link>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-11-%E6%9C%80%E5%A4%A7%E9%A3%9F%E7%89%A9%E9%93%BE%E8%AE%A1%E6%95%B0/</link><pubDate>Thu, 08 Aug 2024 23:44:57 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-11-%E6%9C%80%E5%A4%A7%E9%A3%9F%E7%89%A9%E9%93%BE%E8%AE%A1%E6%95%B0/</guid><description>&lt;p>这几天有别的事情忙，所以算法练习就搁置了几天&lt;/p>
 &lt;h2 id="0x00-今日题目最大食物链计数">&amp;lt;0x00&amp;gt; 今日题目：最大食物链计数
 &lt;/h2>&lt;p>&lt;a class="link" href="https://www.luogu.com.cn/problem/P4017" target="_blank" rel="noopener"
 >洛谷的P4017&lt;/a>&lt;/p>
@@ -130,8 +256,6 @@ loading="lazy"
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 存储图的数据，采用邻接表数组表示
 &lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> std&lt;span style="color:#f92672">::&lt;/span>vector&lt;span style="color:#f92672">&amp;lt;&lt;/span>std&lt;span style="color:#f92672">::&lt;/span>vector&lt;span style="color:#f92672">&amp;lt;&lt;/span>&lt;span style="color:#66d9ef">int&lt;/span>&lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> _list;
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 记录每个顶点的入度
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> std&lt;span style="color:#f92672">::&lt;/span>vector&lt;span style="color:#f92672">&amp;lt;&lt;/span>&lt;span style="color:#66d9ef">int&lt;/span>&lt;span style="color:#f92672">&amp;gt;&lt;/span> _in;
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 记录每个顶点的出度
 &lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> std&lt;span style="color:#f92672">::&lt;/span>vector&lt;span style="color:#f92672">&amp;lt;&lt;/span>&lt;span style="color:#66d9ef">int&lt;/span>&lt;span style="color:#f92672">&amp;gt;&lt;/span> _out;
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 顶点总数
@@ -160,7 +284,6 @@ loading="lazy"
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> _list[v].push_back(w);
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> _in[w]&lt;span style="color:#f92672">++&lt;/span>;
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> _out[v]&lt;span style="color:#f92672">++&lt;/span>;
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 获取出度为0的顶点
@@ -411,9 +534,10 @@ Gnome一些习惯我适应不了，xfce不是很适合高分屏，其他的没�
 &lt;/h2>&lt;p>不知道为什么，我安装完系统后发现系统总会有奇怪的闪屏&lt;br>
 换了其他桌面系统后多少都会有点&lt;br>
 目前定位到可能跟AMDGPU的节能选项有关（插上电就基本消失了）&lt;br>
-也可能跟Wayland有关（xfce用X11就基本没闪屏）
+也可能跟Wayland有关（xfce用X11就基本没闪屏）&lt;br>
 也可能跟Vulkan有关（装上Vulkan驱动也差不多消失了）&lt;br>
-总是很神秘，这里就先记录一下&lt;/p></description></item><item><title>算法康复计划 10</title><link>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-10/</link><pubDate>Sat, 27 Jul 2024 23:47:27 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-10/</guid><description>&lt;p>不知不觉写了10天了，目前只能说C++没之前这么手生了&lt;/p>
+总是很神秘，这里就先记录一下&lt;/p></description></item><item><title>算法康复计划 10 过河卒</title><link>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-10-%E8%BF%87%E6%B2%B3%E5%8D%92/</link><pubDate>Sat, 27 Jul 2024 23:47:27 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-10-%E8%BF%87%E6%B2%B3%E5%8D%92/</guid><description>&lt;p>不知不觉写了10天了，目前只能说C++没之前这么手生了&lt;br>
+算法的话也算稍微接触了下动态规划，学到了很多&lt;/p>
 &lt;h2 id="0x00-今日题目过河卒">&amp;lt;0x00&amp;gt; 今日题目：过河卒
 &lt;/h2>&lt;p>&lt;a class="link" href="https://www.luogu.com.cn/problem/P1002" target="_blank" rel="noopener"
 >洛谷的P1002&lt;/a>&lt;/p>
@@ -534,7 +658,7 @@ Gnome一些习惯我适应不了，xfce不是很适合高分屏，其他的没�
 &lt;/h2>&lt;p>我最开始看到这道题我以为问题不大&lt;br>
 所以就直接拿出DFS了，DFS也算递归嘛&lt;br>
 然后就有两个数据点没过&lt;br>
-后来一想就发现问题了，既然不要求路径，那也没必要用DFS，直接递推就可以了&lt;/p></description></item><item><title>算法康复计划 09</title><link>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-09/</link><pubDate>Sat, 27 Jul 2024 01:10:32 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-09/</guid><description>&lt;h2 id="0x00-今日题目挖地雷">&amp;lt;0x00&amp;gt; 今日题目：挖地雷
+后来一想就发现问题了，既然不要求路径，那也没必要用DFS，直接递推就可以了&lt;/p></description></item><item><title>算法康复计划 09 挖地雷</title><link>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-09-%E6%8C%96%E5%9C%B0%E9%9B%B7/</link><pubDate>Sat, 27 Jul 2024 01:10:32 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-09-%E6%8C%96%E5%9C%B0%E9%9B%B7/</guid><description>&lt;h2 id="0x00-今日题目挖地雷">&amp;lt;0x00&amp;gt; 今日题目：挖地雷
 &lt;/h2>&lt;p>&lt;a class="link" href="https://www.luogu.com.cn/problem/P2196" target="_blank" rel="noopener"
 >洛谷的P2196&lt;/a>&lt;/p>
 &lt;h3 id="题目描述">题目描述
@@ -697,7 +821,7 @@ Gnome一些习惯我适应不了，xfce不是很适合高分屏，其他的没�
 &lt;/code>&lt;/pre>&lt;p>按道理挖雷最大化路径就是&lt;code>1 3 2 5 4&lt;/code>，但代码会给出&lt;code>4 5&lt;/code>&lt;br>
 考虑到洛谷那边确实是过了，那应该是我之前的理解也有问题&lt;br>
 我默认当成是一笔画问题去考虑，想状态方程也是重点往这方面想，一直也想不出来&lt;br>
-估计做这题还是记忆化搜索保险，要真是一笔画思路的话这样写就过不了了&lt;/p></description></item><item><title>算法康复计划 08</title><link>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-08/</link><pubDate>Thu, 25 Jul 2024 21:33:45 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-08/</guid><description>&lt;p>急着看今晚的OW比赛，所以就随便写个前缀和的题目&lt;br>
+估计做这题还是记忆化搜索保险，要真是一笔画思路的话这样写就过不了了&lt;/p></description></item><item><title>算法康复计划 08 求区间和</title><link>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-08-%E6%B1%82%E5%8C%BA%E9%97%B4%E5%92%8C/</link><pubDate>Thu, 25 Jul 2024 21:33:45 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-08-%E6%B1%82%E5%8C%BA%E9%97%B4%E5%92%8C/</guid><description>&lt;p>急着看今晚的OW比赛，所以就随便写个前缀和的题目&lt;br>
 （OA猛）&lt;/p>
 &lt;h2 id="0x00-今日题目求区间和">&amp;lt;0x00&amp;gt; 今日题目：求区间和
 &lt;/h2>&lt;p>&lt;a class="link" href="https://www.luogu.com.cn/problem/P8218" target="_blank" rel="noopener"
@@ -761,7 +885,7 @@ Gnome一些习惯我适应不了，xfce不是很适合高分屏，其他的没�
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>;
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div></description></item><item><title>算法康复计划 07</title><link>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-07/</link><pubDate>Thu, 25 Jul 2024 14:52:18 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-07/</guid><description>&lt;p>今天挑一道经典题目来学学动态规划&lt;/p>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div></description></item><item><title>算法康复计划 07 采药</title><link>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-07-%E9%87%87%E8%8D%AF/</link><pubDate>Thu, 25 Jul 2024 14:52:18 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-07-%E9%87%87%E8%8D%AF/</guid><description>&lt;p>今天挑一道经典题目来学学动态规划&lt;/p>
 &lt;h2 id="0x00-今日题目采药">&amp;lt;0x00&amp;gt; 今日题目：采药
 &lt;/h2>&lt;p>&lt;a class="link" href="https://www.luogu.com.cn/problem/P1048" target="_blank" rel="noopener"
 >洛谷的P1048&lt;/a>&lt;/p>
@@ -857,7 +981,7 @@ $f(i-1,j)$表示不放进去，$f(i-1,j-w)+v$表示放进去，$w$表示加入�
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>cout &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> ans &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> &lt;span style="color:#e6db74">&amp;#34;&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>;
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>;
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div></description></item><item><title>算法康复计划 06</title><link>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-06/</link><pubDate>Wed, 24 Jul 2024 00:23:00 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-06/</guid><description>&lt;p>今天别的事情多，所以就挑一道简单的题写写&lt;/p>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div></description></item><item><title>算法康复计划 06 跳跳！</title><link>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-06-%E8%B7%B3%E8%B7%B3/</link><pubDate>Wed, 24 Jul 2024 00:23:00 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-06-%E8%B7%B3%E8%B7%B3/</guid><description>&lt;p>今天别的事情多，所以就挑一道简单的题写写&lt;/p>
 &lt;h2 id="0x00-今日题目跳跳">&amp;lt;0x00&amp;gt; 今日题目：跳跳！
 &lt;/h2>&lt;p>&lt;a class="link" href="https://www.luogu.com.cn/problem/P4995" target="_blank" rel="noopener"
 >洛谷的P4995&lt;/a>&lt;/p>
@@ -1064,7 +1188,7 @@ $f(i-1,j)$表示不放进去，$f(i-1,j-w)+v$表示放进去，$w$表示加入�
 所有实际开发中经常出现传参类型出问题，排查好一会儿&lt;/p>
 &lt;p>总之，python这门语言感觉就像是共享单车，解决的是程序最后怎么运行的问题&lt;br>
 当脚本语言是非常合适的&lt;/p>
-&lt;p>所以说，没有最好的语言，只有最适合的语言&lt;/p></description></item><item><title>算法康复计划 05</title><link>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-05/</link><pubDate>Tue, 23 Jul 2024 01:51:37 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-05/</guid><description>&lt;p>这道题我想的太抽象了，导致我在复杂的方向上花了很多时间&lt;br>
+&lt;p>所以说，没有最好的语言，只有最适合的语言&lt;/p></description></item><item><title>算法康复计划 05 逛画展</title><link>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-05-%E9%80%9B%E7%94%BB%E5%B1%95/</link><pubDate>Tue, 23 Jul 2024 01:51:37 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-05-%E9%80%9B%E7%94%BB%E5%B1%95/</guid><description>&lt;p>这道题我想的太抽象了，导致我在复杂的方向上花了很多时间&lt;br>
 （因为那个思路确实不能说错吧，毕竟确实是能解决问题的）&lt;/p>
 &lt;h2 id="0x00-今日题目逛画展">&amp;lt;0x00&amp;gt; 今日题目：逛画展
 &lt;/h2>&lt;p>&lt;a class="link" href="https://www.luogu.com.cn/problem/P1638" target="_blank" rel="noopener"
@@ -1333,7 +1457,7 @@ end可以从1开始遍历，然后计算start的值&lt;br>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>cout &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> ansStart &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> &lt;span style="color:#e6db74">&amp;#34; &amp;#34;&lt;/span> &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> ansEnd;
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>;
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div></description></item><item><title>算法康复计划 04</title><link>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-04/</link><pubDate>Mon, 22 Jul 2024 12:59:04 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-04/</guid><description>&lt;p>偶然发现居然有道很久之前写的题没有AC，那就写这题了&lt;/p>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div></description></item><item><title>算法康复计划 04 数楼梯</title><link>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-04-%E6%95%B0%E6%A5%BC%E6%A2%AF/</link><pubDate>Mon, 22 Jul 2024 12:59:04 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-04-%E6%95%B0%E6%A5%BC%E6%A2%AF/</guid><description>&lt;p>偶然发现居然有道很久之前写的题没有AC，那就写这题了&lt;/p>
 &lt;h2 id="0x00-今日题目数楼梯">&amp;lt;0x00&amp;gt; 今日题目：数楼梯
 &lt;/h2>&lt;p>&lt;a class="link" href="https://www.luogu.com.cn/problem/P1255" target="_blank" rel="noopener"
 >洛谷的P1255&lt;/a>&lt;/p>
@@ -1485,7 +1609,7 @@ end可以从1开始遍历，然后计算start的值&lt;br>
 那这数字size_t都扛不住，要上高精度计算了&lt;br>
 所以这道题看似考递推递归，实际上考的是高精度计算&lt;/p>
 &lt;p>然后本来想逃课用C#的BigIntager的，但不知道为什么，洛谷的评测机上面没有BigIntager这个类&lt;br>
-所以最后就写了个高精度计算，也就用到个加法，问题不大&lt;/p></description></item><item><title>算法康复计划 03</title><link>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-03/</link><pubDate>Sun, 21 Jul 2024 22:27:25 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-03/</guid><description>&lt;h2 id="0x00-今日题目a-b-数对">&amp;lt;0x00&amp;gt; 今日题目：A-B 数对
+所以最后就写了个高精度计算，也就用到个加法，问题不大&lt;/p></description></item><item><title>算法康复计划 03 A-B 数对</title><link>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-03-a-b-%E6%95%B0%E5%AF%B9/</link><pubDate>Sun, 21 Jul 2024 22:27:25 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-03-a-b-%E6%95%B0%E5%AF%B9/</guid><description>&lt;h2 id="0x00-今日题目a-b-数对">&amp;lt;0x00&amp;gt; 今日题目：A-B 数对
 &lt;/h2>&lt;p>&lt;a class="link" href="https://www.luogu.com.cn/problem/P1102" target="_blank" rel="noopener"
 >洛谷的P1102&lt;/a>&lt;/p>
 &lt;h3 id="题目背景">题目背景
@@ -1727,7 +1851,7 @@ data-flex-basis="6150px"
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>当然头铁不改正确的声明也没关系，也是这样使用&lt;/p>
-&lt;p>对于其他不知道怎么声明的枚举也可以这样让CsWin32去找&lt;/p></description></item><item><title>算法康复计划 02</title><link>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-02/</link><pubDate>Sun, 21 Jul 2024 10:43:29 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-02/</guid><description>&lt;p>刚开始几天打算先写点简单的&lt;/p>
+&lt;p>对于其他不知道怎么声明的枚举也可以这样让CsWin32去找&lt;/p></description></item><item><title>算法康复计划 02 小A的糖果</title><link>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-02-%E5%B0%8Fa%E7%9A%84%E7%B3%96%E6%9E%9C/</link><pubDate>Sun, 21 Jul 2024 10:43:29 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-02-%E5%B0%8Fa%E7%9A%84%E7%B3%96%E6%9E%9C/</guid><description>&lt;p>刚开始几天打算先写点简单的&lt;/p>
 &lt;h2 id="0x00-今日题目小a的糖果">&amp;lt;0x00&amp;gt; 今日题目：小A的糖果
 &lt;/h2>&lt;p>&lt;a class="link" href="https://www.luogu.com.cn/problem/P3817" target="_blank" rel="noopener"
 >洛谷的P3817&lt;/a>&lt;/p>
@@ -1824,7 +1948,7 @@ data-flex-basis="6150px"
 最开始ans是&lt;code>int&lt;/code>类型，然后提交上去发现有两个数据点过不了&lt;br>
 下载下来一看输出就明白了，答案超21亿了&lt;br>
 于是把&lt;code>int&lt;/code>改成&lt;code>size_t&lt;/code>这样就过了&lt;br>
-(&lt;code>size_t&lt;/code>在64位系统中是&lt;code>unsigned long long&lt;/code>)&lt;/p></description></item><item><title>算法康复计划 01</title><link>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-01/</link><pubDate>Sat, 20 Jul 2024 23:05:43 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-01/</guid><description>&lt;p>这两年，技术研究得越来越多，但算法基本是没学了&lt;br>
+(&lt;code>size_t&lt;/code>在64位系统中是&lt;code>unsigned long long&lt;/code>)&lt;/p></description></item><item><title>算法康复计划 01 马的遍历</title><link>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-01-%E9%A9%AC%E7%9A%84%E9%81%8D%E5%8E%86/</link><pubDate>Sat, 20 Jul 2024 23:05:43 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-01-%E9%A9%AC%E7%9A%84%E9%81%8D%E5%8E%86/</guid><description>&lt;p>这两年，技术研究得越来越多，但算法基本是没学了&lt;br>
 让我本就不强的算法能力更是雪上加霜&lt;br>
 于是我就打算趁着暑假的时间，每天做一道算法题&lt;br>
 也不是为了比赛之类的，只是觉得现在确实缺算法方面的能力&lt;br>
@@ -6748,15 +6872,14 @@ data-flex-basis="1389px"
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> add_includedirs(&lt;span style="color:#e6db74">&amp;#34;include&amp;#34;&lt;/span>)
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> add_files(&lt;span style="color:#e6db74">&amp;#34;src/*.cpp&amp;#34;&lt;/span>)
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>是不是确实干净很多？而且更加易懂？&lt;br>
-所以说嘛，人不能折磨自己，如果刚刚打算跑 C++ 的多文件编译，我强烈推荐用 &lt;code>Xmake&lt;/code>&lt;br>
-在文档中提到，&lt;code>Xmake&lt;/code> 的构建效率可以达到 &lt;code>ninja&lt;/code> 的水平，这个在我的使用中似乎并未体现&lt;br>
+所以说嘛，人不能折磨自己，如果刚刚打算跑C++的多文件编译，我强烈推荐用&lt;code>Xmake&lt;/code>&lt;br>
+在文档中提到&lt;code>Xmake&lt;/code>的构建效率可以达到&lt;code>ninja&lt;/code>的水平，这个在我的使用中似乎并未体现&lt;br>
 (可能是我的项目相对比较小)
-总之 &lt;code>Xmake&lt;/code> 更现代，对很多东西都有很好的原生支持，具体可以看项目文档&lt;/p>
+总之&lt;code>Xmake&lt;/code>更现代，对很多东西都有很好的原生支持，具体可以看项目文档&lt;/p>
 &lt;h2 id="0x02-安装xmake">&amp;lt;0x02&amp;gt; 安装Xmake
 &lt;/h2>&lt;p>如果有配置 &lt;code>winget&lt;/code> 可以直接敲下面的命令&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-powershell" data-lang="powershell">&lt;span style="display:flex;">&lt;span>winget install xmake
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>(强烈安利 &lt;code>winget&lt;/code>，先挖个在 &lt;code>win10 LTSC&lt;/code> 下安装 &lt;code>winget&lt;/code> 的坑)&lt;/p>
-&lt;p>也可以去 &lt;a class="link" href="https://github.com/xmake-io/xmake" target="_blank" rel="noopener"
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>也可以去 &lt;a class="link" href="https://github.com/xmake-io/xmake" target="_blank" rel="noopener"
 >Github-xmake项目&lt;/a> 下载安装包&lt;br>
 直接安装就可以了，全默认就可以&lt;/p>
 &lt;h2 id="0x03-vs-code的配置">&amp;lt;0x03&amp;gt; VS Code的配置
