@@ -23,7 +23,7 @@ VSCode的源生成器体验也是不错的，这个直接装&lt;code>C# kit&lt;/
 &lt;h2 id="0x01-如何使用">&amp;lt;0x01&amp;gt; 如何使用
 &lt;/h2>&lt;h3 id="添加需要的api">添加需要的API
 &lt;/h3>&lt;p>首先是要告诉源生成器要生成哪些API的封装&lt;br>
-在项目跟目录新建叫&lt;code>NativeMethods.txt&lt;/code>的文件&lt;br>
+在项目根目录新建叫&lt;code>NativeMethods.txt&lt;/code>的文件&lt;br>
 &lt;img src="https://mlacookie.github.io/article/posts/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97csharp%E8%B0%83%E7%94%A8win32api/picture/1.png"
 width="240"
 height="95"

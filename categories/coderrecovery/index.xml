@@ -1,4 +1,70 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>CoderRecovery on MLAcookie</title><link>https://mlacookie.github.io/categories/coderrecovery/</link><description>Recent content in CoderRecovery on MLAcookie</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Mon, 12 Aug 2024 01:00:02 +0800</lastBuildDate><atom:link href="https://mlacookie.github.io/categories/coderrecovery/index.xml" rel="self" type="application/rss+xml"/><item><title>算法康复计划 13 5倍经验日</title><link>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-13-5%E5%80%8D%E7%BB%8F%E9%AA%8C%E6%97%A5/</link><pubDate>Mon, 12 Aug 2024 01:00:02 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-13-5%E5%80%8D%E7%BB%8F%E9%AA%8C%E6%97%A5/</guid><description>&lt;h2 id="0x00-今日题目5倍经验日">&amp;lt;0x00&amp;gt; 今日题目：5倍经验日
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>CoderRecovery on MLAcookie</title><link>https://mlacookie.github.io/categories/coderrecovery/</link><description>Recent content in CoderRecovery on MLAcookie</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Mon, 12 Aug 2024 23:22:58 +0800</lastBuildDate><atom:link href="https://mlacookie.github.io/categories/coderrecovery/index.xml" rel="self" type="application/rss+xml"/><item><title>算法康复计划14 最大子段和</title><link>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%9214-%E6%9C%80%E5%A4%A7%E5%AD%90%E6%AE%B5%E5%92%8C/</link><pubDate>Mon, 12 Aug 2024 23:22:58 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%9214-%E6%9C%80%E5%A4%A7%E5%AD%90%E6%AE%B5%E5%92%8C/</guid><description>&lt;h2 id="0x00-今日题目最大子段和">&amp;lt;0x00&amp;gt; 今日题目：最大子段和
+&lt;/h2>&lt;p>&lt;a class="link" href="https://www.luogu.com.cn/problem/P1115" target="_blank" rel="noopener"
+>洛谷的P1115&lt;/a>&lt;/p>
+&lt;h3 id="题目描述">题目描述
+&lt;/h3>&lt;p>给出一个长度为 $n$ 的序列 $a$，选出其中连续且非空的一段使得这段和最大。&lt;/p>
+&lt;h3 id="输入格式">输入格式
+&lt;/h3>&lt;p>第一行是一个整数，表示序列的长度 $n$。&lt;br>
+第二行有 $n$ 个整数，第 $i$ 个整数表示序列的第 $i$ 个数字 $a_i$。&lt;/p>
+&lt;h3 id="输出格式">输出格式
+&lt;/h3>&lt;p>输出一行一个整数表示答案。&lt;/p>
+&lt;h3 id="样例">样例
+&lt;/h3>&lt;h4 id="样例输入">样例输入
+&lt;/h4>&lt;pre tabindex="0">&lt;code>7
+2 -4 3 -1 2 -4 3
+&lt;/code>&lt;/pre>&lt;h4 id="样例输出">样例输出
+&lt;/h4>&lt;pre tabindex="0">&lt;code>4
+&lt;/code>&lt;/pre>&lt;h4 id="样例解释">样例解释
+&lt;/h4>&lt;p>选取 $[3, 5]$ 子段 ${3, -1, 2}$，其和为 $4$。&lt;/p>
+&lt;h3 id="数据规模与约定">数据规模与约定
+&lt;/h3>&lt;ul>
+&lt;li>对于 $40%$ 的数据，保证 $n \leq 2 \times 10^3$。&lt;/li>
+&lt;li>对于 $100%$ 的数据，保证 $1 \leq n \leq 2 \times 10^5$，$-10^4 \leq a_i \leq 10^4$。&lt;/li>
+&lt;/ul>
+&lt;h2 id="0x01-分析">&amp;lt;0x01&amp;gt; 分析
+&lt;/h2>&lt;p>这道题需要贪心+dp的思路&lt;br>
+对于样例的数据&lt;br>
+从2开始，$2+(-4)=-2&amp;lt;2$&lt;br>
+这意味着如果答案包含-4，那么也一定包含前面的2，不如就很难把数字撑大&lt;br>
+接着加，$(-2)+3=1&amp;lt;3$，这意味着如果答案包含-4，那么也会包含这个3&lt;br>
+而且会发现，接着这条链不如新开一条链，因为前面的数字相当于累赘&lt;br>
+所以从3开始加，$3+(-1)=2&amp;gt;-1$，$2+2=4&amp;gt;2$，$4+(-4)=0&amp;gt;-4$，$0+3=3=3$&lt;br>
+这里也发现一个问题，之前写的动态规划的题一般最后的状态就是答案&lt;br>
+但这里的答案在过程中间，所以需要一个存储最大值的变量&lt;/p>
+&lt;p>所以最后的状态转移方程是$f(i)=max(a_i,f(i-1)+a_i)$&lt;br>
+其中，$i$表示已处理前$i$个数据，$a_i$是输入的数组&lt;/p>
+&lt;h2 id="0x02-代码">&amp;lt;0x02&amp;gt; 代码
+&lt;/h2>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-cpp" data-lang="cpp">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;iostream&amp;gt;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;limits.h&amp;gt;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;vector&amp;gt;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">int&lt;/span> &lt;span style="color:#a6e22e">main&lt;/span>()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 读入
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">int&lt;/span> n;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>cin &lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> n;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>vector&lt;span style="color:#f92672">&amp;lt;&lt;/span>&lt;span style="color:#66d9ef">long&lt;/span> &lt;span style="color:#66d9ef">long&lt;/span>&lt;span style="color:#f92672">&amp;gt;&lt;/span> list(n);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">int&lt;/span> i &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>; i &lt;span style="color:#f92672">&amp;lt;&lt;/span> n; i&lt;span style="color:#f92672">++&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>cin &lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> list[i];
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 初始化第一个状态
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> std&lt;span style="color:#f92672">::&lt;/span>vector&lt;span style="color:#f92672">&amp;lt;&lt;/span>&lt;span style="color:#66d9ef">long&lt;/span> &lt;span style="color:#66d9ef">long&lt;/span>&lt;span style="color:#f92672">&amp;gt;&lt;/span> map(n);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> map[&lt;span style="color:#ae81ff">0&lt;/span>] &lt;span style="color:#f92672">=&lt;/span> list[&lt;span style="color:#ae81ff">0&lt;/span>];
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">long&lt;/span> &lt;span style="color:#66d9ef">long&lt;/span> ans &lt;span style="color:#f92672">=&lt;/span> INT_MIN;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">int&lt;/span> i &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>; i &lt;span style="color:#f92672">&amp;lt;&lt;/span> n; i&lt;span style="color:#f92672">++&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 如果前面加上的还不如新开一条的话就丢弃
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> map[i] &lt;span style="color:#f92672">=&lt;/span> std&lt;span style="color:#f92672">::&lt;/span>max(list[i], map[i &lt;span style="color:#f92672">-&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>] &lt;span style="color:#f92672">+&lt;/span> list[i]);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 更新答案
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> ans &lt;span style="color:#f92672">=&lt;/span> std&lt;span style="color:#f92672">::&lt;/span>max(ans, map[i]);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>cout &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> ans &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> &lt;span style="color:#e6db74">&amp;#34;&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="0x03-遇到的坑">&amp;lt;0x03&amp;gt; 遇到的坑
+&lt;/h2>&lt;p>一开始想不到贪心+dp的思路&lt;br>
+所以是看了题解后才会的题&lt;/p></description></item><item><title>算法康复计划13 5倍经验日</title><link>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%9213-5%E5%80%8D%E7%BB%8F%E9%AA%8C%E6%97%A5/</link><pubDate>Mon, 12 Aug 2024 01:00:02 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%9213-5%E5%80%8D%E7%BB%8F%E9%AA%8C%E6%97%A5/</guid><description>&lt;h2 id="0x00-今日题目5倍经验日">&amp;lt;0x00&amp;gt; 今日题目：5倍经验日
 &lt;/h2>&lt;p>&lt;a class="link" href="https://www.luogu.com.cn/problem/P1802" target="_blank" rel="noopener"
 >洛谷的P1802&lt;/a>&lt;/p>
 &lt;h3 id="题目背景">题目背景
@@ -123,7 +189,7 @@ absi2011 授权题目&lt;/p>
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="0x03-遇到的坑">&amp;lt;0x03&amp;gt; 遇到的坑
 &lt;/h2>&lt;p>因为省略状态转移方程的第一个参数，所以要注意循环方向&lt;br>
 还有就是当某个敌人不需要嗑药也能打过的时候需要特殊处理&lt;br>
-如果不处理会导致赢了和输了都计算一遍&lt;/p></description></item><item><title>算法康复计划 12 摆花</title><link>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-12-%E6%91%86%E8%8A%B1/</link><pubDate>Sat, 10 Aug 2024 00:04:15 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-12-%E6%91%86%E8%8A%B1/</guid><description>&lt;h2 id="0x00-今日题目摆花">&amp;lt;0x00&amp;gt; 今日题目：摆花
+如果不处理会导致赢了和输了都计算一遍&lt;/p></description></item><item><title>算法康复计划12 摆花</title><link>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%9212-%E6%91%86%E8%8A%B1/</link><pubDate>Sat, 10 Aug 2024 00:04:15 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%9212-%E6%91%86%E8%8A%B1/</guid><description>&lt;h2 id="0x00-今日题目摆花">&amp;lt;0x00&amp;gt; 今日题目：摆花
 &lt;/h2>&lt;p>&lt;a class="link" href="https://www.luogu.com.cn/problem/P1077" target="_blank" rel="noopener"
 >洛谷的P1077&lt;/a>&lt;/p>
 &lt;h3 id="题目描述">题目描述
@@ -198,7 +264,7 @@ absi2011 授权题目&lt;/p>
 &lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> std&lt;span style="color:#f92672">::&lt;/span>cout &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> map[n &lt;span style="color:#f92672">-&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>][m] &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> &lt;span style="color:#e6db74">&amp;#34;&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>;
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>;
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div></description></item><item><title>算法康复计划 11 最大食物链计数</title><link>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-11-%E6%9C%80%E5%A4%A7%E9%A3%9F%E7%89%A9%E9%93%BE%E8%AE%A1%E6%95%B0/</link><pubDate>Thu, 08 Aug 2024 23:44:57 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-11-%E6%9C%80%E5%A4%A7%E9%A3%9F%E7%89%A9%E9%93%BE%E8%AE%A1%E6%95%B0/</guid><description>&lt;p>这几天有别的事情忙，所以算法练习就搁置了几天&lt;/p>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div></description></item><item><title>算法康复计划11 最大食物链计数</title><link>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%9211-%E6%9C%80%E5%A4%A7%E9%A3%9F%E7%89%A9%E9%93%BE%E8%AE%A1%E6%95%B0/</link><pubDate>Thu, 08 Aug 2024 23:44:57 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%9211-%E6%9C%80%E5%A4%A7%E9%A3%9F%E7%89%A9%E9%93%BE%E8%AE%A1%E6%95%B0/</guid><description>&lt;p>这几天有别的事情忙，所以算法练习就搁置了几天&lt;/p>
 &lt;h2 id="0x00-今日题目最大食物链计数">&amp;lt;0x00&amp;gt; 今日题目：最大食物链计数
 &lt;/h2>&lt;p>&lt;a class="link" href="https://www.luogu.com.cn/problem/P4017" target="_blank" rel="noopener"
 >洛谷的P4017&lt;/a>&lt;/p>
@@ -415,7 +481,7 @@ loading="lazy"
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>cout &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> o &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> &lt;span style="color:#e6db74">&amp;#34;&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>;
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>;
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div></description></item><item><title>算法康复计划 10 过河卒</title><link>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-10-%E8%BF%87%E6%B2%B3%E5%8D%92/</link><pubDate>Sat, 27 Jul 2024 23:47:27 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-10-%E8%BF%87%E6%B2%B3%E5%8D%92/</guid><description>&lt;p>不知不觉写了10天了，目前只能说C++没之前这么手生了&lt;br>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div></description></item><item><title>算法康复计划10 过河卒</title><link>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%9210-%E8%BF%87%E6%B2%B3%E5%8D%92/</link><pubDate>Sat, 27 Jul 2024 23:47:27 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%9210-%E8%BF%87%E6%B2%B3%E5%8D%92/</guid><description>&lt;p>不知不觉写了10天了，目前只能说C++没之前这么手生了&lt;br>
 算法的话也算稍微接触了下动态规划，学到了很多&lt;/p>
 &lt;h2 id="0x00-今日题目过河卒">&amp;lt;0x00&amp;gt; 今日题目：过河卒
 &lt;/h2>&lt;p>&lt;a class="link" href="https://www.luogu.com.cn/problem/P1002" target="_blank" rel="noopener"
@@ -537,7 +603,7 @@ loading="lazy"
 &lt;/h2>&lt;p>我最开始看到这道题我以为问题不大&lt;br>
 所以就直接拿出DFS了，DFS也算递归嘛&lt;br>
 然后就有两个数据点没过&lt;br>
-后来一想就发现问题了，既然不要求路径，那也没必要用DFS，直接递推就可以了&lt;/p></description></item><item><title>算法康复计划 09 挖地雷</title><link>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-09-%E6%8C%96%E5%9C%B0%E9%9B%B7/</link><pubDate>Sat, 27 Jul 2024 01:10:32 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-09-%E6%8C%96%E5%9C%B0%E9%9B%B7/</guid><description>&lt;h2 id="0x00-今日题目挖地雷">&amp;lt;0x00&amp;gt; 今日题目：挖地雷
+后来一想就发现问题了，既然不要求路径，那也没必要用DFS，直接递推就可以了&lt;/p></description></item><item><title>算法康复计划09 挖地雷</title><link>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%9209-%E6%8C%96%E5%9C%B0%E9%9B%B7/</link><pubDate>Sat, 27 Jul 2024 01:10:32 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%9209-%E6%8C%96%E5%9C%B0%E9%9B%B7/</guid><description>&lt;h2 id="0x00-今日题目挖地雷">&amp;lt;0x00&amp;gt; 今日题目：挖地雷
 &lt;/h2>&lt;p>&lt;a class="link" href="https://www.luogu.com.cn/problem/P2196" target="_blank" rel="noopener"
 >洛谷的P2196&lt;/a>&lt;/p>
 &lt;h3 id="题目描述">题目描述
@@ -700,7 +766,7 @@ loading="lazy"
 &lt;/code>&lt;/pre>&lt;p>按道理挖雷最大化路径就是&lt;code>1 3 2 5 4&lt;/code>，但代码会给出&lt;code>4 5&lt;/code>&lt;br>
 考虑到洛谷那边确实是过了，那应该是我之前的理解也有问题&lt;br>
 我默认当成是一笔画问题去考虑，想状态方程也是重点往这方面想，一直也想不出来&lt;br>
-估计做这题还是记忆化搜索保险，要真是一笔画思路的话这样写就过不了了&lt;/p></description></item><item><title>算法康复计划 08 求区间和</title><link>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-08-%E6%B1%82%E5%8C%BA%E9%97%B4%E5%92%8C/</link><pubDate>Thu, 25 Jul 2024 21:33:45 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-08-%E6%B1%82%E5%8C%BA%E9%97%B4%E5%92%8C/</guid><description>&lt;p>急着看今晚的OW比赛，所以就随便写个前缀和的题目&lt;br>
+估计做这题还是记忆化搜索保险，要真是一笔画思路的话这样写就过不了了&lt;/p></description></item><item><title>算法康复计划08 求区间和</title><link>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%9208-%E6%B1%82%E5%8C%BA%E9%97%B4%E5%92%8C/</link><pubDate>Thu, 25 Jul 2024 21:33:45 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%9208-%E6%B1%82%E5%8C%BA%E9%97%B4%E5%92%8C/</guid><description>&lt;p>急着看今晚的OW比赛，所以就随便写个前缀和的题目&lt;br>
 （OA猛）&lt;/p>
 &lt;h2 id="0x00-今日题目求区间和">&amp;lt;0x00&amp;gt; 今日题目：求区间和
 &lt;/h2>&lt;p>&lt;a class="link" href="https://www.luogu.com.cn/problem/P8218" target="_blank" rel="noopener"
@@ -764,7 +830,7 @@ loading="lazy"
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>;
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div></description></item><item><title>算法康复计划 07 采药</title><link>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-07-%E9%87%87%E8%8D%AF/</link><pubDate>Thu, 25 Jul 2024 14:52:18 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-07-%E9%87%87%E8%8D%AF/</guid><description>&lt;p>今天挑一道经典题目来学学动态规划&lt;/p>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div></description></item><item><title>算法康复计划07 采药</title><link>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%9207-%E9%87%87%E8%8D%AF/</link><pubDate>Thu, 25 Jul 2024 14:52:18 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%9207-%E9%87%87%E8%8D%AF/</guid><description>&lt;p>今天挑一道经典题目来学学动态规划&lt;/p>
 &lt;h2 id="0x00-今日题目采药">&amp;lt;0x00&amp;gt; 今日题目：采药
 &lt;/h2>&lt;p>&lt;a class="link" href="https://www.luogu.com.cn/problem/P1048" target="_blank" rel="noopener"
 >洛谷的P1048&lt;/a>&lt;/p>
@@ -860,7 +926,7 @@ $f(i-1,j)$表示不放进去，$f(i-1,j-w)+v$表示放进去，$w$表示加入�
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>cout &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> ans &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> &lt;span style="color:#e6db74">&amp;#34;&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>;
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>;
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div></description></item><item><title>算法康复计划 06 跳跳！</title><link>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-06-%E8%B7%B3%E8%B7%B3/</link><pubDate>Wed, 24 Jul 2024 00:23:00 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-06-%E8%B7%B3%E8%B7%B3/</guid><description>&lt;p>今天别的事情多，所以就挑一道简单的题写写&lt;/p>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div></description></item><item><title>算法康复计划06 跳跳！</title><link>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%9206-%E8%B7%B3%E8%B7%B3/</link><pubDate>Wed, 24 Jul 2024 00:23:00 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%9206-%E8%B7%B3%E8%B7%B3/</guid><description>&lt;p>今天别的事情多，所以就挑一道简单的题写写&lt;/p>
 &lt;h2 id="0x00-今日题目跳跳">&amp;lt;0x00&amp;gt; 今日题目：跳跳！
 &lt;/h2>&lt;p>&lt;a class="link" href="https://www.luogu.com.cn/problem/P4995" target="_blank" rel="noopener"
 >洛谷的P4995&lt;/a>&lt;/p>
@@ -998,7 +1064,7 @@ $f(i-1,j)$表示不放进去，$f(i-1,j-w)+v$表示放进去，$w$表示加入�
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>cout &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> ans &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> &lt;span style="color:#e6db74">&amp;#34;&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>;
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>;
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div></description></item><item><title>算法康复计划 05 逛画展</title><link>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-05-%E9%80%9B%E7%94%BB%E5%B1%95/</link><pubDate>Tue, 23 Jul 2024 01:51:37 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-05-%E9%80%9B%E7%94%BB%E5%B1%95/</guid><description>&lt;p>这道题我想的太抽象了，导致我在复杂的方向上花了很多时间&lt;br>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div></description></item><item><title>算法康复计划05 逛画展</title><link>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%9205-%E9%80%9B%E7%94%BB%E5%B1%95/</link><pubDate>Tue, 23 Jul 2024 01:51:37 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%9205-%E9%80%9B%E7%94%BB%E5%B1%95/</guid><description>&lt;p>这道题我想的太抽象了，导致我在复杂的方向上花了很多时间&lt;br>
 （因为那个思路确实不能说错吧，毕竟确实是能解决问题的）&lt;/p>
 &lt;h2 id="0x00-今日题目逛画展">&amp;lt;0x00&amp;gt; 今日题目：逛画展
 &lt;/h2>&lt;p>&lt;a class="link" href="https://www.luogu.com.cn/problem/P1638" target="_blank" rel="noopener"
@@ -1267,7 +1333,7 @@ end可以从1开始遍历，然后计算start的值&lt;br>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>cout &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> ansStart &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> &lt;span style="color:#e6db74">&amp;#34; &amp;#34;&lt;/span> &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> ansEnd;
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>;
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div></description></item><item><title>算法康复计划 04 数楼梯</title><link>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-04-%E6%95%B0%E6%A5%BC%E6%A2%AF/</link><pubDate>Mon, 22 Jul 2024 12:59:04 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-04-%E6%95%B0%E6%A5%BC%E6%A2%AF/</guid><description>&lt;p>偶然发现居然有道很久之前写的题没有AC，那就写这题了&lt;/p>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div></description></item><item><title>算法康复计划04 数楼梯</title><link>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%9204-%E6%95%B0%E6%A5%BC%E6%A2%AF/</link><pubDate>Mon, 22 Jul 2024 12:59:04 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%9204-%E6%95%B0%E6%A5%BC%E6%A2%AF/</guid><description>&lt;p>偶然发现居然有道很久之前写的题没有AC，那就写这题了&lt;/p>
 &lt;h2 id="0x00-今日题目数楼梯">&amp;lt;0x00&amp;gt; 今日题目：数楼梯
 &lt;/h2>&lt;p>&lt;a class="link" href="https://www.luogu.com.cn/problem/P1255" target="_blank" rel="noopener"
 >洛谷的P1255&lt;/a>&lt;/p>
@@ -1419,7 +1485,7 @@ end可以从1开始遍历，然后计算start的值&lt;br>
 那这数字size_t都扛不住，要上高精度计算了&lt;br>
 所以这道题看似考递推递归，实际上考的是高精度计算&lt;/p>
 &lt;p>然后本来想逃课用C#的BigIntager的，但不知道为什么，洛谷的评测机上面没有BigIntager这个类&lt;br>
-所以最后就写了个高精度计算，也就用到个加法，问题不大&lt;/p></description></item><item><title>算法康复计划 03 A-B 数对</title><link>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-03-a-b-%E6%95%B0%E5%AF%B9/</link><pubDate>Sun, 21 Jul 2024 22:27:25 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-03-a-b-%E6%95%B0%E5%AF%B9/</guid><description>&lt;h2 id="0x00-今日题目a-b-数对">&amp;lt;0x00&amp;gt; 今日题目：A-B 数对
+所以最后就写了个高精度计算，也就用到个加法，问题不大&lt;/p></description></item><item><title>算法康复计划03 A-B 数对</title><link>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%9203-a-b-%E6%95%B0%E5%AF%B9/</link><pubDate>Sun, 21 Jul 2024 22:27:25 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%9203-a-b-%E6%95%B0%E5%AF%B9/</guid><description>&lt;h2 id="0x00-今日题目a-b-数对">&amp;lt;0x00&amp;gt; 今日题目：A-B 数对
 &lt;/h2>&lt;p>&lt;a class="link" href="https://www.luogu.com.cn/problem/P1102" target="_blank" rel="noopener"
 >洛谷的P1102&lt;/a>&lt;/p>
 &lt;h3 id="题目背景">题目背景
@@ -1489,7 +1555,7 @@ end可以从1开始遍历，然后计算start的值&lt;br>
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="0x03-遇到的坑">&amp;lt;0x03&amp;gt; 遇到的坑
 &lt;/h2>&lt;p>又是经典答案爆&lt;code>int&lt;/code>范围了，但这里是在最后的乘法&lt;br>
 两个&lt;code>int&lt;/code>相乘返回的也是&lt;code>int&lt;/code>，如果乘出来的值超过范围，也是会爆的&lt;br>
-所以&lt;code>int&lt;/code>强转&lt;code>size_t&lt;/code>解决&lt;/p></description></item><item><title>算法康复计划 02 小A的糖果</title><link>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-02-%E5%B0%8Fa%E7%9A%84%E7%B3%96%E6%9E%9C/</link><pubDate>Sun, 21 Jul 2024 10:43:29 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-02-%E5%B0%8Fa%E7%9A%84%E7%B3%96%E6%9E%9C/</guid><description>&lt;p>刚开始几天打算先写点简单的&lt;/p>
+所以&lt;code>int&lt;/code>强转&lt;code>size_t&lt;/code>解决&lt;/p></description></item><item><title>算法康复计划02 小A的糖果</title><link>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%9202-%E5%B0%8Fa%E7%9A%84%E7%B3%96%E6%9E%9C/</link><pubDate>Sun, 21 Jul 2024 10:43:29 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%9202-%E5%B0%8Fa%E7%9A%84%E7%B3%96%E6%9E%9C/</guid><description>&lt;p>刚开始几天打算先写点简单的&lt;/p>
 &lt;h2 id="0x00-今日题目小a的糖果">&amp;lt;0x00&amp;gt; 今日题目：小A的糖果
 &lt;/h2>&lt;p>&lt;a class="link" href="https://www.luogu.com.cn/problem/P3817" target="_blank" rel="noopener"
 >洛谷的P3817&lt;/a>&lt;/p>
@@ -1586,7 +1652,7 @@ end可以从1开始遍历，然后计算start的值&lt;br>
 最开始ans是&lt;code>int&lt;/code>类型，然后提交上去发现有两个数据点过不了&lt;br>
 下载下来一看输出就明白了，答案超21亿了&lt;br>
 于是把&lt;code>int&lt;/code>改成&lt;code>size_t&lt;/code>这样就过了&lt;br>
-(&lt;code>size_t&lt;/code>在64位系统中是&lt;code>unsigned long long&lt;/code>)&lt;/p></description></item><item><title>算法康复计划 01 马的遍历</title><link>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-01-%E9%A9%AC%E7%9A%84%E9%81%8D%E5%8E%86/</link><pubDate>Sat, 20 Jul 2024 23:05:43 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%92-01-%E9%A9%AC%E7%9A%84%E9%81%8D%E5%8E%86/</guid><description>&lt;p>这两年，技术研究得越来越多，但算法基本是没学了&lt;br>
+(&lt;code>size_t&lt;/code>在64位系统中是&lt;code>unsigned long long&lt;/code>)&lt;/p></description></item><item><title>算法康复计划01 马的遍历</title><link>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%9201-%E9%A9%AC%E7%9A%84%E9%81%8D%E5%8E%86/</link><pubDate>Sat, 20 Jul 2024 23:05:43 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%9201-%E9%A9%AC%E7%9A%84%E9%81%8D%E5%8E%86/</guid><description>&lt;p>这两年，技术研究得越来越多，但算法基本是没学了&lt;br>
 让我本就不强的算法能力更是雪上加霜&lt;br>
 于是我就打算趁着暑假的时间，每天做一道算法题&lt;br>
 也不是为了比赛之类的，只是觉得现在确实缺算法方面的能力&lt;br>
