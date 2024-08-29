@@ -1,4 +1,53 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Linux on MLAcookie</title><link>https://mlacookie.github.io/tags/linux/</link><description>Recent content in Linux on MLAcookie</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Sun, 28 Jul 2024 12:47:37 +0800</lastBuildDate><atom:link href="https://mlacookie.github.io/tags/linux/index.xml" rel="self" type="application/rss+xml"/><item><title>机革本本装Linux</title><link>https://mlacookie.github.io/article/posts/%E6%9C%BA%E9%9D%A9%E6%9C%AC%E6%9C%AC%E8%A3%85linux/</link><pubDate>Sun, 28 Jul 2024 12:47:37 +0800</pubDate><guid>https://mlacookie.github.io/article/posts/%E6%9C%BA%E9%9D%A9%E6%9C%AC%E6%9C%AC%E8%A3%85linux/</guid><description>&lt;p>暑假经典节目，与Linux大战300回合&lt;/p>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Linux on MLAcookie</title><link>https://mlacookie.github.io/tags/linux/</link><description>Recent content in Linux on MLAcookie</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Thu, 22 Aug 2024 22:04:25 +0800</lastBuildDate><atom:link href="https://mlacookie.github.io/tags/linux/index.xml" rel="self" type="application/rss+xml"/><item><title>如何Windows+Manjaro双系统</title><link>https://mlacookie.github.io/article/posts/%E5%A6%82%E4%BD%95windows+manjaro%E5%8F%8C%E7%B3%BB%E7%BB%9F/</link><pubDate>Thu, 22 Aug 2024 22:04:25 +0800</pubDate><guid>https://mlacookie.github.io/article/posts/%E5%A6%82%E4%BD%95windows+manjaro%E5%8F%8C%E7%B3%BB%E7%BB%9F/</guid><description>&lt;p>emmmm&lt;br>
+之前在笔记本上安装了Manjaro&lt;br>
+基本上所有需要的软件都有了解决方案&lt;br>
+甚至打游戏都不是很大的问题&lt;br>
+结果没想到败在了游戏加速器上&lt;br>
+Linux没有现成的游戏加速器，而且我不会配网卡类型的代理&lt;br>
+（就算配起来我也没有游戏优化的代理服务器）&lt;/p>
+&lt;p>所以没办法，又要用Windows了&lt;br>
+不过我又不想放弃Linux的轻量精简&lt;br>
+于是我就给笔记本做了个双系统&lt;/p>
+&lt;p>（因为在物理机上安装，所以目前没什么图，有机会再补吧）&lt;/p>
+&lt;h2 id="0x00-前置准备">&amp;lt;0x00&amp;gt; 前置准备
+&lt;/h2>&lt;p>首先需要一个U盘，做系统安装盘&lt;br>
+这次仍然使用Ventoy做系统引导&lt;br>
+Ventoy的使用就不说了，基本上就是软件打开选择U盘安装即可 &lt;br>
+然后需要准备需要的Windows镜像和Manjaro镜像&lt;br>
+还需要一个WinPE的镜像，我的建议是用微PE工具生成一个&lt;br>
+我们需要使用这个PE来提前给硬盘分区&lt;/p>
+&lt;h2 id="0x01-pe中的操作">&amp;lt;0x01&amp;gt; PE中的操作
+&lt;/h2>&lt;p>PE中，我们主要是给系统进行分盘&lt;br>
+如果你会在Windows安装器中分盘的话可以跳过&lt;/p>
+&lt;p>Ventoy引导进PE的iso&lt;br>
+一般PE中会带一个分区工具，有啥用啥，我使用的是DG&lt;br>
+里面有个快速分区工具，使用这个分两个盘，大小随意&lt;br>
+分出来都是NTFS格式的，删除希望安装Manjaro的分区，等之后用Manjaro安装工具分区&lt;br>
+分好区后，保存更改，就可以退出PE系统了&lt;/p>
+&lt;h3 id="为什么要提前分盘">为什么要提前分盘
+&lt;/h3>&lt;p>现在我们安装系统都是将硬盘做成GPT分区格式&lt;br>
+里面有一个EFI分区，里面会放系统的引导&lt;br>
+如果用Windows安装器在没有任何分区的硬盘上安装&lt;br>
+它会自动创建一个100MB的EFI分区&lt;br>
+但对Linux来说，这100MB的EFI分区太小了，Linux建议大于300MB&lt;br>
+而DG的快速分区可以在分出两个大小的分区的同时，自动创建300MB的EFI分区&lt;br>
+正好满足我们的需求&lt;/p>
+&lt;h2 id="0x02-安装windows">&amp;lt;0x02&amp;gt; 安装Windows
+&lt;/h2>&lt;p>Ventoy引导进Windows的iso&lt;br>
+Windows安装在之前分的你希望的位置&lt;br>
+基本上就按照安装器指引即可&lt;/p>
+&lt;h2 id="0x03-安装manjaro">&amp;lt;0x03&amp;gt; 安装Manjaro
+&lt;/h2>&lt;p>Ventoy引导进Manjaro的iso&lt;br>
+在安装中，需要选择最下面的手动分区&lt;br>
+对于300MB的EFI分区，我们需要编辑，设置挂载点为&lt;code>/boot/efi&lt;/code>，下面的标记别动&lt;br>
+这个很关键，将影响我们能否引导进系统&lt;br>
+对于希望安装Manjaro的位置，首先新建分区，我选择的是&lt;code>ext4&lt;/code>&lt;br>
+然后编辑分区，设置挂载点为&lt;code>/&lt;/code>，选择标记为&lt;code>boot&lt;/code> &lt;br>
+剩下的挂载点我看别人是有配置的，不过这样配置两个挂载点就够了&lt;br>
+剩下就让安装器折腾就可以了&lt;/p>
+&lt;p>安装后进入&lt;code>BIOS&lt;/code>，设置硬盘的启动项，这时候里面会有一个Manjaro的选项&lt;br>
+（注意不是启动项，是硬盘的启动项，管理一个硬盘里面的启动项）&lt;/p>
+&lt;p>这样之后，理论上启动后默认进入Manjaro的grub界面&lt;/p></description></item><item><title>机革本本装Linux</title><link>https://mlacookie.github.io/article/posts/%E6%9C%BA%E9%9D%A9%E6%9C%AC%E6%9C%AC%E8%A3%85linux/</link><pubDate>Sun, 28 Jul 2024 12:47:37 +0800</pubDate><guid>https://mlacookie.github.io/article/posts/%E6%9C%BA%E9%9D%A9%E6%9C%AC%E6%9C%AC%E8%A3%85linux/</guid><description>&lt;p>暑假经典节目，与Linux大战300回合&lt;/p>
 &lt;p>这次我打算好好配置下Linux并作为日常使用&lt;br>
 发行版的话我使用Manjaro，因为比Arch好配置，也有AUR的便捷&lt;br>
 笔记本是无界14+，并且更新过BIOS&lt;br>
@@ -115,8 +164,11 @@ Gnome一些习惯我适应不了，xfce不是很适合高分屏，其他的没�
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>运行后会跳出一个小工具，用来查看所有窗口运行在哪个服务上&lt;/p>
 &lt;h2 id="0x05-遇到的奇怪闪屏问题">&amp;lt;0x05&amp;gt; 遇到的奇怪闪屏问题
 &lt;/h2>&lt;p>不知道为什么，我安装完系统后发现系统总会有奇怪的闪屏&lt;br>
-换了其他桌面系统后多少都会有点&lt;br>
-目前定位到可能跟AMDGPU的节能选项有关（插上电就基本消失了）&lt;br>
-也可能跟Wayland有关（xfce用X11就基本没闪屏）&lt;br>
-也可能跟Vulkan有关（装上Vulkan驱动也差不多消失了）&lt;br>
-总是很神秘，这里就先记录一下&lt;/p></description></item></channel></rss>
+换了其他桌面系统后多少都会有点&lt;/p>
+&lt;p>在折腾了很多包之后，我大概定位到是AMD的2D驱动问题&lt;br>
+AMD的显卡驱动很散，OpenGL驱动和Vulkan驱动都是分开装的&lt;br>
+Manjaro默认不会装Xorg的2D加速驱动，这可能是导致奇怪闪屏的原因&lt;/p>
+&lt;p>安装的话很简单&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>yay -S xf86-video-amdgpu
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>安装上之后，闪屏遇到的少了，但不能根除&lt;/p>
+&lt;p>不排除Vulkan驱动的问题，AMDGPU的节能选项的问题&lt;/p></description></item></channel></rss>

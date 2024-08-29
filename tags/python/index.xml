@@ -14,8 +14,13 @@
 问题也有，就是我们Python都不熟，但比起没代码参考好太多了&lt;/p>
 &lt;p>&lt;a class="link" href="https://github.com/MLAcookie/EvmPlayground" target="_blank" rel="noopener"
 >项目地址&lt;/a>&lt;/p>
+&lt;h2 id="0x0-整体架构">&amp;lt;0x0&amp;gt; 整体架构
+&lt;/h2>&lt;p>我们采用dearpygui来构建整个图形界面&lt;br>
+使用numpy和scipy来做一些数据的处理&lt;/p>
 &lt;h2 id="0x0-evm原理">&amp;lt;0x0&amp;gt; EVM原理
-&lt;/h2>&lt;h2 id="0x0-一些感想">&amp;lt;0x0&amp;gt; 一些感想
+&lt;/h2>&lt;p>具体看&lt;a class="link" href="https://people.csail.mit.edu/mrub/evm/" target="_blank" rel="noopener"
+>MIT EVM&lt;/a>的介绍，这里就只做大致的讲解&lt;/p>
+&lt;h2 id="0x0-一些感想">&amp;lt;0x0&amp;gt; 一些感想
 &lt;/h2>&lt;h3 id="关于知识">关于知识
 &lt;/h3>&lt;p>首先就是确实感觉知道的东西多反而是一种诅咒&lt;br>
 为什么这么说呢，知道的东西多了之后，遇到新的问题总是会用自己知道的知识解决&lt;br>
@@ -26,7 +31,7 @@
 这两个选择都是痛苦的&lt;/p>
 &lt;p>像这个课设，我就犯这样的错误&lt;br>
 一开始我是打算用C#做Opencv开发，然后WPF做前端&lt;br>
-本来确实觉得没啥问题，因为Opencv在C#的实现我还是熟的，WPF我也是熟的&lt;br>
+因为Opencv在C#的实现我还是熟的，WPF我也是熟的&lt;br>
 开发到后来发现，EVM需要用到傅里叶变换，Opencv中肯定是不带这种东西的&lt;br>
 这时候其实可以考虑切换到python开发，但我并没有这么做，我选择来了花时间解决&lt;br>
 然而，在我头铁写完了傅里叶变换的流程后，我发现整个算法的运行效率低得很&lt;br>
@@ -37,7 +42,7 @@
 但还是有一个矛盾，对一块知识，究竟了解到什么程度才能算懂得够多，我不知道&lt;br>
 学的东西多了，确实是能比别人看到更远的东西，但也比别人看到更少的东西&lt;br>
 如果我是新手，这个项目我肯定就用python开发了，哪还要折腾C#啊&lt;br>
-就是因为我了解C#，稍微思考下C#也确实能实现，我才一开始用C#开发&lt;/p>
+就是因为我了解C#，我才一开始用C#开发&lt;/p>
 &lt;h3 id="关于团队">关于团队
 &lt;/h3>&lt;p>这个课设虽然可以组队，但这个项目基本是我一个人完成的&lt;br>
 那我的队友在干什么呢？他们在做别的可以组队的项目，并且是一人一个项目&lt;/p>
@@ -75,7 +80,7 @@
 &lt;/h2>&lt;p>&lt;img src="https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/1.png"
 width="1187"
 height="220"
-srcset="https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/1_hu7eae3b9c5ab5bf8b1b9732e8387611fb_16463_480x0_resize_box_3.png 480w, https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/1_hu7eae3b9c5ab5bf8b1b9732e8387611fb_16463_1024x0_resize_box_3.png 1024w"
+srcset="https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/1_hu14482753093361984752.png 480w, https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/1_hu507897332626449349.png 1024w"
 loading="lazy"
 alt="setting:PythonDefaultInterpreterPath"
 class="gallery-image"
@@ -87,7 +92,7 @@ data-flex-basis="1294px"
 &lt;/h2>&lt;p>&lt;img src="https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/2.png"
 width="1187"
 height="223"
-srcset="https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/2_hu48b513bea48f98334b20c366a5dfbbc6_16075_480x0_resize_box_3.png 480w, https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/2_hu48b513bea48f98334b20c366a5dfbbc6_16075_1024x0_resize_box_3.png 1024w"
+srcset="https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/2_hu11333265399735167.png 480w, https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/2_hu9849580221969469737.png 1024w"
 loading="lazy"
 alt="setting:python.autoComplete.extraPaths"
 class="gallery-image"
@@ -98,7 +103,7 @@ data-flex-basis="1277px"
 &lt;img src="https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/3.png"
 width="605"
 height="93"
-srcset="https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/3_hu28af133e78bbeae9c325a2d393cc3287_5492_480x0_resize_box_3.png 480w, https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/3_hu28af133e78bbeae9c325a2d393cc3287_5492_1024x0_resize_box_3.png 1024w"
+srcset="https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/3_hu13491890821617503192.png 480w, https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/3_hu1318947447704491668.png 1024w"
 loading="lazy"
 alt="setting.json"
 class="gallery-image"
@@ -110,7 +115,7 @@ data-flex-basis="1561px"
 &lt;/h2>&lt;p>&lt;img src="https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/4.png"
 width="1227"
 height="212"
-srcset="https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/4_hua87ac2b90d809c16bae6ef35ec7234da_11645_480x0_resize_box_3.png 480w, https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/4_hua87ac2b90d809c16bae6ef35ec7234da_11645_1024x0_resize_box_3.png 1024w"
+srcset="https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/4_hu472917642864698445.png 480w, https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/4_hu17300663757266161807.png 1024w"
 loading="lazy"
 alt="setting:python.languageServer"
 class="gallery-image"

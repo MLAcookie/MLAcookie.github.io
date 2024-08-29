@@ -1,4 +1,501 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Cpp on MLAcookie</title><link>https://mlacookie.github.io/tags/cpp/</link><description>Recent content in Cpp on MLAcookie</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Mon, 12 Aug 2024 23:22:58 +0800</lastBuildDate><atom:link href="https://mlacookie.github.io/tags/cpp/index.xml" rel="self" type="application/rss+xml"/><item><title>算法康复计划14 最大子段和</title><link>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%9214-%E6%9C%80%E5%A4%A7%E5%AD%90%E6%AE%B5%E5%92%8C/</link><pubDate>Mon, 12 Aug 2024 23:22:58 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%9214-%E6%9C%80%E5%A4%A7%E5%AD%90%E6%AE%B5%E5%92%8C/</guid><description>&lt;h2 id="0x00-今日题目最大子段和">&amp;lt;0x00&amp;gt; 今日题目：最大子段和
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Cpp on MLAcookie</title><link>https://mlacookie.github.io/tags/cpp/</link><description>Recent content in Cpp on MLAcookie</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Thu, 29 Aug 2024 21:17:56 +0800</lastBuildDate><atom:link href="https://mlacookie.github.io/tags/cpp/index.xml" rel="self" type="application/rss+xml"/><item><title>在vscode中使用cmake+vcpkg</title><link>https://mlacookie.github.io/article/posts/%E5%9C%A8vscode%E4%B8%AD%E4%BD%BF%E7%94%A8cmake+vcpkg/</link><pubDate>Thu, 29 Aug 2024 21:17:56 +0800</pubDate><guid>https://mlacookie.github.io/article/posts/%E5%9C%A8vscode%E4%B8%AD%E4%BD%BF%E7%94%A8cmake+vcpkg/</guid><description>&lt;p>考虑到C++主流还是用CMake做构建，最近也稍微折腾了下CMake&lt;br>
+然后C++的话还是要用些包管理的，不然手动管理太抽象了&lt;br>
+所以还需要配置下vcpkg的东西&lt;br>
+虽然微软这确实有&lt;a class="link" href="https://learn.microsoft.com/zh-cn/vcpkg/get_started/get-started-vscode?pivots=shell-powershell" target="_blank" rel="noopener"
+>文档&lt;/a>讲怎么配，不过讲得不是很清楚&lt;/p>
+&lt;h2 id="0x00-前置准备">&amp;lt;0x00&amp;gt; 前置准备
+&lt;/h2>&lt;h3 id="系统方面">系统方面
+&lt;/h3>&lt;h4 id="cmake">CMake
+&lt;/h4>&lt;p>既然是CMake配置，所以系统里肯定要安装CMake的&lt;br>
+命令行敲&lt;code>cmake&lt;/code>能找到就行，我这里采用scoop安装&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>scoop install cmake
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h4 id="vcpkg">vcpkg
+&lt;/h4>&lt;p>然后是包管理器vcpkg&lt;br>
+网上很多教程是下载源码的，我这里也是采用scoop安装&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>scoop install vcpkg
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>采用scoop安装的话会自动添加&lt;code>VCPKG_ROOT&lt;/code>的环境变量，指向的就是安装路径&lt;br>
+虽然这个主要是方便MSVC找vcpkg的，跟这篇博客没关系&lt;br>
+（自己下载源码的话手动添加一个就可以了）&lt;/p>
+&lt;h3 id="vscode方面">VSCode方面
+&lt;/h3>&lt;p>&lt;img src="https://mlacookie.github.io/article/posts/%E5%9C%A8vscode%E4%B8%AD%E4%BD%BF%E7%94%A8cmake&amp;#43;vcpkg/picture/1.png"
+width="258"
+height="361"
+srcset="https://mlacookie.github.io/article/posts/%E5%9C%A8vscode%E4%B8%AD%E4%BD%BF%E7%94%A8cmake&amp;#43;vcpkg/picture/1_hu17191059689487918486.png 480w, https://mlacookie.github.io/article/posts/%E5%9C%A8vscode%E4%B8%AD%E4%BD%BF%E7%94%A8cmake&amp;#43;vcpkg/picture/1_hu6195172652874864847.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="71"
+data-flex-basis="171px"
+>&lt;br>
+主要是&lt;code>C/C++ Extension Pack&lt;/code>和&lt;code>CMake Tools&lt;/code>&lt;/p>
+&lt;h2 id="0x01-cmake工程配置">&amp;lt;0x01&amp;gt; CMake工程配置
+&lt;/h2>&lt;p>首先新建一个文件夹，相当于是工程文件夹了&lt;/p>
+&lt;h3 id="快速创建cmake工程">快速创建CMake工程
+&lt;/h3>&lt;p>VSCode中&lt;code>Ctrl+Shift+P&lt;/code>调出命令面板&lt;br>
+输入&lt;code>CMake: Quick Start&lt;/code>后回车&lt;br>
+在输入完名字之类的东西之后，会让你设置一个preset&lt;br>
+这个比较关键，选择最后从编译器创建&lt;br>
+&lt;img src="https://mlacookie.github.io/article/posts/%E5%9C%A8vscode%E4%B8%AD%E4%BD%BF%E7%94%A8cmake&amp;#43;vcpkg/picture/2.png"
+width="604"
+height="116"
+srcset="https://mlacookie.github.io/article/posts/%E5%9C%A8vscode%E4%B8%AD%E4%BD%BF%E7%94%A8cmake&amp;#43;vcpkg/picture/2_hu15073668095528723765.png 480w, https://mlacookie.github.io/article/posts/%E5%9C%A8vscode%E4%B8%AD%E4%BD%BF%E7%94%A8cmake&amp;#43;vcpkg/picture/2_hu5070774299903195517.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="520"
+data-flex-basis="1249px"
+>&lt;br>
+这样的话保险一点，也会选择到希望的编译器&lt;br>
+这时候会创建一些文件，先不管&lt;/p>
+&lt;h3 id="初始化vcpkg">初始化vcpkg
+&lt;/h3>&lt;p>打开终端窗口，输入下面的命令&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>vcpkg new --application
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>这时候也会创建一些文件，也不需要管&lt;/p>
+&lt;h3 id="让cmake认识vcpkg">让CMake认识vcpkg
+&lt;/h3>&lt;p>打开&lt;code>CMakePresets.json&lt;/code>，里面可以看到一些配置&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-json" data-lang="json">&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;#34;version&amp;#34;&lt;/span>: &lt;span style="color:#ae81ff">8&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;#34;configurePresets&amp;#34;&lt;/span>: [
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;#34;name&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;clang&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;#34;displayName&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;Clang 18.1.8 x86_64-pc-windows-msvc&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;#34;description&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;Using compilers: C = C:\\Users\\cookie\\scoop\\apps\\llvm\\current\\bin\\clang.exe, CXX = C:\\Users\\cookie\\scoop\\apps\\llvm\\current\\bin\\clang++.exe&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;#34;binaryDir&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;${sourceDir}/out/build/${presetName}&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;#34;cacheVariables&amp;#34;&lt;/span>: {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;#34;CMAKE_INSTALL_PREFIX&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;${sourceDir}/out/install/${presetName}&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;#34;CMAKE_C_COMPILER&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;C:/Users/cookie/scoop/apps/llvm/current/bin/clang.exe&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;#34;CMAKE_CXX_COMPILER&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;C:/Users/cookie/scoop/apps/llvm/current/bin/clang++.exe&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;#34;CMAKE_BUILD_TYPE&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;Debug&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ]
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>（这里贴出我的结果，这里使用的是clang）&lt;/p>
+&lt;p>这时候，CMake其实不知道vcpkg在哪里，我们需要让它知道vcpkg在哪&lt;br>
+我先贴出最后的结果&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-json" data-lang="json">&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;#34;version&amp;#34;&lt;/span>: &lt;span style="color:#ae81ff">8&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;#34;configurePresets&amp;#34;&lt;/span>: [
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;#34;name&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;clang&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;#34;displayName&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;Clang 18.1.8 x86_64-pc-windows-msvc&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;#34;description&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;Using compilers: C = C:\\Users\\cookie\\scoop\\apps\\llvm\\current\\bin\\clang.exe, CXX = C:\\Users\\cookie\\scoop\\apps\\llvm\\current\\bin\\clang++.exe&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;#34;binaryDir&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;${sourceDir}/out/build/${presetName}&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 添加的环境变量
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#f92672">&amp;#34;environment&amp;#34;&lt;/span>: {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 这里写上vcpkg的安装路径
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#f92672">&amp;#34;VCPKG_ROOT&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;C:\\Users\\cookie\\scoop\\apps\\vcpkg\\current&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 魔法上网的话
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#f92672">&amp;#34;HTTP_PROXY&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;127.0.0.1:1000&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;#34;HTTPS_PROXY&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;127.0.0.1:1000&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> },
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;#34;cacheVariables&amp;#34;&lt;/span>: {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 让CMake可以找到vcpkg，一般这样写就可以
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#f92672">&amp;#34;CMAKE_TOOLCHAIN_FILE&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;#34;CMAKE_INSTALL_PREFIX&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;${sourceDir}/out/install/${presetName}&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;#34;CMAKE_C_COMPILER&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;C:/Users/cookie/scoop/apps/llvm/current/bin/clang.exe&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;#34;CMAKE_CXX_COMPILER&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;C:/Users/cookie/scoop/apps/llvm/current/bin/clang++.exe&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;#34;CMAKE_BUILD_TYPE&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;Debug&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ]
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>已经通过注释指出需要添加的部分，写完就好了&lt;/p>
+&lt;h2 id="0x02-实战测试">&amp;lt;0x02&amp;gt; 实战测试
+&lt;/h2>&lt;p>这里做一个简单的openg开发演示&lt;/p>
+&lt;h3 id="vcpkg中添加需要的包">vcpkg中添加需要的包
+&lt;/h3>&lt;p>打开终端，指定vcpkg需要glfw3和glad这两个包&lt;/p>
+&lt;pre tabindex="0">&lt;code>vcpkg add port glfw3
+vcpkg add port glad
+&lt;/code>&lt;/pre>&lt;h3 id="cmake中引用并链接包">CMake中引用并链接包
+&lt;/h3>&lt;p>然后，打开&lt;code>CMakeLists.txt&lt;/code>&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-cmake" data-lang="cmake">&lt;span style="display:flex;">&lt;span>cmake_minimum_required(&lt;span style="color:#e6db74">VERSION&lt;/span> &lt;span style="color:#e6db74">3.10&lt;/span>)&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span>project(&lt;span style="color:#e6db74">CmakeTest&lt;/span>)&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span>add_executable(&lt;span style="color:#e6db74">CmakeTest&lt;/span> &lt;span style="color:#e6db74">main.cpp&lt;/span>)&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span>&lt;span style="color:#75715e"># 引用包
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>find_package(&lt;span style="color:#e6db74">glad&lt;/span> &lt;span style="color:#e6db74">CONFIG&lt;/span> &lt;span style="color:#e6db74">REQUIRED&lt;/span>)&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span>find_package(&lt;span style="color:#e6db74">glfw3&lt;/span> &lt;span style="color:#e6db74">CONFIG&lt;/span> &lt;span style="color:#e6db74">REQUIRED&lt;/span>)&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span>&lt;span style="color:#75715e"># 链接包
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>target_link_libraries(&lt;span style="color:#e6db74">CmakeTest&lt;/span> &lt;span style="color:#e6db74">PRIVATE&lt;/span> &lt;span style="color:#e6db74">glfw&lt;/span>)&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span>target_link_libraries(&lt;span style="color:#e6db74">CmakeTest&lt;/span> &lt;span style="color:#e6db74">PRIVATE&lt;/span> &lt;span style="color:#e6db74">glad::glad&lt;/span>)&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="在代码中使用">在代码中使用
+&lt;/h3>&lt;p>最后，打开&lt;code>main.cpp&lt;/code>&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-cpp" data-lang="cpp">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;glad/glad.h&amp;gt;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;GLFW/glfw3.h&amp;gt;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;iostream&amp;gt;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">void&lt;/span> &lt;span style="color:#a6e22e">framebuffer_size_callback&lt;/span>(GLFWwindow&lt;span style="color:#f92672">*&lt;/span> window, &lt;span style="color:#66d9ef">int&lt;/span> width, &lt;span style="color:#66d9ef">int&lt;/span> height);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">void&lt;/span> &lt;span style="color:#a6e22e">processInput&lt;/span>(GLFWwindow &lt;span style="color:#f92672">*&lt;/span>window);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">// settings
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#66d9ef">const&lt;/span> &lt;span style="color:#66d9ef">unsigned&lt;/span> &lt;span style="color:#66d9ef">int&lt;/span> SCR_WIDTH &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">800&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">const&lt;/span> &lt;span style="color:#66d9ef">unsigned&lt;/span> &lt;span style="color:#66d9ef">int&lt;/span> SCR_HEIGHT &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">600&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">int&lt;/span> &lt;span style="color:#a6e22e">main&lt;/span>()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// glfw: initialize and configure
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#75715e">// ------------------------------
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> glfwInit();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, &lt;span style="color:#ae81ff">3&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, &lt;span style="color:#ae81ff">3&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#ifdef __APPLE__
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#endif
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// glfw window creation
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#75715e">// --------------------
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> GLFWwindow&lt;span style="color:#f92672">*&lt;/span> window &lt;span style="color:#f92672">=&lt;/span> glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, &lt;span style="color:#e6db74">&amp;#34;LearnOpenGL&amp;#34;&lt;/span>, NULL, NULL);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (window &lt;span style="color:#f92672">==&lt;/span> NULL)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>cout &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> &lt;span style="color:#e6db74">&amp;#34;Failed to create GLFW window&amp;#34;&lt;/span> &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> std&lt;span style="color:#f92672">::&lt;/span>endl;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> glfwTerminate();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#f92672">-&lt;/span>&lt;span style="color:#ae81ff">1&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> glfwMakeContextCurrent(window);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// glad: load all OpenGL function pointers
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#75715e">// ---------------------------------------
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">if&lt;/span> (&lt;span style="color:#f92672">!&lt;/span>gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>cout &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> &lt;span style="color:#e6db74">&amp;#34;Failed to initialize GLAD&amp;#34;&lt;/span> &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> std&lt;span style="color:#f92672">::&lt;/span>endl;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#f92672">-&lt;/span>&lt;span style="color:#ae81ff">1&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// render loop
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#75715e">// -----------
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">while&lt;/span> (&lt;span style="color:#f92672">!&lt;/span>glfwWindowShouldClose(window))
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// input
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#75715e">// -----
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> processInput(window);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// render
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#75715e">// ------
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> glClearColor(&lt;span style="color:#ae81ff">0.2f&lt;/span>, &lt;span style="color:#ae81ff">0.3f&lt;/span>, &lt;span style="color:#ae81ff">0.3f&lt;/span>, &lt;span style="color:#ae81ff">1.0f&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> glClear(GL_COLOR_BUFFER_BIT);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#75715e">// -------------------------------------------------------------------------------
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> glfwSwapBuffers(window);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> glfwPollEvents();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// glfw: terminate, clearing all previously allocated GLFW resources.
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#75715e">// ------------------------------------------------------------------
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> glfwTerminate();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">// process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">// ---------------------------------------------------------------------------------------------------------
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#66d9ef">void&lt;/span> &lt;span style="color:#a6e22e">processInput&lt;/span>(GLFWwindow &lt;span style="color:#f92672">*&lt;/span>window)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span>(glfwGetKey(window, GLFW_KEY_ESCAPE) &lt;span style="color:#f92672">==&lt;/span> GLFW_PRESS)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> glfwSetWindowShouldClose(window, true);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">// glfw: whenever the window size changed (by OS or user resize) this callback function executes
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">// ---------------------------------------------------------------------------------------------
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#66d9ef">void&lt;/span> &lt;span style="color:#a6e22e">framebuffer_size_callback&lt;/span>(GLFWwindow&lt;span style="color:#f92672">*&lt;/span> window, &lt;span style="color:#66d9ef">int&lt;/span> width, &lt;span style="color:#66d9ef">int&lt;/span> height)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// make sure the viewport matches the new window dimensions; note that width and
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#75715e">// height will be significantly larger than specified on retina displays.
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> glViewport(&lt;span style="color:#ae81ff">0&lt;/span>, &lt;span style="color:#ae81ff">0&lt;/span>, width, height);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>（这段代码是Learn OpenGL的&lt;a class="link" href="https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/1.2.hello_window_clear/hello_window_clear.cpp" target="_blank" rel="noopener"
+>代码&lt;/a>）&lt;/p>
+&lt;p>编译成功并运行的话应该是这样的&lt;br>
+&lt;img src="https://mlacookie.github.io/article/posts/%E5%9C%A8vscode%E4%B8%AD%E4%BD%BF%E7%94%A8cmake&amp;#43;vcpkg/picture/3.png"
+width="1920"
+height="1050"
+srcset="https://mlacookie.github.io/article/posts/%E5%9C%A8vscode%E4%B8%AD%E4%BD%BF%E7%94%A8cmake&amp;#43;vcpkg/picture/3_hu9241973928310984748.png 480w, https://mlacookie.github.io/article/posts/%E5%9C%A8vscode%E4%B8%AD%E4%BD%BF%E7%94%A8cmake&amp;#43;vcpkg/picture/3_hu10121968115433244830.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="182"
+data-flex-basis="438px"
+>&lt;br>
+一切正常的话，恭喜完成配置，之后这样配置也能用&lt;/p></description></item><item><title>算法康复计划16 小A点菜</title><link>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%9216-%E5%B0%8Fa%E7%82%B9%E8%8F%9C/</link><pubDate>Wed, 14 Aug 2024 11:14:35 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%9216-%E5%B0%8Fa%E7%82%B9%E8%8F%9C/</guid><description>&lt;h2 id="0x00-今日题目小a点菜">&amp;lt;0x00&amp;gt; 今日题目：小A点菜
+&lt;/h2>&lt;p>&lt;a class="link" href="https://www.luogu.com.cn/problem/P1164" target="_blank" rel="noopener"
+>洛谷的P1164&lt;/a>&lt;/p>
+&lt;h3 id="题目背景">题目背景
+&lt;/h3>&lt;p>uim 神犇拿到了 uoi 的 ra（镭牌）后，立刻拉着基友小 A 到了一家……餐馆，很低端的那种。&lt;br>
+uim 指着墙上的价目表（太低级了没有菜单），说：“随便点”。&lt;/p>
+&lt;h3 id="题目描述">题目描述
+&lt;/h3>&lt;p>不过 uim 由于买了一些书，口袋里只剩 $M$ 元 $(M \le 10000)$。&lt;br>
+餐馆虽低端，但是菜品种类不少，有 $N$ 种 $(N \le 100)$，第 $i$ 种卖 $a_i$ 元 $(a_i \le 1000)$&lt;br>
+由于是很低端的餐馆，所以每种菜只有一份。&lt;/p>
+&lt;p>小 A 奉行“不把钱吃光不罢休”的原则，所以他点单一定刚好把 uim 身上所有钱花完&lt;br>
+他想知道有多少种点菜方法。&lt;br>
+由于小 A 肚子太饿，所以最多只能等待 $1$ 秒。&lt;/p>
+&lt;h3 id="输入格式">输入格式
+&lt;/h3>&lt;p>第一行是两个数字，表示 $N$ 和 $M$。&lt;br>
+第二行起 $N$ 个正数 $a_i$（可以有相同的数字，每个数字均在 $1000$ 以内）。&lt;/p>
+&lt;h3 id="输出格式">输出格式
+&lt;/h3>&lt;p>一个正整数，表示点菜方案数，保证答案的范围在 int 之内。&lt;/p>
+&lt;h3 id="样例">样例
+&lt;/h3>&lt;h4 id="样例输入">样例输入
+&lt;/h4>&lt;pre tabindex="0">&lt;code>4 4
+1 1 2 2
+&lt;/code>&lt;/pre>&lt;h4 id="样例输出">样例输出
+&lt;/h4>&lt;pre tabindex="0">&lt;code>3
+&lt;/code>&lt;/pre>&lt;h2 id="0x01-分析">&amp;lt;0x01&amp;gt; 分析
+&lt;/h2>&lt;p>一道简单的计数dp的题，逻辑上跟之前的摆花差不多&lt;br>
+需要解决的是怎么把点菜方式统计转换为一个递推的关系&lt;br>
+以样例举例&lt;br>
+根据之前的经验，状态转移方程大概长这样$f(i,j)$&lt;br>
+其中$i$表示处理了前$i$个数据，$j$表示花了$j$元钱&lt;br>
+其中，$i\in[0,n-1],j\in[0,m]$，因为花了0元也算花钱&lt;br>
+然后先把每个情况的值都列出来，再看看有什么规律&lt;/p>
+&lt;pre tabindex="0">&lt;code> i→
+j * 1 1 2 2
+↓ 0 1 1 1 1
+1 1 2 2 2
+2 0 1 2 3
+3 0 0 2 4
+4 0 0 1 3
+&lt;/code>&lt;/pre>&lt;p>不难发现，状态转移方程是$f(i,j)=f(i-1,j-a_i)+f(i-1,j)$&lt;br>
+如果$j-a_i&amp;lt;0$那么$f(i-1,j-a_i)=0$&lt;/p>
+&lt;p>怎么理解这个方程呢&lt;br>
+假设此时遍历到了最后一个2，我们要计算花了3元的情况&lt;br>
+这时候，对于前面花了1元的情况，只要再点这个2元的菜就凑够了3元&lt;br>
+对于前面已经花了3元的情况，不点这个菜也够了3元&lt;br>
+所以这两个的值相加就是此时花3元的方法总数&lt;/p>
+&lt;p>因为遍历过程中，仅考虑了$i$和$i-1$的情况，所以可以省略$i$这个维度&lt;br>
+可以进一步压缩空间，但要注意遍历顺序&lt;/p>
+&lt;h2 id="0x02-代码">&amp;lt;0x02&amp;gt; 代码
+&lt;/h2>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-cpp" data-lang="cpp">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;iostream&amp;gt;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;vector&amp;gt;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">int&lt;/span> &lt;span style="color:#a6e22e">main&lt;/span>()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 读入
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">int&lt;/span> n, m;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>cin &lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> n &lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> m;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>vector&lt;span style="color:#f92672">&amp;lt;&lt;/span>&lt;span style="color:#66d9ef">int&lt;/span>&lt;span style="color:#f92672">&amp;gt;&lt;/span> list(n);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">int&lt;/span> i &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>; i &lt;span style="color:#f92672">&amp;lt;&lt;/span> n; i&lt;span style="color:#f92672">++&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>cin &lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> list[i];
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 初始化第一个状态
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> std&lt;span style="color:#f92672">::&lt;/span>vector&lt;span style="color:#f92672">&amp;lt;&lt;/span>std&lt;span style="color:#f92672">::&lt;/span>vector&lt;span style="color:#f92672">&amp;lt;&lt;/span>&lt;span style="color:#66d9ef">int&lt;/span>&lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> dp(n, std&lt;span style="color:#f92672">::&lt;/span>vector&lt;span style="color:#f92672">&amp;lt;&lt;/span>&lt;span style="color:#66d9ef">int&lt;/span>&lt;span style="color:#f92672">&amp;gt;&lt;/span>(m &lt;span style="color:#f92672">+&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>));
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> dp[&lt;span style="color:#ae81ff">0&lt;/span>][&lt;span style="color:#ae81ff">0&lt;/span>] &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> dp[&lt;span style="color:#ae81ff">0&lt;/span>][list[&lt;span style="color:#ae81ff">0&lt;/span>]] &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 开始dp
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">int&lt;/span> i &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>; i &lt;span style="color:#f92672">&amp;lt;&lt;/span> n; i&lt;span style="color:#f92672">++&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">int&lt;/span> j &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>; j &lt;span style="color:#f92672">&amp;lt;=&lt;/span> m; j&lt;span style="color:#f92672">++&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (j &lt;span style="color:#f92672">-&lt;/span> list[i] &lt;span style="color:#f92672">&amp;gt;=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> dp[i][j] &lt;span style="color:#f92672">=&lt;/span> dp[i &lt;span style="color:#f92672">-&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>][j &lt;span style="color:#f92672">-&lt;/span> list[i]] &lt;span style="color:#f92672">+&lt;/span> dp[i &lt;span style="color:#f92672">-&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>][j];
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">else&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> dp[i][j] &lt;span style="color:#f92672">=&lt;/span> dp[i &lt;span style="color:#f92672">-&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>][j];
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 输出最后一个值
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> std&lt;span style="color:#f92672">::&lt;/span>cout &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> dp[n &lt;span style="color:#f92672">-&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>][m] &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> &lt;span style="color:#e6db74">&amp;#34;&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div></description></item><item><title>算法康复计划15 滑雪</title><link>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%9215-%E6%BB%91%E9%9B%AA/</link><pubDate>Tue, 13 Aug 2024 22:31:55 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%9215-%E6%BB%91%E9%9B%AA/</guid><description>&lt;h2 id="0x00-今日题目滑雪">&amp;lt;0x00&amp;gt; 今日题目：滑雪
+&lt;/h2>&lt;p>&lt;a class="link" href="https://www.luogu.com.cn/problem/P1434" target="_blank" rel="noopener"
+>洛谷的P1434&lt;/a>&lt;/p>
+&lt;h3 id="题目描述">题目描述
+&lt;/h3>&lt;p>Michael 喜欢滑雪。这并不奇怪，因为滑雪的确很刺激&lt;br>
+可是为了获得速度，滑的区域必须向下倾斜，而且当你滑到坡底，你不得不再次走上坡或者等待升降机来载你&lt;br>
+Michael 想知道在一个区域中最长的滑坡&lt;br>
+区域由一个二维数组给出。数组的每个数字代表点的高度&lt;br>
+下面是一个例子：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-plain" data-lang="plain">&lt;span style="display:flex;">&lt;span>1 2 3 4 5
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>16 17 18 19 6
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>15 24 25 20 7
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>14 23 22 21 8
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>13 12 11 10 9
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>一个人可以从某个点滑向上下左右相邻四个点之一，当且仅当高度会减小&lt;br>
+在上面的例子中，一条可行的滑坡为 $24-17-16-1$（从 $24$ 开始，在 $1$ 结束）&lt;br>
+当然 $25-24-23-\ldots-3-2-1$ 更长。事实上，这是最长的一条。&lt;/p>
+&lt;h3 id="输入格式">输入格式
+&lt;/h3>&lt;p>输入的第一行为表示区域的二维数组的行数 $R$ 和列数 $C$&lt;br>
+下面是 $R$ 行，每行有 $C$ 个数，代表高度(两个数字之间用 $1$ 个空格间隔)。&lt;/p>
+&lt;h3 id="输出格式">输出格式
+&lt;/h3>&lt;p>输出区域中最长滑坡的长度。&lt;/p>
+&lt;h2 id="样例">样例
+&lt;/h2>&lt;h4 id="样例输入">样例输入
+&lt;/h4>&lt;pre tabindex="0">&lt;code>5 5
+1 2 3 4 5
+16 17 18 19 6
+15 24 25 20 7
+14 23 22 21 8
+13 12 11 10 9
+&lt;/code>&lt;/pre>&lt;h4 id="样例输出">样例输出
+&lt;/h4>&lt;pre tabindex="0">&lt;code>25
+&lt;/code>&lt;/pre>&lt;h3 id="数据规模与约定">数据规模与约定
+&lt;/h3>&lt;p>对于 $100%$ 的数据，$1\leq R,C\leq 100$。&lt;/p>
+&lt;h2 id="0x01-分析">&amp;lt;0x01&amp;gt; 分析
+&lt;/h2>&lt;p>还是动态规划的题，这次就不想状态转移方程了&lt;br>
+来试试记忆化搜索&lt;/p>
+&lt;p>记忆化搜索本质上就是遇到搜索过的地方就直接返回搜索的结果&lt;br>
+对于搜索过程中遇到更好的情况也对之前的结果进行更新&lt;br>
+一般思路是先写出正常的DFS过程&lt;br>
+然后用某种数据结构做记忆化，配合一些条件做结果更新&lt;br>
+这样就完成了记忆化搜索的改造&lt;/p>
+&lt;p>记忆化搜索也是可以转换为状态转移方程的&lt;br>
+但状态转移方程不一定能转换成记忆化搜索的&lt;br>
+而且一般情况下两个方法的时间空间复杂度差不多&lt;/p>
+&lt;p>对于这道题，主要就是记忆化搜索的过程&lt;br>
+需要注意的是，二维矩阵需要默认初始化为1&lt;br>
+因为对于每一段路，长度都是1，默认为0的话就加不出来了&lt;/p>
+&lt;h2 id="0x02-代码">&amp;lt;0x02&amp;gt; 代码
+&lt;/h2>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-cpp" data-lang="cpp">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">// 带各种封装，所以代码量大
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;iomanip&amp;gt;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;iostream&amp;gt;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;vector&amp;gt;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">// 点的封装
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#66d9ef">struct&lt;/span> &lt;span style="color:#a6e22e">Point&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">public&lt;/span>&lt;span style="color:#f92672">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> x;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> y;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Point()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> x &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> y &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Point(&lt;span style="color:#66d9ef">int&lt;/span> x, &lt;span style="color:#66d9ef">int&lt;/span> y)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">this&lt;/span>&lt;span style="color:#f92672">-&amp;gt;&lt;/span>x &lt;span style="color:#f92672">=&lt;/span> x;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">this&lt;/span>&lt;span style="color:#f92672">-&amp;gt;&lt;/span>y &lt;span style="color:#f92672">=&lt;/span> y;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Point(&lt;span style="color:#66d9ef">const&lt;/span> Point &lt;span style="color:#f92672">&amp;amp;&lt;/span>c)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> x &lt;span style="color:#f92672">=&lt;/span> c.x;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> y &lt;span style="color:#f92672">=&lt;/span> c.y;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>};
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">// 二维矩阵的封装
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">Map&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>vector&lt;span style="color:#f92672">&amp;lt;&lt;/span>std&lt;span style="color:#f92672">::&lt;/span>vector&lt;span style="color:#f92672">&amp;lt;&lt;/span>&lt;span style="color:#66d9ef">int&lt;/span>&lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> _map;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">public&lt;/span>&lt;span style="color:#f92672">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> X;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> Y;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Map(&lt;span style="color:#66d9ef">int&lt;/span> x, &lt;span style="color:#66d9ef">int&lt;/span> y)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> X &lt;span style="color:#f92672">=&lt;/span> x;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Y &lt;span style="color:#f92672">=&lt;/span> y;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> _map.resize(y, std&lt;span style="color:#f92672">::&lt;/span>vector&lt;span style="color:#f92672">&amp;lt;&lt;/span>&lt;span style="color:#66d9ef">int&lt;/span>&lt;span style="color:#f92672">&amp;gt;&lt;/span>(x, &lt;span style="color:#ae81ff">1&lt;/span>));
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Map(&lt;span style="color:#66d9ef">const&lt;/span> Map &lt;span style="color:#f92672">&amp;amp;&lt;/span>c)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> X &lt;span style="color:#f92672">=&lt;/span> c.X;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Y &lt;span style="color:#f92672">=&lt;/span> c.Y;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> _map.resize(c.Y, std&lt;span style="color:#f92672">::&lt;/span>vector&lt;span style="color:#f92672">&amp;lt;&lt;/span>&lt;span style="color:#66d9ef">int&lt;/span>&lt;span style="color:#f92672">&amp;gt;&lt;/span>(c.X));
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">int&lt;/span> i &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>; i &lt;span style="color:#f92672">&amp;lt;&lt;/span> Y; i&lt;span style="color:#f92672">++&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">int&lt;/span> j &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>; j &lt;span style="color:#f92672">&amp;lt;&lt;/span> X; j&lt;span style="color:#f92672">++&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> _map[i][j] &lt;span style="color:#f92672">=&lt;/span> c._map[i][j];
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> &lt;span style="color:#f92672">&amp;amp;&lt;/span>At(&lt;span style="color:#66d9ef">int&lt;/span> x, &lt;span style="color:#66d9ef">int&lt;/span> y)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> _map[y][x];
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> &lt;span style="color:#f92672">&amp;amp;&lt;/span>At(Point &lt;span style="color:#f92672">&amp;amp;&lt;/span>p)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> _map[p.y][p.x];
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>};
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">// DFS搜索的封装
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">DFS&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 记忆化矩阵
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> Map _mem;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> &lt;span style="color:#a6e22e">dfs&lt;/span>(Map &lt;span style="color:#f92672">&amp;amp;&lt;/span>m, Point p)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 如果已经搜索过就返回
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">if&lt;/span> (_mem.At(p) &lt;span style="color:#f92672">!=&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> _mem.At(p);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 4方向遍历
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">int&lt;/span> dx[] &lt;span style="color:#f92672">=&lt;/span> {&lt;span style="color:#ae81ff">1&lt;/span>, &lt;span style="color:#f92672">-&lt;/span>&lt;span style="color:#ae81ff">1&lt;/span>, &lt;span style="color:#ae81ff">0&lt;/span>, &lt;span style="color:#ae81ff">0&lt;/span>};
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> dy[] &lt;span style="color:#f92672">=&lt;/span> {&lt;span style="color:#ae81ff">0&lt;/span>, &lt;span style="color:#ae81ff">0&lt;/span>, &lt;span style="color:#ae81ff">1&lt;/span>, &lt;span style="color:#f92672">-&lt;/span>&lt;span style="color:#ae81ff">1&lt;/span>};
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">int&lt;/span> i &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>; i &lt;span style="color:#f92672">&amp;lt;&lt;/span> &lt;span style="color:#ae81ff">4&lt;/span>; i&lt;span style="color:#f92672">++&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> tx &lt;span style="color:#f92672">=&lt;/span> p.x &lt;span style="color:#f92672">+&lt;/span> dx[i];
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> ty &lt;span style="color:#f92672">=&lt;/span> p.y &lt;span style="color:#f92672">+&lt;/span> dy[i];
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 出界判断
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">if&lt;/span> (tx &lt;span style="color:#f92672">&amp;lt;&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span> &lt;span style="color:#f92672">||&lt;/span> ty &lt;span style="color:#f92672">&amp;lt;&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">continue&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (tx &lt;span style="color:#f92672">&amp;gt;=&lt;/span> _mem.X &lt;span style="color:#f92672">||&lt;/span> ty &lt;span style="color:#f92672">&amp;gt;=&lt;/span> _mem.Y)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">continue&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 条件判断
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">if&lt;/span> (m.At(p) &lt;span style="color:#f92672">&amp;gt;&lt;/span> m.At(tx, ty))
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 取最大值
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> _mem.At(p) &lt;span style="color:#f92672">=&lt;/span> std&lt;span style="color:#f92672">::&lt;/span>max(_mem.At(p), dfs(m, Point(tx, ty)) &lt;span style="color:#f92672">+&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 更新全局最大值
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> max &lt;span style="color:#f92672">=&lt;/span> std&lt;span style="color:#f92672">::&lt;/span>max(max, _mem.At(p));
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> _mem.At(p);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">public&lt;/span>&lt;span style="color:#f92672">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> max &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> DFS(Map &lt;span style="color:#f92672">&amp;amp;&lt;/span>m) &lt;span style="color:#f92672">:&lt;/span> _mem(m.X, m.Y)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 遍历所有起始点
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">int&lt;/span> i &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>; i &lt;span style="color:#f92672">&amp;lt;&lt;/span> m.X; i&lt;span style="color:#f92672">++&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">int&lt;/span> j &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>; j &lt;span style="color:#f92672">&amp;lt;&lt;/span> m.Y; j&lt;span style="color:#f92672">++&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> dfs(m, Point(i, j));
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>};
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">int&lt;/span> &lt;span style="color:#a6e22e">main&lt;/span>()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 读入
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">int&lt;/span> r, c;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>cin &lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> r &lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> c;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Map map(c, r);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">int&lt;/span> i &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>; i &lt;span style="color:#f92672">&amp;lt;&lt;/span> r; i&lt;span style="color:#f92672">++&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">int&lt;/span> j &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>; j &lt;span style="color:#f92672">&amp;lt;&lt;/span> c; j&lt;span style="color:#f92672">++&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>cin &lt;span style="color:#f92672">&amp;gt;&amp;gt;&lt;/span> map.At(j, i);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 计算
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> DFS ans(map);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 输出
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> std&lt;span style="color:#f92672">::&lt;/span>cout &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> ans.max &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> &lt;span style="color:#e6db74">&amp;#34;&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="0x03-遇到的坑">&amp;lt;0x03&amp;gt; 遇到的坑
+&lt;/h2>&lt;p>有笨比最后没有遍历所有起点，导致Debug半天&lt;br>
+因为有可能会分多个区域，一次遍历是不够的&lt;/p></description></item><item><title>算法康复计划14 最大子段和</title><link>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%9214-%E6%9C%80%E5%A4%A7%E5%AD%90%E6%AE%B5%E5%92%8C/</link><pubDate>Mon, 12 Aug 2024 23:22:58 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%9214-%E6%9C%80%E5%A4%A7%E5%AD%90%E6%AE%B5%E5%92%8C/</guid><description>&lt;h2 id="0x00-今日题目最大子段和">&amp;lt;0x00&amp;gt; 今日题目：最大子段和
 &lt;/h2>&lt;p>&lt;a class="link" href="https://www.luogu.com.cn/problem/P1115" target="_blank" rel="noopener"
 >洛谷的P1115&lt;/a>&lt;/p>
 &lt;h3 id="题目描述">题目描述
@@ -1924,7 +2421,7 @@ end可以从1开始遍历，然后计算start的值&lt;br>
 &lt;img src="https://mlacookie.github.io/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7c&amp;#43;&amp;#43;%E8%AF%BE%E8%AE%BE%E8%AE%B0%E5%BD%95/picture/1.png"
 width="554"
 height="117"
-srcset="https://mlacookie.github.io/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7c&amp;#43;&amp;#43;%E8%AF%BE%E8%AE%BE%E8%AE%B0%E5%BD%95/picture/1_hub2e23a13c4ffb794c035d632afb50c12_17676_480x0_resize_box_3.png 480w, https://mlacookie.github.io/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7c&amp;#43;&amp;#43;%E8%AF%BE%E8%AE%BE%E8%AE%B0%E5%BD%95/picture/1_hub2e23a13c4ffb794c035d632afb50c12_17676_1024x0_resize_box_3.png 1024w"
+srcset="https://mlacookie.github.io/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7c&amp;#43;&amp;#43;%E8%AF%BE%E8%AE%BE%E8%AE%B0%E5%BD%95/picture/1_hu7302396671588712401.png 480w, https://mlacookie.github.io/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7c&amp;#43;&amp;#43;%E8%AF%BE%E8%AE%BE%E8%AE%B0%E5%BD%95/picture/1_hu2626564585666695408.png 1024w"
 loading="lazy"
 alt="数据结构"
 class="gallery-image"
@@ -2193,7 +2690,7 @@ UI的选择结果由&lt;code>UIInfo&lt;/code>传递&lt;/p>
 &lt;img src="https://mlacookie.github.io/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/1.png"
 width="270"
 height="72"
-srcset="https://mlacookie.github.io/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/1_hu2071bb82300890dd794c966b777715ec_7689_480x0_resize_box_3.png 480w, https://mlacookie.github.io/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/1_hu2071bb82300890dd794c966b777715ec_7689_1024x0_resize_box_3.png 1024w"
+srcset="https://mlacookie.github.io/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/1_hu18392700302379119591.png 480w, https://mlacookie.github.io/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/1_hu2343393631186375679.png 1024w"
 loading="lazy"
 alt="Xmake插件截图"
 class="gallery-image"
@@ -2208,7 +2705,7 @@ data-flex-basis="900px"
 &lt;img src="https://mlacookie.github.io/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/2.png"
 width="600"
 height="451"
-srcset="https://mlacookie.github.io/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/2_hu18d925f4e620f590097ba1cb8344ee0c_28603_480x0_resize_box_3.png 480w, https://mlacookie.github.io/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/2_hu18d925f4e620f590097ba1cb8344ee0c_28603_1024x0_resize_box_3.png 1024w"
+srcset="https://mlacookie.github.io/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/2_hu3853156905375248557.png 480w, https://mlacookie.github.io/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/2_hu10233690271446708785.png 1024w"
 loading="lazy"
 alt="命令窗口"
 class="gallery-image"
@@ -2220,7 +2717,7 @@ data-flex-basis="319px"
 &lt;img src="https://mlacookie.github.io/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/3.png"
 width="451"
 height="84"
-srcset="https://mlacookie.github.io/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/3_hue2fc95e41467282dccb9c375039f0bf0_6997_480x0_resize_box_3.png 480w, https://mlacookie.github.io/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/3_hue2fc95e41467282dccb9c375039f0bf0_6997_1024x0_resize_box_3.png 1024w"
+srcset="https://mlacookie.github.io/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/3_hu4899699911901671317.png 480w, https://mlacookie.github.io/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/3_hu4518990802896263816.png 1024w"
 loading="lazy"
 alt="创建提示"
 class="gallery-image"
@@ -2231,7 +2728,7 @@ data-flex-basis="1288px"
 &lt;img src="https://mlacookie.github.io/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/4.png"
 width="598"
 height="355"
-srcset="https://mlacookie.github.io/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/4_hu995ecca81a53503dc663b7960bb57731_7588_480x0_resize_box_3.png 480w, https://mlacookie.github.io/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/4_hu995ecca81a53503dc663b7960bb57731_7588_1024x0_resize_box_3.png 1024w"
+srcset="https://mlacookie.github.io/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/4_hu9964345294052879745.png 480w, https://mlacookie.github.io/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/4_hu5217773822792870512.png 1024w"
 loading="lazy"
 alt="选语言"
 class="gallery-image"
@@ -2241,7 +2738,7 @@ data-flex-basis="404px"
 &lt;img src="https://mlacookie.github.io/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/5.png"
 width="598"
 height="349"
-srcset="https://mlacookie.github.io/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/5_hu69fcd2bcd0a579ea85aac804eab7640d_12502_480x0_resize_box_3.png 480w, https://mlacookie.github.io/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/5_hu69fcd2bcd0a579ea85aac804eab7640d_12502_1024x0_resize_box_3.png 1024w"
+srcset="https://mlacookie.github.io/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/5_hu8129932492431026459.png 480w, https://mlacookie.github.io/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/5_hu10514449945938923297.png 1024w"
 loading="lazy"
 alt="选应用类型"
 class="gallery-image"
@@ -2252,7 +2749,7 @@ data-flex-basis="411px"
 &lt;img src="https://mlacookie.github.io/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/6.png"
 width="280"
 height="140"
-srcset="https://mlacookie.github.io/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/6_hu7719235cf98258a9956520d51bd44837_6309_480x0_resize_box_3.png 480w, https://mlacookie.github.io/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/6_hu7719235cf98258a9956520d51bd44837_6309_1024x0_resize_box_3.png 1024w"
+srcset="https://mlacookie.github.io/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/6_hu2177762614199551899.png 480w, https://mlacookie.github.io/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/6_hu3901652093225940528.png 1024w"
 loading="lazy"
 alt="项目文件结构"
 class="gallery-image"
@@ -2268,7 +2765,7 @@ data-flex-basis="480px"
 &lt;img src="https://mlacookie.github.io/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/7.png"
 width="590"
 height="22"
-srcset="https://mlacookie.github.io/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/7_hude98329aba1eba7f2c2b3e1cd253bab1_3548_480x0_resize_box_3.png 480w, https://mlacookie.github.io/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/7_hude98329aba1eba7f2c2b3e1cd253bab1_3548_1024x0_resize_box_3.png 1024w"
+srcset="https://mlacookie.github.io/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/7_hu6770835188410835384.png 480w, https://mlacookie.github.io/article/posts/%E4%BB%8Ecmake%E6%8D%A2%E5%88%B0xmake/picture/7_hu2868319925191329063.png 1024w"
 loading="lazy"
 alt="下边的栏"
 class="gallery-image"

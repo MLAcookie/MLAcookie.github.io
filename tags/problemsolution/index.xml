@@ -1,4 +1,235 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>ProblemSolution on MLAcookie</title><link>https://mlacookie.github.io/tags/problemsolution/</link><description>Recent content in ProblemSolution on MLAcookie</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Sun, 28 Jul 2024 12:47:37 +0800</lastBuildDate><atom:link href="https://mlacookie.github.io/tags/problemsolution/index.xml" rel="self" type="application/rss+xml"/><item><title>机革本本装Linux</title><link>https://mlacookie.github.io/article/posts/%E6%9C%BA%E9%9D%A9%E6%9C%AC%E6%9C%AC%E8%A3%85linux/</link><pubDate>Sun, 28 Jul 2024 12:47:37 +0800</pubDate><guid>https://mlacookie.github.io/article/posts/%E6%9C%BA%E9%9D%A9%E6%9C%AC%E6%9C%AC%E8%A3%85linux/</guid><description>&lt;p>暑假经典节目，与Linux大战300回合&lt;/p>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>ProblemSolution on MLAcookie</title><link>https://mlacookie.github.io/tags/problemsolution/</link><description>Recent content in ProblemSolution on MLAcookie</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Thu, 29 Aug 2024 21:17:56 +0800</lastBuildDate><atom:link href="https://mlacookie.github.io/tags/problemsolution/index.xml" rel="self" type="application/rss+xml"/><item><title>在vscode中使用cmake+vcpkg</title><link>https://mlacookie.github.io/article/posts/%E5%9C%A8vscode%E4%B8%AD%E4%BD%BF%E7%94%A8cmake+vcpkg/</link><pubDate>Thu, 29 Aug 2024 21:17:56 +0800</pubDate><guid>https://mlacookie.github.io/article/posts/%E5%9C%A8vscode%E4%B8%AD%E4%BD%BF%E7%94%A8cmake+vcpkg/</guid><description>&lt;p>考虑到C++主流还是用CMake做构建，最近也稍微折腾了下CMake&lt;br>
+然后C++的话还是要用些包管理的，不然手动管理太抽象了&lt;br>
+所以还需要配置下vcpkg的东西&lt;br>
+虽然微软这确实有&lt;a class="link" href="https://learn.microsoft.com/zh-cn/vcpkg/get_started/get-started-vscode?pivots=shell-powershell" target="_blank" rel="noopener"
+>文档&lt;/a>讲怎么配，不过讲得不是很清楚&lt;/p>
+&lt;h2 id="0x00-前置准备">&amp;lt;0x00&amp;gt; 前置准备
+&lt;/h2>&lt;h3 id="系统方面">系统方面
+&lt;/h3>&lt;h4 id="cmake">CMake
+&lt;/h4>&lt;p>既然是CMake配置，所以系统里肯定要安装CMake的&lt;br>
+命令行敲&lt;code>cmake&lt;/code>能找到就行，我这里采用scoop安装&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>scoop install cmake
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h4 id="vcpkg">vcpkg
+&lt;/h4>&lt;p>然后是包管理器vcpkg&lt;br>
+网上很多教程是下载源码的，我这里也是采用scoop安装&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>scoop install vcpkg
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>采用scoop安装的话会自动添加&lt;code>VCPKG_ROOT&lt;/code>的环境变量，指向的就是安装路径&lt;br>
+虽然这个主要是方便MSVC找vcpkg的，跟这篇博客没关系&lt;br>
+（自己下载源码的话手动添加一个就可以了）&lt;/p>
+&lt;h3 id="vscode方面">VSCode方面
+&lt;/h3>&lt;p>&lt;img src="https://mlacookie.github.io/article/posts/%E5%9C%A8vscode%E4%B8%AD%E4%BD%BF%E7%94%A8cmake&amp;#43;vcpkg/picture/1.png"
+width="258"
+height="361"
+srcset="https://mlacookie.github.io/article/posts/%E5%9C%A8vscode%E4%B8%AD%E4%BD%BF%E7%94%A8cmake&amp;#43;vcpkg/picture/1_hu17191059689487918486.png 480w, https://mlacookie.github.io/article/posts/%E5%9C%A8vscode%E4%B8%AD%E4%BD%BF%E7%94%A8cmake&amp;#43;vcpkg/picture/1_hu6195172652874864847.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="71"
+data-flex-basis="171px"
+>&lt;br>
+主要是&lt;code>C/C++ Extension Pack&lt;/code>和&lt;code>CMake Tools&lt;/code>&lt;/p>
+&lt;h2 id="0x01-cmake工程配置">&amp;lt;0x01&amp;gt; CMake工程配置
+&lt;/h2>&lt;p>首先新建一个文件夹，相当于是工程文件夹了&lt;/p>
+&lt;h3 id="快速创建cmake工程">快速创建CMake工程
+&lt;/h3>&lt;p>VSCode中&lt;code>Ctrl+Shift+P&lt;/code>调出命令面板&lt;br>
+输入&lt;code>CMake: Quick Start&lt;/code>后回车&lt;br>
+在输入完名字之类的东西之后，会让你设置一个preset&lt;br>
+这个比较关键，选择最后从编译器创建&lt;br>
+&lt;img src="https://mlacookie.github.io/article/posts/%E5%9C%A8vscode%E4%B8%AD%E4%BD%BF%E7%94%A8cmake&amp;#43;vcpkg/picture/2.png"
+width="604"
+height="116"
+srcset="https://mlacookie.github.io/article/posts/%E5%9C%A8vscode%E4%B8%AD%E4%BD%BF%E7%94%A8cmake&amp;#43;vcpkg/picture/2_hu15073668095528723765.png 480w, https://mlacookie.github.io/article/posts/%E5%9C%A8vscode%E4%B8%AD%E4%BD%BF%E7%94%A8cmake&amp;#43;vcpkg/picture/2_hu5070774299903195517.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="520"
+data-flex-basis="1249px"
+>&lt;br>
+这样的话保险一点，也会选择到希望的编译器&lt;br>
+这时候会创建一些文件，先不管&lt;/p>
+&lt;h3 id="初始化vcpkg">初始化vcpkg
+&lt;/h3>&lt;p>打开终端窗口，输入下面的命令&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>vcpkg new --application
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>这时候也会创建一些文件，也不需要管&lt;/p>
+&lt;h3 id="让cmake认识vcpkg">让CMake认识vcpkg
+&lt;/h3>&lt;p>打开&lt;code>CMakePresets.json&lt;/code>，里面可以看到一些配置&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-json" data-lang="json">&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;#34;version&amp;#34;&lt;/span>: &lt;span style="color:#ae81ff">8&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;#34;configurePresets&amp;#34;&lt;/span>: [
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;#34;name&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;clang&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;#34;displayName&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;Clang 18.1.8 x86_64-pc-windows-msvc&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;#34;description&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;Using compilers: C = C:\\Users\\cookie\\scoop\\apps\\llvm\\current\\bin\\clang.exe, CXX = C:\\Users\\cookie\\scoop\\apps\\llvm\\current\\bin\\clang++.exe&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;#34;binaryDir&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;${sourceDir}/out/build/${presetName}&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;#34;cacheVariables&amp;#34;&lt;/span>: {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;#34;CMAKE_INSTALL_PREFIX&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;${sourceDir}/out/install/${presetName}&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;#34;CMAKE_C_COMPILER&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;C:/Users/cookie/scoop/apps/llvm/current/bin/clang.exe&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;#34;CMAKE_CXX_COMPILER&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;C:/Users/cookie/scoop/apps/llvm/current/bin/clang++.exe&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;#34;CMAKE_BUILD_TYPE&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;Debug&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ]
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>（这里贴出我的结果，这里使用的是clang）&lt;/p>
+&lt;p>这时候，CMake其实不知道vcpkg在哪里，我们需要让它知道vcpkg在哪&lt;br>
+我先贴出最后的结果&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-json" data-lang="json">&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;#34;version&amp;#34;&lt;/span>: &lt;span style="color:#ae81ff">8&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;#34;configurePresets&amp;#34;&lt;/span>: [
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;#34;name&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;clang&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;#34;displayName&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;Clang 18.1.8 x86_64-pc-windows-msvc&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;#34;description&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;Using compilers: C = C:\\Users\\cookie\\scoop\\apps\\llvm\\current\\bin\\clang.exe, CXX = C:\\Users\\cookie\\scoop\\apps\\llvm\\current\\bin\\clang++.exe&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;#34;binaryDir&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;${sourceDir}/out/build/${presetName}&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 添加的环境变量
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#f92672">&amp;#34;environment&amp;#34;&lt;/span>: {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 这里写上vcpkg的安装路径
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#f92672">&amp;#34;VCPKG_ROOT&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;C:\\Users\\cookie\\scoop\\apps\\vcpkg\\current&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 魔法上网的话
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#f92672">&amp;#34;HTTP_PROXY&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;127.0.0.1:1000&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;#34;HTTPS_PROXY&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;127.0.0.1:1000&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> },
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;#34;cacheVariables&amp;#34;&lt;/span>: {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 让CMake可以找到vcpkg，一般这样写就可以
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#f92672">&amp;#34;CMAKE_TOOLCHAIN_FILE&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;#34;CMAKE_INSTALL_PREFIX&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;${sourceDir}/out/install/${presetName}&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;#34;CMAKE_C_COMPILER&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;C:/Users/cookie/scoop/apps/llvm/current/bin/clang.exe&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;#34;CMAKE_CXX_COMPILER&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;C:/Users/cookie/scoop/apps/llvm/current/bin/clang++.exe&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;#34;CMAKE_BUILD_TYPE&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;Debug&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ]
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>已经通过注释指出需要添加的部分，写完就好了&lt;/p>
+&lt;h2 id="0x02-实战测试">&amp;lt;0x02&amp;gt; 实战测试
+&lt;/h2>&lt;p>这里做一个简单的openg开发演示&lt;/p>
+&lt;h3 id="vcpkg中添加需要的包">vcpkg中添加需要的包
+&lt;/h3>&lt;p>打开终端，指定vcpkg需要glfw3和glad这两个包&lt;/p>
+&lt;pre tabindex="0">&lt;code>vcpkg add port glfw3
+vcpkg add port glad
+&lt;/code>&lt;/pre>&lt;h3 id="cmake中引用并链接包">CMake中引用并链接包
+&lt;/h3>&lt;p>然后，打开&lt;code>CMakeLists.txt&lt;/code>&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-cmake" data-lang="cmake">&lt;span style="display:flex;">&lt;span>cmake_minimum_required(&lt;span style="color:#e6db74">VERSION&lt;/span> &lt;span style="color:#e6db74">3.10&lt;/span>)&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span>project(&lt;span style="color:#e6db74">CmakeTest&lt;/span>)&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span>add_executable(&lt;span style="color:#e6db74">CmakeTest&lt;/span> &lt;span style="color:#e6db74">main.cpp&lt;/span>)&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span>&lt;span style="color:#75715e"># 引用包
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>find_package(&lt;span style="color:#e6db74">glad&lt;/span> &lt;span style="color:#e6db74">CONFIG&lt;/span> &lt;span style="color:#e6db74">REQUIRED&lt;/span>)&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span>find_package(&lt;span style="color:#e6db74">glfw3&lt;/span> &lt;span style="color:#e6db74">CONFIG&lt;/span> &lt;span style="color:#e6db74">REQUIRED&lt;/span>)&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span>&lt;span style="color:#75715e"># 链接包
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>target_link_libraries(&lt;span style="color:#e6db74">CmakeTest&lt;/span> &lt;span style="color:#e6db74">PRIVATE&lt;/span> &lt;span style="color:#e6db74">glfw&lt;/span>)&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span>target_link_libraries(&lt;span style="color:#e6db74">CmakeTest&lt;/span> &lt;span style="color:#e6db74">PRIVATE&lt;/span> &lt;span style="color:#e6db74">glad::glad&lt;/span>)&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="在代码中使用">在代码中使用
+&lt;/h3>&lt;p>最后，打开&lt;code>main.cpp&lt;/code>&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-cpp" data-lang="cpp">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;glad/glad.h&amp;gt;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;GLFW/glfw3.h&amp;gt;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;iostream&amp;gt;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">void&lt;/span> &lt;span style="color:#a6e22e">framebuffer_size_callback&lt;/span>(GLFWwindow&lt;span style="color:#f92672">*&lt;/span> window, &lt;span style="color:#66d9ef">int&lt;/span> width, &lt;span style="color:#66d9ef">int&lt;/span> height);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">void&lt;/span> &lt;span style="color:#a6e22e">processInput&lt;/span>(GLFWwindow &lt;span style="color:#f92672">*&lt;/span>window);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">// settings
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#66d9ef">const&lt;/span> &lt;span style="color:#66d9ef">unsigned&lt;/span> &lt;span style="color:#66d9ef">int&lt;/span> SCR_WIDTH &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">800&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">const&lt;/span> &lt;span style="color:#66d9ef">unsigned&lt;/span> &lt;span style="color:#66d9ef">int&lt;/span> SCR_HEIGHT &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">600&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">int&lt;/span> &lt;span style="color:#a6e22e">main&lt;/span>()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// glfw: initialize and configure
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#75715e">// ------------------------------
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> glfwInit();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, &lt;span style="color:#ae81ff">3&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, &lt;span style="color:#ae81ff">3&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#ifdef __APPLE__
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#endif
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// glfw window creation
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#75715e">// --------------------
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> GLFWwindow&lt;span style="color:#f92672">*&lt;/span> window &lt;span style="color:#f92672">=&lt;/span> glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, &lt;span style="color:#e6db74">&amp;#34;LearnOpenGL&amp;#34;&lt;/span>, NULL, NULL);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (window &lt;span style="color:#f92672">==&lt;/span> NULL)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>cout &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> &lt;span style="color:#e6db74">&amp;#34;Failed to create GLFW window&amp;#34;&lt;/span> &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> std&lt;span style="color:#f92672">::&lt;/span>endl;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> glfwTerminate();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#f92672">-&lt;/span>&lt;span style="color:#ae81ff">1&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> glfwMakeContextCurrent(window);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// glad: load all OpenGL function pointers
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#75715e">// ---------------------------------------
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">if&lt;/span> (&lt;span style="color:#f92672">!&lt;/span>gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>cout &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> &lt;span style="color:#e6db74">&amp;#34;Failed to initialize GLAD&amp;#34;&lt;/span> &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> std&lt;span style="color:#f92672">::&lt;/span>endl;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#f92672">-&lt;/span>&lt;span style="color:#ae81ff">1&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// render loop
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#75715e">// -----------
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">while&lt;/span> (&lt;span style="color:#f92672">!&lt;/span>glfwWindowShouldClose(window))
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// input
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#75715e">// -----
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> processInput(window);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// render
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#75715e">// ------
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> glClearColor(&lt;span style="color:#ae81ff">0.2f&lt;/span>, &lt;span style="color:#ae81ff">0.3f&lt;/span>, &lt;span style="color:#ae81ff">0.3f&lt;/span>, &lt;span style="color:#ae81ff">1.0f&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> glClear(GL_COLOR_BUFFER_BIT);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#75715e">// -------------------------------------------------------------------------------
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> glfwSwapBuffers(window);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> glfwPollEvents();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// glfw: terminate, clearing all previously allocated GLFW resources.
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#75715e">// ------------------------------------------------------------------
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> glfwTerminate();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">// process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">// ---------------------------------------------------------------------------------------------------------
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#66d9ef">void&lt;/span> &lt;span style="color:#a6e22e">processInput&lt;/span>(GLFWwindow &lt;span style="color:#f92672">*&lt;/span>window)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span>(glfwGetKey(window, GLFW_KEY_ESCAPE) &lt;span style="color:#f92672">==&lt;/span> GLFW_PRESS)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> glfwSetWindowShouldClose(window, true);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">// glfw: whenever the window size changed (by OS or user resize) this callback function executes
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">// ---------------------------------------------------------------------------------------------
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#66d9ef">void&lt;/span> &lt;span style="color:#a6e22e">framebuffer_size_callback&lt;/span>(GLFWwindow&lt;span style="color:#f92672">*&lt;/span> window, &lt;span style="color:#66d9ef">int&lt;/span> width, &lt;span style="color:#66d9ef">int&lt;/span> height)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// make sure the viewport matches the new window dimensions; note that width and
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#75715e">// height will be significantly larger than specified on retina displays.
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> glViewport(&lt;span style="color:#ae81ff">0&lt;/span>, &lt;span style="color:#ae81ff">0&lt;/span>, width, height);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>（这段代码是Learn OpenGL的&lt;a class="link" href="https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/1.2.hello_window_clear/hello_window_clear.cpp" target="_blank" rel="noopener"
+>代码&lt;/a>）&lt;/p>
+&lt;p>编译成功并运行的话应该是这样的&lt;br>
+&lt;img src="https://mlacookie.github.io/article/posts/%E5%9C%A8vscode%E4%B8%AD%E4%BD%BF%E7%94%A8cmake&amp;#43;vcpkg/picture/3.png"
+width="1920"
+height="1050"
+srcset="https://mlacookie.github.io/article/posts/%E5%9C%A8vscode%E4%B8%AD%E4%BD%BF%E7%94%A8cmake&amp;#43;vcpkg/picture/3_hu9241973928310984748.png 480w, https://mlacookie.github.io/article/posts/%E5%9C%A8vscode%E4%B8%AD%E4%BD%BF%E7%94%A8cmake&amp;#43;vcpkg/picture/3_hu10121968115433244830.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="182"
+data-flex-basis="438px"
+>&lt;br>
+一切正常的话，恭喜完成配置，之后这样配置也能用&lt;/p></description></item><item><title>关闭clangd中头文件排序</title><link>https://mlacookie.github.io/article/posts/%E5%85%B3%E9%97%ADclangd%E4%B8%AD%E5%A4%B4%E6%96%87%E4%BB%B6%E6%8E%92%E5%BA%8F/</link><pubDate>Mon, 26 Aug 2024 16:04:41 +0800</pubDate><guid>https://mlacookie.github.io/article/posts/%E5%85%B3%E9%97%ADclangd%E4%B8%AD%E5%A4%B4%E6%96%87%E4%BB%B6%E6%8E%92%E5%BA%8F/</guid><description>&lt;p>我的vscode其中一个配置是xmake+clangd的配置&lt;br>
+因为要写OpenGL相关的代码，clangd中默认头文件排序就很头疼&lt;/p>
+&lt;p>找了半天方法，虽然没找到直接配置&lt;code>clangd.arguments&lt;/code>之类的方法&lt;br>
+但也是有相对简单的方法解决这个问题&lt;/p>
+&lt;p>在项目根目录新建&lt;code>.clang-format&lt;/code>文件&lt;br>
+输入下面的内容&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-plain" data-lang="plain">&lt;span style="display:flex;">&lt;span>BasedOnStyle: Microsoft
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>SortIncludes: Never
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>因为我之前就是使用clangd自带的Microsoft配置&lt;br>
+这里的&lt;code>BasedOnStyle&lt;/code>相当于继承这个配置&lt;br>
+下面的一句是关闭头文件排序&lt;/p></description></item><item><title>机革本本装Linux</title><link>https://mlacookie.github.io/article/posts/%E6%9C%BA%E9%9D%A9%E6%9C%AC%E6%9C%AC%E8%A3%85linux/</link><pubDate>Sun, 28 Jul 2024 12:47:37 +0800</pubDate><guid>https://mlacookie.github.io/article/posts/%E6%9C%BA%E9%9D%A9%E6%9C%AC%E6%9C%AC%E8%A3%85linux/</guid><description>&lt;p>暑假经典节目，与Linux大战300回合&lt;/p>
 &lt;p>这次我打算好好配置下Linux并作为日常使用&lt;br>
 发行版的话我使用Manjaro，因为比Arch好配置，也有AUR的便捷&lt;br>
 笔记本是无界14+，并且更新过BIOS&lt;br>
@@ -115,11 +346,14 @@ Gnome一些习惯我适应不了，xfce不是很适合高分屏，其他的没�
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>运行后会跳出一个小工具，用来查看所有窗口运行在哪个服务上&lt;/p>
 &lt;h2 id="0x05-遇到的奇怪闪屏问题">&amp;lt;0x05&amp;gt; 遇到的奇怪闪屏问题
 &lt;/h2>&lt;p>不知道为什么，我安装完系统后发现系统总会有奇怪的闪屏&lt;br>
-换了其他桌面系统后多少都会有点&lt;br>
-目前定位到可能跟AMDGPU的节能选项有关（插上电就基本消失了）&lt;br>
-也可能跟Wayland有关（xfce用X11就基本没闪屏）&lt;br>
-也可能跟Vulkan有关（装上Vulkan驱动也差不多消失了）&lt;br>
-总是很神秘，这里就先记录一下&lt;/p></description></item><item><title>WPF开发过程中InitializeComponent()神秘报错</title><link>https://mlacookie.github.io/article/categories/wpf/wpf%E5%BC%80%E5%8F%91%E8%BF%87%E7%A8%8B%E4%B8%ADinitializecomponent-%E7%A5%9E%E7%A7%98%E6%8A%A5%E9%94%99/</link><pubDate>Thu, 07 Mar 2024 01:10:14 +0000</pubDate><guid>https://mlacookie.github.io/article/categories/wpf/wpf%E5%BC%80%E5%8F%91%E8%BF%87%E7%A8%8B%E4%B8%ADinitializecomponent-%E7%A5%9E%E7%A7%98%E6%8A%A5%E9%94%99/</guid><description>&lt;p>最近在写一个WPF项目，然后今天遇到个非常神秘的问题
+换了其他桌面系统后多少都会有点&lt;/p>
+&lt;p>在折腾了很多包之后，我大概定位到是AMD的2D驱动问题&lt;br>
+AMD的显卡驱动很散，OpenGL驱动和Vulkan驱动都是分开装的&lt;br>
+Manjaro默认不会装Xorg的2D加速驱动，这可能是导致奇怪闪屏的原因&lt;/p>
+&lt;p>安装的话很简单&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-shell" data-lang="shell">&lt;span style="display:flex;">&lt;span>yay -S xf86-video-amdgpu
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>安装上之后，闪屏遇到的少了，但不能根除&lt;/p>
+&lt;p>不排除Vulkan驱动的问题，AMDGPU的节能选项的问题&lt;/p></description></item><item><title>WPF开发过程中InitializeComponent()神秘报错</title><link>https://mlacookie.github.io/article/categories/wpf/wpf%E5%BC%80%E5%8F%91%E8%BF%87%E7%A8%8B%E4%B8%ADinitializecomponent-%E7%A5%9E%E7%A7%98%E6%8A%A5%E9%94%99/</link><pubDate>Thu, 07 Mar 2024 01:10:14 +0000</pubDate><guid>https://mlacookie.github.io/article/categories/wpf/wpf%E5%BC%80%E5%8F%91%E8%BF%87%E7%A8%8B%E4%B8%ADinitializecomponent-%E7%A5%9E%E7%A7%98%E6%8A%A5%E9%94%99/</guid><description>&lt;p>最近在写一个WPF项目，然后今天遇到个非常神秘的问题
 就是界面的&lt;code>InitializeComponent()&lt;/code>莫名奇妙报错找不到方法了
 我仔细检查代码，也没发现问题
 而且最抽象的是，程序也能正常运行
@@ -148,7 +382,7 @@ Gnome一些习惯我适应不了，xfce不是很适合高分屏，其他的没�
 &lt;/h2>&lt;p>&lt;img src="https://mlacookie.github.io/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/1.png"
 width="1290"
 height="785"
-srcset="https://mlacookie.github.io/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/1_hu1a79717cdc707937be30662e998e0566_742242_480x0_resize_box_3.png 480w, https://mlacookie.github.io/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/1_hu1a79717cdc707937be30662e998e0566_742242_1024x0_resize_box_3.png 1024w"
+srcset="https://mlacookie.github.io/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/1_hu2148061268173398461.png 480w, https://mlacookie.github.io/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/1_hu7292901834419792724.png 1024w"
 loading="lazy"
 alt="效果展示"
 class="gallery-image"
@@ -168,7 +402,7 @@ data-flex-basis="394px"
 &lt;img src="https://mlacookie.github.io/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/2.png"
 width="883"
 height="148"
-srcset="https://mlacookie.github.io/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/2_hub96a1fd94dc2d5392a25609d3d488e84_31759_480x0_resize_box_3.png 480w, https://mlacookie.github.io/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/2_hub96a1fd94dc2d5392a25609d3d488e84_31759_1024x0_resize_box_3.png 1024w"
+srcset="https://mlacookie.github.io/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/2_hu7916448687775485017.png 480w, https://mlacookie.github.io/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/2_hu9059097745646036460.png 1024w"
 loading="lazy"
 alt="config"
 class="gallery-image"
@@ -180,7 +414,7 @@ data-flex-basis="1431px"
 &lt;img src="https://mlacookie.github.io/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/3.png"
 width="1276"
 height="778"
-srcset="https://mlacookie.github.io/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/3_hu3b8f2129f040353efc9f0c9cf4bb5b34_1692777_480x0_resize_box_3.png 480w, https://mlacookie.github.io/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/3_hu3b8f2129f040353efc9f0c9cf4bb5b34_1692777_1024x0_resize_box_3.png 1024w"
+srcset="https://mlacookie.github.io/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/3_hu4662649212122104649.png 480w, https://mlacookie.github.io/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/3_hu8912921218756155232.png 1024w"
 loading="lazy"
 alt="定制工具栏"
 class="gallery-image"
@@ -192,7 +426,7 @@ data-flex-basis="393px"
 &lt;img src="https://mlacookie.github.io/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/4.png"
 width="1290"
 height="785"
-srcset="https://mlacookie.github.io/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/4_hu4970ad20396e5052ba10fa6770d03eca_136442_480x0_resize_box_3.png 480w, https://mlacookie.github.io/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/4_hu4970ad20396e5052ba10fa6770d03eca_136442_1024x0_resize_box_3.png 1024w"
+srcset="https://mlacookie.github.io/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/4_hu16474852586784415051.png 480w, https://mlacookie.github.io/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/4_hu5428658886750579338.png 1024w"
 loading="lazy"
 alt="打开左下角的标题栏"
 class="gallery-image"
@@ -207,7 +441,7 @@ data-flex-basis="394px"
 &lt;img src="https://mlacookie.github.io/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/5.png"
 width="669"
 height="197"
-srcset="https://mlacookie.github.io/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/5_hu2a90a1a7a7ae3cd12f4a9ce92dca06d8_35254_480x0_resize_box_3.png 480w, https://mlacookie.github.io/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/5_hu2a90a1a7a7ae3cd12f4a9ce92dca06d8_35254_1024x0_resize_box_3.png 1024w"
+srcset="https://mlacookie.github.io/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/5_hu3643466409265544360.png 480w, https://mlacookie.github.io/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/5_hu17167634986523475264.png 1024w"
 loading="lazy"
 alt="文件夹"
 class="gallery-image"
@@ -217,7 +451,7 @@ data-flex-basis="815px"
 &lt;img src="https://mlacookie.github.io/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/6.png"
 width="703"
 height="756"
-srcset="https://mlacookie.github.io/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/6_hud134a071a52d3b9c0b02dda4e7efffad_246258_480x0_resize_box_3.png 480w, https://mlacookie.github.io/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/6_hud134a071a52d3b9c0b02dda4e7efffad_246258_1024x0_resize_box_3.png 1024w"
+srcset="https://mlacookie.github.io/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/6_hu3338432802538193725.png 480w, https://mlacookie.github.io/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/6_hu18175868702012141227.png 1024w"
 loading="lazy"
 alt="存用户设置的地方"
 class="gallery-image"
@@ -230,7 +464,7 @@ data-flex-basis="223px"
 &lt;img src="https://mlacookie.github.io/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/7.png"
 width="1170"
 height="724"
-srcset="https://mlacookie.github.io/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/7_hue4ea29e28c2b13fcd58de78796cdb501_239011_480x0_resize_box_3.png 480w, https://mlacookie.github.io/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/7_hue4ea29e28c2b13fcd58de78796cdb501_239011_1024x0_resize_box_3.png 1024w"
+srcset="https://mlacookie.github.io/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/7_hu13718816127160310742.png 480w, https://mlacookie.github.io/article/posts/%E5%A6%82%E4%BD%95%E5%B0%86firefox%E6%94%B9%E6%88%90%E5%9E%82%E7%9B%B4%E6%A0%87%E7%AD%BE%E9%A1%B5/picture/7_hu14443923868026472590.png 1024w"
 loading="lazy"
 alt="新建chrome文件夹"
 class="gallery-image"
@@ -282,7 +516,7 @@ radeon780m对应得代码是gfx1103&lt;br>
 &lt;/h2>&lt;p>&lt;img src="https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/1.png"
 width="1187"
 height="220"
-srcset="https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/1_hu7eae3b9c5ab5bf8b1b9732e8387611fb_16463_480x0_resize_box_3.png 480w, https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/1_hu7eae3b9c5ab5bf8b1b9732e8387611fb_16463_1024x0_resize_box_3.png 1024w"
+srcset="https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/1_hu14482753093361984752.png 480w, https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/1_hu507897332626449349.png 1024w"
 loading="lazy"
 alt="setting:PythonDefaultInterpreterPath"
 class="gallery-image"
@@ -294,7 +528,7 @@ data-flex-basis="1294px"
 &lt;/h2>&lt;p>&lt;img src="https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/2.png"
 width="1187"
 height="223"
-srcset="https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/2_hu48b513bea48f98334b20c366a5dfbbc6_16075_480x0_resize_box_3.png 480w, https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/2_hu48b513bea48f98334b20c366a5dfbbc6_16075_1024x0_resize_box_3.png 1024w"
+srcset="https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/2_hu11333265399735167.png 480w, https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/2_hu9849580221969469737.png 1024w"
 loading="lazy"
 alt="setting:python.autoComplete.extraPaths"
 class="gallery-image"
@@ -305,7 +539,7 @@ data-flex-basis="1277px"
 &lt;img src="https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/3.png"
 width="605"
 height="93"
-srcset="https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/3_hu28af133e78bbeae9c325a2d393cc3287_5492_480x0_resize_box_3.png 480w, https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/3_hu28af133e78bbeae9c325a2d393cc3287_5492_1024x0_resize_box_3.png 1024w"
+srcset="https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/3_hu13491890821617503192.png 480w, https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/3_hu1318947447704491668.png 1024w"
 loading="lazy"
 alt="setting.json"
 class="gallery-image"
@@ -317,7 +551,7 @@ data-flex-basis="1561px"
 &lt;/h2>&lt;p>&lt;img src="https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/4.png"
 width="1227"
 height="212"
-srcset="https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/4_hua87ac2b90d809c16bae6ef35ec7234da_11645_480x0_resize_box_3.png 480w, https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/4_hua87ac2b90d809c16bae6ef35ec7234da_11645_1024x0_resize_box_3.png 1024w"
+srcset="https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/4_hu472917642864698445.png 480w, https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/4_hu17300663757266161807.png 1024w"
 loading="lazy"
 alt="setting:python.languageServer"
 class="gallery-image"
