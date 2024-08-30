@@ -14,7 +14,7 @@
 网上很多教程是下载源码的，我这里也是采用scoop安装&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>scoop install vcpkg
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>采用scoop安装的话会自动添加&lt;code>VCPKG_ROOT&lt;/code>的环境变量，指向的就是安装路径&lt;br>
-虽然这个主要是方便MSVC找vcpkg的，跟这篇博客没关系&lt;br>
+虽然这个主要是方便MSBuild找vcpkg的，跟这篇博客没关系&lt;br>
 （自己下载源码的话手动添加一个就可以了）&lt;/p>
 &lt;h3 id="vscode方面">VSCode方面
 &lt;/h3>&lt;p>&lt;img src="https://mlacookie.github.io/article/posts/%E5%9C%A8vscode%E4%B8%AD%E4%BD%BF%E7%94%A8cmake&amp;#43;vcpkg/picture/1.png"
@@ -98,9 +98,10 @@ data-flex-basis="1249px"
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ]
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>已经通过注释指出需要添加的部分，写完就好了&lt;/p>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>已经通过注释指出需要添加的部分，写完就好了&lt;br>
+这里相当于是一个虚拟环境，如果有其他要用到的环境变量的话也要写进&lt;code>environment&lt;/code>里&lt;/p>
 &lt;h2 id="0x02-实战测试">&amp;lt;0x02&amp;gt; 实战测试
-&lt;/h2>&lt;p>这里做一个简单的openg开发演示&lt;/p>
+&lt;/h2>&lt;p>这里做一个简单的opengl开发演示&lt;/p>
 &lt;h3 id="vcpkg中添加需要的包">vcpkg中添加需要的包
 &lt;/h3>&lt;p>打开终端，指定vcpkg需要glfw3和glad这两个包&lt;/p>
 &lt;pre tabindex="0">&lt;code>vcpkg add port glfw3
@@ -219,7 +220,172 @@ class="gallery-image"
 data-flex-grow="182"
 data-flex-basis="438px"
 >&lt;br>
-一切正常的话，恭喜完成配置，之后这样配置也能用&lt;/p></description></item><item><title>关闭clangd中头文件排序</title><link>https://mlacookie.github.io/article/posts/%E5%85%B3%E9%97%ADclangd%E4%B8%AD%E5%A4%B4%E6%96%87%E4%BB%B6%E6%8E%92%E5%BA%8F/</link><pubDate>Mon, 26 Aug 2024 16:04:41 +0800</pubDate><guid>https://mlacookie.github.io/article/posts/%E5%85%B3%E9%97%ADclangd%E4%B8%AD%E5%A4%B4%E6%96%87%E4%BB%B6%E6%8E%92%E5%BA%8F/</guid><description>&lt;p>我的vscode其中一个配置是xmake+clangd的配置&lt;br>
+一切正常的话，恭喜完成配置，之后这样配置也能用&lt;/p>
+&lt;h2 id="0x03-进阶设置">&amp;lt;0x03&amp;gt; 进阶设置
+&lt;/h2>&lt;h3 id="如果使用的包有可选特性">如果使用的包有可选特性
+&lt;/h3>&lt;p>在vcpkg中，有一些包是有可选特性的&lt;br>
+比如说imgui这个库，有很多可选特性，比如docking，opengl3，win32等等&lt;br>
+比方说做opengl的开发，添加包的时候可以这么写&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>vcpkg add port imgui&lt;span style="color:#f92672">[&lt;/span>opengl3-binding,glfw-binding,docking-experimental&lt;span style="color:#f92672">]&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>然后修改&lt;code>CMakeLists.txt&lt;/code>部分，加上下面的东西&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-cmake" data-lang="cmake">&lt;span style="display:flex;">&lt;span>find_package(&lt;span style="color:#e6db74">imgui&lt;/span> &lt;span style="color:#e6db74">CONFIG&lt;/span> &lt;span style="color:#e6db74">REQUIRED&lt;/span>)&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#960050;background-color:#1e0010">&lt;/span>&lt;span style="color:#75715e"># example改成自己的项目
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>target_link_libraries(&lt;span style="color:#e6db74">example&lt;/span> &lt;span style="color:#e6db74">PRIVATE&lt;/span> &lt;span style="color:#e6db74">imgui::imgui&lt;/span>)&lt;span style="color:#960050;background-color:#1e0010">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>然后打开&lt;code>main.cpp&lt;/code>测试下&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-cpp" data-lang="cpp">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;#34;imgui.h&amp;#34;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;#34;imgui_impl_glfw.h&amp;#34;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;#34;imgui_impl_opengl3.h&amp;#34;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;fmt/core.h&amp;gt;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;glad/glad.h&amp;gt;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;GLFW/glfw3.h&amp;gt;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">// windows平台
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#75715e">#if defined(_MSC_VER) &amp;amp;&amp;amp; (_MSC_VER &amp;gt;= 1900) &amp;amp;&amp;amp; !defined(IMGUI_DISABLE_WIN32_FUNCTIONS)
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#pragma comment(lib, &amp;#34;legacy_stdio_definitions&amp;#34;)
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#endif
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">// glfw错误回调
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#66d9ef">static&lt;/span> &lt;span style="color:#66d9ef">void&lt;/span> &lt;span style="color:#a6e22e">glfw_error_callback&lt;/span>(&lt;span style="color:#66d9ef">int&lt;/span> error, &lt;span style="color:#66d9ef">const&lt;/span> &lt;span style="color:#66d9ef">char&lt;/span> &lt;span style="color:#f92672">*&lt;/span>description)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> fmt&lt;span style="color:#f92672">::&lt;/span>println(&lt;span style="color:#e6db74">&amp;#34;GLFW Error {}: {}&amp;#34;&lt;/span>, error, description);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">int&lt;/span> &lt;span style="color:#a6e22e">main&lt;/span>(&lt;span style="color:#66d9ef">int&lt;/span>, &lt;span style="color:#66d9ef">char&lt;/span> &lt;span style="color:#f92672">**&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> glfwSetErrorCallback(glfw_error_callback);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (&lt;span style="color:#f92672">!&lt;/span>glfwInit())
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#f92672">-&lt;/span>&lt;span style="color:#ae81ff">1&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 设定opengl版本
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">const&lt;/span> &lt;span style="color:#66d9ef">char&lt;/span> &lt;span style="color:#f92672">*&lt;/span>glsl_version &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;#version 130&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, &lt;span style="color:#ae81ff">4&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, &lt;span style="color:#ae81ff">6&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 创建窗口
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> GLFWwindow &lt;span style="color:#f92672">*&lt;/span>window &lt;span style="color:#f92672">=&lt;/span> glfwCreateWindow(&lt;span style="color:#ae81ff">1280&lt;/span>, &lt;span style="color:#ae81ff">720&lt;/span>, &lt;span style="color:#e6db74">&amp;#34;ImGui GLFW+OpenGL3 with docking example&amp;#34;&lt;/span>, &lt;span style="color:#66d9ef">nullptr&lt;/span>, &lt;span style="color:#66d9ef">nullptr&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (window &lt;span style="color:#f92672">==&lt;/span> &lt;span style="color:#66d9ef">nullptr&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#f92672">-&lt;/span>&lt;span style="color:#ae81ff">1&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> glfwMakeContextCurrent(window);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> glfwSwapInterval(&lt;span style="color:#ae81ff">1&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 初始化glad
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">if&lt;/span> (&lt;span style="color:#f92672">!&lt;/span>gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> fmt&lt;span style="color:#f92672">::&lt;/span>println(&lt;span style="color:#e6db74">&amp;#34;Failed to initialize GLAD&amp;#34;&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#f92672">-&lt;/span>&lt;span style="color:#ae81ff">1&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 初始化imgui
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> IMGUI_CHECKVERSION();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ImGui&lt;span style="color:#f92672">::&lt;/span>CreateContext();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ImGuiIO &lt;span style="color:#f92672">&amp;amp;&lt;/span>io &lt;span style="color:#f92672">=&lt;/span> ImGui&lt;span style="color:#f92672">::&lt;/span>GetIO();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> (&lt;span style="color:#66d9ef">void&lt;/span>)io;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> io.ConfigFlags &lt;span style="color:#f92672">|=&lt;/span> ImGuiConfigFlags_NavEnableKeyboard;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> io.ConfigFlags &lt;span style="color:#f92672">|=&lt;/span> ImGuiConfigFlags_NavEnableGamepad;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 启用docking
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> io.ConfigFlags &lt;span style="color:#f92672">|=&lt;/span> ImGuiConfigFlags_DockingEnable;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> io.ConfigFlags &lt;span style="color:#f92672">|=&lt;/span> ImGuiConfigFlags_ViewportsEnable;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ImGui&lt;span style="color:#f92672">::&lt;/span>StyleColorsDark();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 启用docking的后处理
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> ImGuiStyle&lt;span style="color:#f92672">&amp;amp;&lt;/span> style &lt;span style="color:#f92672">=&lt;/span> ImGui&lt;span style="color:#f92672">::&lt;/span>GetStyle();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (io.ConfigFlags &lt;span style="color:#f92672">&amp;amp;&lt;/span> ImGuiConfigFlags_ViewportsEnable)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> style.WindowRounding &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0.0f&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> style.Colors[ImGuiCol_WindowBg].w &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">1.0f&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ImGui_ImplGlfw_InitForOpenGL(window, true);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ImGui_ImplOpenGL3_Init(glsl_version);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 渲染循环
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">while&lt;/span> (&lt;span style="color:#f92672">!&lt;/span>glfwWindowShouldClose(window))
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 初始化渲染
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> glfwPollEvents();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ImGui_ImplOpenGL3_NewFrame();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ImGui_ImplGlfw_NewFrame();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ImGui&lt;span style="color:#f92672">::&lt;/span>NewFrame();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 渲染demo窗口
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> ImGui&lt;span style="color:#f92672">::&lt;/span>ShowDemoWindow();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 真正开始渲染
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> ImGui&lt;span style="color:#f92672">::&lt;/span>Render();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">int&lt;/span> display_w, display_h;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> glfwGetFramebufferSize(window, &lt;span style="color:#f92672">&amp;amp;&lt;/span>display_w, &lt;span style="color:#f92672">&amp;amp;&lt;/span>display_h);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> glViewport(&lt;span style="color:#ae81ff">0&lt;/span>, &lt;span style="color:#ae81ff">0&lt;/span>, display_w, display_h);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> glClearColor(&lt;span style="color:#ae81ff">.1f&lt;/span>, &lt;span style="color:#ae81ff">.1f&lt;/span>, &lt;span style="color:#ae81ff">.1f&lt;/span>, &lt;span style="color:#ae81ff">1&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> glClear(GL_COLOR_BUFFER_BIT);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ImGui_ImplOpenGL3_RenderDrawData(ImGui&lt;span style="color:#f92672">::&lt;/span>GetDrawData());
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// docking处理
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">if&lt;/span> (io.ConfigFlags &lt;span style="color:#f92672">&amp;amp;&lt;/span> ImGuiConfigFlags_ViewportsEnable)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> GLFWwindow&lt;span style="color:#f92672">*&lt;/span> backup_current_context &lt;span style="color:#f92672">=&lt;/span> glfwGetCurrentContext();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ImGui&lt;span style="color:#f92672">::&lt;/span>UpdatePlatformWindows();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ImGui&lt;span style="color:#f92672">::&lt;/span>RenderPlatformWindowsDefault();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> glfwMakeContextCurrent(backup_current_context);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> glfwSwapBuffers(window);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 退出的处理
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> ImGui_ImplOpenGL3_Shutdown();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ImGui_ImplGlfw_Shutdown();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ImGui&lt;span style="color:#f92672">::&lt;/span>DestroyContext();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> glfwDestroyWindow(window);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> glfwTerminate();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>（稍微修改了imgui给的示例，使用了glad和fmt）&lt;/p>
+&lt;p>&lt;img src="https://mlacookie.github.io/article/posts/%E5%9C%A8vscode%E4%B8%AD%E4%BD%BF%E7%94%A8cmake&amp;#43;vcpkg/picture/4.png"
+width="1920"
+height="1050"
+srcset="https://mlacookie.github.io/article/posts/%E5%9C%A8vscode%E4%B8%AD%E4%BD%BF%E7%94%A8cmake&amp;#43;vcpkg/picture/4_hu960003993145944116.png 480w, https://mlacookie.github.io/article/posts/%E5%9C%A8vscode%E4%B8%AD%E4%BD%BF%E7%94%A8cmake&amp;#43;vcpkg/picture/4_hu2537898708906117530.png 1024w"
+loading="lazy"
+alt="效果演示"
+class="gallery-image"
+data-flex-grow="182"
+data-flex-basis="438px"
+>&lt;/p>
+&lt;h3 id="对于多人开发的情况">对于多人开发的情况
+&lt;/h3>&lt;p>前面提到，我们可以用&lt;code>CMakePresets.json&lt;/code>来统一设定CMake的变量&lt;br>
+但对于多人开发的情况，这个方式有一些弊端&lt;br>
+比如，windows下，不同人编译器的位置一般是不一样的&lt;br>
+（谁叫windows就没什么标准路径）&lt;br>
+这时候，可以引入&lt;code>CMakeUserPresets.json&lt;/code>文件做具体的设定&lt;/p>
+&lt;p>比方说接着上面的配置，我们可以把&lt;code>CMakePresets.json&lt;/code>改造成这样&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-json" data-lang="json">&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;#34;version&amp;#34;&lt;/span>: &lt;span style="color:#ae81ff">8&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;#34;configurePresets&amp;#34;&lt;/span>: [
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;#34;name&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;clang&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;#34;binaryDir&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;${sourceDir}/out/build/${presetName}&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;#34;cacheVariables&amp;#34;&lt;/span>: {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;#34;CMAKE_TOOLCHAIN_FILE&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;#34;CMAKE_INSTALL_PREFIX&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;${sourceDir}/out/install/${presetName}&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;#34;CMAKE_C_COMPILER&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;$env{C_COMPILER}&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;#34;CMAKE_CXX_COMPILER&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;$env{CXX_COMPILER}&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;#34;CMAKE_BUILD_TYPE&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;Debug&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ]
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>加上&lt;code>CMakeUserPresets.json&lt;/code>，内容为&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-json" data-lang="json">&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;#34;version&amp;#34;&lt;/span>: &lt;span style="color:#ae81ff">8&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;#34;configurePresets&amp;#34;&lt;/span>: [
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;#34;name&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;My Clang Setting&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;#34;inherits&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;clang&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;#34;environment&amp;#34;&lt;/span>: {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;#34;VCPKG_ROOT&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;C:\\Users\\cookie\\scoop\\apps\\vcpkg\\current&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;#34;HTTP_PROXY&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;127.0.0.1:1000&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;#34;HTTPS_PROXY&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;127.0.0.1:1000&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;#34;C_COMPILER&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;C:/Users/cookie/scoop/apps/llvm/current/bin/clang.exe&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;#34;CXX_COMPILER&amp;#34;&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;C:/Users/cookie/scoop/apps/llvm/current/bin/clang++.exe&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ]
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;code>CMakePresets.json&lt;/code>定义总体的框架，&lt;code>CMakeUserPresets.json&lt;/code>定义具体的位置&lt;br>
+在git设置中，排除&lt;code>CMakeUserPresets.json&lt;/code>就可以了&lt;/p></description></item><item><title>关闭clangd头文件排序</title><link>https://mlacookie.github.io/article/posts/%E5%85%B3%E9%97%ADclangd%E5%A4%B4%E6%96%87%E4%BB%B6%E6%8E%92%E5%BA%8F/</link><pubDate>Mon, 26 Aug 2024 16:04:41 +0800</pubDate><guid>https://mlacookie.github.io/article/posts/%E5%85%B3%E9%97%ADclangd%E5%A4%B4%E6%96%87%E4%BB%B6%E6%8E%92%E5%BA%8F/</guid><description>&lt;p>我的vscode其中一个配置是xmake+clangd的配置&lt;br>
 因为要写OpenGL相关的代码，clangd中默认头文件排序就很头疼&lt;/p>
 &lt;p>找了半天方法，虽然没找到直接配置&lt;code>clangd.arguments&lt;/code>之类的方法&lt;br>
 但也是有相对简单的方法解决这个问题&lt;/p>
