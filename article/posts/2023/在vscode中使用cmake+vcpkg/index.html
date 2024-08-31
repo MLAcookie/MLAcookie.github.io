@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="考虑到C++主流还是用CMake做构建，最近也稍微折腾了下CMake 然后C++的话还是要用些包管理的，不然手动管理太抽象了 所以还需要配置下vcpkg的东西 虽然微软这确实有文档讲怎么配，不过讲得不是很清楚 &lt;0x00&gt; 前置准备\r系统方面\rCMake\r既然是CMake配置，所以系统里肯定要安装CMake的 命令行敲cmake能找到就行，我这里采用scoop安装 scoop install cmake vcpkg\r然后是包管理器vcpkg 网上很多教程是下载源码的，我这里也是采用scoop安装 scoop install vcpkg 采用scoop安装的话会自动添加VCPKG_ROOT的环境变量，指向的就是安装路径 虽然这个主要是方便MSBuild找vcpkg的，跟这篇博客没关系 （自己下载源码的话手动添加一个就可以了） VSCode方面\r主要是C/C++ Extension Pack和CMake Tools &lt;0x01&gt; CMake工程配置\r首先新建一个文件夹，相当于是工程文件夹了 快速创建CMake工程\rVSCode中Ctrl+Shift+P调出命令面板 输入CMake: Quick Start后回车 在输入完名字之类的东西之后，会让你设置一个preset 这个比较关键，选择最后从编译器创建 （windows平台下貌似直接绑定MSVC，选别的编译器也会换成MSVC） 这时候会创建一些文件，先不管 初始化vcpkg\r打开终端窗口，输入下面的命令 vcpkg new --application 这时候也会创建一些文件，也不需要管 让CMake认识vcpkg\r打开CMakePresets.json，里面可以看到一些配置 { &#34;version&#34;: 8, &#34;configurePresets&#34;: [ { &#34;name&#34;: &#34;clang&#34;, &#34;displayName&#34;: &#34;Clang 18.1.8 x86_64-pc-windows-msvc&#34;, &#34;description&#34;: &#34;Using compilers: C = C:\\\\Users\\\\cookie\\\\scoop\\\\apps\\\\llvm\\\\current\\\\bin\\\\clang.exe, CXX = C:\\\\Users\\\\cookie\\\\scoop\\\\apps\\\\llvm\\\\current\\\\bin\\\\clang++.exe&#34;, &#34;binaryDir&#34;: &#34;${sourceDir}/out/build/${presetName}&#34;, &#34;cacheVariables&#34;: { &#34;CMAKE_INSTALL_PREFIX&#34;: &#34;${sourceDir}/out/install/${presetName}&#34;, &#34;CMAKE_C_COMPILER&#34;: &#34;C:/Users/cookie/scoop/apps/llvm/current/bin/clang.">
+<title>在vscode中使用cmake&#43;vcpkg</title>
+
+<link rel='canonical' href='http://localhost:1313/article/posts/2023/%E5%9C%A8vscode%E4%B8%AD%E4%BD%BF%E7%94%A8cmake&#43;vcpkg/'>
+
+<link rel="stylesheet" href="/scss/style.min.e8c7fca7d1c9294aa7a4f3426c225ee26540f7d94e39be0b5a4a5c8a49ca5a25.css"><meta property='og:title' content="在vscode中使用cmake+vcpkg">
+<meta property='og:description' content="考虑到C++主流还是用CMake做构建，最近也稍微折腾了下CMake 然后C++的话还是要用些包管理的，不然手动管理太抽象了 所以还需要配置下vcpkg的东西 虽然微软这确实有文档讲怎么配，不过讲得不是很清楚 &lt;0x00&gt; 前置准备\r系统方面\rCMake\r既然是CMake配置，所以系统里肯定要安装CMake的 命令行敲cmake能找到就行，我这里采用scoop安装 scoop install cmake vcpkg\r然后是包管理器vcpkg 网上很多教程是下载源码的，我这里也是采用scoop安装 scoop install vcpkg 采用scoop安装的话会自动添加VCPKG_ROOT的环境变量，指向的就是安装路径 虽然这个主要是方便MSBuild找vcpkg的，跟这篇博客没关系 （自己下载源码的话手动添加一个就可以了） VSCode方面\r主要是C/C++ Extension Pack和CMake Tools &lt;0x01&gt; CMake工程配置\r首先新建一个文件夹，相当于是工程文件夹了 快速创建CMake工程\rVSCode中Ctrl+Shift+P调出命令面板 输入CMake: Quick Start后回车 在输入完名字之类的东西之后，会让你设置一个preset 这个比较关键，选择最后从编译器创建 （windows平台下貌似直接绑定MSVC，选别的编译器也会换成MSVC） 这时候会创建一些文件，先不管 初始化vcpkg\r打开终端窗口，输入下面的命令 vcpkg new --application 这时候也会创建一些文件，也不需要管 让CMake认识vcpkg\r打开CMakePresets.json，里面可以看到一些配置 { &#34;version&#34;: 8, &#34;configurePresets&#34;: [ { &#34;name&#34;: &#34;clang&#34;, &#34;displayName&#34;: &#34;Clang 18.1.8 x86_64-pc-windows-msvc&#34;, &#34;description&#34;: &#34;Using compilers: C = C:\\\\Users\\\\cookie\\\\scoop\\\\apps\\\\llvm\\\\current\\\\bin\\\\clang.exe, CXX = C:\\\\Users\\\\cookie\\\\scoop\\\\apps\\\\llvm\\\\current\\\\bin\\\\clang++.exe&#34;, &#34;binaryDir&#34;: &#34;${sourceDir}/out/build/${presetName}&#34;, &#34;cacheVariables&#34;: { &#34;CMAKE_INSTALL_PREFIX&#34;: &#34;${sourceDir}/out/install/${presetName}&#34;, &#34;CMAKE_C_COMPILER&#34;: &#34;C:/Users/cookie/scoop/apps/llvm/current/bin/clang.">
+<meta property='og:url' content='http://localhost:1313/article/posts/2023/%E5%9C%A8vscode%E4%B8%AD%E4%BD%BF%E7%94%A8cmake&#43;vcpkg/'>
+<meta property='og:site_name' content='MLAcookie'>
+<meta property='og:type' content='article'><meta property='article:section' content='Article' /><meta property='article:tag' content='ProblemSolution' /><meta property='article:tag' content='Cpp' /><meta property='article:published_time' content='2024-08-29T21:17:56&#43;08:00'/><meta property='article:modified_time' content='2024-08-29T21:17:56&#43;08:00'/>
+<meta name="twitter:title" content="在vscode中使用cmake+vcpkg">
+<meta name="twitter:description" content="考虑到C++主流还是用CMake做构建，最近也稍微折腾了下CMake 然后C++的话还是要用些包管理的，不然手动管理太抽象了 所以还需要配置下vcpkg的东西 虽然微软这确实有文档讲怎么配，不过讲得不是很清楚 &lt;0x00&gt; 前置准备\r系统方面\rCMake\r既然是CMake配置，所以系统里肯定要安装CMake的 命令行敲cmake能找到就行，我这里采用scoop安装 scoop install cmake vcpkg\r然后是包管理器vcpkg 网上很多教程是下载源码的，我这里也是采用scoop安装 scoop install vcpkg 采用scoop安装的话会自动添加VCPKG_ROOT的环境变量，指向的就是安装路径 虽然这个主要是方便MSBuild找vcpkg的，跟这篇博客没关系 （自己下载源码的话手动添加一个就可以了） VSCode方面\r主要是C/C++ Extension Pack和CMake Tools &lt;0x01&gt; CMake工程配置\r首先新建一个文件夹，相当于是工程文件夹了 快速创建CMake工程\rVSCode中Ctrl+Shift+P调出命令面板 输入CMake: Quick Start后回车 在输入完名字之类的东西之后，会让你设置一个preset 这个比较关键，选择最后从编译器创建 （windows平台下貌似直接绑定MSVC，选别的编译器也会换成MSVC） 这时候会创建一些文件，先不管 初始化vcpkg\r打开终端窗口，输入下面的命令 vcpkg new --application 这时候也会创建一些文件，也不需要管 让CMake认识vcpkg\r打开CMakePresets.json，里面可以看到一些配置 { &#34;version&#34;: 8, &#34;configurePresets&#34;: [ { &#34;name&#34;: &#34;clang&#34;, &#34;displayName&#34;: &#34;Clang 18.1.8 x86_64-pc-windows-msvc&#34;, &#34;description&#34;: &#34;Using compilers: C = C:\\\\Users\\\\cookie\\\\scoop\\\\apps\\\\llvm\\\\current\\\\bin\\\\clang.exe, CXX = C:\\\\Users\\\\cookie\\\\scoop\\\\apps\\\\llvm\\\\current\\\\bin\\\\clang++.exe&#34;, &#34;binaryDir&#34;: &#34;${sourceDir}/out/build/${presetName}&#34;, &#34;cacheVariables&#34;: { &#34;CMAKE_INSTALL_PREFIX&#34;: &#34;${sourceDir}/out/install/${presetName}&#34;, &#34;CMAKE_C_COMPILER&#34;: &#34;C:/Users/cookie/scoop/apps/llvm/current/bin/clang.">
+    <link rel="shortcut icon" href="/favicon.webp" />
+
+  
+
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu11052806936473100742.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">😜</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">MLAcookie</a></h1>
+            <h2 class="site-description">随便记点东西的记事本</h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://space.bilibili.com/13629146'
+                        target="_blank"
+                        title="MLA_cookie@bilibili"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+  stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+  class="icon icon-tabler icons-tabler-outline icon-tabler-brand-bilibili">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+  <path d="M3 10a4 4 0 014-4h10a4 4 0 014 4v6a4 4 0 01-4 4H7a4 4 0 01-4-4v-6z"></path>
+  <path d="M8 3l2 3"></path>
+  <path d="M16 3l-2 3"></path>
+  <path d="M9 13v-2"></path>
+  <path d="M15 11v2"></path>
+</svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://github.com/MLAcookie'
+                        target="_blank"
+                        title="MLAcookie@Github"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/about/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>About</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/links/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>Links</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>Dark Mode</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">Table of contents</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#0x00-前置准备">&lt;0x00&gt; 前置准备</a>
+      <ul>
+        <li><a href="#系统方面">系统方面</a></li>
+        <li><a href="#vscode方面">VSCode方面</a></li>
+      </ul>
+    </li>
+    <li><a href="#0x01-cmake工程配置">&lt;0x01&gt; CMake工程配置</a>
+      <ul>
+        <li><a href="#快速创建cmake工程">快速创建CMake工程</a></li>
+        <li><a href="#初始化vcpkg">初始化vcpkg</a></li>
+        <li><a href="#让cmake认识vcpkg">让CMake认识vcpkg</a></li>
+      </ul>
+    </li>
+    <li><a href="#0x02-实战测试">&lt;0x02&gt; 实战测试</a>
+      <ul>
+        <li><a href="#vcpkg中添加需要的包">vcpkg中添加需要的包</a></li>
+        <li><a href="#cmake中引用并链接包">CMake中引用并链接包</a></li>
+        <li><a href="#在代码中使用">在代码中使用</a></li>
+      </ul>
+    </li>
+    <li><a href="#0x03-进阶设置">&lt;0x03&gt; 进阶设置</a>
+      <ul>
+        <li><a href="#如果使用的包有可选特性">如果使用的包有可选特性</a></li>
+        <li><a href="#对于多人开发的情况">对于多人开发的情况</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/article/posts/2023/%E5%9C%A8vscode%E4%B8%AD%E4%BD%BF%E7%94%A8cmake&#43;vcpkg/">在vscode中使用cmake&#43;vcpkg</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Aug 29, 2024</time>
+            </div>
+        
+
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <p>考虑到C++主流还是用CMake做构建，最近也稍微折腾了下CMake<br>
+然后C++的话还是要用些包管理的，不然手动管理太抽象了<br>
+所以还需要配置下vcpkg的东西<br>
+虽然微软这确实有<a class="link" href="https://learn.microsoft.com/zh-cn/vcpkg/get_started/get-started-vscode?pivots=shell-powershell"  target="_blank" rel="noopener"
+    >文档</a>讲怎么配，不过讲得不是很清楚</p>
+<h2 id="0x00-前置准备">&lt;0x00&gt; 前置准备
+</h2><h3 id="系统方面">系统方面
+</h3><h4 id="cmake">CMake
+</h4><p>既然是CMake配置，所以系统里肯定要安装CMake的<br>
+命令行敲<code>cmake</code>能找到就行，我这里采用scoop安装</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>scoop install cmake
+</span></span></code></pre></div><h4 id="vcpkg">vcpkg
+</h4><p>然后是包管理器vcpkg<br>
+网上很多教程是下载源码的，我这里也是采用scoop安装</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>scoop install vcpkg
+</span></span></code></pre></div><p>采用scoop安装的话会自动添加<code>VCPKG_ROOT</code>的环境变量，指向的就是安装路径<br>
+虽然这个主要是方便MSBuild找vcpkg的，跟这篇博客没关系<br>
+（自己下载源码的话手动添加一个就可以了）</p>
+<h3 id="vscode方面">VSCode方面
+</h3><p><img src="/article/posts/2023/%E5%9C%A8vscode%E4%B8%AD%E4%BD%BF%E7%94%A8cmake&#43;vcpkg/picture/1.png"
+	width="258"
+	height="361"
+	srcset="/article/posts/2023/%E5%9C%A8vscode%E4%B8%AD%E4%BD%BF%E7%94%A8cmake&#43;vcpkg/picture/1_hu17191059689487918486.png 480w, /article/posts/2023/%E5%9C%A8vscode%E4%B8%AD%E4%BD%BF%E7%94%A8cmake&#43;vcpkg/picture/1_hu6195172652874864847.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="71"
+		data-flex-basis="171px"
+	
+><br>
+主要是<code>C/C++ Extension Pack</code>和<code>CMake Tools</code></p>
+<h2 id="0x01-cmake工程配置">&lt;0x01&gt; CMake工程配置
+</h2><p>首先新建一个文件夹，相当于是工程文件夹了</p>
+<h3 id="快速创建cmake工程">快速创建CMake工程
+</h3><p>VSCode中<code>Ctrl+Shift+P</code>调出命令面板<br>
+输入<code>CMake: Quick Start</code>后回车<br>
+在输入完名字之类的东西之后，会让你设置一个preset<br>
+这个比较关键，选择最后从编译器创建<br>
+<img src="/article/posts/2023/%E5%9C%A8vscode%E4%B8%AD%E4%BD%BF%E7%94%A8cmake&#43;vcpkg/picture/2.png"
+	width="604"
+	height="116"
+	srcset="/article/posts/2023/%E5%9C%A8vscode%E4%B8%AD%E4%BD%BF%E7%94%A8cmake&#43;vcpkg/picture/2_hu15073668095528723765.png 480w, /article/posts/2023/%E5%9C%A8vscode%E4%B8%AD%E4%BD%BF%E7%94%A8cmake&#43;vcpkg/picture/2_hu5070774299903195517.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="520"
+		data-flex-basis="1249px"
+	
+> <br>
+（windows平台下貌似直接绑定MSVC，选别的编译器也会换成MSVC）<br>
+这时候会创建一些文件，先不管</p>
+<h3 id="初始化vcpkg">初始化vcpkg
+</h3><p>打开终端窗口，输入下面的命令</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>vcpkg new --application
+</span></span></code></pre></div><p>这时候也会创建一些文件，也不需要管</p>
+<h3 id="让cmake认识vcpkg">让CMake认识vcpkg
+</h3><p>打开<code>CMakePresets.json</code>，里面可以看到一些配置</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;version&#34;</span>: <span style="color:#ae81ff">8</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;configurePresets&#34;</span>: [
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;clang&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;displayName&#34;</span>: <span style="color:#e6db74">&#34;Clang 18.1.8 x86_64-pc-windows-msvc&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;description&#34;</span>: <span style="color:#e6db74">&#34;Using compilers: C = C:\\Users\\cookie\\scoop\\apps\\llvm\\current\\bin\\clang.exe, CXX = C:\\Users\\cookie\\scoop\\apps\\llvm\\current\\bin\\clang++.exe&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;binaryDir&#34;</span>: <span style="color:#e6db74">&#34;${sourceDir}/out/build/${presetName}&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;cacheVariables&#34;</span>: {
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;CMAKE_INSTALL_PREFIX&#34;</span>: <span style="color:#e6db74">&#34;${sourceDir}/out/install/${presetName}&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;CMAKE_C_COMPILER&#34;</span>: <span style="color:#e6db74">&#34;C:/Users/cookie/scoop/apps/llvm/current/bin/clang.exe&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;CMAKE_CXX_COMPILER&#34;</span>: <span style="color:#e6db74">&#34;C:/Users/cookie/scoop/apps/llvm/current/bin/clang++.exe&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;CMAKE_BUILD_TYPE&#34;</span>: <span style="color:#e6db74">&#34;Debug&#34;</span>
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    ]
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>（这里贴出我的结果，指定为clang）</p>
+<p>这时候，CMake其实不知道vcpkg在哪里，我们需要让它知道vcpkg在哪<br>
+我先贴出最后的结果</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;version&#34;</span>: <span style="color:#ae81ff">8</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;configurePresets&#34;</span>: [
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;default&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;binaryDir&#34;</span>: <span style="color:#e6db74">&#34;${sourceDir}/out/build&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 添加的环境变量
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#f92672">&#34;environment&#34;</span>: {
+</span></span><span style="display:flex;"><span>	            <span style="color:#75715e">// 这里写上vcpkg的安装路径
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                <span style="color:#f92672">&#34;VCPKG_ROOT&#34;</span>: <span style="color:#e6db74">&#34;C:\\Users\\cookie\\scoop\\apps\\vcpkg\\current&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 魔法上网的话
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                <span style="color:#f92672">&#34;HTTP_PROXY&#34;</span>: <span style="color:#e6db74">&#34;127.0.0.1:1000&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;HTTPS_PROXY&#34;</span>: <span style="color:#e6db74">&#34;127.0.0.1:1000&#34;</span>
+</span></span><span style="display:flex;"><span>            },
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;cacheVariables&#34;</span>: {
+</span></span><span style="display:flex;"><span>	            <span style="color:#75715e">// 让CMake可以找到vcpkg，一般这样写就可以
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                <span style="color:#f92672">&#34;CMAKE_TOOLCHAIN_FILE&#34;</span>: <span style="color:#e6db74">&#34;$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;CMAKE_INSTALL_PREFIX&#34;</span>: <span style="color:#e6db74">&#34;${sourceDir}/out/install/${presetName}&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 因为windows下vcpkg自己会覆盖编译器设置为MSVC，所以也可以不指定
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                <span style="color:#f92672">&#34;CMAKE_BUILD_TYPE&#34;</span>: <span style="color:#e6db74">&#34;Debug&#34;</span>
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    ]
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>已经通过注释指出需要添加的部分，写完就好了，顺便删点不需要的<br>
+这里相当于是一个虚拟环境，如果有其他要用到的环境变量的话也要写进<code>environment</code>里</p>
+<h2 id="0x02-实战测试">&lt;0x02&gt; 实战测试
+</h2><p>这里做一个简单的opengl开发演示</p>
+<h3 id="vcpkg中添加需要的包">vcpkg中添加需要的包
+</h3><p>打开终端，指定vcpkg需要glfw3和glad这两个包</p>
+<pre tabindex="0"><code>vcpkg add port glfw3
+vcpkg add port glad
+</code></pre><h3 id="cmake中引用并链接包">CMake中引用并链接包
+</h3><p>然后，打开<code>CMakeLists.txt</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cmake" data-lang="cmake"><span style="display:flex;"><span>cmake_minimum_required(<span style="color:#e6db74">VERSION</span> <span style="color:#e6db74">3.10</span>)<span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span>project(<span style="color:#e6db74">CmakeTest</span>)<span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span>add_executable(<span style="color:#e6db74">CmakeTest</span> <span style="color:#e6db74">main.cpp</span>)<span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#75715e"># 引用包
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>find_package(<span style="color:#e6db74">glad</span> <span style="color:#e6db74">CONFIG</span> <span style="color:#e6db74">REQUIRED</span>)<span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span>find_package(<span style="color:#e6db74">glfw3</span> <span style="color:#e6db74">CONFIG</span> <span style="color:#e6db74">REQUIRED</span>)<span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#75715e"># 链接包
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>target_link_libraries(<span style="color:#e6db74">CmakeTest</span> <span style="color:#e6db74">PRIVATE</span> <span style="color:#e6db74">glfw</span>)<span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span>target_link_libraries(<span style="color:#e6db74">CmakeTest</span> <span style="color:#e6db74">PRIVATE</span> <span style="color:#e6db74">glad::glad</span>)<span style="color:#960050;background-color:#1e0010">
+</span></span></span></code></pre></div><h3 id="在代码中使用">在代码中使用
+</h3><p>最后，打开<code>main.cpp</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;glad/glad.h&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;GLFW/glfw3.h&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;iostream&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">framebuffer_size_callback</span>(GLFWwindow<span style="color:#f92672">*</span> window, <span style="color:#66d9ef">int</span> width, <span style="color:#66d9ef">int</span> height);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">processInput</span>(GLFWwindow <span style="color:#f92672">*</span>window);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> SCR_WIDTH <span style="color:#f92672">=</span> <span style="color:#ae81ff">800</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> SCR_HEIGHT <span style="color:#f92672">=</span> <span style="color:#ae81ff">600</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    glfwInit();
+</span></span><span style="display:flex;"><span>    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, <span style="color:#ae81ff">3</span>);
+</span></span><span style="display:flex;"><span>    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, <span style="color:#ae81ff">3</span>);
+</span></span><span style="display:flex;"><span>    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    GLFWwindow<span style="color:#f92672">*</span> window <span style="color:#f92672">=</span> glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, <span style="color:#e6db74">&#34;LearnOpenGL&#34;</span>, NULL, NULL);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (window <span style="color:#f92672">==</span> NULL)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;Failed to create GLFW window&#34;</span> <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl;
+</span></span><span style="display:flex;"><span>        glfwTerminate();
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    glfwMakeContextCurrent(window);
+</span></span><span style="display:flex;"><span>    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;Failed to initialize GLAD&#34;</span> <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>    }    
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">while</span> (<span style="color:#f92672">!</span>glfwWindowShouldClose(window))
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        processInput(window);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        glClearColor(<span style="color:#ae81ff">0.2f</span>, <span style="color:#ae81ff">0.3f</span>, <span style="color:#ae81ff">0.3f</span>, <span style="color:#ae81ff">1.0f</span>);
+</span></span><span style="display:flex;"><span>        glClear(GL_COLOR_BUFFER_BIT);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        glfwSwapBuffers(window);
+</span></span><span style="display:flex;"><span>        glfwPollEvents();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    glfwTerminate();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">processInput</span>(GLFWwindow <span style="color:#f92672">*</span>window)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span>(glfwGetKey(window, GLFW_KEY_ESCAPE) <span style="color:#f92672">==</span> GLFW_PRESS)
+</span></span><span style="display:flex;"><span>        glfwSetWindowShouldClose(window, true);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">framebuffer_size_callback</span>(GLFWwindow<span style="color:#f92672">*</span> window, <span style="color:#66d9ef">int</span> width, <span style="color:#66d9ef">int</span> height)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    glViewport(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, width, height);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>（这段代码是Learn OpenGL的<a class="link" href="https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/1.2.hello_window_clear/hello_window_clear.cpp"  target="_blank" rel="noopener"
+    >代码</a>，直接复制就能跑，所以就删注释了）</p>
+<p>编译成功并运行的话应该是这样的<br>
+<img src="/article/posts/2023/%E5%9C%A8vscode%E4%B8%AD%E4%BD%BF%E7%94%A8cmake&#43;vcpkg/picture/3.png"
+	width="1920"
+	height="1050"
+	srcset="/article/posts/2023/%E5%9C%A8vscode%E4%B8%AD%E4%BD%BF%E7%94%A8cmake&#43;vcpkg/picture/3_hu9241973928310984748.png 480w, /article/posts/2023/%E5%9C%A8vscode%E4%B8%AD%E4%BD%BF%E7%94%A8cmake&#43;vcpkg/picture/3_hu10121968115433244830.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="182"
+		data-flex-basis="438px"
+	
+><br>
+一切正常的话，恭喜完成配置，之后这样配置也能用</p>
+<h2 id="0x03-进阶设置">&lt;0x03&gt; 进阶设置
+</h2><h3 id="如果使用的包有可选特性">如果使用的包有可选特性
+</h3><p>在vcpkg中，有一些包是有可选特性的<br>
+比如说imgui这个库，有很多可选特性，比如docking，opengl3，win32等等<br>
+比方说做opengl的开发，添加包的时候可以这么写</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>vcpkg add port imgui<span style="color:#f92672">[</span>opengl3-binding,glfw-binding,docking-experimental<span style="color:#f92672">]</span>
+</span></span></code></pre></div><p>然后修改<code>CMakeLists.txt</code>部分，加上下面的东西</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cmake" data-lang="cmake"><span style="display:flex;"><span>find_package(<span style="color:#e6db74">imgui</span> <span style="color:#e6db74">CONFIG</span> <span style="color:#e6db74">REQUIRED</span>)<span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#75715e"># example改成自己的项目
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>target_link_libraries(<span style="color:#e6db74">example</span> <span style="color:#e6db74">PRIVATE</span> <span style="color:#e6db74">imgui::imgui</span>)<span style="color:#960050;background-color:#1e0010">
+</span></span></span></code></pre></div><p>然后打开<code>main.cpp</code>测试下</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&#34;imgui.h&#34;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&#34;imgui_impl_glfw.h&#34;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&#34;imgui_impl_opengl3.h&#34;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;fmt/core.h&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;glad/glad.h&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;GLFW/glfw3.h&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// windows平台
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">#if defined(_MSC_VER) &amp;&amp; (_MSC_VER &gt;= 1900) &amp;&amp; !defined(IMGUI_DISABLE_WIN32_FUNCTIONS)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#pragma comment(lib, &#34;legacy_stdio_definitions&#34;)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#endif
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// glfw错误回调
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">glfw_error_callback</span>(<span style="color:#66d9ef">int</span> error, <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>description)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    fmt<span style="color:#f92672">::</span>println(<span style="color:#e6db74">&#34;GLFW Error {}: {}&#34;</span>, error, description);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>(<span style="color:#66d9ef">int</span>, <span style="color:#66d9ef">char</span> <span style="color:#f92672">**</span>)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    glfwSetErrorCallback(glfw_error_callback);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>glfwInit())
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 设定opengl版本
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>glsl_version <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;#version 130&#34;</span>;
+</span></span><span style="display:flex;"><span>    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, <span style="color:#ae81ff">4</span>);
+</span></span><span style="display:flex;"><span>    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, <span style="color:#ae81ff">6</span>);
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 创建窗口
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    GLFWwindow <span style="color:#f92672">*</span>window <span style="color:#f92672">=</span> glfwCreateWindow(<span style="color:#ae81ff">1280</span>, <span style="color:#ae81ff">720</span>, <span style="color:#e6db74">&#34;ImGui GLFW+OpenGL3 with docking example&#34;</span>, <span style="color:#66d9ef">nullptr</span>, <span style="color:#66d9ef">nullptr</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (window <span style="color:#f92672">==</span> <span style="color:#66d9ef">nullptr</span>)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    glfwMakeContextCurrent(window);
+</span></span><span style="display:flex;"><span>    glfwSwapInterval(<span style="color:#ae81ff">1</span>);
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 初始化glad
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        fmt<span style="color:#f92672">::</span>println(<span style="color:#e6db74">&#34;Failed to initialize GLAD&#34;</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 初始化imgui
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    IMGUI_CHECKVERSION();
+</span></span><span style="display:flex;"><span>    ImGui<span style="color:#f92672">::</span>CreateContext();
+</span></span><span style="display:flex;"><span>    ImGuiIO <span style="color:#f92672">&amp;</span>io <span style="color:#f92672">=</span> ImGui<span style="color:#f92672">::</span>GetIO();
+</span></span><span style="display:flex;"><span>    (<span style="color:#66d9ef">void</span>)io;
+</span></span><span style="display:flex;"><span>    io.ConfigFlags <span style="color:#f92672">|=</span> ImGuiConfigFlags_NavEnableKeyboard;
+</span></span><span style="display:flex;"><span>    io.ConfigFlags <span style="color:#f92672">|=</span> ImGuiConfigFlags_NavEnableGamepad;
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 启用docking
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    io.ConfigFlags <span style="color:#f92672">|=</span> ImGuiConfigFlags_DockingEnable;
+</span></span><span style="display:flex;"><span>    io.ConfigFlags <span style="color:#f92672">|=</span> ImGuiConfigFlags_ViewportsEnable;
+</span></span><span style="display:flex;"><span>    ImGui<span style="color:#f92672">::</span>StyleColorsDark();
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 启用docking的后处理
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    ImGuiStyle<span style="color:#f92672">&amp;</span> style <span style="color:#f92672">=</span> ImGui<span style="color:#f92672">::</span>GetStyle();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (io.ConfigFlags <span style="color:#f92672">&amp;</span> ImGuiConfigFlags_ViewportsEnable)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        style.WindowRounding <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.0f</span>;
+</span></span><span style="display:flex;"><span>        style.Colors[ImGuiCol_WindowBg].w <span style="color:#f92672">=</span> <span style="color:#ae81ff">1.0f</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>	
+</span></span><span style="display:flex;"><span>    ImGui_ImplGlfw_InitForOpenGL(window, true);
+</span></span><span style="display:flex;"><span>    ImGui_ImplOpenGL3_Init(glsl_version);
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 渲染循环
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">while</span> (<span style="color:#f92672">!</span>glfwWindowShouldClose(window))
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>	    <span style="color:#75715e">// 初始化渲染
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        glfwPollEvents();
+</span></span><span style="display:flex;"><span>        ImGui_ImplOpenGL3_NewFrame();
+</span></span><span style="display:flex;"><span>        ImGui_ImplGlfw_NewFrame();
+</span></span><span style="display:flex;"><span>        ImGui<span style="color:#f92672">::</span>NewFrame();
+</span></span><span style="display:flex;"><span>		<span style="color:#75715e">// 渲染demo窗口
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        ImGui<span style="color:#f92672">::</span>ShowDemoWindow();
+</span></span><span style="display:flex;"><span>		<span style="color:#75715e">// 真正开始渲染
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        ImGui<span style="color:#f92672">::</span>Render();
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> display_w, display_h;
+</span></span><span style="display:flex;"><span>        glfwGetFramebufferSize(window, <span style="color:#f92672">&amp;</span>display_w, <span style="color:#f92672">&amp;</span>display_h);
+</span></span><span style="display:flex;"><span>        glViewport(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, display_w, display_h);
+</span></span><span style="display:flex;"><span>        glClearColor(<span style="color:#ae81ff">.1f</span>, <span style="color:#ae81ff">.1f</span>, <span style="color:#ae81ff">.1f</span>, <span style="color:#ae81ff">1</span>);
+</span></span><span style="display:flex;"><span>        glClear(GL_COLOR_BUFFER_BIT);
+</span></span><span style="display:flex;"><span>        ImGui_ImplOpenGL3_RenderDrawData(ImGui<span style="color:#f92672">::</span>GetDrawData());
+</span></span><span style="display:flex;"><span>		<span style="color:#75715e">// docking处理
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> (io.ConfigFlags <span style="color:#f92672">&amp;</span> ImGuiConfigFlags_ViewportsEnable)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            GLFWwindow<span style="color:#f92672">*</span> backup_current_context <span style="color:#f92672">=</span> glfwGetCurrentContext();
+</span></span><span style="display:flex;"><span>            ImGui<span style="color:#f92672">::</span>UpdatePlatformWindows();
+</span></span><span style="display:flex;"><span>            ImGui<span style="color:#f92672">::</span>RenderPlatformWindowsDefault();
+</span></span><span style="display:flex;"><span>            glfwMakeContextCurrent(backup_current_context);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        glfwSwapBuffers(window);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 退出的处理
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    ImGui_ImplOpenGL3_Shutdown();
+</span></span><span style="display:flex;"><span>    ImGui_ImplGlfw_Shutdown();
+</span></span><span style="display:flex;"><span>    ImGui<span style="color:#f92672">::</span>DestroyContext();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    glfwDestroyWindow(window);
+</span></span><span style="display:flex;"><span>    glfwTerminate();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>（稍微修改了imgui给的示例，使用了glad和fmt）</p>
+<p><img src="/article/posts/2023/%E5%9C%A8vscode%E4%B8%AD%E4%BD%BF%E7%94%A8cmake&#43;vcpkg/picture/4.png"
+	width="1920"
+	height="1050"
+	srcset="/article/posts/2023/%E5%9C%A8vscode%E4%B8%AD%E4%BD%BF%E7%94%A8cmake&#43;vcpkg/picture/4_hu960003993145944116.png 480w, /article/posts/2023/%E5%9C%A8vscode%E4%B8%AD%E4%BD%BF%E7%94%A8cmake&#43;vcpkg/picture/4_hu2537898708906117530.png 1024w"
+	loading="lazy"
+	
+		alt="效果演示"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="182"
+		data-flex-basis="438px"
+	
+></p>
+<h3 id="对于多人开发的情况">对于多人开发的情况
+</h3><p>前面提到，我们可以用<code>CMakePresets.json</code>来统一设定CMake的变量<br>
+但对于多人开发的情况，这个方式有一些弊端<br>
+比如，windows下，不同人编译器的位置一般是不一样的<br>
+（谁叫windows就没什么标准路径）<br>
+这时候，可以引入<code>CMakeUserPresets.json</code>文件做具体的设定</p>
+<p>比方说接着上面的配置，我们可以把<code>CMakePresets.json</code>改造成这样</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;version&#34;</span>: <span style="color:#ae81ff">8</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;configurePresets&#34;</span>: [
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;default&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;binaryDir&#34;</span>: <span style="color:#e6db74">&#34;${sourceDir}/out/build&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;cacheVariables&#34;</span>: {
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;CMAKE_TOOLCHAIN_FILE&#34;</span>: <span style="color:#e6db74">&#34;$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;CMAKE_INSTALL_PREFIX&#34;</span>: <span style="color:#e6db74">&#34;${sourceDir}/out/install/${presetName}&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;CMAKE_BUILD_TYPE&#34;</span>: <span style="color:#e6db74">&#34;Debug&#34;</span>
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    ]
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>加上<code>CMakeUserPresets.json</code>，内容为</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;version&#34;</span>: <span style="color:#ae81ff">8</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;configurePresets&#34;</span>: [
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;My default&#34;</span>,
+</span></span><span style="display:flex;"><span>			<span style="color:#f92672">&#34;inherits&#34;</span>: <span style="color:#e6db74">&#34;default&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;environment&#34;</span>: {
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;SCOOP_ROOT&#34;</span>: <span style="color:#e6db74">&#34;C:/Users/cookie/scoop&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;VCPKG_ROOT&#34;</span>: <span style="color:#e6db74">&#34;$env{SCOOP_ROOT}/apps/vcpkg/current&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;HTTP_PROXY&#34;</span>: <span style="color:#e6db74">&#34;127.0.0.1:1000&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;HTTPS_PROXY&#34;</span>: <span style="color:#e6db74">&#34;127.0.0.1:1000&#34;</span>
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    ]
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><code>CMakePresets.json</code>定义总体的框架，<code>CMakeUserPresets.json</code>定义具体的位置<br>
+在git设置中，排除<code>CMakeUserPresets.json</code>就可以了</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/problemsolution/">ProblemSolution</a>
+        
+            <a href="/tags/cpp/">Cpp</a>
+        
+    </section>
+
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+        <link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI&#43;WdtXRGWt2kTvGFasHpSy3SV"crossorigin="anonymous"
+            ><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG&#43;vnGctmUb0ZY0l8"crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"integrity="sha384-&#43;VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4&#43;/RRE05"crossorigin="anonymous"
+                defer
+                >
+            </script><script>
+    window.addEventListener("DOMContentLoaded", () => {
+        renderMathInElement(document.body, {
+            delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: "$", right: "$", display: false },
+                { left: "\\(", right: "\\)", display: false },
+                { left: "\\[", right: "\\]", display: true }
+            ],
+            ignoredClasses: ["gist"]
+        });})
+</script>
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/article/posts/2023/%E5%85%B3%E9%97%ADclangd%E5%A4%B4%E6%96%87%E4%BB%B6%E6%8E%92%E5%BA%8F/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">关闭clangd头文件排序</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%9216-%E5%B0%8Fa%E7%82%B9%E8%8F%9C/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">算法康复计划16 小A点菜</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%9215-%E6%BB%91%E9%9B%AA/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">算法康复计划15 滑雪</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%9214-%E6%9C%80%E5%A4%A7%E5%AD%90%E6%AE%B5%E5%92%8C/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">算法康复计划14 最大子段和</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/article/categories/coderrecovery/%E7%AE%97%E6%B3%95%E5%BA%B7%E5%A4%8D%E8%AE%A1%E5%88%9213-5%E5%80%8D%E7%BB%8F%E9%AA%8C%E6%97%A5/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">算法康复计划13 5倍经验日</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2023 - 
+        
+        2024 MLAcookie
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.26.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

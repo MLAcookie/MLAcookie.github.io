@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Linux on MLAcookie</title><link>https://mlacookie.github.io/tags/linux/</link><description>Recent content in Linux on MLAcookie</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Thu, 22 Aug 2024 22:04:25 +0800</lastBuildDate><atom:link href="https://mlacookie.github.io/tags/linux/index.xml" rel="self" type="application/rss+xml"/><item><title>配置Windows+Manjaro双系统</title><link>https://mlacookie.github.io/article/posts/%E9%85%8D%E7%BD%AEwindows+manjaro%E5%8F%8C%E7%B3%BB%E7%BB%9F/</link><pubDate>Thu, 22 Aug 2024 22:04:25 +0800</pubDate><guid>https://mlacookie.github.io/article/posts/%E9%85%8D%E7%BD%AEwindows+manjaro%E5%8F%8C%E7%B3%BB%E7%BB%9F/</guid><description>&lt;p>emmmm&lt;br>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Linux on MLAcookie</title><link>https://mlacookie.github.io/tags/linux/</link><description>Recent content in Linux on MLAcookie</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Thu, 22 Aug 2024 22:04:25 +0800</lastBuildDate><atom:link href="https://mlacookie.github.io/tags/linux/index.xml" rel="self" type="application/rss+xml"/><item><title>配置Windows+Manjaro双系统</title><link>https://mlacookie.github.io/article/posts/2024/%E9%85%8D%E7%BD%AEwindows+manjaro%E5%8F%8C%E7%B3%BB%E7%BB%9F/</link><pubDate>Thu, 22 Aug 2024 22:04:25 +0800</pubDate><guid>https://mlacookie.github.io/article/posts/2024/%E9%85%8D%E7%BD%AEwindows+manjaro%E5%8F%8C%E7%B3%BB%E7%BB%9F/</guid><description>&lt;p>emmmm&lt;br>
 之前在笔记本上安装了Manjaro&lt;br>
 基本上所有需要的软件都有了解决方案&lt;br>
 甚至打游戏都不是很大的问题&lt;br>
@@ -47,7 +47,7 @@ Windows安装在之前分的你希望的位置&lt;br>
 剩下就让安装器折腾就可以了&lt;/p>
 &lt;p>安装后进入&lt;code>BIOS&lt;/code>，设置硬盘的启动项，这时候里面会有一个Manjaro的选项&lt;br>
 （注意不是启动项，是硬盘的启动项，管理一个硬盘里面的启动项）&lt;/p>
-&lt;p>这样之后，理论上启动后默认进入Manjaro的grub界面&lt;/p></description></item><item><title>机革本本装Linux</title><link>https://mlacookie.github.io/article/posts/%E6%9C%BA%E9%9D%A9%E6%9C%AC%E6%9C%AC%E8%A3%85linux/</link><pubDate>Sun, 28 Jul 2024 12:47:37 +0800</pubDate><guid>https://mlacookie.github.io/article/posts/%E6%9C%BA%E9%9D%A9%E6%9C%AC%E6%9C%AC%E8%A3%85linux/</guid><description>&lt;p>暑假经典节目，与Linux大战300回合&lt;/p>
+&lt;p>这样之后，理论上启动后默认进入Manjaro的grub界面&lt;/p></description></item><item><title>机革本本装Linux</title><link>https://mlacookie.github.io/article/posts/2024/%E6%9C%BA%E9%9D%A9%E6%9C%AC%E6%9C%AC%E8%A3%85linux/</link><pubDate>Sun, 28 Jul 2024 12:47:37 +0800</pubDate><guid>https://mlacookie.github.io/article/posts/2024/%E6%9C%BA%E9%9D%A9%E6%9C%AC%E6%9C%AC%E8%A3%85linux/</guid><description>&lt;p>暑假经典节目，与Linux大战300回合&lt;/p>
 &lt;p>这次我打算好好配置下Linux并作为日常使用&lt;br>
 发行版的话我使用Manjaro，因为比Arch好配置，也有AUR的便捷&lt;br>
 笔记本是无界14+，并且更新过BIOS&lt;br>

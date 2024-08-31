@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="今天有人找我解决一些软件相关的问题，然后发现会牵扯到一些Win32的API 一般调用Win32API都是用C++方便的，而且微软给的文档也是C++的 我虽然对C++不是很熟，但对C#熟啊 在C#中，我们可以通过P/Invoke去做动态库的互操作 但对于Win32API，如果自己写P/Invoke，里面就有很多不确定的东西 光是那个DllImport特性里面的参数就不是很好填 那C#开发者是不是很难做Win32开发呢，那也不是 在Nuget上有很多别的大佬包装好的Win32库，安装完可以直接调用 但Win32中有超级多的API，这会导致代码提示里面会多出非常多东西，确实是有点干扰了 但好在微软也提供了一个解决方案，CsWin32 这个是基于C#源生成器的Win32API封装器 就是需要什么API，它就去生成那些API的P/Invoke代码 并且生成的质量还挺高的，保留原本的调用风格的同时，尽可能去迎合C#的开发体验 &lt;0x00&gt; 安装CsWin32\r因为会用到C#的源生成器，所以最好使用VS2022并且相对新的版本，不然代码提示之类的会出问题 VSCode的源生成器体验也是不错的，这个直接装C# kit插件就可以了 直接在Nuget中搜索CsWin32，包名是Microsoft.Windows.CsWin32 这个包最低支持到.net framework 4.5也即.NET Standard 2.0 对于这个版本，还需要安装System.Memory 如果是.NET Standard 2.1及以上，也即.net 5.0及以上的版本，那么就不需要安装 （如果是新项目的话应该会用新版本的框架吧） &lt;0x01&gt; 如何使用\r添加需要的API\r首先是要告诉源生成器要生成哪些API的封装 在项目根目录新建叫NativeMethods.txt的文件 在里面可以添加你需要添加的Win32函数或者结构的名字 PssCaptureSnapshot PssQuerySnapshot PSS_PROCESS_INFORMATION PSS_HANDLE_INFORMATION PSS_VA_CLONE_INFORMATION 这里的示例是Windows进程快照相关的API，使用的API也不多，仅做演示作用 简单解释下使用的API\rPssCaptureSnapshot\r捕获目标进程的快照 DWORD PssCaptureSnapshot( [in] HANDLE ProcessHandle, [in] PSS_CAPTURE_FLAGS CaptureFlags, [in, optional] DWORD ThreadContextFlags, [out] HPSS *SnapshotHandle ); ProcessHandle目标进程的句柄 CaptureFlags指定要捕获的标志 ThreadContextFlags如果 CaptureFlags 指定线程上下文，则要捕获的 CONTEXT 记录标志 SnapshotHandle返回此函数捕获的快照的句柄 函数返回的是winerror.h中定义的错误代码，无错误是ERROR_SUCCESS">
+<title>相对优雅得C#调用Win32API</title>
+
+<link rel='canonical' href='http://localhost:1313/article/posts/2023/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97csharp%E8%B0%83%E7%94%A8win32api/'>
+
+<link rel="stylesheet" href="/scss/style.min.e8c7fca7d1c9294aa7a4f3426c225ee26540f7d94e39be0b5a4a5c8a49ca5a25.css"><meta property='og:title' content="相对优雅得C#调用Win32API">
+<meta property='og:description' content="今天有人找我解决一些软件相关的问题，然后发现会牵扯到一些Win32的API 一般调用Win32API都是用C++方便的，而且微软给的文档也是C++的 我虽然对C++不是很熟，但对C#熟啊 在C#中，我们可以通过P/Invoke去做动态库的互操作 但对于Win32API，如果自己写P/Invoke，里面就有很多不确定的东西 光是那个DllImport特性里面的参数就不是很好填 那C#开发者是不是很难做Win32开发呢，那也不是 在Nuget上有很多别的大佬包装好的Win32库，安装完可以直接调用 但Win32中有超级多的API，这会导致代码提示里面会多出非常多东西，确实是有点干扰了 但好在微软也提供了一个解决方案，CsWin32 这个是基于C#源生成器的Win32API封装器 就是需要什么API，它就去生成那些API的P/Invoke代码 并且生成的质量还挺高的，保留原本的调用风格的同时，尽可能去迎合C#的开发体验 &lt;0x00&gt; 安装CsWin32\r因为会用到C#的源生成器，所以最好使用VS2022并且相对新的版本，不然代码提示之类的会出问题 VSCode的源生成器体验也是不错的，这个直接装C# kit插件就可以了 直接在Nuget中搜索CsWin32，包名是Microsoft.Windows.CsWin32 这个包最低支持到.net framework 4.5也即.NET Standard 2.0 对于这个版本，还需要安装System.Memory 如果是.NET Standard 2.1及以上，也即.net 5.0及以上的版本，那么就不需要安装 （如果是新项目的话应该会用新版本的框架吧） &lt;0x01&gt; 如何使用\r添加需要的API\r首先是要告诉源生成器要生成哪些API的封装 在项目根目录新建叫NativeMethods.txt的文件 在里面可以添加你需要添加的Win32函数或者结构的名字 PssCaptureSnapshot PssQuerySnapshot PSS_PROCESS_INFORMATION PSS_HANDLE_INFORMATION PSS_VA_CLONE_INFORMATION 这里的示例是Windows进程快照相关的API，使用的API也不多，仅做演示作用 简单解释下使用的API\rPssCaptureSnapshot\r捕获目标进程的快照 DWORD PssCaptureSnapshot( [in] HANDLE ProcessHandle, [in] PSS_CAPTURE_FLAGS CaptureFlags, [in, optional] DWORD ThreadContextFlags, [out] HPSS *SnapshotHandle ); ProcessHandle目标进程的句柄 CaptureFlags指定要捕获的标志 ThreadContextFlags如果 CaptureFlags 指定线程上下文，则要捕获的 CONTEXT 记录标志 SnapshotHandle返回此函数捕获的快照的句柄 函数返回的是winerror.h中定义的错误代码，无错误是ERROR_SUCCESS">
+<meta property='og:url' content='http://localhost:1313/article/posts/2023/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97csharp%E8%B0%83%E7%94%A8win32api/'>
+<meta property='og:site_name' content='MLAcookie'>
+<meta property='og:type' content='article'><meta property='article:section' content='Article' /><meta property='article:tag' content='CSharp' /><meta property='article:tag' content='Windows' /><meta property='article:published_time' content='2024-07-21T21:08:14&#43;08:00'/><meta property='article:modified_time' content='2024-07-21T21:08:14&#43;08:00'/>
+<meta name="twitter:title" content="相对优雅得C#调用Win32API">
+<meta name="twitter:description" content="今天有人找我解决一些软件相关的问题，然后发现会牵扯到一些Win32的API 一般调用Win32API都是用C++方便的，而且微软给的文档也是C++的 我虽然对C++不是很熟，但对C#熟啊 在C#中，我们可以通过P/Invoke去做动态库的互操作 但对于Win32API，如果自己写P/Invoke，里面就有很多不确定的东西 光是那个DllImport特性里面的参数就不是很好填 那C#开发者是不是很难做Win32开发呢，那也不是 在Nuget上有很多别的大佬包装好的Win32库，安装完可以直接调用 但Win32中有超级多的API，这会导致代码提示里面会多出非常多东西，确实是有点干扰了 但好在微软也提供了一个解决方案，CsWin32 这个是基于C#源生成器的Win32API封装器 就是需要什么API，它就去生成那些API的P/Invoke代码 并且生成的质量还挺高的，保留原本的调用风格的同时，尽可能去迎合C#的开发体验 &lt;0x00&gt; 安装CsWin32\r因为会用到C#的源生成器，所以最好使用VS2022并且相对新的版本，不然代码提示之类的会出问题 VSCode的源生成器体验也是不错的，这个直接装C# kit插件就可以了 直接在Nuget中搜索CsWin32，包名是Microsoft.Windows.CsWin32 这个包最低支持到.net framework 4.5也即.NET Standard 2.0 对于这个版本，还需要安装System.Memory 如果是.NET Standard 2.1及以上，也即.net 5.0及以上的版本，那么就不需要安装 （如果是新项目的话应该会用新版本的框架吧） &lt;0x01&gt; 如何使用\r添加需要的API\r首先是要告诉源生成器要生成哪些API的封装 在项目根目录新建叫NativeMethods.txt的文件 在里面可以添加你需要添加的Win32函数或者结构的名字 PssCaptureSnapshot PssQuerySnapshot PSS_PROCESS_INFORMATION PSS_HANDLE_INFORMATION PSS_VA_CLONE_INFORMATION 这里的示例是Windows进程快照相关的API，使用的API也不多，仅做演示作用 简单解释下使用的API\rPssCaptureSnapshot\r捕获目标进程的快照 DWORD PssCaptureSnapshot( [in] HANDLE ProcessHandle, [in] PSS_CAPTURE_FLAGS CaptureFlags, [in, optional] DWORD ThreadContextFlags, [out] HPSS *SnapshotHandle ); ProcessHandle目标进程的句柄 CaptureFlags指定要捕获的标志 ThreadContextFlags如果 CaptureFlags 指定线程上下文，则要捕获的 CONTEXT 记录标志 SnapshotHandle返回此函数捕获的快照的句柄 函数返回的是winerror.h中定义的错误代码，无错误是ERROR_SUCCESS">
+    <link rel="shortcut icon" href="/favicon.webp" />
+
+  
+
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu11052806936473100742.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">😜</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">MLAcookie</a></h1>
+            <h2 class="site-description">随便记点东西的记事本</h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://space.bilibili.com/13629146'
+                        target="_blank"
+                        title="MLA_cookie@bilibili"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+  stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+  class="icon icon-tabler icons-tabler-outline icon-tabler-brand-bilibili">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+  <path d="M3 10a4 4 0 014-4h10a4 4 0 014 4v6a4 4 0 01-4 4H7a4 4 0 01-4-4v-6z"></path>
+  <path d="M8 3l2 3"></path>
+  <path d="M16 3l-2 3"></path>
+  <path d="M9 13v-2"></path>
+  <path d="M15 11v2"></path>
+</svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://github.com/MLAcookie'
+                        target="_blank"
+                        title="MLAcookie@Github"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/about/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>About</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/links/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>Links</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>Dark Mode</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">Table of contents</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#0x00-安装cswin32">&lt;0x00&gt; 安装CsWin32</a></li>
+    <li><a href="#0x01-如何使用">&lt;0x01&gt; 如何使用</a>
+      <ul>
+        <li><a href="#添加需要的api">添加需要的API</a></li>
+        <li><a href="#简单解释下使用的api">简单解释下使用的API</a></li>
+        <li><a href="#在代码中使用win32api">在代码中使用Win32API</a></li>
+      </ul>
+    </li>
+    <li><a href="#0x02-一些不知道类型的枚举">&lt;0x02&gt; 一些不知道类型的枚举</a></li>
+  </ul>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/article/posts/2023/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97csharp%E8%B0%83%E7%94%A8win32api/">相对优雅得C#调用Win32API</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Jul 21, 2024</time>
+            </div>
+        
+
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <p>今天有人找我解决一些软件相关的问题，然后发现会牵扯到一些Win32的API<br>
+一般调用Win32API都是用C++方便的，而且微软给的文档也是C++的<br>
+我虽然对C++不是很熟，但对C#熟啊</p>
+<p>在C#中，我们可以通过<code>P/Invoke</code>去做动态库的互操作<br>
+但对于Win32API，如果自己写<code>P/Invoke</code>，里面就有很多不确定的东西<br>
+光是那个DllImport特性里面的参数就不是很好填</p>
+<p>那C#开发者是不是很难做Win32开发呢，那也不是<br>
+在Nuget上有很多别的大佬包装好的Win32库，安装完可以直接调用<br>
+但Win32中有超级多的API，这会导致代码提示里面会多出非常多东西，确实是有点干扰了</p>
+<p>但好在微软也提供了一个解决方案，<a class="link" href="https://github.com/microsoft/CsWin32"  target="_blank" rel="noopener"
+    >CsWin32</a><br>
+这个是基于C#<code>源生成器</code>的Win32API封装器<br>
+就是需要什么API，它就去生成那些API的<code>P/Invoke</code>代码<br>
+并且生成的质量还挺高的，保留原本的调用风格的同时，尽可能去迎合C#的开发体验</p>
+<h2 id="0x00-安装cswin32">&lt;0x00&gt; 安装CsWin32
+</h2><p>因为会用到C#的源生成器，所以最好使用VS2022并且相对新的版本，不然代码提示之类的会出问题<br>
+VSCode的源生成器体验也是不错的，这个直接装<code>C# kit</code>插件就可以了</p>
+<p>直接在Nuget中搜索CsWin32，包名是Microsoft.Windows.CsWin32<br>
+这个包最低支持到<code>.net framework 4.5</code>也即<code>.NET Standard 2.0</code><br>
+对于这个版本，还需要安装<code>System.Memory</code><br>
+如果是<code>.NET Standard 2.1</code>及以上，也即<code>.net 5.0</code>及以上的版本，那么就不需要安装<br>
+（如果是新项目的话应该会用新版本的框架吧）</p>
+<h2 id="0x01-如何使用">&lt;0x01&gt; 如何使用
+</h2><h3 id="添加需要的api">添加需要的API
+</h3><p>首先是要告诉源生成器要生成哪些API的封装<br>
+在项目根目录新建叫<code>NativeMethods.txt</code>的文件<br>
+<img src="/article/posts/2023/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97csharp%E8%B0%83%E7%94%A8win32api/picture/1.png"
+	width="240"
+	height="95"
+	srcset="/article/posts/2023/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97csharp%E8%B0%83%E7%94%A8win32api/picture/1_hu3330581896057511162.png 480w, /article/posts/2023/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97csharp%E8%B0%83%E7%94%A8win32api/picture/1_hu13047833802146296135.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="252"
+		data-flex-basis="606px"
+	
+><br>
+在里面可以添加你需要添加的Win32函数或者结构的名字</p>
+<pre tabindex="0"><code>PssCaptureSnapshot
+PssQuerySnapshot
+
+PSS_PROCESS_INFORMATION
+PSS_HANDLE_INFORMATION
+PSS_VA_CLONE_INFORMATION
+</code></pre><p>这里的示例是Windows<a class="link" href="https://learn.microsoft.com/zh-cn/windows/win32/api/_proc_snap/"  target="_blank" rel="noopener"
+    >进程快照</a>相关的API，使用的API也不多，仅做演示作用</p>
+<h3 id="简单解释下使用的api">简单解释下使用的API
+</h3><h4 id="psscapturesnapshot">PssCaptureSnapshot
+</h4><p>捕获目标进程的快照</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>DWORD <span style="color:#a6e22e">PssCaptureSnapshot</span>(
+</span></span><span style="display:flex;"><span>  [in]           HANDLE            ProcessHandle,
+</span></span><span style="display:flex;"><span>  [in]           PSS_CAPTURE_FLAGS CaptureFlags,
+</span></span><span style="display:flex;"><span>  [in, optional] DWORD             ThreadContextFlags,
+</span></span><span style="display:flex;"><span>  [out]          HPSS              <span style="color:#f92672">*</span>SnapshotHandle
+</span></span><span style="display:flex;"><span>);
+</span></span></code></pre></div><p><code>ProcessHandle</code>目标进程的句柄<br>
+<code>CaptureFlags</code>指定要捕获的标志<br>
+<code>ThreadContextFlags</code>如果 CaptureFlags 指定线程上下文，则要捕获的 CONTEXT 记录标志<br>
+<code>SnapshotHandle</code>返回此函数捕获的快照的句柄</p>
+<p>函数返回的是<code>winerror.h</code>中定义的错误代码，无错误是<code>ERROR_SUCCESS</code></p>
+<h4 id="pssquerysnapshot">PssQuerySnapshot
+</h4><p>查询捕获的快照的信息</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>DWORD <span style="color:#a6e22e">PssQuerySnapshot</span>(
+</span></span><span style="display:flex;"><span>  [in]  HPSS                        SnapshotHandle,
+</span></span><span style="display:flex;"><span>  [in]  PSS_QUERY_INFORMATION_CLASS InformationClass,
+</span></span><span style="display:flex;"><span>  [out] <span style="color:#66d9ef">void</span>                        <span style="color:#f92672">*</span>Buffer,
+</span></span><span style="display:flex;"><span>  [in]  DWORD                       BufferLength
+</span></span><span style="display:flex;"><span>);
+</span></span></code></pre></div><p><code>SnapshotHandle</code>要查询的快照的句柄<br>
+<code>InformationClass</code>用于选择要查询的信息<br>
+<code>Buffer</code>此函数提供的信息，类型由<code>InformationClass</code>决定<br>
+<code>BufferLength</code>缓冲区的大小（以字节为单位）</p>
+<p>函数返回的是<code>winerror.h</code>中定义的错误代码，无错误是<code>ERROR_SUCCESS</code></p>
+<p>剩下的是一些结构，东西多就不细讲了，跟本文关系不大，具体就看文档吧</p>
+<h3 id="在代码中使用win32api">在代码中使用Win32API
+</h3><p>这里做一个使用Win32API查询进程PID的示例<br>
+（虽然C#的Process类对象本身就可以直接查询）</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span><span style="color:#66d9ef">using</span> System.Diagnostics;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> Windows.Win32;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> Windows.Win32.System.Diagnostics.ProcessSnapshotting;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Program</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>	    <span style="color:#75715e">// 使用C#自带的Process类型获取记事本进程</span>
+</span></span><span style="display:flex;"><span>        Process test = Process.GetProcessesByName(<span style="color:#e6db74">&#34;notepad&#34;</span>)[<span style="color:#ae81ff">0</span>];
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 声明一个查询flags</span>
+</span></span><span style="display:flex;"><span>        PSS_CAPTURE_FLAGS flags = PSS_CAPTURE_FLAGS.PSS_CAPTURE_THREADS;
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 使用Win32API来捕获进程快照</span>
+</span></span><span style="display:flex;"><span>        PInvoke.PssCaptureSnapshot(
+</span></span><span style="display:flex;"><span>            test.SafeHandle,
+</span></span><span style="display:flex;"><span>            flags,
+</span></span><span style="display:flex;"><span>            <span style="color:#ae81ff">0</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">out</span> HPSS snapshotHandle);
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 声明查询进程基本信息的变量</span>
+</span></span><span style="display:flex;"><span>        PSS_PROCESS_INFORMATION info;
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 涉及到指针操作，所以要用unsafe块包装</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">unsafe</span>
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>	        <span style="color:#75715e">// 使用Win32API来查询进程快照信息</span>
+</span></span><span style="display:flex;"><span>            PInvoke.PssQuerySnapshot(
+</span></span><span style="display:flex;"><span>                snapshotHandle,
+</span></span><span style="display:flex;"><span>                PSS_QUERY_INFORMATION_CLASS.PSS_QUERY_PROCESS_INFORMATION,
+</span></span><span style="display:flex;"><span>                &amp;info,
+</span></span><span style="display:flex;"><span>                (<span style="color:#66d9ef">uint</span>)<span style="color:#66d9ef">sizeof</span>(PSS_PROCESS_INFORMATION));
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        Console.WriteLine(info.ProcessId);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><img src="/article/posts/2023/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97csharp%E8%B0%83%E7%94%A8win32api/picture/3.png"
+	width="829"
+	height="166"
+	srcset="/article/posts/2023/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97csharp%E8%B0%83%E7%94%A8win32api/picture/3_hu4089936009756936439.png 480w, /article/posts/2023/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97csharp%E8%B0%83%E7%94%A8win32api/picture/3_hu9622210321053220712.png 1024w"
+	loading="lazy"
+	
+		alt="运行结果"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="499"
+		data-flex-basis="1198px"
+	
+></p>
+<p>确实是获取到了记事本的PID</p>
+<p>而且观察代码，不难发现，CsWin32会非常智能地使用C#自带的类型<br>
+比如说Process类型里面的SafeHandle属性，这个返回的是<code>SafeProcessHandle</code><br>
+这个虽然它的命名空间是<code>Microsoft.Win32.SafeHandles</code>，但确实是C#本身就有的<br>
+对于C#不带的类型，只有使用的API需要这些类型传参，CsWin32才会去生成对应的代码</p>
+<h2 id="0x02-一些不知道类型的枚举">&lt;0x02&gt; 一些不知道类型的枚举
+</h2><p>如果你需要使用某个枚举，但不知道是什么类型，CsWin32可以自动指出具体类型<br>
+比如前面提到那两个API的返回值是<code>winerror.h</code>中定义的错误代码，但我们不知道这是什么类<br>
+这时候可以在<code>NativeMethods.txt</code>里面直接加上<code>ERROR_SUCCESS</code><br>
+CsWin32会抛出警告：应该使用正确的声明<br>
+<img src="/article/posts/2023/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97csharp%E8%B0%83%E7%94%A8win32api/picture/2.png"
+	width="615"
+	height="24"
+	srcset="/article/posts/2023/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97csharp%E8%B0%83%E7%94%A8win32api/picture/2_hu3942554170736800697.png 480w, /article/posts/2023/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97csharp%E8%B0%83%E7%94%A8win32api/picture/2_hu12287234937168092029.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="2562"
+		data-flex-basis="6150px"
+	
+><br>
+最后也指出正确的声明是<code>WIN32_ERROR</code>，文件里改好就行<br>
+这里对上面的代码稍作修改作为示例</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span><span style="color:#66d9ef">using</span> System.Diagnostics;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> Windows.Win32;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> Windows.Win32.Foundation;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> Windows.Win32.System.Diagnostics.ProcessSnapshotting;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Program</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Process test = Process.GetProcessesByName(<span style="color:#e6db74">&#34;notepad&#34;</span>)[<span style="color:#ae81ff">0</span>];
+</span></span><span style="display:flex;"><span>        PSS_CAPTURE_FLAGS flags = PSS_CAPTURE_FLAGS.PSS_CAPTURE_THREADS;
+</span></span><span style="display:flex;"><span>        PInvoke.PssCaptureSnapshot(
+</span></span><span style="display:flex;"><span>            test.SafeHandle,
+</span></span><span style="display:flex;"><span>            flags,
+</span></span><span style="display:flex;"><span>            <span style="color:#ae81ff">0</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">out</span> HPSS snapshotHandle);
+</span></span><span style="display:flex;"><span>        PSS_PROCESS_INFORMATION info;
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 添加错误码的声明</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">uint</span> errorCode;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">unsafe</span>
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>	        <span style="color:#75715e">// 获取错误码返回值</span>
+</span></span><span style="display:flex;"><span>            errorCode = PInvoke.PssQuerySnapshot(
+</span></span><span style="display:flex;"><span>                snapshotHandle,
+</span></span><span style="display:flex;"><span>                PSS_QUERY_INFORMATION_CLASS.PSS_QUERY_PROCESS_INFORMATION,
+</span></span><span style="display:flex;"><span>                &amp;info,
+</span></span><span style="display:flex;"><span>                (<span style="color:#66d9ef">uint</span>)<span style="color:#66d9ef">sizeof</span>(PSS_PROCESS_INFORMATION));
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        Console.WriteLine(info.ProcessId);
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 跟WIN32_ERROR.ERROR_SUCCESS做比较，返回True</span>
+</span></span><span style="display:flex;"><span>        Console.WriteLine((WIN32_ERROR)errorCode == WIN32_ERROR.ERROR_SUCCESS);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>当然头铁不改正确的声明也没关系，也是这样使用</p>
+<p>对于其他不知道怎么声明的枚举也可以这样让CsWin32去找</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/csharp/">CSharp</a>
+        
+            <a href="/tags/windows/">Windows</a>
+        
+    </section>
+
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+        <link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI&#43;WdtXRGWt2kTvGFasHpSy3SV"crossorigin="anonymous"
+            ><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG&#43;vnGctmUb0ZY0l8"crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"integrity="sha384-&#43;VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4&#43;/RRE05"crossorigin="anonymous"
+                defer
+                >
+            </script><script>
+    window.addEventListener("DOMContentLoaded", () => {
+        renderMathInElement(document.body, {
+            delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: "$", right: "$", display: false },
+                { left: "\\(", right: "\\)", display: false },
+                { left: "\\[", right: "\\]", display: true }
+            ],
+            ignoredClasses: ["gist"]
+        });})
+</script>
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/article/categories/opencv/%E5%85%B3%E4%BA%8E%E6%88%91%E7%94%A8c%23%E5%86%99opencv%E8%BF%99%E4%BB%B6%E4%BA%8B-03/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">关于我用C#写Opencv这件事-03</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/article/categories/opencv/%E5%85%B3%E4%BA%8E%E6%88%91%E7%94%A8c%23%E5%86%99opencv%E8%BF%99%E4%BB%B6%E4%BA%8B-02/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">关于我用C#写Opencv这件事-02</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/article/categories/opencv/%E5%85%B3%E4%BA%8E%E6%88%91%E7%94%A8c%23%E5%86%99opencv%E8%BF%99%E4%BB%B6%E4%BA%8B-01/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">关于我用C#写Opencv这件事-01</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/article/categories/wpf/wpf%E5%BC%80%E5%8F%91%E8%BF%87%E7%A8%8B%E4%B8%ADinitializecomponent-%E7%A5%9E%E7%A7%98%E6%8A%A5%E9%94%99/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">WPF开发过程中InitializeComponent()神秘报错</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/article/posts/2023/%E5%9C%A8win10ltsc%E4%B8%8A%E5%AE%89%E8%A3%85%E6%88%AA%E5%9B%BE%E4%B8%8E%E8%8D%89%E5%9B%BE/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">在Win10LTSC上安装截图与草图</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2023 - 
+        
+        2024 MLAcookie
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.26.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

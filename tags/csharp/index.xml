@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>CSharp on MLAcookie</title><link>https://mlacookie.github.io/tags/csharp/</link><description>Recent content in CSharp on MLAcookie</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Sun, 21 Jul 2024 21:08:14 +0800</lastBuildDate><atom:link href="https://mlacookie.github.io/tags/csharp/index.xml" rel="self" type="application/rss+xml"/><item><title>相对优雅得C#调用Win32API</title><link>https://mlacookie.github.io/article/posts/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97csharp%E8%B0%83%E7%94%A8win32api/</link><pubDate>Sun, 21 Jul 2024 21:08:14 +0800</pubDate><guid>https://mlacookie.github.io/article/posts/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97csharp%E8%B0%83%E7%94%A8win32api/</guid><description>&lt;p>今天有人找我解决一些软件相关的问题，然后发现会牵扯到一些Win32的API&lt;br>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>CSharp on MLAcookie</title><link>https://mlacookie.github.io/tags/csharp/</link><description>Recent content in CSharp on MLAcookie</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Sun, 21 Jul 2024 21:08:14 +0800</lastBuildDate><atom:link href="https://mlacookie.github.io/tags/csharp/index.xml" rel="self" type="application/rss+xml"/><item><title>相对优雅得C#调用Win32API</title><link>https://mlacookie.github.io/article/posts/2024/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97csharp%E8%B0%83%E7%94%A8win32api/</link><pubDate>Sun, 21 Jul 2024 21:08:14 +0800</pubDate><guid>https://mlacookie.github.io/article/posts/2024/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97csharp%E8%B0%83%E7%94%A8win32api/</guid><description>&lt;p>今天有人找我解决一些软件相关的问题，然后发现会牵扯到一些Win32的API&lt;br>
 一般调用Win32API都是用C++方便的，而且微软给的文档也是C++的&lt;br>
 我虽然对C++不是很熟，但对C#熟啊&lt;/p>
 &lt;p>在C#中，我们可以通过&lt;code>P/Invoke&lt;/code>去做动态库的互操作&lt;br>
@@ -24,10 +24,10 @@ VSCode的源生成器体验也是不错的，这个直接装&lt;code>C# kit&lt;/
 &lt;/h2>&lt;h3 id="添加需要的api">添加需要的API
 &lt;/h3>&lt;p>首先是要告诉源生成器要生成哪些API的封装&lt;br>
 在项目根目录新建叫&lt;code>NativeMethods.txt&lt;/code>的文件&lt;br>
-&lt;img src="https://mlacookie.github.io/article/posts/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97csharp%E8%B0%83%E7%94%A8win32api/picture/1.png"
+&lt;img src="https://mlacookie.github.io/article/posts/2024/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97csharp%E8%B0%83%E7%94%A8win32api/picture/1.png"
 width="240"
 height="95"
-srcset="https://mlacookie.github.io/article/posts/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97csharp%E8%B0%83%E7%94%A8win32api/picture/1_hu3330581896057511162.png 480w, https://mlacookie.github.io/article/posts/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97csharp%E8%B0%83%E7%94%A8win32api/picture/1_hu13047833802146296135.png 1024w"
+srcset="https://mlacookie.github.io/article/posts/2024/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97csharp%E8%B0%83%E7%94%A8win32api/picture/1_hu3330581896057511162.png 480w, https://mlacookie.github.io/article/posts/2024/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97csharp%E8%B0%83%E7%94%A8win32api/picture/1_hu13047833802146296135.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="252"
@@ -105,10 +105,10 @@ PSS_VA_CLONE_INFORMATION
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Console.WriteLine(info.ProcessId);
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;img src="https://mlacookie.github.io/article/posts/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97csharp%E8%B0%83%E7%94%A8win32api/picture/3.png"
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;img src="https://mlacookie.github.io/article/posts/2024/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97csharp%E8%B0%83%E7%94%A8win32api/picture/3.png"
 width="829"
 height="166"
-srcset="https://mlacookie.github.io/article/posts/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97csharp%E8%B0%83%E7%94%A8win32api/picture/3_hu4089936009756936439.png 480w, https://mlacookie.github.io/article/posts/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97csharp%E8%B0%83%E7%94%A8win32api/picture/3_hu9622210321053220712.png 1024w"
+srcset="https://mlacookie.github.io/article/posts/2024/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97csharp%E8%B0%83%E7%94%A8win32api/picture/3_hu4089936009756936439.png 480w, https://mlacookie.github.io/article/posts/2024/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97csharp%E8%B0%83%E7%94%A8win32api/picture/3_hu9622210321053220712.png 1024w"
 loading="lazy"
 alt="运行结果"
 class="gallery-image"
@@ -125,10 +125,10 @@ data-flex-basis="1198px"
 比如前面提到那两个API的返回值是&lt;code>winerror.h&lt;/code>中定义的错误代码，但我们不知道这是什么类&lt;br>
 这时候可以在&lt;code>NativeMethods.txt&lt;/code>里面直接加上&lt;code>ERROR_SUCCESS&lt;/code>&lt;br>
 CsWin32会抛出警告：应该使用正确的声明&lt;br>
-&lt;img src="https://mlacookie.github.io/article/posts/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97csharp%E8%B0%83%E7%94%A8win32api/picture/2.png"
+&lt;img src="https://mlacookie.github.io/article/posts/2024/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97csharp%E8%B0%83%E7%94%A8win32api/picture/2.png"
 width="615"
 height="24"
-srcset="https://mlacookie.github.io/article/posts/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97csharp%E8%B0%83%E7%94%A8win32api/picture/2_hu3942554170736800697.png 480w, https://mlacookie.github.io/article/posts/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97csharp%E8%B0%83%E7%94%A8win32api/picture/2_hu12287234937168092029.png 1024w"
+srcset="https://mlacookie.github.io/article/posts/2024/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97csharp%E8%B0%83%E7%94%A8win32api/picture/2_hu3942554170736800697.png 480w, https://mlacookie.github.io/article/posts/2024/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97csharp%E8%B0%83%E7%94%A8win32api/picture/2_hu12287234937168092029.png 1024w"
 loading="lazy"
 class="gallery-image"
 data-flex-grow="2562"
@@ -394,7 +394,7 @@ Opencv中的几乎所有操作都是对矩阵的操作
 据说是因为分布类的问题，实际编译时生成的代码是正确的
 但是&lt;code>IntelliCode&lt;/code>依赖的文件可能没更新上
 然后就开始误报找不到&lt;code>InitializeComponent()&lt;/code>&lt;/p>
-&lt;p>总之还是一个很神秘的问题&lt;/p></description></item><item><title>简单用下SharpPcap</title><link>https://mlacookie.github.io/article/posts/%E7%AE%80%E5%8D%95%E7%94%A8%E4%B8%8Bsharppcap/</link><pubDate>Mon, 25 Dec 2023 10:01:56 +0000</pubDate><guid>https://mlacookie.github.io/article/posts/%E7%AE%80%E5%8D%95%E7%94%A8%E4%B8%8Bsharppcap/</guid><description>&lt;h2 id="什么是sharppcap">什么是SharpPcap
+&lt;p>总之还是一个很神秘的问题&lt;/p></description></item><item><title>简单用下SharpPcap</title><link>https://mlacookie.github.io/article/posts/2023/%E7%AE%80%E5%8D%95%E7%94%A8%E4%B8%8Bsharppcap/</link><pubDate>Mon, 25 Dec 2023 10:01:56 +0000</pubDate><guid>https://mlacookie.github.io/article/posts/2023/%E7%AE%80%E5%8D%95%E7%94%A8%E4%B8%8Bsharppcap/</guid><description>&lt;h2 id="什么是sharppcap">什么是SharpPcap
 &lt;/h2>&lt;p>最近嘛，要写各种课设，计网也要&lt;br>
 课设就算了，里面还有一个网络编程&lt;br>
 要求捕获些IP数据报，并输出些IP数据报里面的一些数据&lt;br>
@@ -405,10 +405,10 @@ Opencv中的几乎所有操作都是对矩阵的操作
 &lt;p>&lt;code>SharpPcap&lt;/code>就是把这些api打包成C#的形式，让我们可用在C#中方便的抓包&lt;/p>
 &lt;h2 id="安装">安装
 &lt;/h2>&lt;p>这个就很简单了，直接到Nuget包管理器里面安装就是了&lt;br>
-&lt;img src="https://mlacookie.github.io/article/posts/%E7%AE%80%E5%8D%95%E7%94%A8%E4%B8%8Bsharppcap/picture/1.png"
+&lt;img src="https://mlacookie.github.io/article/posts/2023/%E7%AE%80%E5%8D%95%E7%94%A8%E4%B8%8Bsharppcap/picture/1.png"
 width="1425"
 height="249"
-srcset="https://mlacookie.github.io/article/posts/%E7%AE%80%E5%8D%95%E7%94%A8%E4%B8%8Bsharppcap/picture/1_hu12092567368587587069.png 480w, https://mlacookie.github.io/article/posts/%E7%AE%80%E5%8D%95%E7%94%A8%E4%B8%8Bsharppcap/picture/1_hu5665604019408907976.png 1024w"
+srcset="https://mlacookie.github.io/article/posts/2023/%E7%AE%80%E5%8D%95%E7%94%A8%E4%B8%8Bsharppcap/picture/1_hu12092567368587587069.png 480w, https://mlacookie.github.io/article/posts/2023/%E7%AE%80%E5%8D%95%E7%94%A8%E4%B8%8Bsharppcap/picture/1_hu5665604019408907976.png 1024w"
 loading="lazy"
 alt="Nuget包管理器"
 class="gallery-image"
@@ -1408,7 +1408,7 @@ data-flex-basis="491px"
 具体可以看&lt;a class="link" href="https://www.bilibili.com/video/BV12x4y177qB" target="_blank" rel="noopener"
 >B站up-十月的寒流的视频&lt;/a>&lt;br>
 (人家是真大佬，他的视频做的都很不错的)&lt;br>
-(所以我的博客就摸了😋)&lt;/p></description></item><item><title>浅谈C#转IL语言</title><link>https://mlacookie.github.io/article/posts/%E6%B5%85%E8%B0%88csharp%E8%BD%ACil%E8%AF%AD%E8%A8%80/</link><pubDate>Thu, 03 Aug 2023 02:44:36 +0000</pubDate><guid>https://mlacookie.github.io/article/posts/%E6%B5%85%E8%B0%88csharp%E8%BD%ACil%E8%AF%AD%E8%A8%80/</guid><description>&lt;h2 id="前言">前言
+(所以我的博客就摸了😋)&lt;/p></description></item><item><title>浅谈C#转IL语言</title><link>https://mlacookie.github.io/article/posts/2023/%E6%B5%85%E8%B0%88csharp%E8%BD%ACil%E8%AF%AD%E8%A8%80/</link><pubDate>Thu, 03 Aug 2023 02:44:36 +0000</pubDate><guid>https://mlacookie.github.io/article/posts/2023/%E6%B5%85%E8%B0%88csharp%E8%BD%ACil%E8%AF%AD%E8%A8%80/</guid><description>&lt;h2 id="前言">前言
 &lt;/h2>&lt;p>突发奇想，想研究下IL语言&lt;br>
 本来以为会挺难的，结果发现貌似还行&lt;br>
 注意：本博客不打算详细讲解IL的原理之类的&lt;br>
@@ -2830,7 +2830,7 @@ data-flex-basis="235px"
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>逻辑就是随性写的，不保证完全没Bug，应该是没严重Bug的&lt;br>
 (所以也没写高精度的运算处理)&lt;br>
-(写这篇博客比我写代码的时间都长😂)&lt;/p></description></item><item><title>浙工大离散课设讲解</title><link>https://mlacookie.github.io/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7%E7%A6%BB%E6%95%A3%E8%AF%BE%E8%AE%BE%E8%AE%B0%E5%BD%95/</link><pubDate>Tue, 04 Jul 2023 13:14:00 +0000</pubDate><guid>https://mlacookie.github.io/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7%E7%A6%BB%E6%95%A3%E8%AF%BE%E8%AE%BE%E8%AE%B0%E5%BD%95/</guid><description>&lt;h2 id="前言">前言
+(写这篇博客比我写代码的时间都长😂)&lt;/p></description></item><item><title>浙工大离散课设讲解</title><link>https://mlacookie.github.io/article/posts/2023/%E6%B5%99%E5%B7%A5%E5%A4%A7%E7%A6%BB%E6%95%A3%E8%AF%BE%E8%AE%BE%E8%AE%B0%E5%BD%95/</link><pubDate>Tue, 04 Jul 2023 13:14:00 +0000</pubDate><guid>https://mlacookie.github.io/article/posts/2023/%E6%B5%99%E5%B7%A5%E5%A4%A7%E7%A6%BB%E6%95%A3%E8%AF%BE%E8%AE%BE%E8%AE%B0%E5%BD%95/</guid><description>&lt;h2 id="前言">前言
 &lt;/h2>&lt;p>一般来说离散的课设都是给一大堆题目然后自己选的&lt;br>
 我选的是合式公式的真值表和成真成假赋值&lt;br>
 算是里面相对难的&lt;br>
@@ -2858,10 +2858,10 @@ data-flex-basis="235px"
 每次弹出都是弹出一个运算符与两个运算数，并将运算结果再压入运算符栈中&lt;br>
 重复弹出，直到当前运算符优先级大于运算符栈顶的运算符优先级为止&lt;br>
 如果遍历过程中遇到&lt;code>)&lt;/code>，则反复进行弹出操作，直到弹出一个&lt;code>(&lt;/code>为止&lt;/p>
-&lt;p>&lt;img src="https://mlacookie.github.io/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7%E7%A6%BB%E6%95%A3%E8%AF%BE%E8%AE%BE%E8%AE%B0%E5%BD%95/picture/1.gif"
+&lt;p>&lt;img src="https://mlacookie.github.io/article/posts/2023/%E6%B5%99%E5%B7%A5%E5%A4%A7%E7%A6%BB%E6%95%A3%E8%AF%BE%E8%AE%BE%E8%AE%B0%E5%BD%95/picture/1.gif"
 width="400"
 height="400"
-srcset="https://mlacookie.github.io/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7%E7%A6%BB%E6%95%A3%E8%AF%BE%E8%AE%BE%E8%AE%B0%E5%BD%95/picture/1_hu10804910295702382285.gif 480w, https://mlacookie.github.io/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7%E7%A6%BB%E6%95%A3%E8%AF%BE%E8%AE%BE%E8%AE%B0%E5%BD%95/picture/1_hu8498918969571945684.gif 1024w"
+srcset="https://mlacookie.github.io/article/posts/2023/%E6%B5%99%E5%B7%A5%E5%A4%A7%E7%A6%BB%E6%95%A3%E8%AF%BE%E8%AE%BE%E8%AE%B0%E5%BD%95/picture/1_hu10804910295702382285.gif 480w, https://mlacookie.github.io/article/posts/2023/%E6%B5%99%E5%B7%A5%E5%A4%A7%E7%A6%BB%E6%95%A3%E8%AF%BE%E8%AE%BE%E8%AE%B0%E5%BD%95/picture/1_hu8498918969571945684.gif 1024w"
 loading="lazy"
 alt="演示动画"
 class="gallery-image"
@@ -2902,10 +2902,10 @@ data-flex-basis="240px"
 操作数由运算符连接，合成一个新节点&lt;br>
 如此嵌套，最后连接在一个根节点上&lt;br>
 每次计算时，先给操作数真假指派，然后走遍计算树，根节点的值就是公式的计算结果&lt;/p>
-&lt;p>&lt;img src="https://mlacookie.github.io/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7%E7%A6%BB%E6%95%A3%E8%AF%BE%E8%AE%BE%E8%AE%B0%E5%BD%95/picture/2.png"
+&lt;p>&lt;img src="https://mlacookie.github.io/article/posts/2023/%E6%B5%99%E5%B7%A5%E5%A4%A7%E7%A6%BB%E6%95%A3%E8%AF%BE%E8%AE%BE%E8%AE%B0%E5%BD%95/picture/2.png"
 width="381"
 height="279"
-srcset="https://mlacookie.github.io/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7%E7%A6%BB%E6%95%A3%E8%AF%BE%E8%AE%BE%E8%AE%B0%E5%BD%95/picture/2_hu3266350209150046280.png 480w, https://mlacookie.github.io/article/posts/%E6%B5%99%E5%B7%A5%E5%A4%A7%E7%A6%BB%E6%95%A3%E8%AF%BE%E8%AE%BE%E8%AE%B0%E5%BD%95/picture/2_hu16172601971619566491.png 1024w"
+srcset="https://mlacookie.github.io/article/posts/2023/%E6%B5%99%E5%B7%A5%E5%A4%A7%E7%A6%BB%E6%95%A3%E8%AF%BE%E8%AE%BE%E8%AE%B0%E5%BD%95/picture/2_hu3266350209150046280.png 480w, https://mlacookie.github.io/article/posts/2023/%E6%B5%99%E5%B7%A5%E5%A4%A7%E7%A6%BB%E6%95%A3%E8%AF%BE%E8%AE%BE%E8%AE%B0%E5%BD%95/picture/2_hu16172601971619566491.png 1024w"
 loading="lazy"
 alt="计算树结构"
 class="gallery-image"

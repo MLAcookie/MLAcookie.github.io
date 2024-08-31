@@ -72,15 +72,15 @@
 所有实际开发中经常出现传参类型出问题，排查好一会儿&lt;/p>
 &lt;p>总之，python这门语言感觉就像是共享单车，解决的是程序最后怎么运行的问题&lt;br>
 当脚本语言是非常合适的&lt;/p>
-&lt;p>所以说，没有最好的语言，只有最适合的语言&lt;/p></description></item><item><title>Python在VSCode中代码提示异常问题</title><link>https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/</link><pubDate>Mon, 05 Jun 2023 00:16:03 +0000</pubDate><guid>https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/</guid><description>&lt;h2 id="0x00-这就是个很神秘的问题">&amp;lt;0x00&amp;gt; 这就是个很神秘的问题
+&lt;p>所以说，没有最好的语言，只有最适合的语言&lt;/p></description></item><item><title>Python在VSCode中代码提示异常问题</title><link>https://mlacookie.github.io/article/posts/2023/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/</link><pubDate>Mon, 05 Jun 2023 00:16:03 +0000</pubDate><guid>https://mlacookie.github.io/article/posts/2023/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/</guid><description>&lt;h2 id="0x00-这就是个很神秘的问题">&amp;lt;0x00&amp;gt; 这就是个很神秘的问题
 &lt;/h2>&lt;p>突然想写一段 python 代码，然后打开 vscode&lt;br>
 就很神秘，明明啥配置都没改，代码提示又寄了&lt;br>
 网上搜索了一番，大概总结了3种可能的问题&lt;/p>
 &lt;h2 id="0x01-python-default-interpreter-path的问题">&amp;lt;0x01&amp;gt; Python: Default Interpreter Path的问题
-&lt;/h2>&lt;p>&lt;img src="https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/1.png"
+&lt;/h2>&lt;p>&lt;img src="https://mlacookie.github.io/article/posts/2023/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/1.png"
 width="1187"
 height="220"
-srcset="https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/1_hu14482753093361984752.png 480w, https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/1_hu507897332626449349.png 1024w"
+srcset="https://mlacookie.github.io/article/posts/2023/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/1_hu14482753093361984752.png 480w, https://mlacookie.github.io/article/posts/2023/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/1_hu507897332626449349.png 1024w"
 loading="lazy"
 alt="setting:PythonDefaultInterpreterPath"
 class="gallery-image"
@@ -89,10 +89,10 @@ data-flex-basis="1294px"
 >&lt;br>
 如图写上自己的 python 安装目录即可&lt;/p>
 &lt;h2 id="0x02-pythonautocompleteextrapaths的问题">&amp;lt;0x02&amp;gt; python.autoComplete.extraPaths的问题
-&lt;/h2>&lt;p>&lt;img src="https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/2.png"
+&lt;/h2>&lt;p>&lt;img src="https://mlacookie.github.io/article/posts/2023/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/2.png"
 width="1187"
 height="223"
-srcset="https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/2_hu11333265399735167.png 480w, https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/2_hu9849580221969469737.png 1024w"
+srcset="https://mlacookie.github.io/article/posts/2023/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/2_hu11333265399735167.png 480w, https://mlacookie.github.io/article/posts/2023/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/2_hu9849580221969469737.png 1024w"
 loading="lazy"
 alt="setting:python.autoComplete.extraPaths"
 class="gallery-image"
@@ -100,10 +100,10 @@ data-flex-grow="532"
 data-flex-basis="1277px"
 >&lt;br>
 如图搜索，然后点击 &lt;code>Edit in setting.json&lt;/code>&lt;br>
-&lt;img src="https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/3.png"
+&lt;img src="https://mlacookie.github.io/article/posts/2023/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/3.png"
 width="605"
 height="93"
-srcset="https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/3_hu13491890821617503192.png 480w, https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/3_hu1318947447704491668.png 1024w"
+srcset="https://mlacookie.github.io/article/posts/2023/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/3_hu13491890821617503192.png 480w, https://mlacookie.github.io/article/posts/2023/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/3_hu1318947447704491668.png 1024w"
 loading="lazy"
 alt="setting.json"
 class="gallery-image"
@@ -112,10 +112,10 @@ data-flex-basis="1561px"
 >&lt;br>
 按自己的安装路径填上图片里的那些就可以&lt;/p>
 &lt;h2 id="0x03-pythonlanguageserver的问题">&amp;lt;0x03&amp;gt; python.languageServer的问题
-&lt;/h2>&lt;p>&lt;img src="https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/4.png"
+&lt;/h2>&lt;p>&lt;img src="https://mlacookie.github.io/article/posts/2023/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/4.png"
 width="1227"
 height="212"
-srcset="https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/4_hu472917642864698445.png 480w, https://mlacookie.github.io/article/posts/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/4_hu17300663757266161807.png 1024w"
+srcset="https://mlacookie.github.io/article/posts/2023/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/4_hu472917642864698445.png 480w, https://mlacookie.github.io/article/posts/2023/python%E5%9C%A8vscode%E4%B8%AD%E4%BB%A3%E7%A0%81%E6%8F%90%E7%A4%BA%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/picture/4_hu17300663757266161807.png 1024w"
 loading="lazy"
 alt="setting:python.languageServer"
 class="gallery-image"
