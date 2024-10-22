@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Articles on MLAcookie</title><link>https://mlacookie.github.io/article/</link><description>Recent content in Articles on MLAcookie</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Sat, 31 Aug 2024 21:31:55 +0800</lastBuildDate><atom:link href="https://mlacookie.github.io/article/index.xml" rel="self" type="application/rss+xml"/><item><title>xmake做opengl开发时无法解析符号</title><link>https://mlacookie.github.io/article/posts/2024/xmake%E5%81%9Aopengl%E5%BC%80%E5%8F%91%E6%97%B6%E6%97%A0%E6%B3%95%E8%A7%A3%E6%9E%90%E7%AC%A6%E5%8F%B7/</link><pubDate>Sat, 31 Aug 2024 21:31:55 +0800</pubDate><guid>https://mlacookie.github.io/article/posts/2024/xmake%E5%81%9Aopengl%E5%BC%80%E5%8F%91%E6%97%B6%E6%97%A0%E6%B3%95%E8%A7%A3%E6%9E%90%E7%AC%A6%E5%8F%B7/</guid><description>&lt;p>xmake对于个人项目来说，构建比cmake简单太多，少折腾太多&lt;/p>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Articles on MLAcookie</title><link>https://mlacookie.github.io/article/</link><description>Recent content in Articles on MLAcookie</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Sat, 31 Aug 2024 23:07:08 +0800</lastBuildDate><atom:link href="https://mlacookie.github.io/article/index.xml" rel="self" type="application/rss+xml"/><item><title>xmake做opengl开发时无法解析符号</title><link>https://mlacookie.github.io/article/posts/2024/xmake%E5%81%9Aopengl%E5%BC%80%E5%8F%91%E6%97%B6%E6%97%A0%E6%B3%95%E8%A7%A3%E6%9E%90%E7%AC%A6%E5%8F%B7/</link><pubDate>Sat, 31 Aug 2024 21:31:55 +0800</pubDate><guid>https://mlacookie.github.io/article/posts/2024/xmake%E5%81%9Aopengl%E5%BC%80%E5%8F%91%E6%97%B6%E6%97%A0%E6%B3%95%E8%A7%A3%E6%9E%90%E7%AC%A6%E5%8F%B7/</guid><description>&lt;p>xmake对于个人项目来说，构建比cmake简单太多，少折腾太多&lt;/p>
 &lt;p>但在我之前测试的时候，发现xmake链接glfw库的时候会出链接错误&lt;br>
-这个问题来着于xmake在获取包时，倾向使用静态的库&lt;br>
+这个问题是xmake在获取包时，倾向使用静态的库&lt;br>
 这就导致部分包在链接时会无法解析符号之类的问题&lt;br>
 （有些包反过来，使用静态库会无法解析符号，这次的例子也有）&lt;br>
 至于为什么，我目前也不是很清楚&lt;br>
@@ -274,11 +274,6 @@ data-flex-basis="438px"
 &lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;fmt/core.h&amp;gt;&lt;/span>&lt;span style="color:#75715e">
 &lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;glad/glad.h&amp;gt;&lt;/span>&lt;span style="color:#75715e">
 &lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;GLFW/glfw3.h&amp;gt;&lt;/span>&lt;span style="color:#75715e">
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">// windows平台
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#75715e">#if defined(_MSC_VER) &amp;amp;&amp;amp; (_MSC_VER &amp;gt;= 1900) &amp;amp;&amp;amp; !defined(IMGUI_DISABLE_WIN32_FUNCTIONS)
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#pragma comment(lib, &amp;#34;legacy_stdio_definitions&amp;#34;)
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#endif
 &lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">// glfw错误回调
 &lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#66d9ef">static&lt;/span> &lt;span style="color:#66d9ef">void&lt;/span> &lt;span style="color:#a6e22e">glfw_error_callback&lt;/span>(&lt;span style="color:#66d9ef">int&lt;/span> error, &lt;span style="color:#66d9ef">const&lt;/span> &lt;span style="color:#66d9ef">char&lt;/span> &lt;span style="color:#f92672">*&lt;/span>description)
@@ -3108,15 +3103,16 @@ data-flex-basis="379px"
 | | └── ...
 | ├── ...
 | └── ...
-└── page
-├── about
+├── page
+| ├── about
+| | └── index.md
+| ├── archives
+| | └── index.md
+| ├── links
+| | └── index.md
+| └── search
 | └── index.md
-├── archives
-| └── index.md
-├── links
-| └── index.md
-└── search
-└── index.md
+└── _index.md
 &lt;/code>&lt;/pre>&lt;h2 id="0x04-obsidian配置">&amp;lt;0x04&amp;gt; obsidian配置
 &lt;/h2>&lt;p>用obsidian在&lt;code>./TestBlog/content&lt;/code>创建仓库&lt;br>
 obsidian里面需要配置的东西不多，主要是把链接设置为相对文件的路径&lt;br>

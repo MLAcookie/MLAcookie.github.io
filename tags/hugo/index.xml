@@ -140,15 +140,16 @@ data-flex-basis="379px"
 | | └── ...
 | ├── ...
 | └── ...
-└── page
-├── about
+├── page
+| ├── about
+| | └── index.md
+| ├── archives
+| | └── index.md
+| ├── links
+| | └── index.md
+| └── search
 | └── index.md
-├── archives
-| └── index.md
-├── links
-| └── index.md
-└── search
-└── index.md
+└── _index.md
 &lt;/code>&lt;/pre>&lt;h2 id="0x04-obsidian配置">&amp;lt;0x04&amp;gt; obsidian配置
 &lt;/h2>&lt;p>用obsidian在&lt;code>./TestBlog/content&lt;/code>创建仓库&lt;br>
 obsidian里面需要配置的东西不多，主要是把链接设置为相对文件的路径&lt;br>
