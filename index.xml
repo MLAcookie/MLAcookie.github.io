@@ -1,10 +1,386 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>MLAcookie</title><link>https://mlacookie.github.io/</link><description>Recent content on MLAcookie</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Sat, 31 Aug 2024 23:07:08 +0800</lastBuildDate><atom:link href="https://mlacookie.github.io/index.xml" rel="self" type="application/rss+xml"/><item><title>xmake做opengl开发时无法解析符号</title><link>https://mlacookie.github.io/article/posts/2024/xmake%E5%81%9Aopengl%E5%BC%80%E5%8F%91%E6%97%B6%E6%97%A0%E6%B3%95%E8%A7%A3%E6%9E%90%E7%AC%A6%E5%8F%B7/</link><pubDate>Sat, 31 Aug 2024 21:31:55 +0800</pubDate><guid>https://mlacookie.github.io/article/posts/2024/xmake%E5%81%9Aopengl%E5%BC%80%E5%8F%91%E6%97%B6%E6%97%A0%E6%B3%95%E8%A7%A3%E6%9E%90%E7%AC%A6%E5%8F%B7/</guid><description>&lt;p>xmake对于个人项目来说，构建比cmake简单太多，少折腾太多&lt;/p>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>MLAcookie</title><link>https://mlacookie.github.io/</link><description>Recent content on MLAcookie</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Fri, 25 Oct 2024 02:17:15 +0800</lastBuildDate><atom:link href="https://mlacookie.github.io/index.xml" rel="self" type="application/rss+xml"/><item><title>WPF中怎么自定义控件</title><link>https://mlacookie.github.io/article/categories/wpf/wpf%E4%B8%AD%E6%80%8E%E4%B9%88%E8%87%AA%E5%AE%9A%E4%B9%89%E6%8E%A7%E4%BB%B6/</link><pubDate>Fri, 25 Oct 2024 02:17:15 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/wpf/wpf%E4%B8%AD%E6%80%8E%E4%B9%88%E8%87%AA%E5%AE%9A%E4%B9%89%E6%8E%A7%E4%BB%B6/</guid><description>&lt;h2 id="0x00-前言">&amp;lt;0x00&amp;gt; 前言
+&lt;/h2>&lt;p>WPF开发中，总是会有些创建自定义控件的需求&lt;br>
+毕竟原生的控件总是不够用的&lt;/p>
+&lt;h2 id="0x01-原理">&amp;lt;0x01&amp;gt; 原理
+&lt;/h2>&lt;p>WPF使用xaml作为设计语言&lt;br>
+而xaml负责的可以简单理解成将控件实例化到对应的布局上，然后设定控件的一些属性&lt;br>
+既然是实例化，那么本质上就是创建了一个新的对象&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-xml" data-lang="xml">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&amp;lt;!--随便定义一个按钮--&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">&amp;lt;button&lt;/span> &lt;span style="color:#a6e22e">Content=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;123&amp;#34;&lt;/span>&lt;span style="color:#f92672">/&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>其实在编译器看来，就相当于这样&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-cs" data-lang="cs">&lt;span style="display:flex;">&lt;span>Button b = &lt;span style="color:#66d9ef">new&lt;/span>();
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>所以我们自定义控件，首先需要有一个类定义控件的属性，然后用xaml去描述控件行为&lt;/p>
+&lt;p>那么怎么用xaml描述控件行为呢&lt;br>
+在修改控件的style的时候，我们可以把自己定义的style写到一个ResourceDictionary中&lt;br>
+然后通过合并ResourceDictionary来将自己style应用到不同的地方&lt;br>
+xaml描述控件行为其实也就是写一个style，所以可以采用一样的思路&lt;/p>
+&lt;h2 id="0x02-示例带标签的文本输入框">&amp;lt;0x02&amp;gt; 示例：带标签的文本输入框
+&lt;/h2>&lt;p>这个感觉还是很常见的需求，有些时候需要文本输入框前面带一个标签，表示输入的是什么&lt;br>
+也就是说，我们要做的控件跟下面xaml代码效果是等价的&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-xml" data-lang="xml">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">&amp;lt;Grid&lt;/span> &lt;span style="color:#a6e22e">Margin=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;0,4&amp;#34;&lt;/span>&lt;span style="color:#f92672">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;Grid.ColumnDefinitions&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;ColumnDefinition&lt;/span> &lt;span style="color:#f92672">/&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;ColumnDefinition&lt;/span> &lt;span style="color:#f92672">/&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;/Grid.ColumnDefinitions&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;TextBlock&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">Grid.Column=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;0&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">VerticalAlignment=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;Center&amp;#34;&lt;/span> &lt;span style="color:#f92672">/&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;TextBox&lt;/span> &lt;span style="color:#a6e22e">Grid.Column=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;1&amp;#34;&lt;/span> &lt;span style="color:#f92672">/&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">&amp;lt;/Grid&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="定义控件">定义控件
+&lt;/h3>&lt;p>首先需要定义一个类，表示我们的类与其他类的不同&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-cs" data-lang="cs">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">// Controls/TextBoxWithLable/TextBoxWithLable.cs&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">using&lt;/span> System.Windows.Controls;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">namespace&lt;/span> XamlTest.Controls;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">TextBoxWithLable&lt;/span> : Control
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 后面还有别的代码，但这里先不需要&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>这样就可以了&lt;/p>
+&lt;h3 id="描述控件">描述控件
+&lt;/h3>&lt;p>然后创建一个资源字典，用来描述我们的控件&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-xml" data-lang="xml">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&amp;lt;!-- Controls/TextBoxWithLable/TextBoxWithLable.xaml --&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">&amp;lt;ResourceDictionary&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">xmlns=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;http://schemas.microsoft.com/winfx/2006/xaml/presentation&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">xmlns:x=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;http://schemas.microsoft.com/winfx/2006/xaml&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">xmlns:controls=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;clr-namespace:XamlTest.Controls&amp;#34;&lt;/span>&lt;span style="color:#f92672">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;Style&lt;/span> &lt;span style="color:#a6e22e">x:Key=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;Default_TextBoxWithLableStyle&amp;#34;&lt;/span> &lt;span style="color:#a6e22e">TargetType=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;{x:Type controls:TextBoxWithLable}&amp;#34;&lt;/span>&lt;span style="color:#f92672">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;Setter&lt;/span> &lt;span style="color:#a6e22e">Property=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;Template&amp;#34;&lt;/span>&lt;span style="color:#f92672">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;Setter.Value&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;ControlTemplate&lt;/span> &lt;span style="color:#a6e22e">TargetType=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;{x:Type controls:TextBoxWithLable}&amp;#34;&lt;/span>&lt;span style="color:#f92672">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;Grid&lt;/span> &lt;span style="color:#a6e22e">Margin=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;0,4&amp;#34;&lt;/span>&lt;span style="color:#f92672">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;Grid.ColumnDefinitions&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;ColumnDefinition&lt;/span> &lt;span style="color:#f92672">/&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;ColumnDefinition&lt;/span> &lt;span style="color:#f92672">/&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;/Grid.ColumnDefinitions&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;TextBlock&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">Grid.Column=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;0&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">VerticalAlignment=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;Center&amp;#34;&lt;/span> &lt;span style="color:#f92672">/&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;TextBox&lt;/span> &lt;span style="color:#a6e22e">Grid.Column=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;1&amp;#34;&lt;/span> &lt;span style="color:#f92672">/&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;/Grid&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;/ControlTemplate&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;/Setter.Value&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;/Setter&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;/Style&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;Style&lt;/span> &lt;span style="color:#a6e22e">BasedOn=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;{StaticResource Default_TextBoxWithLableStyle}&amp;#34;&lt;/span> &lt;span style="color:#a6e22e">TargetType=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;{x:Type controls:TextBoxWithLable}&amp;#34;&lt;/span> &lt;span style="color:#f92672">/&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">&amp;lt;/ResourceDictionary&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>就像前面说的，通过style的模板来让xaml知道需要实例化什么控件&lt;br>
+这里先是定义了一个&lt;code>Default_TextBoxWithLableStyle&lt;/code>的style，然后再写全局应用&lt;br>
+这样写的话万一用户想再基于默认样式自定义的话就比较方便了&lt;/p>
+&lt;h3 id="合并资源字典">合并资源字典
+&lt;/h3>&lt;p>上面的写好之后，如果直接使用会发现还是显示不了的&lt;br>
+这是因为我们还没有合并资源字典&lt;/p>
+&lt;p>这里我建议在控件的文件夹中加一个文件，其中去合并所有控件的资源字典&lt;br>
+然后再在&lt;code>app.xaml&lt;/code>中合并这个整合的资源字典文件&lt;br>
+毕竟控件开发一般会开发很多，全写&lt;code>app.xaml&lt;/code>会很乱&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-xml" data-lang="xml">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&amp;lt;!-- Controls/ControlsDictionary.xaml --&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">&amp;lt;ResourceDictionary&lt;/span> &lt;span style="color:#a6e22e">xmlns=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;http://schemas.microsoft.com/winfx/2006/xaml/presentation&amp;#34;&lt;/span>&lt;span style="color:#f92672">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;ResourceDictionary.MergedDictionaries&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;ResourceDictionary&lt;/span> &lt;span style="color:#a6e22e">Source=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;pack://application:,,,/Controls/TextBoxWithLable/TextBoxWithLable.xaml&amp;#34;&lt;/span> &lt;span style="color:#f92672">/&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;/ResourceDictionary.MergedDictionaries&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">&amp;lt;/ResourceDictionary&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>然后在&lt;code>app.xaml&lt;/code>中合并&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-xml" data-lang="xml">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&amp;lt;!-- app.xaml --&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">&amp;lt;Application&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">x:Class=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;XamlTest.App&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">xmlns=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;http://schemas.microsoft.com/winfx/2006/xaml/presentation&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">xmlns:x=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;http://schemas.microsoft.com/winfx/2006/xaml&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">xmlns:controls=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;clr-namespace:XamlTest.Controls&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">xmlns:local=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;clr-namespace:XamlTest&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">StartupUri=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;MainWindow.xaml&amp;#34;&lt;/span>&lt;span style="color:#f92672">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;Application.Resources&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;ResourceDictionary&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;ResourceDictionary.MergedDictionaries&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;ResourceDictionary&lt;/span> &lt;span style="color:#a6e22e">Source=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;pack://application:,,,/Controls/ControlsDictionary.xaml&amp;#34;&lt;/span> &lt;span style="color:#f92672">/&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;/ResourceDictionary.MergedDictionaries&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;/ResourceDictionary&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;/Application.Resources&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">&amp;lt;/Application&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>这里的source属性出现的很像网址的东西是资源url，我暂时没研究的这么全&lt;/p>
+&lt;h3 id="为控件创建属性">为控件创建属性
+&lt;/h3>&lt;p>现在控件有了，但是如果在控件中输入文字我们是很难获取到的&lt;br>
+而且我们也修改不了文本框前面的lable部分
+这是因为我们还没有为控件创建属性，这时候就需要修改&lt;code>TextBoxWithLable.cs&lt;/code>文件了&lt;/p>
+&lt;p>我们需要为我们的控件添加依赖属性&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-cs" data-lang="cs">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">// Controls/TextBoxWithLable/TextBoxWithLable.cs&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">using&lt;/span> System.Windows;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">using&lt;/span> System.Windows.Controls;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">namespace&lt;/span> XamlTest.Controls;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">TextBoxWithLable&lt;/span> : Control
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">#region&lt;/span> LableText_propdp
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">string&lt;/span> LableText
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">get&lt;/span> { &lt;span style="color:#66d9ef">return&lt;/span> (&lt;span style="color:#66d9ef">string&lt;/span>)GetValue(LableTextProperty); }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">set&lt;/span> { SetValue(LableTextProperty, &lt;span style="color:#66d9ef">value&lt;/span>); }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">static&lt;/span> &lt;span style="color:#66d9ef">readonly&lt;/span> DependencyProperty LableTextProperty =
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> DependencyProperty.Register(&lt;span style="color:#e6db74">&amp;#34;LableText&amp;#34;&lt;/span>, &lt;span style="color:#66d9ef">typeof&lt;/span>(&lt;span style="color:#66d9ef">string&lt;/span>), &lt;span style="color:#66d9ef">typeof&lt;/span>(TextBoxWithLable), &lt;span style="color:#66d9ef">new&lt;/span> PropertyMetadata(&lt;span style="color:#66d9ef">null&lt;/span>));
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">#endregion&lt;/span> LableText_propdp
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">#region&lt;/span> InputText_propdp
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">string&lt;/span> InputText
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">get&lt;/span> { &lt;span style="color:#66d9ef">return&lt;/span> (&lt;span style="color:#66d9ef">string&lt;/span>)GetValue(InputTextProperty); }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">set&lt;/span> { SetValue(InputTextProperty, &lt;span style="color:#66d9ef">value&lt;/span>); }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">static&lt;/span> &lt;span style="color:#66d9ef">readonly&lt;/span> DependencyProperty InputTextProperty =
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> DependencyProperty.Register(&lt;span style="color:#e6db74">&amp;#34;InputText&amp;#34;&lt;/span>, &lt;span style="color:#66d9ef">typeof&lt;/span>(&lt;span style="color:#66d9ef">string&lt;/span>), &lt;span style="color:#66d9ef">typeof&lt;/span>(TextBoxWithLable), &lt;span style="color:#66d9ef">new&lt;/span> PropertyMetadata(&lt;span style="color:#66d9ef">null&lt;/span>));
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">#endregion&lt;/span> InputText_propdp
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>这里讲一个小技巧
+创建依赖属性的代码确实多，但也挺公式的&lt;br>
+所以vs提供了一个模板，只要输入propdp然后敲两下tab就可以插入模板&lt;br>
+然后逐个替换即可&lt;/p>
+&lt;p>然后修改&lt;code>TextBoxWithLable.xaml&lt;/code>，绑定我们的依赖属性&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-xml" data-lang="xml">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&amp;lt;!-- Controls/TextBoxWithLable/TextBoxWithLable.xaml --&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">&amp;lt;ResourceDictionary&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">xmlns=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;http://schemas.microsoft.com/winfx/2006/xaml/presentation&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">xmlns:x=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;http://schemas.microsoft.com/winfx/2006/xaml&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">xmlns:controls=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;clr-namespace:XamlTest.Controls&amp;#34;&lt;/span>&lt;span style="color:#f92672">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;Style&lt;/span> &lt;span style="color:#a6e22e">x:Key=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;Default_TextBoxWithLableStyle&amp;#34;&lt;/span> &lt;span style="color:#a6e22e">TargetType=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;{x:Type controls:TextBoxWithLable}&amp;#34;&lt;/span>&lt;span style="color:#f92672">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;Setter&lt;/span> &lt;span style="color:#a6e22e">Property=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;Template&amp;#34;&lt;/span>&lt;span style="color:#f92672">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;Setter.Value&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;ControlTemplate&lt;/span> &lt;span style="color:#a6e22e">TargetType=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;{x:Type controls:TextBoxWithLable}&amp;#34;&lt;/span>&lt;span style="color:#f92672">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;Grid&lt;/span> &lt;span style="color:#a6e22e">Margin=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;0,4&amp;#34;&lt;/span>&lt;span style="color:#f92672">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;Grid.ColumnDefinitions&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;ColumnDefinition&lt;/span> &lt;span style="color:#f92672">/&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;ColumnDefinition&lt;/span> &lt;span style="color:#f92672">/&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;/Grid.ColumnDefinitions&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;TextBlock&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">Grid.Column=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;0&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">VerticalAlignment=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;Center&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">Text=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;{TemplateBinding LableText}&amp;#34;&lt;/span> &lt;span style="color:#f92672">/&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;TextBox&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">Grid.Column=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;1&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">Text=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=InputText, Mode=TwoWay}&amp;#34;&lt;/span> &lt;span style="color:#f92672">/&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;/Grid&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;/ControlTemplate&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;/Setter.Value&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;/Setter&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;/Style&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;Style&lt;/span> &lt;span style="color:#a6e22e">BasedOn=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;{StaticResource Default_TextBoxWithLableStyle}&amp;#34;&lt;/span> &lt;span style="color:#a6e22e">TargetType=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;{x:Type controls:TextBoxWithLable}&amp;#34;&lt;/span> &lt;span style="color:#f92672">/&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">&amp;lt;/ResourceDictionary&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>这里需要注意的是，TemplateBinding是单向绑定&lt;br>
+也就是相当于只能&lt;code>绑定源-&amp;gt;控件&lt;/code>，这对TextBlock是没啥问题的&lt;br>
+但对于TextBox，我们希望里面的内容也可以传回来，这时候就不能只靠TemplateBinding&lt;br>
+所以TextBox这里的绑定就写得很长，主要就是要写一个Mode&lt;br>
+（TemplateBinding本身就是一种简写）&lt;/p>
+&lt;p>然后这个控件就创建完成了&lt;/p></description></item><item><title>换回Win11了</title><link>https://mlacookie.github.io/article/posts/2024/%E6%8D%A2%E5%9B%9Ewin11%E4%BA%86/</link><pubDate>Fri, 25 Oct 2024 02:16:14 +0800</pubDate><guid>https://mlacookie.github.io/article/posts/2024/%E6%8D%A2%E5%9B%9Ewin11%E4%BA%86/</guid><description>&lt;p>所以，不出意外地，我还是换回Windows了&lt;br>
+具体为什么呢，主要还是linux对高分屏的支持不佳&lt;br>
+（虽然Windows也不是很好就是）&lt;br>
+具体来说，是对2K这个分辨率支持不是很好&lt;br>
+一般来说，1080P的缩放是100%&lt;br>
+那么4K屏是200%，2K屏是150%&lt;br>
+linux在100%和200%缩放都是不错的，但偏偏在150%缩放下工作就不是很好&lt;/p>
+&lt;p>为什么呢，这就要谈到linux的图形化后端的问题了&lt;br>
+现在linux的图形化后端主要有两个，x11和wayland&lt;br>
+x11老，wayland新，然后wayland为了兼容老的还有xwayland&lt;/p>
+&lt;p>wayland在150%缩放下工作的很好&lt;br>
+所以在前面的一些文章中，我会提到启用Wayland的问题&lt;/p>
+&lt;p>x11在100%和200%缩放下可以说没啥问题，但在150%缩放下，字体会很糊&lt;br>
+这个是xwayland很难解决的问题&lt;br>
+不过很多基于x11且很难改后端的软件也意识到了这个问题，于是会在软件内内置缩放&lt;br>
+这样的话150%缩放下显示也是正常的&lt;/p>
+&lt;p>不过总有个别软件，基于x11而且也没有写缩放&lt;br>
+这里点名Unity&lt;br>
+linux中的Unity的图形后端是x11，而且我找了半天，我也找不到哪里改UI缩放&lt;br>
+（真的没有UI Scaling这个选项）&lt;br>
+于是Unity中控件字体非常小，需要放大镜看&lt;br>
+这样的例子还有很多&lt;/p>
+&lt;p>所以，我也理解了为啥很多用linux的根本不用图形化&lt;br>
+linux的图形化有些时候是不可靠的，我总算是认识到这点&lt;br>
+linux，还是命令行来得靠谱&lt;br>
+我也想不到linux中使用Windows的最佳实践&lt;br>
+Windows下倒是有使用linux的最佳实际，也就是WSL&lt;br>
+而且像Unity这样的软件我还是要用的，所以我还是换回了Windows了&lt;/p>
+&lt;p>顺便说下win11LTSC的体验吧&lt;br>
+我觉得还是很舒服的，LTSC非常干净，基本没啥怪东西&lt;br>
+而且不像win10LTSC，没有删除vclib140这种依赖，都不用自己再装&lt;br>
+总的来说只有Windows传奇兼容性导致四世同堂的UI问题了&lt;br>
+要是Windows能彻底重构一下就好了&lt;/p></description></item><item><title>一个内存压力的简单算法</title><link>https://mlacookie.github.io/article/posts/2024/%E4%B8%80%E4%B8%AA%E5%86%85%E5%AD%98%E5%8E%8B%E5%8A%9B%E7%9A%84%E7%AE%80%E5%8D%95%E7%AE%97%E6%B3%95/</link><pubDate>Fri, 25 Oct 2024 02:15:03 +0800</pubDate><guid>https://mlacookie.github.io/article/posts/2024/%E4%B8%80%E4%B8%AA%E5%86%85%E5%AD%98%E5%8E%8B%E5%8A%9B%E7%9A%84%E7%AE%80%E5%8D%95%E7%AE%97%E6%B3%95/</guid><description>&lt;p>这篇文章总的就是我图一乐，别当真&lt;/p>
+&lt;p>最近在研究内存占用相关的问题&lt;br>
+（总觉得16GRam不是很够用）&lt;br>
+而经过一些探索后，发现内存占用这个值并不能表现内存使用情况&lt;br>
+内存本身就是用来缓存的，也就是说占满是正常的事情&lt;br>
+现代操作系统会智能地调度物理内存和虚拟内存&lt;br>
+像mac都能说出8GRam可以做到windows16GRam的体验&lt;br>
+我的平板，6GRam，空闲内存只有2G不到，但也不影响多开应用&lt;/p>
+&lt;p>在mac上与linux上，有基于内存回收失败数得出的内存压力值&lt;br>
+而windows上，我没有找到类似的值，我也不知道有什么api可以统计出这个值&lt;/p>
+&lt;p>windows中，内存分为正在使用、已修改、备用、可用四个部分&lt;br>
+正在使用是正在活跃的内存，是程序频繁使用的内存页&lt;br>
+已修改是刚从活跃内存变为不活跃内存的内存页，需要windows调度到虚拟内存&lt;br>
+备用是windows将部分空闲的物理内存当作虚拟内存，这部分会看情况调度到硬盘上的虚拟内存中&lt;br>
+可用是真的闲的内存页&lt;/p>
+&lt;p>为了缓解我的内存焦虑，我想出了一个简单的计算方法&lt;br>
+计算内存压力，应当考虑活跃内存、物理内存与调度方式对内存的等效放大效果&lt;br>
+前两个不难理解，调度方式对内存的等效放大指的是操作系统调度内存方式使得内存具有相对大的物理内存效果&lt;br>
+比如说，windows中，系统会自己压缩部分内存，我观察下来压缩率在30%左右，效率很高&lt;br>
+（在任务管理器内存部分，已使用后面跟着的已压缩，只是内存压缩策略不是很激进）&lt;br>
+而合理调度虚拟内存，也有这种等效放大效果&lt;br>
+所以我们计算内存压力，或者说计算内存占用，不应该以物理内存大小做为分母&lt;br>
+计算公式为&lt;br>
+$$内存压力=\frac{活跃内存}{等效物理内存}$$
+并且我们也定义，当内存压力为100%时，物理内存中都是活跃内存&lt;br>
+这时候操作系统需要非常频繁得跟虚拟内存交互，系统不至于不能用，但会用着很难受&lt;/p>
+&lt;p>现在应该思考怎么计算这个等效物理内存了&lt;br>
+等效物理内存中，包括活跃内存部分，暂时先不考虑压缩内存的问题，这个是用多少就是多少的&lt;br>
+剩下的就算非活跃内存，交给系统让它自己调度即可&lt;br>
+所以一个简单的算法就出来了&lt;br>
+$$内存压力=\frac{活跃内存}{非活跃内存*非活跃内存等效放大参数+活跃内存}$$
+这里只要选择一个合适的非活跃内存等效放大参数即可，我感觉可以选择2作为参数&lt;br>
+这就相当于认为所有的非活跃内存都会移动到虚拟内存中&lt;br>
+根据公式，一台安装16GRam的电脑在活跃内存为10.6G的时候，内存压力为50%&lt;/p>
+&lt;p>这个公式优化空间挺大的，并没有考虑多样的内存管理方法，仅采用一个经验参数计算&lt;br>
+实际计算的值也是比较保守的，计算出50%的内存压力体感上应该是42%左右&lt;br>
+不过无所谓了，自己闲着没事随便想想的，或许之后会自己写个小工具玩玩&lt;/p>
+&lt;p>总之，我之前一直有严重的内存焦虑，总觉得内存占满了就不行了，所以我一直有手动清理后台的习惯&lt;br>
+（这跟我以前常年使用低端机有关系）&lt;br>
+现在内存虽然不至于很大，但不至于像以前不肯给内存，加上现代操作系统也能自己调度内存，内存大小一般不是大问题&lt;br>
+但内存占用一直居高不下也不是办法，看着确实难受，所以还是需要一个指标来衡量内存的压力，给开发者也好判断&lt;/p></description></item><item><title>简单配置zsh</title><link>https://mlacookie.github.io/article/posts/2024/%E7%AE%80%E5%8D%95%E9%85%8D%E7%BD%AEzsh/</link><pubDate>Thu, 24 Oct 2024 08:47:43 +0800</pubDate><guid>https://mlacookie.github.io/article/posts/2024/%E7%AE%80%E5%8D%95%E9%85%8D%E7%BD%AEzsh/</guid><description>&lt;p>这篇文章主要是记录命令的，所以没啥原理讲解&lt;/p>
+&lt;h2 id="0x01-安装zsh与插件">&amp;lt;0x01&amp;gt; 安装zsh与插件
+&lt;/h2>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># Debian系&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>sudo apt install zsh
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>sudo apt install zsh-autosuggestions zsh-syntax-highlighting
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># Arch系&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>sudo pacman -S zsh
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>sudo pacman -S zsh-autosuggestions zsh-syntax-highlighting
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="0x02-设置为默认shell">&amp;lt;0x02&amp;gt; 设置为默认shell
+&lt;/h2>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>chsh -s /usr/bin/zsh
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>重新shell进入zsh的初始配置界面&lt;/p>
+&lt;h2 id="0x03-配置主题">&amp;lt;0x03&amp;gt; 配置主题
+&lt;/h2>&lt;h3 id="通过git下载">通过git下载
+&lt;/h3>&lt;p>找个地方放这个主题&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>git clone --depth&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">1&lt;/span> https://github.com/romkatv/powerlevel10k.git
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># github访问不上的话&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>git clone --depth&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">1&lt;/span> https://gitee.com/romkatv/powerlevel10k.git
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>修改zsh启动行为&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>nano ~/.zshrc
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>然后把这些复制到最后&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>source &lt;span style="color:#f92672">[&lt;/span>git下来的文件的目录&lt;span style="color:#f92672">]&lt;/span>/powerlevel10k/powerlevel10k.zsh-theme
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="通过yay安装">通过yay安装
+&lt;/h3>&lt;pre tabindex="0">&lt;code>yay zsh-theme-powerlevel10k
+&lt;/code>&lt;/pre>&lt;p>然后把这些复制到&lt;code>.zshrc&lt;/code>最后&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>nano ~/.zshrc
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>source /usr/share/zsh-theme-powerlevel10k/powerlevel10k.zsh-theme
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="0x04-配置插件">&amp;lt;0x04&amp;gt; 配置插件
+&lt;/h2>&lt;p>apt和pacman的安装路径不同，导致需要添加的文本不同
+都是在&lt;code>.zshrc&lt;/code>最后添加&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># Debian系&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># Arch系&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>配置完重新启动下会话，应该就生效了&lt;/p></description></item><item><title>如何配置pintos</title><link>https://mlacookie.github.io/article/posts/2024/%E5%A6%82%E4%BD%95%E9%85%8D%E7%BD%AEpintos/</link><pubDate>Thu, 24 Oct 2024 00:40:35 +0800</pubDate><guid>https://mlacookie.github.io/article/posts/2024/%E5%A6%82%E4%BD%95%E9%85%8D%E7%BD%AEpintos/</guid><description>&lt;p>因为学校的操作系统课程设计要用这玩意，所以就要配置这个玩意&lt;br>
+（看之后能说的东西多不多，多的话单开一个分类）&lt;br>
+配置这玩意相对还是快的，但我也走了点弯路&lt;br>
+我的环境是WSL的Debian&lt;/p>
+&lt;h2 id="0x00-前置">&amp;lt;0x00&amp;gt; 前置
+&lt;/h2>&lt;p>需要配置WSL，然后安装Debian&lt;br>
+然后需要git和稳定的&lt;code>维图诺·普莱维特·奈特沃克&lt;/code>&lt;/p>
+&lt;h2 id="0x01-拉取pintos仓库">&amp;lt;0x01&amp;gt; 拉取pintos仓库
+&lt;/h2>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>git clone git://pintos-os.org/pintos-anon --depth&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">1&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>需要提前配置下git的proxy，不然可能会很慢&lt;/p>
+&lt;h2 id="0x02-配置debian需要的软件包">&amp;lt;0x02&amp;gt; 配置Debian需要的软件包
+&lt;/h2>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 编译环境&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>sudo apt install make build-essential
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># qemu模拟器&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>sudo apt install qemu-system
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="0x03-简单配置">&amp;lt;0x03&amp;gt; 简单配置
+&lt;/h2>&lt;p>修改&lt;code>./src/threads/Make.vars&lt;/code>中的&lt;code>SIMULATOR&lt;/code>&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-make" data-lang="make">&lt;span style="display:flex;">&lt;span>SIMULATOR &lt;span style="color:#f92672">=&lt;/span> --qemu
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>新版本Linux不包含stropts.h，我们创建一个空的就可以了&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>sudo nano /usr/include/stropts.h
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>然后修改&lt;code>./src/utils/squish-pty.c&lt;/code>，注释下面的代码，大概在288行&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-c" data-lang="c">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">// 注释这些代码
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#66d9ef">if&lt;/span> (&lt;span style="color:#a6e22e">isastream&lt;/span> (slave))
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (&lt;span style="color:#a6e22e">ioctl&lt;/span> (slave, I_PUSH, &lt;span style="color:#e6db74">&amp;#34;ptem&amp;#34;&lt;/span>) &lt;span style="color:#f92672">&amp;lt;&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">||&lt;/span> &lt;span style="color:#a6e22e">ioctl&lt;/span> (slave, I_PUSH, &lt;span style="color:#e6db74">&amp;#34;ldterm&amp;#34;&lt;/span>) &lt;span style="color:#f92672">&amp;lt;&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">fail_io&lt;/span> (&lt;span style="color:#e6db74">&amp;#34;ioctl&amp;#34;&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>这样就可以了&lt;br>
+（网上说的其他修改貌似都不是很关键）&lt;/p>
+&lt;h2 id="0x04-尝试运行">&amp;lt;0x04&amp;gt; 尝试运行
+&lt;/h2>&lt;p>在工作路径&lt;code>./src&lt;/code>下面一条条执行&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 编译utils的文件&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>cd ./utils
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>make
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 回到./src&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>cd ..
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 编译内核&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>cd ./threads
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>make
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 进入编译好的内核文件夹&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>cd ./build
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 通过提供的脚本运行pintos&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>../../utils/pintos -- run alarm-multiple
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>理论上pintos就会运行了&lt;/p>
+&lt;h2 id="不要用arch编译这个东西">不要用Arch编译这个东西
+&lt;/h2>&lt;p>如果使用Arch编译这个东西的话会发现loader.bin的大小有128M&lt;br>
+而不是正常的512字节&lt;br>
+不只是WSL中Arch会出现这个问题，物理机Manjaro也会这样&lt;br>
+具体原因不是很清楚，我怀疑是gcc版本问题&lt;br>
+我测试过Ubuntu22的gcc11和Debian12的gcc12，这两个都可以成功编译&lt;br>
+但Arch的是gcc14，可能较高的gcc版本导致编译行为不符合预期&lt;br>
+不过我暂时还没尝试在Arch中使用gcc11编译过&lt;br>
+（源码安装gcc11，编译就要几个小时，先摸了）&lt;/p></description></item><item><title>优化博客的发布流程</title><link>https://mlacookie.github.io/article/categories/blog/%E4%BC%98%E5%8C%96%E5%8D%9A%E5%AE%A2%E7%9A%84%E5%8F%91%E5%B8%83%E6%B5%81%E7%A8%8B/</link><pubDate>Wed, 23 Oct 2024 13:49:51 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/blog/%E4%BC%98%E5%8C%96%E5%8D%9A%E5%AE%A2%E7%9A%84%E5%8F%91%E5%B8%83%E6%B5%81%E7%A8%8B/</guid><description>&lt;p>这几天折腾了一些obsidian的插件&lt;br>
+利用这些插件，优化了博客的发布流程&lt;/p>
+&lt;h2 id="0x01-hide-folders">&amp;lt;0x01&amp;gt; Hide Folders
+&lt;/h2>&lt;p>我原本的obsidian的工作目录是在content的&lt;br>
+为什么不设置在博客的根目录呢，因为这样做会显示很多多余的文件夹&lt;br>
+这样会很乱&lt;/p>
+&lt;p>通过Hide Folders，就可以把这些不需要的文件夹隐藏&lt;br>
+这样就干净多了&lt;/p>
+&lt;h2 id="0x02-terminal">&amp;lt;0x02&amp;gt; Terminal
+&lt;/h2>&lt;p>一个快速启动终端的插件&lt;br>
+主要是我为博客写了很多脚本，这样的话我管理就会很灵活&lt;br>
+所以我就需要这样的一个启动终端的插件&lt;/p>
+&lt;p>其实obsidian也有能跑python脚本的插件，或许那个也挺合适的&lt;br>
+（但我从powershell迁移的成本有点大）&lt;/p>
+&lt;h2 id="0x03-git">&amp;lt;0x03&amp;gt; Git
+&lt;/h2>&lt;p>这个可以说很经典了&lt;br>
+通过git，可以同步博客的所有设置，可以在任何设备写博客了&lt;/p>
+&lt;h3 id="删除hugo主题里面的git">删除hugo主题里面的.git
+&lt;/h3>&lt;p>hugo这里的话需要注意的是主题问题&lt;br>
+跟着教程配置主题会让你把需要的主题git clone下来&lt;br>
+这会导致在根目录初始化git的时候会将这个主题识别为子模块&lt;br>
+然后主题里面的配置就不会跟着同步了&lt;br>
+这不好，hugo的主题本身就有很多的配置选项&lt;br>
+所以我们需要将主题文件夹里面的&lt;code>.git&lt;/code>删掉，这样就可以同步主题配置了&lt;/p>
+&lt;p>如果之后要更新主题，那只能自己手动把新文件复制进去或者写脚本了&lt;/p>
+&lt;h3 id="创建gitignore">创建.gitignore
+&lt;/h3>&lt;p>在git的时候，我们其实不必同步整个文件夹&lt;br>
+其中的有些文件是hugo运行后会自己生成的&lt;br>
+把这些文件添加到.gitignore，让git忽略这些文件，减轻同步压力&lt;/p>
+&lt;p>在博客根目录创建.gitignore&lt;/p>
+&lt;pre tabindex="0">&lt;code class="language-gitignore" data-lang="gitignore">public/
+resources/_gen
+&lt;/code>&lt;/pre>&lt;p>然后在./.obsidian里面创建.gitignore&lt;/p>
+&lt;pre tabindex="0">&lt;code class="language-gitignore" data-lang="gitignore">workspace.json
+&lt;/code>&lt;/pre>&lt;p>前两个是hugo本身会生成的&lt;br>
+最后一个是obsidian界面布局文件，可以不同步&lt;/p>
+&lt;h3 id="git初始化">git初始化
+&lt;/h3>&lt;p>然后就可以git初始化同步到远程仓库了&lt;/p></description></item><item><title>xmake做opengl开发时无法解析符号</title><link>https://mlacookie.github.io/article/posts/2024/xmake%E5%81%9Aopengl%E5%BC%80%E5%8F%91%E6%97%B6%E6%97%A0%E6%B3%95%E8%A7%A3%E6%9E%90%E7%AC%A6%E5%8F%B7/</link><pubDate>Sat, 31 Aug 2024 21:31:55 +0800</pubDate><guid>https://mlacookie.github.io/article/posts/2024/xmake%E5%81%9Aopengl%E5%BC%80%E5%8F%91%E6%97%B6%E6%97%A0%E6%B3%95%E8%A7%A3%E6%9E%90%E7%AC%A6%E5%8F%B7/</guid><description>&lt;p>xmake对于个人项目来说，构建比cmake简单太多，少折腾太多&lt;/p>
 &lt;p>但在我之前测试的时候，发现xmake链接glfw库的时候会出链接错误&lt;br>
 这个问题是xmake在获取包时，倾向使用静态的库&lt;br>
 这就导致部分包在链接时会无法解析符号之类的问题&lt;br>
 （有些包反过来，使用静态库会无法解析符号，这次的例子也有）&lt;br>
-至于为什么，我目前也不是很清楚&lt;br>
-（C++开发经验真不足，也请教各位，知道的麻烦通过github或者邮箱之类的解答一下）&lt;/p>
+至于为什么，我目前也不是很清楚&lt;/p>
 &lt;p>总之，打开&lt;code>xmake.lua&lt;/code>&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-lua" data-lang="lua">&lt;span style="display:flex;">&lt;span>add_rules(&lt;span style="color:#e6db74">&amp;#34;mode.debug&amp;#34;&lt;/span>, &lt;span style="color:#e6db74">&amp;#34;mode.release&amp;#34;&lt;/span>)
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
@@ -1234,8 +1610,7 @@ loading="lazy"
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div></description></item><item><title>机革本本装Linux</title><link>https://mlacookie.github.io/article/posts/2024/%E6%9C%BA%E9%9D%A9%E6%9C%AC%E6%9C%AC%E8%A3%85linux/</link><pubDate>Sun, 28 Jul 2024 12:47:37 +0800</pubDate><guid>https://mlacookie.github.io/article/posts/2024/%E6%9C%BA%E9%9D%A9%E6%9C%AC%E6%9C%AC%E8%A3%85linux/</guid><description>&lt;p>暑假经典节目，与Linux大战300回合&lt;/p>
 &lt;p>这次我打算好好配置下Linux并作为日常使用&lt;br>
 发行版的话我使用Manjaro，因为比Arch好配置，也有AUR的便捷&lt;br>
-笔记本是无界14+，并且更新过BIOS&lt;br>
-（建议更新下BIOS，可以调整核显内存分配，不然Linux里面核显只能调512M显存）&lt;/p>
+笔记本是机革的无界14+&lt;/p>
 &lt;p>因为是在笔记本上装，就没啥截图了&lt;/p>
 &lt;h2 id="0x00-安装准备">&amp;lt;0x00&amp;gt; 安装准备
 &lt;/h2>&lt;p>简单来说，找个U盘，用Ventoy做启动盘，然后把Manjaro的ISO放进去就可以&lt;/p>
@@ -3026,8 +3401,8 @@ data-flex-basis="6150px"
 然后回到&lt;code>./TestBlog/themes/hugo-theme-stack&lt;/code>，打开文件&lt;code>config.yaml&lt;/code>&lt;br>
 找到&lt;code>favicon&lt;/code>，将值改为&lt;code>favicon.webp&lt;/code>，也就是网站图标的文件名&lt;/p>
 &lt;h3 id="配置社交媒体菜单">配置社交媒体菜单
-&lt;/h3>&lt;p>（指的是这个东西）&lt;br>
-&lt;img src="https://mlacookie.github.io/article/categories/blog/%E4%BB%8Ehexo%E5%88%B0hugo-%E8%AE%B0%E5%BD%95%E5%8D%9A%E5%AE%A2%E6%A1%86%E6%9E%B6%E5%88%87%E6%8D%A2/picture/2.png"
+&lt;/h3>&lt;p>（指的是这个东西）&lt;/p>
+&lt;p>&lt;img src="https://mlacookie.github.io/article/categories/blog/%E4%BB%8Ehexo%E5%88%B0hugo-%E8%AE%B0%E5%BD%95%E5%8D%9A%E5%AE%A2%E6%A1%86%E6%9E%B6%E5%88%87%E6%8D%A2/picture/2.png"
 width="199"
 height="126"
 srcset="https://mlacookie.github.io/article/categories/blog/%E4%BB%8Ehexo%E5%88%B0hugo-%E8%AE%B0%E5%BD%95%E5%8D%9A%E5%AE%A2%E6%A1%86%E6%9E%B6%E5%88%87%E6%8D%A2/picture/2_hu8175500592471984633.png 480w, https://mlacookie.github.io/article/categories/blog/%E4%BB%8Ehexo%E5%88%B0hugo-%E8%AE%B0%E5%BD%95%E5%8D%9A%E5%AE%A2%E6%A1%86%E6%9E%B6%E5%88%87%E6%8D%A2/picture/2_hu15041963395595712037.png 1024w"
@@ -3035,8 +3410,8 @@ loading="lazy"
 class="gallery-image"
 data-flex-grow="157"
 data-flex-basis="379px"
->&lt;br>
-在&lt;code>./TestBlog/themes/hugo-theme-stack&lt;/code>，打开文件&lt;code>config.yaml&lt;/code>&lt;br>
+>&lt;/p>
+&lt;p>在&lt;code>./TestBlog/themes/hugo-theme-stack&lt;/code>，打开文件&lt;code>config.yaml&lt;/code>&lt;br>
 在文件最后添加这些东西&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-yaml" data-lang="yaml">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">menu&lt;/span>:
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">main&lt;/span>: []
@@ -3149,7 +3524,9 @@ data-flex-basis="634px"
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>$global:ShellScriptDir &lt;span style="color:#f92672">=&lt;/span> Get-Location
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 主目录&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>$global:SiteDir &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;[...]&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Set-Location ..
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>$global:SiteDir &lt;span style="color:#f92672">=&lt;/span> Get-Location
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Set-Location $global:ShellScriptDir
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 内容目录&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>$global:ContentDir &lt;span style="color:#f92672">=&lt;/span> Join-Path -Path $global:SiteDir -ChildPath &lt;span style="color:#e6db74">&amp;#34;content&amp;#34;&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 文章目录&lt;/span>
@@ -3230,34 +3607,34 @@ data-flex-basis="634px"
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> $Name -Replace &lt;span style="color:#e6db74">&amp;#39;([-])+&amp;#39;&lt;/span>, &lt;span style="color:#e6db74">&amp;#39;-&amp;#39;&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">}&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 导入配置变量&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>. .&lt;span style="color:#ae81ff">\c&lt;/span>onfigs.ps1
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 保存当前的工作路径&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>$localDir &lt;span style="color:#f92672">=&lt;/span> Get-Location
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 导入配置变量&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>. .&lt;span style="color:#ae81ff">\c&lt;/span>onfigs.ps1
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 切换工作路径&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Set-Location $global:SiteDir
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 合法化路径名，不然图片会出问题&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>$ValidPathName &lt;span style="color:#f92672">=&lt;/span> ValidatedName -Name $PostName
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>$validPath &lt;span style="color:#f92672">=&lt;/span> ValidatedName -Name $PostName
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 普通文章创建&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">if&lt;/span> &lt;span style="color:#f92672">(&lt;/span>$CategoryName -eq &lt;span style="color:#e6db74">&amp;#34;&amp;#34;&lt;/span>&lt;span style="color:#f92672">)&lt;/span> &lt;span style="color:#f92672">{&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># 新建Hugo文章&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $newPost &lt;span style="color:#f92672">=&lt;/span> Join-Path -Path &lt;span style="color:#f92672">(&lt;/span>Join-Path -Path &lt;span style="color:#e6db74">&amp;#34;content\article\posts&amp;#34;&lt;/span> -ChildPath $ValidPathName&lt;span style="color:#f92672">)&lt;/span> -ChildPath &lt;span style="color:#e6db74">&amp;#34;index.md&amp;#34;&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> hugo new $newPost
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $newPostPath &lt;span style="color:#f92672">=&lt;/span> Join-Path -Path &lt;span style="color:#e6db74">&amp;#34;content\article\posts&amp;#34;&lt;/span> -ChildPath &lt;span style="color:#f92672">(&lt;/span>Get-Date -Format &lt;span style="color:#e6db74">&amp;#34;yyyy&amp;#34;&lt;/span>&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $newPostPath &lt;span style="color:#f92672">=&lt;/span> Join-Path -Path &lt;span style="color:#f92672">(&lt;/span>Join-Path -Path $newPostPath -ChildPath $validPath&lt;span style="color:#f92672">)&lt;/span> -ChildPath &lt;span style="color:#e6db74">&amp;#34;index.md&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> hugo new $newPostPath
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># 生成图片文件夹路径&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $newPostPicture &lt;span style="color:#f92672">=&lt;/span> Join-Path -Path &lt;span style="color:#f92672">(&lt;/span>Join-Path -Path $global:PostsDir -ChildPath $ValidPathName&lt;span style="color:#f92672">)&lt;/span> -ChildPath &lt;span style="color:#e6db74">&amp;#34;picture&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $newPostPicture &lt;span style="color:#f92672">=&lt;/span> Join-Path -Path &lt;span style="color:#f92672">(&lt;/span>Join-Path -Path $global:PostsDir -ChildPath $validPath&lt;span style="color:#f92672">)&lt;/span> -ChildPath &lt;span style="color:#e6db74">&amp;#34;picture&amp;#34;&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">}&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 需要分类的文章&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">else&lt;/span> &lt;span style="color:#f92672">{&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># 新建Hugo文章&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $categoryPath &lt;span style="color:#f92672">=&lt;/span> Join-Path -Path &lt;span style="color:#e6db74">&amp;#34;content\article\categories&amp;#34;&lt;/span> -ChildPath $CategoryName
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $newPost &lt;span style="color:#f92672">=&lt;/span> Join-Path -Path &lt;span style="color:#f92672">(&lt;/span>Join-Path -Path $categoryPath -ChildPath $ValidPathName&lt;span style="color:#f92672">)&lt;/span> -ChildPath &lt;span style="color:#e6db74">&amp;#34;index.md&amp;#34;&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> hugo new $newPost
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $newPostPath &lt;span style="color:#f92672">=&lt;/span> Join-Path -Path &lt;span style="color:#f92672">(&lt;/span>Join-Path -Path $categoryPath -ChildPath $validPath&lt;span style="color:#f92672">)&lt;/span> -ChildPath &lt;span style="color:#e6db74">&amp;#34;index.md&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> hugo new $newPostPath
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># 生成图片文件夹路径&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $categoryPath &lt;span style="color:#f92672">=&lt;/span> Join-Path -Path $global:CategoriesDir -ChildPath $CategoryName
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $newPostPicture &lt;span style="color:#f92672">=&lt;/span> Join-Path -Path &lt;span style="color:#f92672">(&lt;/span>Join-Path -Path $categoryPath -ChildPath $ValidPathName&lt;span style="color:#f92672">)&lt;/span> -ChildPath &lt;span style="color:#e6db74">&amp;#34;picture&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $newPostPicture &lt;span style="color:#f92672">=&lt;/span> Join-Path -Path &lt;span style="color:#f92672">(&lt;/span>Join-Path -Path $categoryPath -ChildPath $validPath&lt;span style="color:#f92672">)&lt;/span> -ChildPath &lt;span style="color:#e6db74">&amp;#34;picture&amp;#34;&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 因为我在obsidian设置了默认的附件目录，粘贴图像会自动创建图片文件夹&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 需要创建图片文件夹的话就创建&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">if&lt;/span> &lt;span style="color:#f92672">(&lt;/span>$IsCreatePictureFolder&lt;span style="color:#f92672">)&lt;/span> &lt;span style="color:#f92672">{&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> mkdir $newPostPicture
@@ -3285,10 +3662,10 @@ data-flex-basis="634px"
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $IsForcePush &lt;span style="color:#f92672">=&lt;/span> $false
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">)&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 导入配置变量&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>. .&lt;span style="color:#ae81ff">\c&lt;/span>onfigs.ps1
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 保存当前的工作路径&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>$localDir &lt;span style="color:#f92672">=&lt;/span> Get-Location
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 导入配置变量&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>. .&lt;span style="color:#ae81ff">\c&lt;/span>onfigs.ps1
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 切换工作路径&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Set-Location &lt;span style="color:#f92672">(&lt;/span>Join-Path -Path $global:SiteDir -ChildPath &lt;span style="color:#e6db74">&amp;#34;public&amp;#34;&lt;/span>&lt;span style="color:#f92672">)&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
@@ -3314,10 +3691,10 @@ data-flex-basis="634px"
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $IsClearDeploy &lt;span style="color:#f92672">=&lt;/span> $false
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">)&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 导入配置变量&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>. .&lt;span style="color:#ae81ff">\c&lt;/span>onfigs.ps1
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 保存当前的工作路径&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>$localDir &lt;span style="color:#f92672">=&lt;/span> Get-Location
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 导入配置变量&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>. .&lt;span style="color:#ae81ff">\c&lt;/span>onfigs.ps1
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 切换工作路径&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Set-Location $global:SiteDir
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 清除Hugo构建缓存&lt;/span>
@@ -4132,19 +4509,7 @@ WinPcap调用不了无线网卡
 radeon780m对应得代码是gfx1103&lt;br>
 但是blender正常下载的版本还没有带对应这个代码的驱动文件&lt;br>
 在最新的代码中，已经包含了生成代号gfx1103的驱动文件的代码了&lt;br>
-（其实就是CMakeList里面加了个gfx1103）&lt;/p></description></item><item><title>国内阿里云服务器关闭</title><link>https://mlacookie.github.io/article/categories/blog/%E5%9B%BD%E5%86%85%E9%98%BF%E9%87%8C%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%85%B3%E9%97%AD/</link><pubDate>Sun, 19 Nov 2023 22:53:27 +0000</pubDate><guid>https://mlacookie.github.io/article/categories/blog/%E5%9B%BD%E5%86%85%E9%98%BF%E9%87%8C%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%85%B3%E9%97%AD/</guid><description>&lt;p>不打算续费阿里云的服务器了&lt;br>
-(虽然本来就是嫖的7个月)&lt;br>
-为什么呢，主要就是因为成本算下来感觉不合适&lt;br>
-不是说贵，而是事情太多，没时间维护&lt;br>
-应该也发现了，我已经接近1个月没写博客了&lt;br>
-这段时间事情实在是多，但都是好的事情多&lt;br>
-我终于算是找到能为之奋斗的方向了&lt;br>
-于是仔细想想，服务器这块估计是没时间维护了&lt;/p>
-&lt;p>虽然国内的服务器关闭了，但Github Page的还是在的&lt;br>
-(反正免费，就挂着了)&lt;br>
-至于这么干之后受影响最大的是什么&lt;br>
-那应该就是我的那些Git仓库的国内镜像了&lt;br>
-但问题不大，Github上也都是还在的&lt;/p></description></item><item><title>WPF学习笔记06-关于ListView</title><link>https://mlacookie.github.io/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B006-%E5%85%B3%E4%BA%8Elistview/</link><pubDate>Mon, 18 Sep 2023 20:10:22 +0000</pubDate><guid>https://mlacookie.github.io/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B006-%E5%85%B3%E4%BA%8Elistview/</guid><description>&lt;h2 id="0x00-listview是什么">&amp;lt;0x00&amp;gt; ListView是什么
+（其实就是CMakeList里面加了个gfx1103）&lt;/p></description></item><item><title>WPF学习笔记06-关于ListView</title><link>https://mlacookie.github.io/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B006-%E5%85%B3%E4%BA%8Elistview/</link><pubDate>Mon, 18 Sep 2023 20:10:22 +0000</pubDate><guid>https://mlacookie.github.io/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B006-%E5%85%B3%E4%BA%8Elistview/</guid><description>&lt;h2 id="0x00-listview是什么">&amp;lt;0x00&amp;gt; ListView是什么
 &lt;/h2>&lt;p>贴张图就好了&lt;br>
 &lt;img src="https://mlacookie.github.io/article/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B006-%E5%85%B3%E4%BA%8Elistview/picture/1.png"
 width="315"
@@ -7782,26 +8147,7 @@ alt="下边的栏"
 class="gallery-image"
 data-flex-grow="2681"
 data-flex-basis="6436px"
->&lt;/p></description></item><item><title>庆祝下备案全通过了</title><link>https://mlacookie.github.io/article/categories/blog/%E5%BA%86%E7%A5%9D%E4%B8%8B%E5%A4%87%E6%A1%88%E5%85%A8%E9%80%9A%E8%BF%87%E4%BA%86/</link><pubDate>Thu, 18 May 2023 14:35:25 +0000</pubDate><guid>https://mlacookie.github.io/article/categories/blog/%E5%BA%86%E7%A5%9D%E4%B8%8B%E5%A4%87%E6%A1%88%E5%85%A8%E9%80%9A%E8%BF%87%E4%BA%86/</guid><description>&lt;h2 id="终于通过所有备案了">终于通过所有备案了
-&lt;/h2>&lt;p>所以之后会慢慢在这个小站上分享我的见闻&lt;br>
-虽然不知道有没有人看，但还是很感谢正在看这个页面的你&lt;/p>
-&lt;h3 id="关于备案流程">关于备案流程
-&lt;/h3>&lt;p>其实主要就是等&lt;br>
-要做&lt;code>ICP备案&lt;/code>和&lt;code>公安备案&lt;/code>&lt;br>
-我的服务器和域名都是阿里云的，所以&lt;code>ICP备案&lt;/code>通过阿里云代办。&lt;code>公安备案&lt;/code>自己填填就可以了&lt;/p>
-&lt;p>首先是&lt;code>ICP备案&lt;/code>，阿里云的ICP备案说得很详细了&lt;br>
-主要的问题就是在拍自己照片的时候要找面白墙&lt;br>
-其他的东西仔细填写就好&lt;br>
-提交完材料后会有人打电话跟你确认，顺便说一下提交的材料有什么问题&lt;br>
-有问题的话都会指出，然后邮箱发给他们就好&lt;br>
-然后再是工信部的短信验证，跟着流程就行
-接下来就是等了，一般10天左右&lt;br>
-一切顺利的话&lt;code>ICP备案&lt;/code>就下来了&lt;/p>
-&lt;p>之后就是&lt;code>公安备案&lt;/code>，这个比较容易，就是登入网页然后填填表就行&lt;br>
-一般第二天就能备案下来&lt;br>
-里面有个&lt;code>业务类型&lt;/code>，如果只是跟我一样搭个博客的话不要勾选&lt;code>交互服务&lt;/code>，然后选&lt;code>www服务&lt;/code>就好&lt;br>
-据说选了交互服务要线下确认，所以能少一事就少一事&lt;/p>
-&lt;p>最后记得在页面下面挂备案号。&lt;/p></description></item><item><title>给侧边栏加个B站图标</title><link>https://mlacookie.github.io/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/</link><pubDate>Wed, 26 Apr 2023 21:59:57 +0000</pubDate><guid>https://mlacookie.github.io/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/</guid><description>&lt;p>搭个博客嘛，肯定要加点个人的一些账号。然后呢，我想加个B站的链接，但是在 Anatolo 的模板里没有，这下只能自己动手了。&lt;/p>
+>&lt;/p></description></item><item><title>给侧边栏加个B站图标</title><link>https://mlacookie.github.io/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/</link><pubDate>Wed, 26 Apr 2023 21:59:57 +0000</pubDate><guid>https://mlacookie.github.io/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/</guid><description>&lt;p>搭个博客嘛，肯定要加点个人的一些账号。然后呢，我想加个B站的链接，但是在 Anatolo 的模板里没有，这下只能自己动手了。&lt;/p>
 &lt;h2 id="一些约定的符号">一些约定的符号
 &lt;/h2>&lt;p>&lt;code>./&lt;/code> 表示 hexo 博客的根目录&lt;/p>
 &lt;h2 id="0x00-分析">&amp;lt;0x00&amp;gt; 分析

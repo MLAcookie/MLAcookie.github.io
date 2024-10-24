@@ -3,8 +3,7 @@
 这个问题是xmake在获取包时，倾向使用静态的库&lt;br>
 这就导致部分包在链接时会无法解析符号之类的问题&lt;br>
 （有些包反过来，使用静态库会无法解析符号，这次的例子也有）&lt;br>
-至于为什么，我目前也不是很清楚&lt;br>
-（C++开发经验真不足，也请教各位，知道的麻烦通过github或者邮箱之类的解答一下）&lt;/p>
+至于为什么，我目前也不是很清楚&lt;/p>
 &lt;p>总之，打开&lt;code>xmake.lua&lt;/code>&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-lua" data-lang="lua">&lt;span style="display:flex;">&lt;span>add_rules(&lt;span style="color:#e6db74">&amp;#34;mode.debug&amp;#34;&lt;/span>, &lt;span style="color:#e6db74">&amp;#34;mode.release&amp;#34;&lt;/span>)
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>

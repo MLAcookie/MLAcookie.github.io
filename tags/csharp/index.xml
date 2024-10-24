@@ -1,4 +1,184 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>CSharp on MLAcookie</title><link>https://mlacookie.github.io/tags/csharp/</link><description>Recent content in CSharp on MLAcookie</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Sun, 21 Jul 2024 21:08:14 +0800</lastBuildDate><atom:link href="https://mlacookie.github.io/tags/csharp/index.xml" rel="self" type="application/rss+xml"/><item><title>相对优雅得C#调用Win32API</title><link>https://mlacookie.github.io/article/posts/2024/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97csharp%E8%B0%83%E7%94%A8win32api/</link><pubDate>Sun, 21 Jul 2024 21:08:14 +0800</pubDate><guid>https://mlacookie.github.io/article/posts/2024/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97csharp%E8%B0%83%E7%94%A8win32api/</guid><description>&lt;p>今天有人找我解决一些软件相关的问题，然后发现会牵扯到一些Win32的API&lt;br>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>CSharp on MLAcookie</title><link>https://mlacookie.github.io/tags/csharp/</link><description>Recent content in CSharp on MLAcookie</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Fri, 25 Oct 2024 02:17:15 +0800</lastBuildDate><atom:link href="https://mlacookie.github.io/tags/csharp/index.xml" rel="self" type="application/rss+xml"/><item><title>WPF中怎么自定义控件</title><link>https://mlacookie.github.io/article/categories/wpf/wpf%E4%B8%AD%E6%80%8E%E4%B9%88%E8%87%AA%E5%AE%9A%E4%B9%89%E6%8E%A7%E4%BB%B6/</link><pubDate>Fri, 25 Oct 2024 02:17:15 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/wpf/wpf%E4%B8%AD%E6%80%8E%E4%B9%88%E8%87%AA%E5%AE%9A%E4%B9%89%E6%8E%A7%E4%BB%B6/</guid><description>&lt;h2 id="0x00-前言">&amp;lt;0x00&amp;gt; 前言
+&lt;/h2>&lt;p>WPF开发中，总是会有些创建自定义控件的需求&lt;br>
+毕竟原生的控件总是不够用的&lt;/p>
+&lt;h2 id="0x01-原理">&amp;lt;0x01&amp;gt; 原理
+&lt;/h2>&lt;p>WPF使用xaml作为设计语言&lt;br>
+而xaml负责的可以简单理解成将控件实例化到对应的布局上，然后设定控件的一些属性&lt;br>
+既然是实例化，那么本质上就是创建了一个新的对象&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-xml" data-lang="xml">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&amp;lt;!--随便定义一个按钮--&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">&amp;lt;button&lt;/span> &lt;span style="color:#a6e22e">Content=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;123&amp;#34;&lt;/span>&lt;span style="color:#f92672">/&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>其实在编译器看来，就相当于这样&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-cs" data-lang="cs">&lt;span style="display:flex;">&lt;span>Button b = &lt;span style="color:#66d9ef">new&lt;/span>();
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>所以我们自定义控件，首先需要有一个类定义控件的属性，然后用xaml去描述控件行为&lt;/p>
+&lt;p>那么怎么用xaml描述控件行为呢&lt;br>
+在修改控件的style的时候，我们可以把自己定义的style写到一个ResourceDictionary中&lt;br>
+然后通过合并ResourceDictionary来将自己style应用到不同的地方&lt;br>
+xaml描述控件行为其实也就是写一个style，所以可以采用一样的思路&lt;/p>
+&lt;h2 id="0x02-示例带标签的文本输入框">&amp;lt;0x02&amp;gt; 示例：带标签的文本输入框
+&lt;/h2>&lt;p>这个感觉还是很常见的需求，有些时候需要文本输入框前面带一个标签，表示输入的是什么&lt;br>
+也就是说，我们要做的控件跟下面xaml代码效果是等价的&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-xml" data-lang="xml">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">&amp;lt;Grid&lt;/span> &lt;span style="color:#a6e22e">Margin=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;0,4&amp;#34;&lt;/span>&lt;span style="color:#f92672">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;Grid.ColumnDefinitions&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;ColumnDefinition&lt;/span> &lt;span style="color:#f92672">/&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;ColumnDefinition&lt;/span> &lt;span style="color:#f92672">/&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;/Grid.ColumnDefinitions&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;TextBlock&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">Grid.Column=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;0&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">VerticalAlignment=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;Center&amp;#34;&lt;/span> &lt;span style="color:#f92672">/&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;TextBox&lt;/span> &lt;span style="color:#a6e22e">Grid.Column=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;1&amp;#34;&lt;/span> &lt;span style="color:#f92672">/&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">&amp;lt;/Grid&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="定义控件">定义控件
+&lt;/h3>&lt;p>首先需要定义一个类，表示我们的类与其他类的不同&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-cs" data-lang="cs">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">// Controls/TextBoxWithLable/TextBoxWithLable.cs&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">using&lt;/span> System.Windows.Controls;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">namespace&lt;/span> XamlTest.Controls;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">TextBoxWithLable&lt;/span> : Control
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 后面还有别的代码，但这里先不需要&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>这样就可以了&lt;/p>
+&lt;h3 id="描述控件">描述控件
+&lt;/h3>&lt;p>然后创建一个资源字典，用来描述我们的控件&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-xml" data-lang="xml">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&amp;lt;!-- Controls/TextBoxWithLable/TextBoxWithLable.xaml --&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">&amp;lt;ResourceDictionary&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">xmlns=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;http://schemas.microsoft.com/winfx/2006/xaml/presentation&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">xmlns:x=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;http://schemas.microsoft.com/winfx/2006/xaml&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">xmlns:controls=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;clr-namespace:XamlTest.Controls&amp;#34;&lt;/span>&lt;span style="color:#f92672">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;Style&lt;/span> &lt;span style="color:#a6e22e">x:Key=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;Default_TextBoxWithLableStyle&amp;#34;&lt;/span> &lt;span style="color:#a6e22e">TargetType=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;{x:Type controls:TextBoxWithLable}&amp;#34;&lt;/span>&lt;span style="color:#f92672">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;Setter&lt;/span> &lt;span style="color:#a6e22e">Property=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;Template&amp;#34;&lt;/span>&lt;span style="color:#f92672">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;Setter.Value&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;ControlTemplate&lt;/span> &lt;span style="color:#a6e22e">TargetType=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;{x:Type controls:TextBoxWithLable}&amp;#34;&lt;/span>&lt;span style="color:#f92672">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;Grid&lt;/span> &lt;span style="color:#a6e22e">Margin=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;0,4&amp;#34;&lt;/span>&lt;span style="color:#f92672">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;Grid.ColumnDefinitions&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;ColumnDefinition&lt;/span> &lt;span style="color:#f92672">/&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;ColumnDefinition&lt;/span> &lt;span style="color:#f92672">/&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;/Grid.ColumnDefinitions&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;TextBlock&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">Grid.Column=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;0&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">VerticalAlignment=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;Center&amp;#34;&lt;/span> &lt;span style="color:#f92672">/&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;TextBox&lt;/span> &lt;span style="color:#a6e22e">Grid.Column=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;1&amp;#34;&lt;/span> &lt;span style="color:#f92672">/&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;/Grid&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;/ControlTemplate&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;/Setter.Value&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;/Setter&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;/Style&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;Style&lt;/span> &lt;span style="color:#a6e22e">BasedOn=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;{StaticResource Default_TextBoxWithLableStyle}&amp;#34;&lt;/span> &lt;span style="color:#a6e22e">TargetType=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;{x:Type controls:TextBoxWithLable}&amp;#34;&lt;/span> &lt;span style="color:#f92672">/&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">&amp;lt;/ResourceDictionary&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>就像前面说的，通过style的模板来让xaml知道需要实例化什么控件&lt;br>
+这里先是定义了一个&lt;code>Default_TextBoxWithLableStyle&lt;/code>的style，然后再写全局应用&lt;br>
+这样写的话万一用户想再基于默认样式自定义的话就比较方便了&lt;/p>
+&lt;h3 id="合并资源字典">合并资源字典
+&lt;/h3>&lt;p>上面的写好之后，如果直接使用会发现还是显示不了的&lt;br>
+这是因为我们还没有合并资源字典&lt;/p>
+&lt;p>这里我建议在控件的文件夹中加一个文件，其中去合并所有控件的资源字典&lt;br>
+然后再在&lt;code>app.xaml&lt;/code>中合并这个整合的资源字典文件&lt;br>
+毕竟控件开发一般会开发很多，全写&lt;code>app.xaml&lt;/code>会很乱&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-xml" data-lang="xml">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&amp;lt;!-- Controls/ControlsDictionary.xaml --&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">&amp;lt;ResourceDictionary&lt;/span> &lt;span style="color:#a6e22e">xmlns=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;http://schemas.microsoft.com/winfx/2006/xaml/presentation&amp;#34;&lt;/span>&lt;span style="color:#f92672">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;ResourceDictionary.MergedDictionaries&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;ResourceDictionary&lt;/span> &lt;span style="color:#a6e22e">Source=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;pack://application:,,,/Controls/TextBoxWithLable/TextBoxWithLable.xaml&amp;#34;&lt;/span> &lt;span style="color:#f92672">/&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;/ResourceDictionary.MergedDictionaries&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">&amp;lt;/ResourceDictionary&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>然后在&lt;code>app.xaml&lt;/code>中合并&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-xml" data-lang="xml">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&amp;lt;!-- app.xaml --&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">&amp;lt;Application&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">x:Class=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;XamlTest.App&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">xmlns=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;http://schemas.microsoft.com/winfx/2006/xaml/presentation&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">xmlns:x=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;http://schemas.microsoft.com/winfx/2006/xaml&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">xmlns:controls=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;clr-namespace:XamlTest.Controls&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">xmlns:local=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;clr-namespace:XamlTest&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">StartupUri=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;MainWindow.xaml&amp;#34;&lt;/span>&lt;span style="color:#f92672">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;Application.Resources&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;ResourceDictionary&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;ResourceDictionary.MergedDictionaries&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;ResourceDictionary&lt;/span> &lt;span style="color:#a6e22e">Source=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;pack://application:,,,/Controls/ControlsDictionary.xaml&amp;#34;&lt;/span> &lt;span style="color:#f92672">/&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;/ResourceDictionary.MergedDictionaries&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;/ResourceDictionary&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;/Application.Resources&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">&amp;lt;/Application&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>这里的source属性出现的很像网址的东西是资源url，我暂时没研究的这么全&lt;/p>
+&lt;h3 id="为控件创建属性">为控件创建属性
+&lt;/h3>&lt;p>现在控件有了，但是如果在控件中输入文字我们是很难获取到的&lt;br>
+而且我们也修改不了文本框前面的lable部分
+这是因为我们还没有为控件创建属性，这时候就需要修改&lt;code>TextBoxWithLable.cs&lt;/code>文件了&lt;/p>
+&lt;p>我们需要为我们的控件添加依赖属性&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-cs" data-lang="cs">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">// Controls/TextBoxWithLable/TextBoxWithLable.cs&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">using&lt;/span> System.Windows;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">using&lt;/span> System.Windows.Controls;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">namespace&lt;/span> XamlTest.Controls;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">TextBoxWithLable&lt;/span> : Control
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">#region&lt;/span> LableText_propdp
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">string&lt;/span> LableText
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">get&lt;/span> { &lt;span style="color:#66d9ef">return&lt;/span> (&lt;span style="color:#66d9ef">string&lt;/span>)GetValue(LableTextProperty); }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">set&lt;/span> { SetValue(LableTextProperty, &lt;span style="color:#66d9ef">value&lt;/span>); }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">static&lt;/span> &lt;span style="color:#66d9ef">readonly&lt;/span> DependencyProperty LableTextProperty =
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> DependencyProperty.Register(&lt;span style="color:#e6db74">&amp;#34;LableText&amp;#34;&lt;/span>, &lt;span style="color:#66d9ef">typeof&lt;/span>(&lt;span style="color:#66d9ef">string&lt;/span>), &lt;span style="color:#66d9ef">typeof&lt;/span>(TextBoxWithLable), &lt;span style="color:#66d9ef">new&lt;/span> PropertyMetadata(&lt;span style="color:#66d9ef">null&lt;/span>));
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">#endregion&lt;/span> LableText_propdp
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">#region&lt;/span> InputText_propdp
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">string&lt;/span> InputText
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">get&lt;/span> { &lt;span style="color:#66d9ef">return&lt;/span> (&lt;span style="color:#66d9ef">string&lt;/span>)GetValue(InputTextProperty); }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">set&lt;/span> { SetValue(InputTextProperty, &lt;span style="color:#66d9ef">value&lt;/span>); }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">static&lt;/span> &lt;span style="color:#66d9ef">readonly&lt;/span> DependencyProperty InputTextProperty =
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> DependencyProperty.Register(&lt;span style="color:#e6db74">&amp;#34;InputText&amp;#34;&lt;/span>, &lt;span style="color:#66d9ef">typeof&lt;/span>(&lt;span style="color:#66d9ef">string&lt;/span>), &lt;span style="color:#66d9ef">typeof&lt;/span>(TextBoxWithLable), &lt;span style="color:#66d9ef">new&lt;/span> PropertyMetadata(&lt;span style="color:#66d9ef">null&lt;/span>));
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">#endregion&lt;/span> InputText_propdp
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>这里讲一个小技巧
+创建依赖属性的代码确实多，但也挺公式的&lt;br>
+所以vs提供了一个模板，只要输入propdp然后敲两下tab就可以插入模板&lt;br>
+然后逐个替换即可&lt;/p>
+&lt;p>然后修改&lt;code>TextBoxWithLable.xaml&lt;/code>，绑定我们的依赖属性&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-xml" data-lang="xml">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&amp;lt;!-- Controls/TextBoxWithLable/TextBoxWithLable.xaml --&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">&amp;lt;ResourceDictionary&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">xmlns=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;http://schemas.microsoft.com/winfx/2006/xaml/presentation&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">xmlns:x=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;http://schemas.microsoft.com/winfx/2006/xaml&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">xmlns:controls=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;clr-namespace:XamlTest.Controls&amp;#34;&lt;/span>&lt;span style="color:#f92672">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;Style&lt;/span> &lt;span style="color:#a6e22e">x:Key=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;Default_TextBoxWithLableStyle&amp;#34;&lt;/span> &lt;span style="color:#a6e22e">TargetType=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;{x:Type controls:TextBoxWithLable}&amp;#34;&lt;/span>&lt;span style="color:#f92672">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;Setter&lt;/span> &lt;span style="color:#a6e22e">Property=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;Template&amp;#34;&lt;/span>&lt;span style="color:#f92672">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;Setter.Value&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;ControlTemplate&lt;/span> &lt;span style="color:#a6e22e">TargetType=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;{x:Type controls:TextBoxWithLable}&amp;#34;&lt;/span>&lt;span style="color:#f92672">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;Grid&lt;/span> &lt;span style="color:#a6e22e">Margin=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;0,4&amp;#34;&lt;/span>&lt;span style="color:#f92672">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;Grid.ColumnDefinitions&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;ColumnDefinition&lt;/span> &lt;span style="color:#f92672">/&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;ColumnDefinition&lt;/span> &lt;span style="color:#f92672">/&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;/Grid.ColumnDefinitions&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;TextBlock&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">Grid.Column=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;0&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">VerticalAlignment=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;Center&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">Text=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;{TemplateBinding LableText}&amp;#34;&lt;/span> &lt;span style="color:#f92672">/&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;TextBox&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">Grid.Column=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;1&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">Text=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=InputText, Mode=TwoWay}&amp;#34;&lt;/span> &lt;span style="color:#f92672">/&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;/Grid&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;/ControlTemplate&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;/Setter.Value&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;/Setter&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;/Style&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">&amp;lt;Style&lt;/span> &lt;span style="color:#a6e22e">BasedOn=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;{StaticResource Default_TextBoxWithLableStyle}&amp;#34;&lt;/span> &lt;span style="color:#a6e22e">TargetType=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;{x:Type controls:TextBoxWithLable}&amp;#34;&lt;/span> &lt;span style="color:#f92672">/&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">&amp;lt;/ResourceDictionary&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>这里需要注意的是，TemplateBinding是单向绑定&lt;br>
+也就是相当于只能&lt;code>绑定源-&amp;gt;控件&lt;/code>，这对TextBlock是没啥问题的&lt;br>
+但对于TextBox，我们希望里面的内容也可以传回来，这时候就不能只靠TemplateBinding&lt;br>
+所以TextBox这里的绑定就写得很长，主要就是要写一个Mode&lt;br>
+（TemplateBinding本身就是一种简写）&lt;/p>
+&lt;p>然后这个控件就创建完成了&lt;/p></description></item><item><title>相对优雅得C#调用Win32API</title><link>https://mlacookie.github.io/article/posts/2024/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97csharp%E8%B0%83%E7%94%A8win32api/</link><pubDate>Sun, 21 Jul 2024 21:08:14 +0800</pubDate><guid>https://mlacookie.github.io/article/posts/2024/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97csharp%E8%B0%83%E7%94%A8win32api/</guid><description>&lt;p>今天有人找我解决一些软件相关的问题，然后发现会牵扯到一些Win32的API&lt;br>
 一般调用Win32API都是用C++方便的，而且微软给的文档也是C++的&lt;br>
 我虽然对C++不是很熟，但对C#熟啊&lt;/p>
 &lt;p>在C#中，我们可以通过&lt;code>P/Invoke&lt;/code>去做动态库的互操作&lt;br>

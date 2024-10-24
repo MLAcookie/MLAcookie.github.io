@@ -1,4 +1,92 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Linux on MLAcookie</title><link>https://mlacookie.github.io/tags/linux/</link><description>Recent content in Linux on MLAcookie</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Thu, 22 Aug 2024 22:04:25 +0800</lastBuildDate><atom:link href="https://mlacookie.github.io/tags/linux/index.xml" rel="self" type="application/rss+xml"/><item><title>配置Windows+Manjaro双系统</title><link>https://mlacookie.github.io/article/posts/2024/%E9%85%8D%E7%BD%AEwindows+manjaro%E5%8F%8C%E7%B3%BB%E7%BB%9F/</link><pubDate>Thu, 22 Aug 2024 22:04:25 +0800</pubDate><guid>https://mlacookie.github.io/article/posts/2024/%E9%85%8D%E7%BD%AEwindows+manjaro%E5%8F%8C%E7%B3%BB%E7%BB%9F/</guid><description>&lt;p>emmmm&lt;br>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Linux on MLAcookie</title><link>https://mlacookie.github.io/tags/linux/</link><description>Recent content in Linux on MLAcookie</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Thu, 24 Oct 2024 08:47:43 +0800</lastBuildDate><atom:link href="https://mlacookie.github.io/tags/linux/index.xml" rel="self" type="application/rss+xml"/><item><title>简单配置zsh</title><link>https://mlacookie.github.io/article/posts/2024/%E7%AE%80%E5%8D%95%E9%85%8D%E7%BD%AEzsh/</link><pubDate>Thu, 24 Oct 2024 08:47:43 +0800</pubDate><guid>https://mlacookie.github.io/article/posts/2024/%E7%AE%80%E5%8D%95%E9%85%8D%E7%BD%AEzsh/</guid><description>&lt;p>这篇文章主要是记录命令的，所以没啥原理讲解&lt;/p>
+&lt;h2 id="0x01-安装zsh与插件">&amp;lt;0x01&amp;gt; 安装zsh与插件
+&lt;/h2>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># Debian系&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>sudo apt install zsh
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>sudo apt install zsh-autosuggestions zsh-syntax-highlighting
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># Arch系&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>sudo pacman -S zsh
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>sudo pacman -S zsh-autosuggestions zsh-syntax-highlighting
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="0x02-设置为默认shell">&amp;lt;0x02&amp;gt; 设置为默认shell
+&lt;/h2>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>chsh -s /usr/bin/zsh
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>重新shell进入zsh的初始配置界面&lt;/p>
+&lt;h2 id="0x03-配置主题">&amp;lt;0x03&amp;gt; 配置主题
+&lt;/h2>&lt;h3 id="通过git下载">通过git下载
+&lt;/h3>&lt;p>找个地方放这个主题&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>git clone --depth&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">1&lt;/span> https://github.com/romkatv/powerlevel10k.git
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># github访问不上的话&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>git clone --depth&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">1&lt;/span> https://gitee.com/romkatv/powerlevel10k.git
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>修改zsh启动行为&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>nano ~/.zshrc
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>然后把这些复制到最后&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>source &lt;span style="color:#f92672">[&lt;/span>git下来的文件的目录&lt;span style="color:#f92672">]&lt;/span>/powerlevel10k/powerlevel10k.zsh-theme
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="通过yay安装">通过yay安装
+&lt;/h3>&lt;pre tabindex="0">&lt;code>yay zsh-theme-powerlevel10k
+&lt;/code>&lt;/pre>&lt;p>然后把这些复制到&lt;code>.zshrc&lt;/code>最后&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>nano ~/.zshrc
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>source /usr/share/zsh-theme-powerlevel10k/powerlevel10k.zsh-theme
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="0x04-配置插件">&amp;lt;0x04&amp;gt; 配置插件
+&lt;/h2>&lt;p>apt和pacman的安装路径不同，导致需要添加的文本不同
+都是在&lt;code>.zshrc&lt;/code>最后添加&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># Debian系&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># Arch系&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>配置完重新启动下会话，应该就生效了&lt;/p></description></item><item><title>如何配置pintos</title><link>https://mlacookie.github.io/article/posts/2024/%E5%A6%82%E4%BD%95%E9%85%8D%E7%BD%AEpintos/</link><pubDate>Thu, 24 Oct 2024 00:40:35 +0800</pubDate><guid>https://mlacookie.github.io/article/posts/2024/%E5%A6%82%E4%BD%95%E9%85%8D%E7%BD%AEpintos/</guid><description>&lt;p>因为学校的操作系统课程设计要用这玩意，所以就要配置这个玩意&lt;br>
+（看之后能说的东西多不多，多的话单开一个分类）&lt;br>
+配置这玩意相对还是快的，但我也走了点弯路&lt;br>
+我的环境是WSL的Debian&lt;/p>
+&lt;h2 id="0x00-前置">&amp;lt;0x00&amp;gt; 前置
+&lt;/h2>&lt;p>需要配置WSL，然后安装Debian&lt;br>
+然后需要git和稳定的&lt;code>维图诺·普莱维特·奈特沃克&lt;/code>&lt;/p>
+&lt;h2 id="0x01-拉取pintos仓库">&amp;lt;0x01&amp;gt; 拉取pintos仓库
+&lt;/h2>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>git clone git://pintos-os.org/pintos-anon --depth&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">1&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>需要提前配置下git的proxy，不然可能会很慢&lt;/p>
+&lt;h2 id="0x02-配置debian需要的软件包">&amp;lt;0x02&amp;gt; 配置Debian需要的软件包
+&lt;/h2>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 编译环境&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>sudo apt install make build-essential
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># qemu模拟器&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>sudo apt install qemu-system
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="0x03-简单配置">&amp;lt;0x03&amp;gt; 简单配置
+&lt;/h2>&lt;p>修改&lt;code>./src/threads/Make.vars&lt;/code>中的&lt;code>SIMULATOR&lt;/code>&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-make" data-lang="make">&lt;span style="display:flex;">&lt;span>SIMULATOR &lt;span style="color:#f92672">=&lt;/span> --qemu
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>新版本Linux不包含stropts.h，我们创建一个空的就可以了&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>sudo nano /usr/include/stropts.h
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>然后修改&lt;code>./src/utils/squish-pty.c&lt;/code>，注释下面的代码，大概在288行&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-c" data-lang="c">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">// 注释这些代码
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#66d9ef">if&lt;/span> (&lt;span style="color:#a6e22e">isastream&lt;/span> (slave))
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> (&lt;span style="color:#a6e22e">ioctl&lt;/span> (slave, I_PUSH, &lt;span style="color:#e6db74">&amp;#34;ptem&amp;#34;&lt;/span>) &lt;span style="color:#f92672">&amp;lt;&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">||&lt;/span> &lt;span style="color:#a6e22e">ioctl&lt;/span> (slave, I_PUSH, &lt;span style="color:#e6db74">&amp;#34;ldterm&amp;#34;&lt;/span>) &lt;span style="color:#f92672">&amp;lt;&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">fail_io&lt;/span> (&lt;span style="color:#e6db74">&amp;#34;ioctl&amp;#34;&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>这样就可以了&lt;br>
+（网上说的其他修改貌似都不是很关键）&lt;/p>
+&lt;h2 id="0x04-尝试运行">&amp;lt;0x04&amp;gt; 尝试运行
+&lt;/h2>&lt;p>在工作路径&lt;code>./src&lt;/code>下面一条条执行&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 编译utils的文件&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>cd ./utils
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>make
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 回到./src&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>cd ..
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 编译内核&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>cd ./threads
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>make
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 进入编译好的内核文件夹&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>cd ./build
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 通过提供的脚本运行pintos&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>../../utils/pintos -- run alarm-multiple
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>理论上pintos就会运行了&lt;/p>
+&lt;h2 id="不要用arch编译这个东西">不要用Arch编译这个东西
+&lt;/h2>&lt;p>如果使用Arch编译这个东西的话会发现loader.bin的大小有128M&lt;br>
+而不是正常的512字节&lt;br>
+不只是WSL中Arch会出现这个问题，物理机Manjaro也会这样&lt;br>
+具体原因不是很清楚，我怀疑是gcc版本问题&lt;br>
+我测试过Ubuntu22的gcc11和Debian12的gcc12，这两个都可以成功编译&lt;br>
+但Arch的是gcc14，可能较高的gcc版本导致编译行为不符合预期&lt;br>
+不过我暂时还没尝试在Arch中使用gcc11编译过&lt;br>
+（源码安装gcc11，编译就要几个小时，先摸了）&lt;/p></description></item><item><title>配置Windows+Manjaro双系统</title><link>https://mlacookie.github.io/article/posts/2024/%E9%85%8D%E7%BD%AEwindows+manjaro%E5%8F%8C%E7%B3%BB%E7%BB%9F/</link><pubDate>Thu, 22 Aug 2024 22:04:25 +0800</pubDate><guid>https://mlacookie.github.io/article/posts/2024/%E9%85%8D%E7%BD%AEwindows+manjaro%E5%8F%8C%E7%B3%BB%E7%BB%9F/</guid><description>&lt;p>emmmm&lt;br>
 之前在笔记本上安装了Manjaro&lt;br>
 基本上所有需要的软件都有了解决方案&lt;br>
 甚至打游戏都不是很大的问题&lt;br>
@@ -50,8 +138,7 @@ Windows安装在之前分的你希望的位置&lt;br>
 &lt;p>这样之后，理论上启动后默认进入Manjaro的grub界面&lt;/p></description></item><item><title>机革本本装Linux</title><link>https://mlacookie.github.io/article/posts/2024/%E6%9C%BA%E9%9D%A9%E6%9C%AC%E6%9C%AC%E8%A3%85linux/</link><pubDate>Sun, 28 Jul 2024 12:47:37 +0800</pubDate><guid>https://mlacookie.github.io/article/posts/2024/%E6%9C%BA%E9%9D%A9%E6%9C%AC%E6%9C%AC%E8%A3%85linux/</guid><description>&lt;p>暑假经典节目，与Linux大战300回合&lt;/p>
 &lt;p>这次我打算好好配置下Linux并作为日常使用&lt;br>
 发行版的话我使用Manjaro，因为比Arch好配置，也有AUR的便捷&lt;br>
-笔记本是无界14+，并且更新过BIOS&lt;br>
-（建议更新下BIOS，可以调整核显内存分配，不然Linux里面核显只能调512M显存）&lt;/p>
+笔记本是机革的无界14+&lt;/p>
 &lt;p>因为是在笔记本上装，就没啥截图了&lt;/p>
 &lt;h2 id="0x00-安装准备">&amp;lt;0x00&amp;gt; 安装准备
 &lt;/h2>&lt;p>简单来说，找个U盘，用Ventoy做启动盘，然后把Manjaro的ISO放进去就可以&lt;/p>

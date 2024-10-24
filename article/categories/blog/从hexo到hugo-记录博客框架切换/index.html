@@ -14,7 +14,7 @@
 </span></span></code></pre></div><p>这里安装的是带扩展的版本，因为我使用的主题需要这个</p><p>如果有安装<code>winget</code>，也可以直接敲命令安装</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>winget install Hugo.Hugo.Extended
 </span></span></code></pre></div><p>如果上面两个包管理器都没安装，那么需要从<a class=link href=https://github.com/gohugoio/hugo/releases target=_blank rel=noopener>Release</a>中下载预构建的版本<br>找到带<code>windows</code>的压缩包下载，里面会有一个<code>hugo.exe</code><br>然后丢到什么路径，添加到<code>windows</code>环境变量里面，这样就可以在命令行中调用了</p><h3 id=新建hugo站点>新建Hugo站点</h3><p>完成安装后，尝试新建站点来测试是否安装成功</p><p>在希望存放站点内容的位置打开终端</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>hugo new site TestBlog
 </span></span></code></pre></div><p>这样会在这个位置创建叫<code>TestBlog</code>的文件夹，里面会包含<code>hugo</code>站点的结构<br>以上就完成了Hugo站点的搭建</p><h2 id=0x02-配置stack主题>&lt;0x02> 配置Stack主题</h2><p>这里使用的主题是<a class=link href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener>Stack</a>，简洁好看</p><h3 id=路径约定>路径约定</h3><p><code>./</code>表示存放所有Hugo站点的路径<br>所以<code>./TestBlog</code>就是存放TestBlog站点的路径<br>本文后面所有的路径都将按此表示</p><h3 id=安装stack主题>安装Stack主题</h3><p><code>./TestBlog/themes</code>是存放所有主题的路径<br>在此打开终端</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>git clone https://github.com/CaiJimmy/hugo-theme-stack.git
-</span></span></code></pre></div><p>克隆主题仓库</p><p>然后回到<code>./TestBlog</code>，里面有个<code>hugo.toml</code><br>将<code>theme</code>的值修改为<code>'hugo-theme-stack'</code></p><h3 id=配置头像>配置头像</h3><p>进入<code>./TestBlog/themes/hugo-theme-stack</code><br>这里是<code>Stack</code>主题的文件</p><p>我们需要修改的头像在<code>./TestBlog/themes/hugo-theme-stack/assets/img</code>中<br>那个<code>avatar.png</code>便是我们我修改的图像<br>找自己的头像拖进去然后改名就可以了</p><h3 id=配置网站图标>配置网站图标</h3><p>配置网站图标稍微麻烦点<br>首先进入<code>./TestBlog/themes/hugo-theme-stack</code><br>创建叫<code>static</code>的文件夹，里面放入网站图标，这里取名<code>favicon.webp</code><br>然后回到<code>./TestBlog/themes/hugo-theme-stack</code>，打开文件<code>config.yaml</code><br>找到<code>favicon</code>，将值改为<code>favicon.webp</code>，也就是网站图标的文件名</p><h3 id=配置社交媒体菜单>配置社交媒体菜单</h3><p>（指的是这个东西）<br><img src=/article/categories/blog/%E4%BB%8Ehexo%E5%88%B0hugo-%E8%AE%B0%E5%BD%95%E5%8D%9A%E5%AE%A2%E6%A1%86%E6%9E%B6%E5%88%87%E6%8D%A2/picture/2.png width=199 height=126 srcset="/article/categories/blog/%E4%BB%8Ehexo%E5%88%B0hugo-%E8%AE%B0%E5%BD%95%E5%8D%9A%E5%AE%A2%E6%A1%86%E6%9E%B6%E5%88%87%E6%8D%A2/picture/2_hu8175500592471984633.png 480w, /article/categories/blog/%E4%BB%8Ehexo%E5%88%B0hugo-%E8%AE%B0%E5%BD%95%E5%8D%9A%E5%AE%A2%E6%A1%86%E6%9E%B6%E5%88%87%E6%8D%A2/picture/2_hu15041963395595712037.png 1024w" loading=lazy class=gallery-image data-flex-grow=157 data-flex-basis=379px><br>在<code>./TestBlog/themes/hugo-theme-stack</code>，打开文件<code>config.yaml</code><br>在文件最后添加这些东西</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=display:flex><span><span style=color:#f92672>menu</span>:
+</span></span></code></pre></div><p>克隆主题仓库</p><p>然后回到<code>./TestBlog</code>，里面有个<code>hugo.toml</code><br>将<code>theme</code>的值修改为<code>'hugo-theme-stack'</code></p><h3 id=配置头像>配置头像</h3><p>进入<code>./TestBlog/themes/hugo-theme-stack</code><br>这里是<code>Stack</code>主题的文件</p><p>我们需要修改的头像在<code>./TestBlog/themes/hugo-theme-stack/assets/img</code>中<br>那个<code>avatar.png</code>便是我们我修改的图像<br>找自己的头像拖进去然后改名就可以了</p><h3 id=配置网站图标>配置网站图标</h3><p>配置网站图标稍微麻烦点<br>首先进入<code>./TestBlog/themes/hugo-theme-stack</code><br>创建叫<code>static</code>的文件夹，里面放入网站图标，这里取名<code>favicon.webp</code><br>然后回到<code>./TestBlog/themes/hugo-theme-stack</code>，打开文件<code>config.yaml</code><br>找到<code>favicon</code>，将值改为<code>favicon.webp</code>，也就是网站图标的文件名</p><h3 id=配置社交媒体菜单>配置社交媒体菜单</h3><p>（指的是这个东西）</p><p><img src=/article/categories/blog/%E4%BB%8Ehexo%E5%88%B0hugo-%E8%AE%B0%E5%BD%95%E5%8D%9A%E5%AE%A2%E6%A1%86%E6%9E%B6%E5%88%87%E6%8D%A2/picture/2.png width=199 height=126 srcset="/article/categories/blog/%E4%BB%8Ehexo%E5%88%B0hugo-%E8%AE%B0%E5%BD%95%E5%8D%9A%E5%AE%A2%E6%A1%86%E6%9E%B6%E5%88%87%E6%8D%A2/picture/2_hu8175500592471984633.png 480w, /article/categories/blog/%E4%BB%8Ehexo%E5%88%B0hugo-%E8%AE%B0%E5%BD%95%E5%8D%9A%E5%AE%A2%E6%A1%86%E6%9E%B6%E5%88%87%E6%8D%A2/picture/2_hu15041963395595712037.png 1024w" loading=lazy class=gallery-image data-flex-grow=157 data-flex-basis=379px></p><p>在<code>./TestBlog/themes/hugo-theme-stack</code>，打开文件<code>config.yaml</code><br>在文件最后添加这些东西</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=display:flex><span><span style=color:#f92672>menu</span>:
 </span></span><span style=display:flex><span>    <span style=color:#f92672>main</span>: []
 </span></span><span style=display:flex><span>    <span style=color:#f92672>social</span>:
 </span></span><span style=display:flex><span>        - <span style=color:#f92672>identifier</span>: <span style=color:#ae81ff>github</span>
@@ -71,7 +71,9 @@
 </span></span><span style=display:flex><span>$global:ShellScriptDir <span style=color:#f92672>=</span> Get-Location
 </span></span><span style=display:flex><span>
 </span></span><span style=display:flex><span><span style=color:#75715e># 主目录</span>
-</span></span><span style=display:flex><span>$global:SiteDir <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;[...]&#34;</span>
+</span></span><span style=display:flex><span>Set-Location ..
+</span></span><span style=display:flex><span>$global:SiteDir <span style=color:#f92672>=</span> Get-Location
+</span></span><span style=display:flex><span>Set-Location $global:ShellScriptDir
 </span></span><span style=display:flex><span><span style=color:#75715e># 内容目录</span>
 </span></span><span style=display:flex><span>$global:ContentDir <span style=color:#f92672>=</span> Join-Path -Path $global:SiteDir -ChildPath <span style=color:#e6db74>&#34;content&#34;</span>
 </span></span><span style=display:flex><span><span style=color:#75715e># 文章目录</span>
@@ -150,34 +152,34 @@
 </span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> $Name -Replace <span style=color:#e6db74>&#39;([-])+&#39;</span>, <span style=color:#e6db74>&#39;-&#39;</span>
 </span></span><span style=display:flex><span><span style=color:#f92672>}</span>
 </span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#75715e># 导入配置变量</span>
-</span></span><span style=display:flex><span>. .<span style=color:#ae81ff>\c</span>onfigs.ps1
 </span></span><span style=display:flex><span><span style=color:#75715e># 保存当前的工作路径</span>
 </span></span><span style=display:flex><span>$localDir <span style=color:#f92672>=</span> Get-Location
+</span></span><span style=display:flex><span><span style=color:#75715e># 导入配置变量</span>
+</span></span><span style=display:flex><span>. .<span style=color:#ae81ff>\c</span>onfigs.ps1
 </span></span><span style=display:flex><span><span style=color:#75715e># 切换工作路径</span>
 </span></span><span style=display:flex><span>Set-Location $global:SiteDir
 </span></span><span style=display:flex><span><span style=color:#75715e># 合法化路径名，不然图片会出问题</span>
-</span></span><span style=display:flex><span>$ValidPathName <span style=color:#f92672>=</span> ValidatedName -Name $PostName
+</span></span><span style=display:flex><span>$validPath <span style=color:#f92672>=</span> ValidatedName -Name $PostName
 </span></span><span style=display:flex><span>
 </span></span><span style=display:flex><span><span style=color:#75715e># 普通文章创建</span>
 </span></span><span style=display:flex><span><span style=color:#66d9ef>if</span> <span style=color:#f92672>(</span>$CategoryName -eq <span style=color:#e6db74>&#34;&#34;</span><span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
 </span></span><span style=display:flex><span>    <span style=color:#75715e># 新建Hugo文章</span>
-</span></span><span style=display:flex><span>    $newPost <span style=color:#f92672>=</span> Join-Path -Path <span style=color:#f92672>(</span>Join-Path -Path <span style=color:#e6db74>&#34;content\article\posts&#34;</span> -ChildPath $ValidPathName<span style=color:#f92672>)</span> -ChildPath <span style=color:#e6db74>&#34;index.md&#34;</span>
-</span></span><span style=display:flex><span>    hugo new $newPost
+</span></span><span style=display:flex><span>    $newPostPath <span style=color:#f92672>=</span> Join-Path -Path <span style=color:#e6db74>&#34;content\article\posts&#34;</span> -ChildPath <span style=color:#f92672>(</span>Get-Date -Format <span style=color:#e6db74>&#34;yyyy&#34;</span><span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>    $newPostPath <span style=color:#f92672>=</span> Join-Path -Path <span style=color:#f92672>(</span>Join-Path -Path $newPostPath -ChildPath $validPath<span style=color:#f92672>)</span> -ChildPath <span style=color:#e6db74>&#34;index.md&#34;</span>
+</span></span><span style=display:flex><span>    hugo new $newPostPath
 </span></span><span style=display:flex><span>    <span style=color:#75715e># 生成图片文件夹路径</span>
-</span></span><span style=display:flex><span>    $newPostPicture <span style=color:#f92672>=</span> Join-Path -Path <span style=color:#f92672>(</span>Join-Path -Path $global:PostsDir -ChildPath $ValidPathName<span style=color:#f92672>)</span> -ChildPath <span style=color:#e6db74>&#34;picture&#34;</span>
+</span></span><span style=display:flex><span>    $newPostPicture <span style=color:#f92672>=</span> Join-Path -Path <span style=color:#f92672>(</span>Join-Path -Path $global:PostsDir -ChildPath $validPath<span style=color:#f92672>)</span> -ChildPath <span style=color:#e6db74>&#34;picture&#34;</span>
 </span></span><span style=display:flex><span><span style=color:#f92672>}</span>
 </span></span><span style=display:flex><span><span style=color:#75715e># 需要分类的文章</span>
 </span></span><span style=display:flex><span><span style=color:#66d9ef>else</span> <span style=color:#f92672>{</span>
 </span></span><span style=display:flex><span>    <span style=color:#75715e># 新建Hugo文章</span>
 </span></span><span style=display:flex><span>    $categoryPath <span style=color:#f92672>=</span> Join-Path -Path <span style=color:#e6db74>&#34;content\article\categories&#34;</span> -ChildPath $CategoryName
-</span></span><span style=display:flex><span>    $newPost <span style=color:#f92672>=</span> Join-Path -Path <span style=color:#f92672>(</span>Join-Path -Path $categoryPath -ChildPath $ValidPathName<span style=color:#f92672>)</span> -ChildPath <span style=color:#e6db74>&#34;index.md&#34;</span>
-</span></span><span style=display:flex><span>    hugo new $newPost
+</span></span><span style=display:flex><span>    $newPostPath <span style=color:#f92672>=</span> Join-Path -Path <span style=color:#f92672>(</span>Join-Path -Path $categoryPath -ChildPath $validPath<span style=color:#f92672>)</span> -ChildPath <span style=color:#e6db74>&#34;index.md&#34;</span>
+</span></span><span style=display:flex><span>    hugo new $newPostPath
 </span></span><span style=display:flex><span>    <span style=color:#75715e># 生成图片文件夹路径</span>
 </span></span><span style=display:flex><span>    $categoryPath <span style=color:#f92672>=</span> Join-Path -Path $global:CategoriesDir -ChildPath $CategoryName
-</span></span><span style=display:flex><span>    $newPostPicture <span style=color:#f92672>=</span> Join-Path -Path <span style=color:#f92672>(</span>Join-Path -Path $categoryPath -ChildPath $ValidPathName<span style=color:#f92672>)</span> -ChildPath <span style=color:#e6db74>&#34;picture&#34;</span>
+</span></span><span style=display:flex><span>    $newPostPicture <span style=color:#f92672>=</span> Join-Path -Path <span style=color:#f92672>(</span>Join-Path -Path $categoryPath -ChildPath $validPath<span style=color:#f92672>)</span> -ChildPath <span style=color:#e6db74>&#34;picture&#34;</span>
 </span></span><span style=display:flex><span><span style=color:#f92672>}</span>
-</span></span><span style=display:flex><span><span style=color:#75715e># 因为我在obsidian设置了默认的附件目录，粘贴图像会自动创建图片文件夹</span>
 </span></span><span style=display:flex><span><span style=color:#75715e># 需要创建图片文件夹的话就创建</span>
 </span></span><span style=display:flex><span><span style=color:#66d9ef>if</span> <span style=color:#f92672>(</span>$IsCreatePictureFolder<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
 </span></span><span style=display:flex><span>    mkdir $newPostPicture
@@ -200,10 +202,10 @@
 </span></span><span style=display:flex><span>    $IsForcePush <span style=color:#f92672>=</span> $false
 </span></span><span style=display:flex><span><span style=color:#f92672>)</span>
 </span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#75715e># 导入配置变量</span>
-</span></span><span style=display:flex><span>. .<span style=color:#ae81ff>\c</span>onfigs.ps1
 </span></span><span style=display:flex><span><span style=color:#75715e># 保存当前的工作路径</span>
 </span></span><span style=display:flex><span>$localDir <span style=color:#f92672>=</span> Get-Location
+</span></span><span style=display:flex><span><span style=color:#75715e># 导入配置变量</span>
+</span></span><span style=display:flex><span>. .<span style=color:#ae81ff>\c</span>onfigs.ps1
 </span></span><span style=display:flex><span><span style=color:#75715e># 切换工作路径</span>
 </span></span><span style=display:flex><span>Set-Location <span style=color:#f92672>(</span>Join-Path -Path $global:SiteDir -ChildPath <span style=color:#e6db74>&#34;public&#34;</span><span style=color:#f92672>)</span>
 </span></span><span style=display:flex><span>
@@ -228,10 +230,10 @@
 </span></span><span style=display:flex><span>    $IsClearDeploy <span style=color:#f92672>=</span> $false
 </span></span><span style=display:flex><span><span style=color:#f92672>)</span>
 </span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#75715e># 导入配置变量</span>
-</span></span><span style=display:flex><span>. .<span style=color:#ae81ff>\c</span>onfigs.ps1
 </span></span><span style=display:flex><span><span style=color:#75715e># 保存当前的工作路径</span>
 </span></span><span style=display:flex><span>$localDir <span style=color:#f92672>=</span> Get-Location
+</span></span><span style=display:flex><span><span style=color:#75715e># 导入配置变量</span>
+</span></span><span style=display:flex><span>. .<span style=color:#ae81ff>\c</span>onfigs.ps1
 </span></span><span style=display:flex><span><span style=color:#75715e># 切换工作路径</span>
 </span></span><span style=display:flex><span>Set-Location $global:SiteDir
 </span></span><span style=display:flex><span><span style=color:#75715e># 清除Hugo构建缓存</span>

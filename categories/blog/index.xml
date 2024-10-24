@@ -1,4 +1,41 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Blog on MLAcookie</title><link>https://mlacookie.github.io/categories/blog/</link><description>Recent content in Blog on MLAcookie</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Sat, 20 Jul 2024 15:02:34 +0800</lastBuildDate><atom:link href="https://mlacookie.github.io/categories/blog/index.xml" rel="self" type="application/rss+xml"/><item><title>从Hexo到Hugo 记录博客框架切换</title><link>https://mlacookie.github.io/article/categories/blog/%E4%BB%8Ehexo%E5%88%B0hugo-%E8%AE%B0%E5%BD%95%E5%8D%9A%E5%AE%A2%E6%A1%86%E6%9E%B6%E5%88%87%E6%8D%A2/</link><pubDate>Sat, 20 Jul 2024 15:02:34 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/blog/%E4%BB%8Ehexo%E5%88%B0hugo-%E8%AE%B0%E5%BD%95%E5%8D%9A%E5%AE%A2%E6%A1%86%E6%9E%B6%E5%88%87%E6%8D%A2/</guid><description>&lt;p>嘶，总算是学校的事情忙完了，终于有点时间写写博客了&lt;br>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Blog on MLAcookie</title><link>https://mlacookie.github.io/categories/blog/</link><description>Recent content in Blog on MLAcookie</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Wed, 23 Oct 2024 13:49:51 +0800</lastBuildDate><atom:link href="https://mlacookie.github.io/categories/blog/index.xml" rel="self" type="application/rss+xml"/><item><title>优化博客的发布流程</title><link>https://mlacookie.github.io/article/categories/blog/%E4%BC%98%E5%8C%96%E5%8D%9A%E5%AE%A2%E7%9A%84%E5%8F%91%E5%B8%83%E6%B5%81%E7%A8%8B/</link><pubDate>Wed, 23 Oct 2024 13:49:51 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/blog/%E4%BC%98%E5%8C%96%E5%8D%9A%E5%AE%A2%E7%9A%84%E5%8F%91%E5%B8%83%E6%B5%81%E7%A8%8B/</guid><description>&lt;p>这几天折腾了一些obsidian的插件&lt;br>
+利用这些插件，优化了博客的发布流程&lt;/p>
+&lt;h2 id="0x01-hide-folders">&amp;lt;0x01&amp;gt; Hide Folders
+&lt;/h2>&lt;p>我原本的obsidian的工作目录是在content的&lt;br>
+为什么不设置在博客的根目录呢，因为这样做会显示很多多余的文件夹&lt;br>
+这样会很乱&lt;/p>
+&lt;p>通过Hide Folders，就可以把这些不需要的文件夹隐藏&lt;br>
+这样就干净多了&lt;/p>
+&lt;h2 id="0x02-terminal">&amp;lt;0x02&amp;gt; Terminal
+&lt;/h2>&lt;p>一个快速启动终端的插件&lt;br>
+主要是我为博客写了很多脚本，这样的话我管理就会很灵活&lt;br>
+所以我就需要这样的一个启动终端的插件&lt;/p>
+&lt;p>其实obsidian也有能跑python脚本的插件，或许那个也挺合适的&lt;br>
+（但我从powershell迁移的成本有点大）&lt;/p>
+&lt;h2 id="0x03-git">&amp;lt;0x03&amp;gt; Git
+&lt;/h2>&lt;p>这个可以说很经典了&lt;br>
+通过git，可以同步博客的所有设置，可以在任何设备写博客了&lt;/p>
+&lt;h3 id="删除hugo主题里面的git">删除hugo主题里面的.git
+&lt;/h3>&lt;p>hugo这里的话需要注意的是主题问题&lt;br>
+跟着教程配置主题会让你把需要的主题git clone下来&lt;br>
+这会导致在根目录初始化git的时候会将这个主题识别为子模块&lt;br>
+然后主题里面的配置就不会跟着同步了&lt;br>
+这不好，hugo的主题本身就有很多的配置选项&lt;br>
+所以我们需要将主题文件夹里面的&lt;code>.git&lt;/code>删掉，这样就可以同步主题配置了&lt;/p>
+&lt;p>如果之后要更新主题，那只能自己手动把新文件复制进去或者写脚本了&lt;/p>
+&lt;h3 id="创建gitignore">创建.gitignore
+&lt;/h3>&lt;p>在git的时候，我们其实不必同步整个文件夹&lt;br>
+其中的有些文件是hugo运行后会自己生成的&lt;br>
+把这些文件添加到.gitignore，让git忽略这些文件，减轻同步压力&lt;/p>
+&lt;p>在博客根目录创建.gitignore&lt;/p>
+&lt;pre tabindex="0">&lt;code class="language-gitignore" data-lang="gitignore">public/
+resources/_gen
+&lt;/code>&lt;/pre>&lt;p>然后在./.obsidian里面创建.gitignore&lt;/p>
+&lt;pre tabindex="0">&lt;code class="language-gitignore" data-lang="gitignore">workspace.json
+&lt;/code>&lt;/pre>&lt;p>前两个是hugo本身会生成的&lt;br>
+最后一个是obsidian界面布局文件，可以不同步&lt;/p>
+&lt;h3 id="git初始化">git初始化
+&lt;/h3>&lt;p>然后就可以git初始化同步到远程仓库了&lt;/p></description></item><item><title>从Hexo到Hugo 记录博客框架切换</title><link>https://mlacookie.github.io/article/categories/blog/%E4%BB%8Ehexo%E5%88%B0hugo-%E8%AE%B0%E5%BD%95%E5%8D%9A%E5%AE%A2%E6%A1%86%E6%9E%B6%E5%88%87%E6%8D%A2/</link><pubDate>Sat, 20 Jul 2024 15:02:34 +0800</pubDate><guid>https://mlacookie.github.io/article/categories/blog/%E4%BB%8Ehexo%E5%88%B0hugo-%E8%AE%B0%E5%BD%95%E5%8D%9A%E5%AE%A2%E6%A1%86%E6%9E%B6%E5%88%87%E6%8D%A2/</guid><description>&lt;p>嘶，总算是学校的事情忙完了，终于有点时间写写博客了&lt;br>
 这个学期感觉一直都在和时间赛跑，没啥时间写博客，自己的项目也基本都断了&lt;br>
 当然这些都是另外的话题了&lt;/p>
 &lt;p>如果之前有看过我博客的人，应该会发现现在网页大变样了&lt;br>
@@ -63,8 +100,8 @@
 然后回到&lt;code>./TestBlog/themes/hugo-theme-stack&lt;/code>，打开文件&lt;code>config.yaml&lt;/code>&lt;br>
 找到&lt;code>favicon&lt;/code>，将值改为&lt;code>favicon.webp&lt;/code>，也就是网站图标的文件名&lt;/p>
 &lt;h3 id="配置社交媒体菜单">配置社交媒体菜单
-&lt;/h3>&lt;p>（指的是这个东西）&lt;br>
-&lt;img src="https://mlacookie.github.io/article/categories/blog/%E4%BB%8Ehexo%E5%88%B0hugo-%E8%AE%B0%E5%BD%95%E5%8D%9A%E5%AE%A2%E6%A1%86%E6%9E%B6%E5%88%87%E6%8D%A2/picture/2.png"
+&lt;/h3>&lt;p>（指的是这个东西）&lt;/p>
+&lt;p>&lt;img src="https://mlacookie.github.io/article/categories/blog/%E4%BB%8Ehexo%E5%88%B0hugo-%E8%AE%B0%E5%BD%95%E5%8D%9A%E5%AE%A2%E6%A1%86%E6%9E%B6%E5%88%87%E6%8D%A2/picture/2.png"
 width="199"
 height="126"
 srcset="https://mlacookie.github.io/article/categories/blog/%E4%BB%8Ehexo%E5%88%B0hugo-%E8%AE%B0%E5%BD%95%E5%8D%9A%E5%AE%A2%E6%A1%86%E6%9E%B6%E5%88%87%E6%8D%A2/picture/2_hu8175500592471984633.png 480w, https://mlacookie.github.io/article/categories/blog/%E4%BB%8Ehexo%E5%88%B0hugo-%E8%AE%B0%E5%BD%95%E5%8D%9A%E5%AE%A2%E6%A1%86%E6%9E%B6%E5%88%87%E6%8D%A2/picture/2_hu15041963395595712037.png 1024w"
@@ -72,8 +109,8 @@ loading="lazy"
 class="gallery-image"
 data-flex-grow="157"
 data-flex-basis="379px"
->&lt;br>
-在&lt;code>./TestBlog/themes/hugo-theme-stack&lt;/code>，打开文件&lt;code>config.yaml&lt;/code>&lt;br>
+>&lt;/p>
+&lt;p>在&lt;code>./TestBlog/themes/hugo-theme-stack&lt;/code>，打开文件&lt;code>config.yaml&lt;/code>&lt;br>
 在文件最后添加这些东西&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-yaml" data-lang="yaml">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">menu&lt;/span>:
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">main&lt;/span>: []
@@ -186,7 +223,9 @@ data-flex-basis="634px"
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>$global:ShellScriptDir &lt;span style="color:#f92672">=&lt;/span> Get-Location
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 主目录&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>$global:SiteDir &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;[...]&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Set-Location ..
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>$global:SiteDir &lt;span style="color:#f92672">=&lt;/span> Get-Location
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Set-Location $global:ShellScriptDir
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 内容目录&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>$global:ContentDir &lt;span style="color:#f92672">=&lt;/span> Join-Path -Path $global:SiteDir -ChildPath &lt;span style="color:#e6db74">&amp;#34;content&amp;#34;&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 文章目录&lt;/span>
@@ -267,34 +306,34 @@ data-flex-basis="634px"
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> $Name -Replace &lt;span style="color:#e6db74">&amp;#39;([-])+&amp;#39;&lt;/span>, &lt;span style="color:#e6db74">&amp;#39;-&amp;#39;&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">}&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 导入配置变量&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>. .&lt;span style="color:#ae81ff">\c&lt;/span>onfigs.ps1
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 保存当前的工作路径&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>$localDir &lt;span style="color:#f92672">=&lt;/span> Get-Location
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 导入配置变量&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>. .&lt;span style="color:#ae81ff">\c&lt;/span>onfigs.ps1
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 切换工作路径&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Set-Location $global:SiteDir
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 合法化路径名，不然图片会出问题&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>$ValidPathName &lt;span style="color:#f92672">=&lt;/span> ValidatedName -Name $PostName
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>$validPath &lt;span style="color:#f92672">=&lt;/span> ValidatedName -Name $PostName
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 普通文章创建&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">if&lt;/span> &lt;span style="color:#f92672">(&lt;/span>$CategoryName -eq &lt;span style="color:#e6db74">&amp;#34;&amp;#34;&lt;/span>&lt;span style="color:#f92672">)&lt;/span> &lt;span style="color:#f92672">{&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># 新建Hugo文章&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $newPost &lt;span style="color:#f92672">=&lt;/span> Join-Path -Path &lt;span style="color:#f92672">(&lt;/span>Join-Path -Path &lt;span style="color:#e6db74">&amp;#34;content\article\posts&amp;#34;&lt;/span> -ChildPath $ValidPathName&lt;span style="color:#f92672">)&lt;/span> -ChildPath &lt;span style="color:#e6db74">&amp;#34;index.md&amp;#34;&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> hugo new $newPost
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $newPostPath &lt;span style="color:#f92672">=&lt;/span> Join-Path -Path &lt;span style="color:#e6db74">&amp;#34;content\article\posts&amp;#34;&lt;/span> -ChildPath &lt;span style="color:#f92672">(&lt;/span>Get-Date -Format &lt;span style="color:#e6db74">&amp;#34;yyyy&amp;#34;&lt;/span>&lt;span style="color:#f92672">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $newPostPath &lt;span style="color:#f92672">=&lt;/span> Join-Path -Path &lt;span style="color:#f92672">(&lt;/span>Join-Path -Path $newPostPath -ChildPath $validPath&lt;span style="color:#f92672">)&lt;/span> -ChildPath &lt;span style="color:#e6db74">&amp;#34;index.md&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> hugo new $newPostPath
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># 生成图片文件夹路径&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $newPostPicture &lt;span style="color:#f92672">=&lt;/span> Join-Path -Path &lt;span style="color:#f92672">(&lt;/span>Join-Path -Path $global:PostsDir -ChildPath $ValidPathName&lt;span style="color:#f92672">)&lt;/span> -ChildPath &lt;span style="color:#e6db74">&amp;#34;picture&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $newPostPicture &lt;span style="color:#f92672">=&lt;/span> Join-Path -Path &lt;span style="color:#f92672">(&lt;/span>Join-Path -Path $global:PostsDir -ChildPath $validPath&lt;span style="color:#f92672">)&lt;/span> -ChildPath &lt;span style="color:#e6db74">&amp;#34;picture&amp;#34;&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">}&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 需要分类的文章&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">else&lt;/span> &lt;span style="color:#f92672">{&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># 新建Hugo文章&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $categoryPath &lt;span style="color:#f92672">=&lt;/span> Join-Path -Path &lt;span style="color:#e6db74">&amp;#34;content\article\categories&amp;#34;&lt;/span> -ChildPath $CategoryName
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $newPost &lt;span style="color:#f92672">=&lt;/span> Join-Path -Path &lt;span style="color:#f92672">(&lt;/span>Join-Path -Path $categoryPath -ChildPath $ValidPathName&lt;span style="color:#f92672">)&lt;/span> -ChildPath &lt;span style="color:#e6db74">&amp;#34;index.md&amp;#34;&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> hugo new $newPost
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $newPostPath &lt;span style="color:#f92672">=&lt;/span> Join-Path -Path &lt;span style="color:#f92672">(&lt;/span>Join-Path -Path $categoryPath -ChildPath $validPath&lt;span style="color:#f92672">)&lt;/span> -ChildPath &lt;span style="color:#e6db74">&amp;#34;index.md&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> hugo new $newPostPath
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># 生成图片文件夹路径&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $categoryPath &lt;span style="color:#f92672">=&lt;/span> Join-Path -Path $global:CategoriesDir -ChildPath $CategoryName
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $newPostPicture &lt;span style="color:#f92672">=&lt;/span> Join-Path -Path &lt;span style="color:#f92672">(&lt;/span>Join-Path -Path $categoryPath -ChildPath $ValidPathName&lt;span style="color:#f92672">)&lt;/span> -ChildPath &lt;span style="color:#e6db74">&amp;#34;picture&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $newPostPicture &lt;span style="color:#f92672">=&lt;/span> Join-Path -Path &lt;span style="color:#f92672">(&lt;/span>Join-Path -Path $categoryPath -ChildPath $validPath&lt;span style="color:#f92672">)&lt;/span> -ChildPath &lt;span style="color:#e6db74">&amp;#34;picture&amp;#34;&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">}&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 因为我在obsidian设置了默认的附件目录，粘贴图像会自动创建图片文件夹&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 需要创建图片文件夹的话就创建&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">if&lt;/span> &lt;span style="color:#f92672">(&lt;/span>$IsCreatePictureFolder&lt;span style="color:#f92672">)&lt;/span> &lt;span style="color:#f92672">{&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> mkdir $newPostPicture
@@ -322,10 +361,10 @@ data-flex-basis="634px"
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $IsForcePush &lt;span style="color:#f92672">=&lt;/span> $false
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">)&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 导入配置变量&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>. .&lt;span style="color:#ae81ff">\c&lt;/span>onfigs.ps1
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 保存当前的工作路径&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>$localDir &lt;span style="color:#f92672">=&lt;/span> Get-Location
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 导入配置变量&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>. .&lt;span style="color:#ae81ff">\c&lt;/span>onfigs.ps1
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 切换工作路径&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Set-Location &lt;span style="color:#f92672">(&lt;/span>Join-Path -Path $global:SiteDir -ChildPath &lt;span style="color:#e6db74">&amp;#34;public&amp;#34;&lt;/span>&lt;span style="color:#f92672">)&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
@@ -351,10 +390,10 @@ data-flex-basis="634px"
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> $IsClearDeploy &lt;span style="color:#f92672">=&lt;/span> $false
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">)&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 导入配置变量&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>. .&lt;span style="color:#ae81ff">\c&lt;/span>onfigs.ps1
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 保存当前的工作路径&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>$localDir &lt;span style="color:#f92672">=&lt;/span> Get-Location
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 导入配置变量&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>. .&lt;span style="color:#ae81ff">\c&lt;/span>onfigs.ps1
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 切换工作路径&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Set-Location $global:SiteDir
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># 清除Hugo构建缓存&lt;/span>
@@ -622,38 +661,7 @@ data-flex-basis="2475px"
 &lt;h2 id="0x06-这套方案的问题">&amp;lt;0x06&amp;gt; 这套方案的问题
 &lt;/h2>&lt;p>不支持Obsidian的wiki链接解析
 也没用上Obsidian自带的模板功能
-文章之间相互引用也很麻烦，要知道文章的具体URL&lt;/p></description></item><item><title>国内阿里云服务器关闭</title><link>https://mlacookie.github.io/article/categories/blog/%E5%9B%BD%E5%86%85%E9%98%BF%E9%87%8C%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%85%B3%E9%97%AD/</link><pubDate>Sun, 19 Nov 2023 22:53:27 +0000</pubDate><guid>https://mlacookie.github.io/article/categories/blog/%E5%9B%BD%E5%86%85%E9%98%BF%E9%87%8C%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%85%B3%E9%97%AD/</guid><description>&lt;p>不打算续费阿里云的服务器了&lt;br>
-(虽然本来就是嫖的7个月)&lt;br>
-为什么呢，主要就是因为成本算下来感觉不合适&lt;br>
-不是说贵，而是事情太多，没时间维护&lt;br>
-应该也发现了，我已经接近1个月没写博客了&lt;br>
-这段时间事情实在是多，但都是好的事情多&lt;br>
-我终于算是找到能为之奋斗的方向了&lt;br>
-于是仔细想想，服务器这块估计是没时间维护了&lt;/p>
-&lt;p>虽然国内的服务器关闭了，但Github Page的还是在的&lt;br>
-(反正免费，就挂着了)&lt;br>
-至于这么干之后受影响最大的是什么&lt;br>
-那应该就是我的那些Git仓库的国内镜像了&lt;br>
-但问题不大，Github上也都是还在的&lt;/p></description></item><item><title>庆祝下备案全通过了</title><link>https://mlacookie.github.io/article/categories/blog/%E5%BA%86%E7%A5%9D%E4%B8%8B%E5%A4%87%E6%A1%88%E5%85%A8%E9%80%9A%E8%BF%87%E4%BA%86/</link><pubDate>Thu, 18 May 2023 14:35:25 +0000</pubDate><guid>https://mlacookie.github.io/article/categories/blog/%E5%BA%86%E7%A5%9D%E4%B8%8B%E5%A4%87%E6%A1%88%E5%85%A8%E9%80%9A%E8%BF%87%E4%BA%86/</guid><description>&lt;h2 id="终于通过所有备案了">终于通过所有备案了
-&lt;/h2>&lt;p>所以之后会慢慢在这个小站上分享我的见闻&lt;br>
-虽然不知道有没有人看，但还是很感谢正在看这个页面的你&lt;/p>
-&lt;h3 id="关于备案流程">关于备案流程
-&lt;/h3>&lt;p>其实主要就是等&lt;br>
-要做&lt;code>ICP备案&lt;/code>和&lt;code>公安备案&lt;/code>&lt;br>
-我的服务器和域名都是阿里云的，所以&lt;code>ICP备案&lt;/code>通过阿里云代办。&lt;code>公安备案&lt;/code>自己填填就可以了&lt;/p>
-&lt;p>首先是&lt;code>ICP备案&lt;/code>，阿里云的ICP备案说得很详细了&lt;br>
-主要的问题就是在拍自己照片的时候要找面白墙&lt;br>
-其他的东西仔细填写就好&lt;br>
-提交完材料后会有人打电话跟你确认，顺便说一下提交的材料有什么问题&lt;br>
-有问题的话都会指出，然后邮箱发给他们就好&lt;br>
-然后再是工信部的短信验证，跟着流程就行
-接下来就是等了，一般10天左右&lt;br>
-一切顺利的话&lt;code>ICP备案&lt;/code>就下来了&lt;/p>
-&lt;p>之后就是&lt;code>公安备案&lt;/code>，这个比较容易，就是登入网页然后填填表就行&lt;br>
-一般第二天就能备案下来&lt;br>
-里面有个&lt;code>业务类型&lt;/code>，如果只是跟我一样搭个博客的话不要勾选&lt;code>交互服务&lt;/code>，然后选&lt;code>www服务&lt;/code>就好&lt;br>
-据说选了交互服务要线下确认，所以能少一事就少一事&lt;/p>
-&lt;p>最后记得在页面下面挂备案号。&lt;/p></description></item><item><title>给侧边栏加个B站图标</title><link>https://mlacookie.github.io/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/</link><pubDate>Wed, 26 Apr 2023 21:59:57 +0000</pubDate><guid>https://mlacookie.github.io/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/</guid><description>&lt;p>搭个博客嘛，肯定要加点个人的一些账号。然后呢，我想加个B站的链接，但是在 Anatolo 的模板里没有，这下只能自己动手了。&lt;/p>
+文章之间相互引用也很麻烦，要知道文章的具体URL&lt;/p></description></item><item><title>给侧边栏加个B站图标</title><link>https://mlacookie.github.io/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/</link><pubDate>Wed, 26 Apr 2023 21:59:57 +0000</pubDate><guid>https://mlacookie.github.io/article/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/</guid><description>&lt;p>搭个博客嘛，肯定要加点个人的一些账号。然后呢，我想加个B站的链接，但是在 Anatolo 的模板里没有，这下只能自己动手了。&lt;/p>
 &lt;h2 id="一些约定的符号">一些约定的符号
 &lt;/h2>&lt;p>&lt;code>./&lt;/code> 表示 hexo 博客的根目录&lt;/p>
 &lt;h2 id="0x00-分析">&amp;lt;0x00&amp;gt; 分析
