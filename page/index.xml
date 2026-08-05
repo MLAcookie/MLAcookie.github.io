@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Pages on MLAcookie</title><link>https://mlacookie.github.io/page/</link><description>Recent content in Pages on MLAcookie</description><generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Thu, 18 Jul 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://mlacookie.github.io/page/index.xml" rel="self" type="application/rss+xml"/><item><title>About</title><link>https://mlacookie.github.io/page/about/</link><pubDate>Thu, 18 Jul 2024 00:00:00 +0000</pubDate><guid>https://mlacookie.github.io/page/about/</guid><description>&lt;p&gt;欢迎各位光临我的小站&lt;/p&gt;
+&lt;h3 id="为什么开这个博客"&gt;为什么开这个博客
+&lt;/h3&gt;&lt;p&gt;学习计算机嘛，总会遇到些莫名其妙的问题&lt;br&gt;
+然后用各种搜索引擎上下求索&lt;br&gt;
+有时候呢，会有现成的方案，那就直接用就是&lt;br&gt;
+但更多的时候要么是解决方案很老，目前已经不支持或者有更好的方法&lt;br&gt;
+甚至压根就是没有（尤其在中文互联网上）&lt;br&gt;
+所以我就想发些东西，解决方案也好，学习什么东西的历程也好&lt;br&gt;
+有一个看算一个，帮一个算一个&lt;/p&gt;
+&lt;p&gt;其实也主要是写给自己看的&lt;br&gt;
+我不常说我记性不好嘛，所以就想写点什么，万一以后想着要用就方便查&lt;/p&gt;
+&lt;p&gt;总之在这里我会分享各种知识，啥都会讲点（哪天讲讲中世纪黑魔法也说不定😂）&lt;/p&gt;
+&lt;h3 id="为什么没评论区"&gt;为什么没评论区
+&lt;/h3&gt;&lt;p&gt;不开评论区主要是没精力回复每一个评论(我其实挺少访问我自己的博客)&lt;br&gt;
+而且说实在的，我也估计没啥人会访问我的博客，也没开评论区的必要&lt;/p&gt;
+&lt;p&gt;无论有什么事都可以通过邮箱联系我，B站私信也行(B站常年在线)&lt;/p&gt;
+&lt;h3 id="其他杂项"&gt;其他杂项
+&lt;/h3&gt;&lt;p&gt;博客基于 Hugo&lt;br&gt;
+主题是 Stack&lt;br&gt;
+（之前用Hexo）&lt;/p&gt;
+&lt;p&gt;写博客好累啊，基本都是写多少时间代码就多写多少时间的博客&lt;br&gt;
+所以可能会经常把没写完的博客发上来，也没啥办法，真写不完了&lt;br&gt;
+（我超级写的完.jpg）&lt;/p&gt;
+&lt;p&gt;全站 CC BY-NC-SA 4.0&lt;br&gt;
+总之在这里的内容大家可以随意取用，转载的话都行，不是商业行为就行&lt;/p&gt;</description></item><item><title>Archives</title><link>https://mlacookie.github.io/page/archives/</link><pubDate>Sun, 06 Mar 2022 00:00:00 +0000</pubDate><guid>https://mlacookie.github.io/page/archives/</guid><description/></item><item><title>Links</title><link>https://mlacookie.github.io/page/links/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://mlacookie.github.io/page/links/</guid><description>&lt;h3 id="哪里能找到我"&gt;哪里能找到我
+&lt;/h3&gt;&lt;p&gt;&lt;a class="link" href="https://github.com/MLAcookie" target="_blank" rel="noopener"
+ &gt;GitHub&lt;/a&gt;&lt;br&gt;
+&lt;a class="link" href="https://space.bilibili.com/13629146" target="_blank" rel="noopener"
+ &gt;B站&lt;/a&gt;&lt;br&gt;
+&lt;a class="link" href="mailto:mla_cookie@163.com" &gt;mla_cookie@163.com&lt;/a&gt;&lt;/p&gt;
+&lt;h3 id="友情链接"&gt;友情链接
+&lt;/h3&gt;&lt;p&gt;&lt;a class="link" href="https://www.07blog.com/" target="_blank" rel="noopener"
+ &gt;室友博客&lt;/a&gt;&lt;br&gt;
+&lt;a class="link" href="https://blog.mulbx.top/" target="_blank" rel="noopener"
+ &gt;室友博客&lt;/a&gt;&lt;br&gt;
+&lt;a class="link" href="https://www.theonlyproblem.top/" target="_blank" rel="noopener"
+ &gt;同学的博客&lt;/a&gt;（图形渲染方面的大佬）&lt;/p&gt;
+&lt;p&gt;ZJUT车万外部群: 326106477（多来点车车人吧）&lt;br&gt;
+&lt;a class="link" href="https://github.com/zjutjh/zjut-icicles" target="_blank" rel="noopener"
+ &gt;ZJUT课程互帮互助项目&lt;/a&gt;&lt;/p&gt;
+&lt;h3 id="鸣谢"&gt;鸣谢
+&lt;/h3&gt;&lt;p&gt;&lt;a class="link" href="https://gohugo.io/" target="_blank" rel="noopener"
+ &gt;Hugo博客框架&lt;/a&gt;&lt;br&gt;
+&lt;a class="link" href="https://stack.jimmycai.com/" target="_blank" rel="noopener"
+ &gt;Stack主题&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;虽然现在不用Hexo了，但Hexo也是好用的&lt;/p&gt;
+&lt;p&gt;&lt;a class="link" href="https://github.com/hexojs/hexo" target="_blank" rel="noopener"
+ &gt;hexo博客框架&lt;/a&gt;&lt;br&gt;
+&lt;a class="link" href="https://github.com/Lhcfl/hexo-theme-anatolo" target="_blank" rel="noopener"
+ &gt;anatolo主题&lt;/a&gt;&lt;/p&gt;</description></item><item><title>Search</title><link>https://mlacookie.github.io/page/search/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://mlacookie.github.io/page/search/</guid><description/></item></channel></rss>

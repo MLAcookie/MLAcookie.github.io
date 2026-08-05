@@ -1,0 +1,183 @@
+<!doctype html><html lang=zh dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content="<0x00> 安装组件 首先肯定要有台服务器嘛，系统倒问题不大，我用的是debian 11\n# 安装各种包前先更新是好文明 sudo apt update sudo apt upgrade # 安装git sudo apt install git # 安装mysql wget https://dev.mysql.com/get/mysql-apt-config_0.8.22-1_all.deb sudo dpkg -i mysql-apt-config_0.8.22-1_all.deb # 或者安装postgresql sudo apt install postgresql # 这里可能会跳出个界面，直接选最后的ok就可以 rm mysql-apt-config_0.8.22-1_all.deb sudo apt update sudo apt-get install mysql-server 安装mysql的时候会要求你设置数据库 root 账户密码的\n<0x01> 配置数据库 mysql 在/etc/mysql/mysql.conf.d/mysqld.cnf中加入bind-address = 127.0.0.1 这个配置文件的位置看版本，我这里的 mysql 版本是8.0.33 这个bind-address是控制 mysql 数据库允许远程访问的\n#先进入mysql控制台 mysql -u root -p` #输入你设置的root账户密码 #配置gitea的数据库 CREATE USER 'gitea' IDENTIFIED BY '密码'; #这里写的‘密码’是你想设置的密码 CREATE DATABASE giteadb CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci'; GRANT ALL PRIVILEGES ON giteadb.* TO 'gitea'; FLUSH PRIVILEGES; exit postgresql # 进入postgre控制台 sudo -u postgres psql # 密码尽量改一下 CREATE ROLE gitea WITH LOGIN PASSWORD 'gitea'; # 创建数据库 CREATE DATABASE giteadb WITH OWNER gitea TEMPLATE template0 ENCODING UTF8 LC_COLLATE 'en_US.UTF-8' LC_CTYPE 'en_US.UTF-8'; <0x02> 配置 gitea 和 git 账户 #下载git安装包 wget -O gitea https://dl.gitea.com/gitea/1.19.0/gitea-1.19.0-linux-amd64 chmod +x gitea #添加git用户并修改权限 adduser git mkdir -p /var/lib/gitea/{custom,data,log} chown -R git:git /var/lib/gitea/ chmod -R 750 /var/lib/gitea/ mkdir /etc/gitea chown root:git /etc/gitea chmod 770 /etc/gitea 手动将下列语句加入/etc/profile文件 export GITEA_WORK_DIR=/var/lib/gitea/ (导出个全局变量)\n"><title>从零搭建一个gitea</title><link rel=canonical href=https://mlacookie.github.io/post/articles/2023/%E4%BB%8E0%E6%90%AD%E5%BB%BAgitea/><link rel=preconnect href=https://fonts.googleapis.com><link rel=preconnect href=https://fonts.gstatic.com crossorigin><link rel=preload as=style href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap"><link rel=stylesheet href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap"><link rel=stylesheet href=/scss/style.min.e62e09c60ba428a627e03568fa3df938f6a8224f815b5846f00816c17d4a0be4.css><meta property='og:title' content="从零搭建一个gitea"><meta property='og:description' content="<0x00> 安装组件 首先肯定要有台服务器嘛，系统倒问题不大，我用的是debian 11\n# 安装各种包前先更新是好文明 sudo apt update sudo apt upgrade # 安装git sudo apt install git # 安装mysql wget https://dev.mysql.com/get/mysql-apt-config_0.8.22-1_all.deb sudo dpkg -i mysql-apt-config_0.8.22-1_all.deb # 或者安装postgresql sudo apt install postgresql # 这里可能会跳出个界面，直接选最后的ok就可以 rm mysql-apt-config_0.8.22-1_all.deb sudo apt update sudo apt-get install mysql-server 安装mysql的时候会要求你设置数据库 root 账户密码的\n<0x01> 配置数据库 mysql 在/etc/mysql/mysql.conf.d/mysqld.cnf中加入bind-address = 127.0.0.1 这个配置文件的位置看版本，我这里的 mysql 版本是8.0.33 这个bind-address是控制 mysql 数据库允许远程访问的\n#先进入mysql控制台 mysql -u root -p` #输入你设置的root账户密码 #配置gitea的数据库 CREATE USER 'gitea' IDENTIFIED BY '密码'; #这里写的‘密码’是你想设置的密码 CREATE DATABASE giteadb CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci'; GRANT ALL PRIVILEGES ON giteadb.* TO 'gitea'; FLUSH PRIVILEGES; exit postgresql # 进入postgre控制台 sudo -u postgres psql # 密码尽量改一下 CREATE ROLE gitea WITH LOGIN PASSWORD 'gitea'; # 创建数据库 CREATE DATABASE giteadb WITH OWNER gitea TEMPLATE template0 ENCODING UTF8 LC_COLLATE 'en_US.UTF-8' LC_CTYPE 'en_US.UTF-8'; <0x02> 配置 gitea 和 git 账户 #下载git安装包 wget -O gitea https://dl.gitea.com/gitea/1.19.0/gitea-1.19.0-linux-amd64 chmod +x gitea #添加git用户并修改权限 adduser git mkdir -p /var/lib/gitea/{custom,data,log} chown -R git:git /var/lib/gitea/ chmod -R 750 /var/lib/gitea/ mkdir /etc/gitea chown root:git /etc/gitea chmod 770 /etc/gitea 手动将下列语句加入/etc/profile文件 export GITEA_WORK_DIR=/var/lib/gitea/ (导出个全局变量)\n"><meta property='og:url' content='https://mlacookie.github.io/post/articles/2023/%E4%BB%8E0%E6%90%AD%E5%BB%BAgitea/'><meta property='og:site_name' content='MLAcookie'><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:tag' content='Server'><meta property='article:tag' content='Gitea'><meta property='article:published_time' content='2023-04-20T23:05:44+00:00'><meta property='article:modified_time' content='2023-04-20T23:05:44+00:00'><meta name=twitter:title content="从零搭建一个gitea"><meta name=twitter:description content="<0x00> 安装组件 首先肯定要有台服务器嘛，系统倒问题不大，我用的是debian 11\n# 安装各种包前先更新是好文明 sudo apt update sudo apt upgrade # 安装git sudo apt install git # 安装mysql wget https://dev.mysql.com/get/mysql-apt-config_0.8.22-1_all.deb sudo dpkg -i mysql-apt-config_0.8.22-1_all.deb # 或者安装postgresql sudo apt install postgresql # 这里可能会跳出个界面，直接选最后的ok就可以 rm mysql-apt-config_0.8.22-1_all.deb sudo apt update sudo apt-get install mysql-server 安装mysql的时候会要求你设置数据库 root 账户密码的\n<0x01> 配置数据库 mysql 在/etc/mysql/mysql.conf.d/mysqld.cnf中加入bind-address = 127.0.0.1 这个配置文件的位置看版本，我这里的 mysql 版本是8.0.33 这个bind-address是控制 mysql 数据库允许远程访问的\n#先进入mysql控制台 mysql -u root -p` #输入你设置的root账户密码 #配置gitea的数据库 CREATE USER 'gitea' IDENTIFIED BY '密码'; #这里写的‘密码’是你想设置的密码 CREATE DATABASE giteadb CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci'; GRANT ALL PRIVILEGES ON giteadb.* TO 'gitea'; FLUSH PRIVILEGES; exit postgresql # 进入postgre控制台 sudo -u postgres psql # 密码尽量改一下 CREATE ROLE gitea WITH LOGIN PASSWORD 'gitea'; # 创建数据库 CREATE DATABASE giteadb WITH OWNER gitea TEMPLATE template0 ENCODING UTF8 LC_COLLATE 'en_US.UTF-8' LC_CTYPE 'en_US.UTF-8'; <0x02> 配置 gitea 和 git 账户 #下载git安装包 wget -O gitea https://dl.gitea.com/gitea/1.19.0/gitea-1.19.0-linux-amd64 chmod +x gitea #添加git用户并修改权限 adduser git mkdir -p /var/lib/gitea/{custom,data,log} chown -R git:git /var/lib/gitea/ chmod -R 750 /var/lib/gitea/ mkdir /etc/gitea chown root:git /etc/gitea chmod 770 /etc/gitea 手动将下列语句加入/etc/profile文件 export GITEA_WORK_DIR=/var/lib/gitea/ (导出个全局变量)\n"><link rel="shortcut icon" href=favicon.webp></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.setItem(e,"dark")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar.png width=640 height=640 class=site-logo loading=lazy alt=Avatar>
+</a><span class=emoji>🤯</span></figure><div class=site-meta><h1 class=site-name><a href=/>MLAcookie</a></h1><h2 class=site-description>随便记点东西的记事本</h2></div></header><ol class=menu-social><li><a href=https://space.bilibili.com/13629146 title=MLA_cookie@Bilibili rel=me><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-bilibili"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 10a4 4 0 014-4h10a4 4 0 014 4v6a4 4 0 01-4 4H7a4 4 0 01-4-4v-6z"/><path d="M8 3l2 3"/><path d="M16 3l-2 3"/><path d="M9 13v-2"/><path d="M15 11v2"/></svg></a></li><li><a href=https://github.com/MLAcookie title=MLAcookie@Github rel=me><svg class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
+<span>Home</span></a></li><li><a href=/page/archives/><svg class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+<span>Archives</span></a></li><li><a href=/page/search/><svg class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg>
+<span>Search</span></a></li><li><a href=/page/links/><svg class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M10 14a3.5 3.5.0 005 0l4-4a3.5 3.5.0 00-5-5l-.5.5"/><path d="M14 10a3.5 3.5.0 00-5 0l-4 4a3.5 3.5.0 005 5l.5-.5"/></svg>
+<span>Links</span></a></li><li><a href=/page/about/><svg class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg>
+<span>About</span></a></li><li class=menu-bottom-section><ol class=menu></ol></li></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">目录</h2><div class=widget--toc><nav class=toc-nav id=TableOfContents><ul><li><a href=#0x00-安装组件>&lt;0x00> 安装组件</a></li><li><a href=#0x01-配置数据库>&lt;0x01> 配置数据库</a><ul><li><a href=#mysql>mysql</a></li><li><a href=#postgresql>postgresql</a></li></ul></li><li><a href=#0x02-配置-gitea-和-git-账户>&lt;0x02> 配置 gitea 和 git 账户</a></li><li><a href=#0x03-网页配置>&lt;0x03> 网页配置</a></li><li><a href=#0x04-收尾配置>&lt;0x04> 收尾配置</a></li><li><a href=#附录gitservice>附录：git.service</a></li></ul></nav></div></section></aside><main class="main full-width"><article class=main-article><header class=article-header><div class=article-details><div class=article-title-wrapper><h2 class=article-title><a href=/post/articles/2023/%E4%BB%8E0%E6%90%AD%E5%BB%BAgitea/>从零搭建一个gitea</a></h2></div><footer class=article-meta><div class=inline-meta><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
+<time class=article-time--published datetime=2023-04-20T23:05:44Z>2023年4月20日星期四</time></div></footer></div></header><aside class=article-toc><details><summary><div class=article-toc-title><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-chevron-right"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 6l6 6-6 6"/></svg>
+<span>目录</span></div></summary><nav class=toc-nav><ul><li><a href=#0x00-安装组件>&lt;0x00> 安装组件</a></li><li><a href=#0x01-配置数据库>&lt;0x01> 配置数据库</a><ul><li><a href=#mysql>mysql</a></li><li><a href=#postgresql>postgresql</a></li></ul></li><li><a href=#0x02-配置-gitea-和-git-账户>&lt;0x02> 配置 gitea 和 git 账户</a></li><li><a href=#0x03-网页配置>&lt;0x03> 网页配置</a></li><li><a href=#0x04-收尾配置>&lt;0x04> 收尾配置</a></li><li><a href=#附录gitservice>附录：git.service</a></li></ul></nav></details></aside><section class=article-content><h2 id=0x00-安装组件>&lt;0x00> 安装组件</h2><p>首先肯定要有台服务器嘛，系统倒问题不大，我用的是<code>debian 11</code></p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-shell data-lang=shell><span style=display:flex><span><span style=color:#75715e># 安装各种包前先更新是好文明  </span>
+</span></span><span style=display:flex><span>sudo apt update  
+</span></span><span style=display:flex><span>sudo apt upgrade
+</span></span><span style=display:flex><span><span style=color:#75715e># 安装git  </span>
+</span></span><span style=display:flex><span>sudo apt install git
+</span></span><span style=display:flex><span><span style=color:#75715e># 安装mysql  </span>
+</span></span><span style=display:flex><span>wget https://dev.mysql.com/get/mysql-apt-config_0.8.22-1_all.deb
+</span></span><span style=display:flex><span>sudo dpkg -i mysql-apt-config_0.8.22-1_all.deb
+</span></span><span style=display:flex><span><span style=color:#75715e># 或者安装postgresql</span>
+</span></span><span style=display:flex><span>sudo apt install postgresql
+</span></span><span style=display:flex><span><span style=color:#75715e># 这里可能会跳出个界面，直接选最后的ok就可以</span>
+</span></span><span style=display:flex><span>rm mysql-apt-config_0.8.22-1_all.deb
+</span></span><span style=display:flex><span>sudo apt update
+</span></span><span style=display:flex><span>sudo apt-get install mysql-server
+</span></span></code></pre></div><p>安装<code>mysql</code>的时候会要求你设置数据库 root 账户密码的</p><h2 id=0x01-配置数据库>&lt;0x01> 配置数据库</h2><h3 id=mysql>mysql</h3><p>在<code>/etc/mysql/mysql.conf.d/mysqld.cnf</code>中加入<code>bind-address = 127.0.0.1</code>
+这个配置文件的位置看版本，我这里的 mysql 版本是8.0.33
+这个<code>bind-address</code>是控制 mysql 数据库允许远程访问的</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-shell data-lang=shell><span style=display:flex><span><span style=color:#75715e>#先进入mysql控制台  </span>
+</span></span><span style=display:flex><span>mysql -u root -p<span style=color:#e6db74>`</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#输入你设置的root账户密码</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#配置gitea的数据库  </span>
+</span></span><span style=display:flex><span>CREATE USER <span style=color:#e6db74>&#39;gitea&#39;</span> IDENTIFIED BY <span style=color:#e6db74>&#39;密码&#39;</span>;
+</span></span><span style=display:flex><span><span style=color:#75715e>#这里写的‘密码’是你想设置的密码</span>
+</span></span><span style=display:flex><span>CREATE DATABASE giteadb CHARACTER SET <span style=color:#e6db74>&#39;utf8mb4&#39;</span> COLLATE <span style=color:#e6db74>&#39;utf8mb4_unicode_ci&#39;</span>;
+</span></span><span style=display:flex><span>GRANT ALL PRIVILEGES ON giteadb.* TO <span style=color:#e6db74>&#39;gitea&#39;</span>;
+</span></span><span style=display:flex><span>FLUSH PRIVILEGES;
+</span></span><span style=display:flex><span>exit
+</span></span></code></pre></div><h3 id=postgresql>postgresql</h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-shell data-lang=shell><span style=display:flex><span><span style=color:#75715e># 进入postgre控制台</span>
+</span></span><span style=display:flex><span>sudo -u postgres psql
+</span></span><span style=display:flex><span><span style=color:#75715e># 密码尽量改一下</span>
+</span></span><span style=display:flex><span>CREATE ROLE gitea WITH LOGIN PASSWORD <span style=color:#e6db74>&#39;gitea&#39;</span>;
+</span></span><span style=display:flex><span><span style=color:#75715e># 创建数据库</span>
+</span></span><span style=display:flex><span>CREATE DATABASE giteadb WITH OWNER gitea TEMPLATE template0 ENCODING UTF8 LC_COLLATE <span style=color:#e6db74>&#39;en_US.UTF-8&#39;</span> LC_CTYPE <span style=color:#e6db74>&#39;en_US.UTF-8&#39;</span>;
+</span></span></code></pre></div><h2 id=0x02-配置-gitea-和-git-账户>&lt;0x02> 配置 gitea 和 git 账户</h2><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-shell data-lang=shell><span style=display:flex><span><span style=color:#75715e>#下载git安装包</span>
+</span></span><span style=display:flex><span>wget -O gitea https://dl.gitea.com/gitea/1.19.0/gitea-1.19.0-linux-amd64
+</span></span><span style=display:flex><span>chmod +x gitea
+</span></span><span style=display:flex><span><span style=color:#75715e>#添加git用户并修改权限  </span>
+</span></span><span style=display:flex><span>adduser git
+</span></span><span style=display:flex><span>mkdir -p /var/lib/gitea/<span style=color:#f92672>{</span>custom,data,log<span style=color:#f92672>}</span>
+</span></span><span style=display:flex><span>chown -R git:git /var/lib/gitea/
+</span></span><span style=display:flex><span>chmod -R <span style=color:#ae81ff>750</span> /var/lib/gitea/
+</span></span><span style=display:flex><span>mkdir /etc/gitea
+</span></span><span style=display:flex><span>chown root:git /etc/gitea
+</span></span><span style=display:flex><span>chmod <span style=color:#ae81ff>770</span> /etc/gitea
+</span></span></code></pre></div><p>手动将下列语句加入<code>/etc/profile</code>文件
+<code>export GITEA_WORK_DIR=/var/lib/gitea/</code>
+(导出个全局变量)</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-shell data-lang=shell><span style=display:flex><span><span style=color:#75715e>#一些剩下的操作  </span>
+</span></span><span style=display:flex><span>cp gitea /usr/local/bin/gitea
+</span></span><span style=display:flex><span>sudo vim /etc/systemd/system/gitea.service
+</span></span><span style=display:flex><span><span style=color:#75715e>#将gitea.service的内容复制进去，并取消一些服务的注释，如mysql的</span>
+</span></span><span style=display:flex><span>sudo systemctl enable gitea
+</span></span><span style=display:flex><span>sudo systemctl start gitea
+</span></span></code></pre></div><p>现在访问<code>(你的ip):3000</code>应该是能看到<code>gitea</code>的网页了</p><h2 id=0x03-网页配置>&lt;0x03> 网页配置</h2><p>在网页的安装界面，你需要设置你的数据库用户和用户密码<br>然后指定数据库名字</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-txt data-lang=txt><span style=display:flex><span>#本次配置的值
+</span></span><span style=display:flex><span>数据库用户：gitea
+</span></span><span style=display:flex><span>用户密码：(之前给gitea设置的密码)
+</span></span><span style=display:flex><span>数据库名称：giteadb
+</span></span></code></pre></div><p>记得在网页最后那里设置管理员账户<br>(不在这配置也行，理论上第一个创建的账户就是管理员)<br>创建新用户后记得绑定 sshkey，这样就可以用 ssh 的 clone 地址了</p><h2 id=0x04-收尾配置>&lt;0x04> 收尾配置</h2><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-shell data-lang=shell><span style=display:flex><span><span style=color:#75715e>#最后记得把一些权限修改回来</span>
+</span></span><span style=display:flex><span>chmod <span style=color:#ae81ff>750</span> /etc/gitea
+</span></span><span style=display:flex><span>chmod <span style=color:#ae81ff>640</span> /etc/gitea/app.ini
+</span></span></code></pre></div><h2 id=附录gitservice>附录：git.service</h2><p>用什么数据库就取消注释哪一行</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-shell data-lang=shell><span style=display:flex><span><span style=color:#75715e># git.service</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>[</span>Unit<span style=color:#f92672>]</span>
+</span></span><span style=display:flex><span>Description<span style=color:#f92672>=</span>Gitea <span style=color:#f92672>(</span>Git with a cup of tea<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>After<span style=color:#f92672>=</span>syslog.target
+</span></span><span style=display:flex><span>After<span style=color:#f92672>=</span>network.target
+</span></span><span style=display:flex><span><span style=color:#75715e>###</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Don&#39;t forget to add the database service dependencies</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>###</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#Wants=mysql.service</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#After=mysql.service</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#Wants=mariadb.service</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#After=mariadb.service</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#Wants=postgresql.service</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#After=postgresql.service</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#Wants=memcached.service</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#After=memcached.service</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#Wants=redis.service</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#After=redis.service</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>###</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># If using socket activation for main http/s</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>###</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#After=gitea.main.socket</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#Requires=gitea.main.socket</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>###</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># (You can also provide gitea an http fallback and/or ssh socket too)</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># An example of /etc/systemd/system/gitea.main.socket</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>###</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>##</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>## [Unit]</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>## Description=Gitea Web Socket</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>## PartOf=gitea.service</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>##</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>## [Socket]</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>## Service=gitea.service</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>## ListenStream=&lt;some_port&gt;</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>## NoDelay=true</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>##</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>## [Install]</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>## WantedBy=sockets.target</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>##</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>###</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>[</span>Service<span style=color:#f92672>]</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Uncomment the next line if you have repos with lots of files and get a HTTP 500 error because of that</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># LimitNOFILE=524288:524288</span>
+</span></span><span style=display:flex><span>RestartSec<span style=color:#f92672>=</span>2s
+</span></span><span style=display:flex><span>Type<span style=color:#f92672>=</span>simple
+</span></span><span style=display:flex><span>User<span style=color:#f92672>=</span>git
+</span></span><span style=display:flex><span>Group<span style=color:#f92672>=</span>git
+</span></span><span style=display:flex><span>WorkingDirectory<span style=color:#f92672>=</span>/var/lib/gitea/
+</span></span><span style=display:flex><span><span style=color:#75715e># If using Unix socket: tells systemd to create the /run/gitea folder, which will contain the gitea.sock file</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># (manually creating /run/gitea doesn&#39;t work, because it would not persist across reboots)</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#RuntimeDirectory=gitea</span>
+</span></span><span style=display:flex><span>ExecStart<span style=color:#f92672>=</span>/usr/local/bin/gitea web --config /etc/gitea/app.ini
+</span></span><span style=display:flex><span>Restart<span style=color:#f92672>=</span>always
+</span></span><span style=display:flex><span>Environment<span style=color:#f92672>=</span>USER<span style=color:#f92672>=</span>git HOME<span style=color:#f92672>=</span>/home/git GITEA_WORK_DIR<span style=color:#f92672>=</span>/var/lib/gitea
+</span></span><span style=display:flex><span><span style=color:#75715e># If you install Git to directory prefix other than default PATH (which happens</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># for example if you install other versions of Git side-to-side with</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># distribution version), uncomment below line and add that prefix to PATH</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Don&#39;t forget to place git-lfs binary on the PATH below if you want to enable</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Git LFS support</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#Environment=PATH=/path/to/git/bin:/bin:/sbin:/usr/bin:/usr/sbin</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># If you want to bind Gitea to a port below 1024, uncomment</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># the two values below, or use socket activation to pass Gitea its ports as above</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>###</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#CapabilityBoundingSet=CAP_NET_BIND_SERVICE</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#AmbientCapabilities=CAP_NET_BIND_SERVICE</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>###</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># In some cases, when using CapabilityBoundingSet and AmbientCapabilities option, you may want to</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># set the following value to false to allow capabilities to be applied on gitea process. The following</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># value if set to true sandboxes gitea service and prevent any processes from running with privileges</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># in the host user namespace.</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>###</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#PrivateUsers=false</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>###</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>[</span>Install<span style=color:#f92672>]</span>
+</span></span><span style=display:flex><span>WantedBy<span style=color:#f92672>=</span>multi-user.target
+</span></span></code></pre></div><p>从gitea文档扒的</p></section><footer class="article-meta article-footer"><section class=article-tags><a href=/tags/server/>Server</a>
+<a href=/tags/gitea/>Gitea</a></section><section class="article-copyright inline-meta"><svg class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg>
+<span>CC BY-NC-SA 4.0</span></section></footer><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css integrity=sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV crossorigin=anonymous><script src=https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js integrity=sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8 crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js integrity=sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05 crossorigin=anonymous defer></script><script>window.addEventListener("DOMContentLoaded",()=>{const e=[".main-article",".widget--toc"];e.forEach(e=>{const t=document.querySelector(e);t&&renderMathInElement(t,{delimiters:[{left:"$$",right:"$$",display:!0},{left:"$",right:"$",display:!1},{left:"\\(",right:"\\)",display:!1},{left:"\\[",right:"\\]",display:!0}],ignoredClasses:["gist"]})})})</script></article><footer class=site-footer><section class=copyright>&copy;
+2023 -
+2026 MLAcookie</section><section class=powerby>使用 <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> 构建<br>主题 <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=4.0.3>Stack</a></b> 由 <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a> 设计</section></footer><script type=module>
+    import gallery from '\/ts\/gallery.js';
+
+    const articleContent = document.querySelector('.article-content');
+    const shouldLoad = articleContent && (articleContent.querySelectorAll('figure').length > 0 || articleContent.querySelectorAll('img.gallery-image').length > 0);
+    
+    if (shouldLoad) {
+        gallery(articleContent);
+
+        const PhotoSwipeLightbox = (await import("https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe-lightbox.esm.min.js")).default;
+        const styleHref = "https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe.css";
+
+        const styleTag = document.createElement('link');
+        styleTag.rel = 'stylesheet';
+        styleTag.href = styleHref;
+        document.head.appendChild(styleTag);
+
+        const lightbox = new PhotoSwipeLightbox({
+            gallerySelector: '.article-content',
+            childSelector: 'figure a.image-link',
+            pswpModule: () => import("https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe.esm.min.js")
+        });
+        lightbox.init();
+    }
+</script></main></div><script type=text/javascript src=/ts/main.f856840516f7c2ad1769a8f5937e3d08d6cb386e2cd2dd025ae696e0ff207958.js defer></script></body></html>

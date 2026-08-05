@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Unity on MLAcookie</title><link>https://mlacookie.github.io/tags/unity/</link><description>Recent content in Unity on MLAcookie</description><generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Fri, 23 May 2025 00:57:35 +0800</lastBuildDate><atom:link href="https://mlacookie.github.io/tags/unity/index.xml" rel="self" type="application/rss+xml"/><item><title>Unity中实现平面截断的效果</title><link>https://mlacookie.github.io/post/articles/2025/unity%E4%B8%AD%E5%AE%9E%E7%8E%B0%E5%B9%B3%E9%9D%A2%E6%88%AA%E6%96%AD%E7%9A%84%E6%95%88%E6%9E%9C/</link><pubDate>Fri, 23 May 2025 00:57:35 +0800</pubDate><guid>https://mlacookie.github.io/post/articles/2025/unity%E4%B8%AD%E5%AE%9E%E7%8E%B0%E5%B9%B3%E9%9D%A2%E6%88%AA%E6%96%AD%E7%9A%84%E6%95%88%E6%9E%9C/</guid><description>&lt;p&gt;有些时候我们希望让三维物体在一个面某方向上可以看到，另一方向不能看到&lt;br&gt;
+就像这样&lt;/p&gt;
+&lt;p&gt;这时候需要写一个shader来实现这个功能&lt;/p&gt;
+&lt;h2 id="0x01-原理"&gt;&amp;lt;0x01&amp;gt; 原理
+&lt;/h2&gt;&lt;p&gt;既然是某个面一侧可以显示，一侧不能显示&lt;br&gt;
+我们可以联想到判断面正反的量——法向&lt;/p&gt;
+&lt;p&gt;所谓法向是一个垂直于平面的向量，向量正方向表示平面正面&lt;br&gt;
+而我们知道，通过向量乘法，我们可以判断俩向量夹角是否小于90°&lt;br&gt;
+通过俩向量得出的值即可判断渲染的部分在面的正侧还是背侧&lt;/p&gt;
+&lt;h2 id="0x02-实现"&gt;&amp;lt;0x02&amp;gt; 实现
+&lt;/h2&gt;&lt;p&gt;这里通过Unity Shader Graph实现&lt;br&gt;
+通过Shader Graph可以很方便地继承URP自带的那几个Shader的效果&lt;br&gt;
+比如默认的Lit Shader&lt;/p&gt;
+&lt;p&gt;首先先新建一个Shader Graph&lt;br&gt;
+选择Lit Shader Graph
+&lt;img class="gallery-image" data-flex-basis="691px" data-flex-grow="287" height="406" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://mlacookie.github.io/post/articles/2025/unity%E4%B8%AD%E5%AE%9E%E7%8E%B0%E5%B9%B3%E9%9D%A2%E6%88%AA%E6%96%AD%E7%9A%84%E6%95%88%E6%9E%9C/picture/1.png" srcset="https://mlacookie.github.io/post/articles/2025/unity%E4%B8%AD%E5%AE%9E%E7%8E%B0%E5%B9%B3%E9%9D%A2%E6%88%AA%E6%96%AD%E7%9A%84%E6%95%88%E6%9E%9C/picture/1_hu_1440ebf72969e186.png 800w, https://mlacookie.github.io/post/articles/2025/unity%E4%B8%AD%E5%AE%9E%E7%8E%B0%E5%B9%B3%E9%9D%A2%E6%88%AA%E6%96%AD%E7%9A%84%E6%95%88%E6%9E%9C/picture/1.png 1169w" width="1169"&gt;&lt;/p&gt;
+&lt;p&gt;在Shader Graph中创建三个参数&lt;br&gt;
+&lt;img class="gallery-image" data-flex-basis="241px" data-flex-grow="100" height="241" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://mlacookie.github.io/post/articles/2025/unity%E4%B8%AD%E5%AE%9E%E7%8E%B0%E5%B9%B3%E9%9D%A2%E6%88%AA%E6%96%AD%E7%9A%84%E6%95%88%E6%9E%9C/picture/2.png" width="243"&gt;&lt;br&gt;
+在Graph Inspector的Graph Settings中打开Alpha Clipping，然后这样连接&lt;br&gt;
+&lt;img class="gallery-image" data-flex-basis="478px" data-flex-grow="199" height="815" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://mlacookie.github.io/post/articles/2025/unity%E4%B8%AD%E5%AE%9E%E7%8E%B0%E5%B9%B3%E9%9D%A2%E6%88%AA%E6%96%AD%E7%9A%84%E6%95%88%E6%9E%9C/picture/3.png" srcset="https://mlacookie.github.io/post/articles/2025/unity%E4%B8%AD%E5%AE%9E%E7%8E%B0%E5%B9%B3%E9%9D%A2%E6%88%AA%E6%96%AD%E7%9A%84%E6%95%88%E6%9E%9C/picture/3_hu_abd7060646f7c2c3.png 800w, https://mlacookie.github.io/post/articles/2025/unity%E4%B8%AD%E5%AE%9E%E7%8E%B0%E5%B9%B3%E9%9D%A2%E6%88%AA%E6%96%AD%E7%9A%84%E6%95%88%E6%9E%9C/picture/3_hu_5bd4a6642c3c62c6.png 1600w, https://mlacookie.github.io/post/articles/2025/unity%E4%B8%AD%E5%AE%9E%E7%8E%B0%E5%B9%B3%E9%9D%A2%E6%88%AA%E6%96%AD%E7%9A%84%E6%95%88%E6%9E%9C/picture/3.png 1625w" width="1625"&gt;&lt;/p&gt;
+&lt;p&gt;这里暴露3个参数&lt;br&gt;
+&lt;code&gt;PlanePosition&lt;/code&gt;表示平面的位置&lt;br&gt;
+&lt;code&gt;PlaneNormal&lt;/code&gt;表示平面法向方向&lt;br&gt;
+&lt;code&gt;BaseMap&lt;/code&gt;表示物体的材质&lt;/p&gt;
+&lt;p&gt;平面的参数需要通过脚本传入，所以要新建一个脚本，代码如下&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-cs" data-lang="cs"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;using&lt;/span&gt; UnityEngine;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// 让脚本可以在编辑模式中运行&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;[ExecuteInEditMode]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;class&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;PlaneCutShaderSetter&lt;/span&gt; : MonoBehaviour
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; Transform plane;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;private&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;static&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;readonly&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;int&lt;/span&gt; PlanePositionID = Shader.PropertyToID(&lt;span style="color:#e6db74"&gt;&amp;#34;_PlanePosition&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;private&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;static&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;readonly&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;int&lt;/span&gt; PlaneNormalID = Shader.PropertyToID(&lt;span style="color:#e6db74"&gt;&amp;#34;_PlaneNormal&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;private&lt;/span&gt; Renderer _renderer;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;private&lt;/span&gt; Material _material;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	&lt;span style="color:#75715e"&gt;// 通过Awake，使得添加脚本时自动更改材质&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;private&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; Awake()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; _renderer = GetComponent&amp;lt;Renderer&amp;gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; _renderer.material = &lt;span style="color:#66d9ef"&gt;new&lt;/span&gt; Material(Shader.Find(&lt;span style="color:#e6db74"&gt;&amp;#34;Shader Graphs/PlaneCutShader&amp;#34;&lt;/span&gt;));
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; _material = _renderer.sharedMaterial;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;private&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; Update()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (!plane) &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; _material.SetVector(PlanePositionID, plane.position);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; _material.SetVector(PlaneNormalID, plane.up);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	&lt;span style="color:#75715e"&gt;// 通过OnDestroy，使得销毁组件时更改材质为默认材质&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;private&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; OnDestroy()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; _renderer.material = &lt;span style="color:#66d9ef"&gt;new&lt;/span&gt; Material(Shader.Find(&lt;span style="color:#e6db74"&gt;&amp;#34;Universal Render Pipeline/Lit&amp;#34;&lt;/span&gt;));
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="0x03-测试"&gt;&amp;lt;0x03&amp;gt; 测试
+&lt;/h2&gt;&lt;p&gt;在场景中添加一个物体和一个平面&lt;br&gt;
+然后在物体上添加上面写的脚本组件&lt;br&gt;
+在组件中指定平面&lt;br&gt;
+效果如下&lt;br&gt;
+&lt;img class="gallery-image" data-flex-basis="495px" data-flex-grow="206" height="339" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://mlacookie.github.io/post/articles/2025/unity%E4%B8%AD%E5%AE%9E%E7%8E%B0%E5%B9%B3%E9%9D%A2%E6%88%AA%E6%96%AD%E7%9A%84%E6%95%88%E6%9E%9C/picture/4.png" width="700"&gt;&lt;br&gt;
+这就实现了简单的平面截断效果&lt;/p&gt;
+&lt;h2 id="0x04-优化"&gt;&amp;lt;0x04&amp;gt; 优化
+&lt;/h2&gt;&lt;h3 id="不指定平面情况"&gt;不指定平面情况
+&lt;/h3&gt;&lt;p&gt;目前的实现是要求给一个平面，如果不给的话显示会有问题&lt;br&gt;
+如果需要不指定平面就正常显示的话有两个思路&lt;/p&gt;
+&lt;p&gt;首先是给PlaneNormal和PlanePosition设定默认值&lt;br&gt;
+比如说PlanePosition设定默认值给一个很低的值，然后给PlaneNormal设定(0,1,0)&lt;/p&gt;
+&lt;p&gt;也可以修改Shader Graph，添加新的参数控制是否进行截断处理&lt;br&gt;
+&lt;img class="gallery-image" data-flex-basis="512px" data-flex-grow="213" height="835" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://mlacookie.github.io/post/articles/2025/unity%E4%B8%AD%E5%AE%9E%E7%8E%B0%E5%B9%B3%E9%9D%A2%E6%88%AA%E6%96%AD%E7%9A%84%E6%95%88%E6%9E%9C/picture/5.png" srcset="https://mlacookie.github.io/post/articles/2025/unity%E4%B8%AD%E5%AE%9E%E7%8E%B0%E5%B9%B3%E9%9D%A2%E6%88%AA%E6%96%AD%E7%9A%84%E6%95%88%E6%9E%9C/picture/5_hu_c3c492f2e19da76b.png 800w, https://mlacookie.github.io/post/articles/2025/unity%E4%B8%AD%E5%AE%9E%E7%8E%B0%E5%B9%B3%E9%9D%A2%E6%88%AA%E6%96%AD%E7%9A%84%E6%95%88%E6%9E%9C/picture/5_hu_c65a96d1154d8e49.png 1600w, https://mlacookie.github.io/post/articles/2025/unity%E4%B8%AD%E5%AE%9E%E7%8E%B0%E5%B9%B3%E9%9D%A2%E6%88%AA%E6%96%AD%E7%9A%84%E6%95%88%E6%9E%9C/picture/5.png 1784w" width="1784"&gt;&lt;br&gt;
+然后修改脚本代码，添加不指定平面的情况&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-cs" data-lang="cs"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;using&lt;/span&gt; UnityEngine;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;[ExecuteInEditMode]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;class&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;PlaneCutShaderSetter&lt;/span&gt; : MonoBehaviour
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; Transform plane;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;private&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;static&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;readonly&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;int&lt;/span&gt; CutEnableID = Shader.PropertyToID(&lt;span style="color:#e6db74"&gt;&amp;#34;_CutEnable&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;private&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;static&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;readonly&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;int&lt;/span&gt; PlanePositionID = Shader.PropertyToID(&lt;span style="color:#e6db74"&gt;&amp;#34;_PlanePosition&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;private&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;static&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;readonly&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;int&lt;/span&gt; PlaneNormalID = Shader.PropertyToID(&lt;span style="color:#e6db74"&gt;&amp;#34;_PlaneNormal&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;private&lt;/span&gt; Renderer _renderer;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;private&lt;/span&gt; Material _material;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;private&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; Awake()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; _renderer = GetComponent&amp;lt;Renderer&amp;gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; _renderer.material = &lt;span style="color:#66d9ef"&gt;new&lt;/span&gt; Material(Shader.Find(&lt;span style="color:#e6db74"&gt;&amp;#34;Shader Graphs/PlaneCutShader&amp;#34;&lt;/span&gt;));
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; _material = _renderer.sharedMaterial;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;private&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; Update()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (plane)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; _material.SetFloat(CutEnableID, &lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; _material.SetVector(PlanePositionID, plane.position);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; _material.SetVector(PlaneNormalID, plane.up);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;else&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; _material.SetFloat(CutEnableID, &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;private&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; OnDestroy()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; _renderer.material = &lt;span style="color:#66d9ef"&gt;new&lt;/span&gt; Material(Shader.Find(&lt;span style="color:#e6db74"&gt;&amp;#34;Universal Render Pipeline/Lit&amp;#34;&lt;/span&gt;));
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="需要指定多个平面的情况"&gt;需要指定多个平面的情况
+&lt;/h3&gt;&lt;p&gt;没啥特别好的办法，就是在Shader Graph中多复制几个平面判断&lt;br&gt;
+然后在脚本中传参&lt;br&gt;
+（因为我没找到办法实现数组类型传参）&lt;/p&gt;</description></item></channel></rss>

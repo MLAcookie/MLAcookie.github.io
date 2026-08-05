@@ -1,0 +1,407 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Linux on MLAcookie</title><link>https://mlacookie.github.io/tags/linux/</link><description>Recent content in Linux on MLAcookie</description><generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Fri, 10 Apr 2026 16:26:57 +0800</lastBuildDate><atom:link href="https://mlacookie.github.io/tags/linux/index.xml" rel="self" type="application/rss+xml"/><item><title>在WSL中配置Arch</title><link>https://mlacookie.github.io/post/articles/2026/%E5%9C%A8wsl%E4%B8%AD%E9%85%8D%E7%BD%AEarch/</link><pubDate>Fri, 10 Apr 2026 16:26:57 +0800</pubDate><guid>https://mlacookie.github.io/post/articles/2026/%E5%9C%A8wsl%E4%B8%AD%E9%85%8D%E7%BD%AEarch/</guid><description>&lt;p&gt;WSL可以非常轻松的创建需要的Linux开发环境&lt;br&gt;
+But I use Arch by the way&lt;br&gt;
+在WSL中安装Arch也是非常简单的，但要正常用，还需要一些配置&lt;/p&gt;
+&lt;p&gt;为什么选择Arch&lt;br&gt;
+因为Arch足够轻量，比起别的发行版，本身占用不大&lt;br&gt;
+并且有AUR这样丰富的软件源，不用在安装软件前先配置一遍软件源&lt;/p&gt;
+&lt;p&gt;首先是安装Arch&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;wsl --install archlinux --location [希望安装的位置]
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;WSL默认安装是在C盘的，但很多时候C盘的空间比较宝贵&lt;br&gt;
+这样安装可以让Arch的虚拟磁盘文件放在希望的位置&lt;/p&gt;
+&lt;p&gt;安装后，我们发现进去就是root，这对一些操作是不利的&lt;br&gt;
+权限过高，容易误操作把系统干烂&lt;br&gt;
+而且有些工具是不允许在root环境下运行的，比如&lt;code&gt;makepkg&lt;/code&gt;&lt;br&gt;
+所以第一步是先创建一个自己用的用户&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;useradd -m -G wheel &lt;span style="color:#f92672"&gt;[&lt;/span&gt;UserName&lt;span style="color:#f92672"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;passwd &lt;span style="color:#f92672"&gt;[&lt;/span&gt;UserName&lt;span style="color:#f92672"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 更新软件库&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;pacman -Syyu
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;pacman -S vi sudo
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;visudo
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 删除井号&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;%wheel ALL&lt;span style="color:#f92672"&gt;=(&lt;/span&gt;ALL&lt;span style="color:#f92672"&gt;)&lt;/span&gt; ALL
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;这里的&lt;code&gt;wheel&lt;/code&gt;用户组是Arch的默认用户组之一&lt;br&gt;
+这个用户组有权使用诸如&lt;code&gt;pacman&lt;/code&gt;等管理工具&lt;/p&gt;
+&lt;p&gt;然后配置WSL启动行为，让新创建的用户作为默认登入用户&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;vi /etc/wsl.conf
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 添加下列内容&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;[&lt;/span&gt;user&lt;span style="color:#f92672"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;default&lt;span style="color:#f92672"&gt;=[&lt;/span&gt;UserName&lt;span style="color:#f92672"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;这里再配置下AUR，这里选择&lt;code&gt;yay&lt;/code&gt;作为管理器&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;pacman -S base-devel git
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;git clone https://aur.archlinux.org/yay.git --depth&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;cd yay
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;makepkg -si
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;vi /etc/pacman.conf
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 删除井号&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;color
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;现在，WSL的Arch就配置完成了&lt;/p&gt;</description></item><item><title>简单配置zsh</title><link>https://mlacookie.github.io/post/articles/2024/%E7%AE%80%E5%8D%95%E9%85%8D%E7%BD%AEzsh/</link><pubDate>Thu, 24 Oct 2024 08:47:43 +0800</pubDate><guid>https://mlacookie.github.io/post/articles/2024/%E7%AE%80%E5%8D%95%E9%85%8D%E7%BD%AEzsh/</guid><description>&lt;p&gt;这篇文章主要是记录命令的，所以没啥原理讲解&lt;/p&gt;
+&lt;h2 id="0x01-安装zsh与插件"&gt;&amp;lt;0x01&amp;gt; 安装zsh与插件
+&lt;/h2&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Debian系&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sudo apt install zsh 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sudo apt install zsh-autosuggestions zsh-syntax-highlighting
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Arch系&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sudo pacman -S zsh
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sudo pacman -S zsh-autosuggestions zsh-syntax-highlighting
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="0x02-设置为默认shell"&gt;&amp;lt;0x02&amp;gt; 设置为默认shell
+&lt;/h2&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;chsh -s /usr/bin/zsh
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;重新shell进入zsh的初始配置界面&lt;/p&gt;
+&lt;h2 id="0x03-配置主题"&gt;&amp;lt;0x03&amp;gt; 配置主题
+&lt;/h2&gt;&lt;h3 id="通过git下载"&gt;通过git下载
+&lt;/h3&gt;&lt;p&gt;找个地方放这个主题&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;git clone --depth&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;1&lt;/span&gt; https://github.com/romkatv/powerlevel10k.git
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# github访问不上的话&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;git clone --depth&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;1&lt;/span&gt; https://gitee.com/romkatv/powerlevel10k.git
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;修改zsh启动行为&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;nano ~/.zshrc
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;然后把这些复制到最后&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;source &lt;span style="color:#f92672"&gt;[&lt;/span&gt;git下来的文件的目录&lt;span style="color:#f92672"&gt;]&lt;/span&gt;/powerlevel10k/powerlevel10k.zsh-theme
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="通过yay安装"&gt;通过yay安装
+&lt;/h3&gt;&lt;pre tabindex="0"&gt;&lt;code&gt;yay zsh-theme-powerlevel10k
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;然后把这些复制到&lt;code&gt;.zshrc&lt;/code&gt;最后&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;nano ~/.zshrc
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;source /usr/share/zsh-theme-powerlevel10k/powerlevel10k.zsh-theme
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="0x04-配置插件"&gt;&amp;lt;0x04&amp;gt; 配置插件
+&lt;/h2&gt;&lt;p&gt;apt和pacman的安装路径不同，导致需要添加的文本不同
+都是在&lt;code&gt;.zshrc&lt;/code&gt;最后添加&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Debian系&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Arch系&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;配置完重新启动下会话，应该就生效了&lt;/p&gt;</description></item><item><title>优雅配置pintos</title><link>https://mlacookie.github.io/post/categories/cs162/%E4%BC%98%E9%9B%85%E9%85%8D%E7%BD%AEpintos/</link><pubDate>Thu, 24 Oct 2024 00:40:35 +0800</pubDate><guid>https://mlacookie.github.io/post/categories/cs162/%E4%BC%98%E9%9B%85%E9%85%8D%E7%BD%AEpintos/</guid><description>&lt;p&gt;因为学校的操作系统课程设计要用这玩意，所以就要配置这个玩意&lt;br&gt;
+配置这玩意相对还是快的，但我也走了点弯路&lt;br&gt;
+如果图方便的话我还是建议用Docker方式安装&lt;br&gt;
+我的环境是WSL的Debian&lt;/p&gt;
+&lt;p&gt;我也会在&lt;a class="link" href="https://github.com/MLAcookie/Pintos-CourseProject" target="_blank" rel="noopener"
+ &gt;github&lt;/a&gt;上更新我的实现代码&lt;/p&gt;
+&lt;p&gt;之前参考的任务说明是&lt;a class="link" href="https://pkuflyingpig.gitbook.io/pintos" target="_blank" rel="noopener"
+ &gt;北大的pintos文档&lt;/a&gt;&lt;br&gt;
+但是学校给的代码是CS162最新的代码，里面代码结构变化很大&lt;br&gt;
+我决定还是保留之前写的lab1和lab2，但后面就只写学校的版本了&lt;br&gt;
+&lt;a class="link" href="https://pkuflyingpig.gitbook.io/pintos/getting-started/environment-setup" target="_blank" rel="noopener"
+ &gt;PKU-Docker&lt;/a&gt;&lt;br&gt;
+&lt;a class="link" href="https://github.com/Berkeley-CS162/cs162-workspace" target="_blank" rel="noopener"
+ &gt;Berkeley-Docker&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id="0x00-前置"&gt;&amp;lt;0x00&amp;gt; 前置
+&lt;/h2&gt;&lt;p&gt;需要配置WSL，然后安装Debian&lt;br&gt;
+目前的Debian版本是12&lt;br&gt;
+如果后面的版本遇到些gcc编译器问题的话就换老版本的Ubuntu LTS版本吧&lt;br&gt;
+然后需要git和稳定的&lt;code&gt;维图诺·普莱维特·奈特沃克&lt;/code&gt;&lt;/p&gt;
+&lt;h2 id="0x01-拉取pintos仓库"&gt;&amp;lt;0x01&amp;gt; 拉取pintos仓库
+&lt;/h2&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;git clone git://pintos-os.org/pintos-anon --depth&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;需要提前配置下git的proxy，不然可能会很慢&lt;/p&gt;
+&lt;p&gt;如果是ZJUT学生，做课设的话老师会给一个学校自己的gitlab链接&lt;br&gt;
+用那个链接克隆一个仓库即可&lt;br&gt;
+（其实克隆CS162的也可以，貌似链接年年换，这里就不贴了，Github一搜就有）&lt;/p&gt;
+&lt;h2 id="0x02-配置debian需要的软件包"&gt;&amp;lt;0x02&amp;gt; 配置Debian需要的软件包
+&lt;/h2&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 编译环境&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sudo apt install make build-essential
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# qemu模拟器&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sudo apt install qemu
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 安装调试器&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sudo apt install gdb
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;慢的话就换下apt的源&lt;/p&gt;
+&lt;h2 id="0x03-简单配置"&gt;&amp;lt;0x03&amp;gt; 简单配置
+&lt;/h2&gt;&lt;p&gt;修改&lt;code&gt;./threads/Make.vars&lt;/code&gt;中的&lt;code&gt;SIMULATOR&lt;/code&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-make" data-lang="make"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;SIMULATOR &lt;span style="color:#f92672"&gt;=&lt;/span&gt; --qemu
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;然后修改下&lt;code&gt;./utils/pintos&lt;/code&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-perl" data-lang="perl"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 104行左右&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;$sim &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;qemu&amp;#34;&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; &lt;span style="color:#f92672"&gt;!&lt;/span&gt;defined $sim;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;20年之后的linux貌似不会提供&lt;code&gt;stropts.h&lt;/code&gt;这个头文件&lt;br&gt;
+但我们直接系统里创建一个空的就可以了（注释掉也行）&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sudo nano /usr/include/stropts.h
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;随便输入点注释的东西然后保存就可以&lt;/p&gt;
+&lt;p&gt;再注释&lt;code&gt;./utils/squish-pty.c&lt;/code&gt;中下面的代码&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-c" data-lang="c"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// 大概在288行
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (&lt;span style="color:#a6e22e"&gt;isastream&lt;/span&gt; (slave))
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	&lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (&lt;span style="color:#a6e22e"&gt;ioctl&lt;/span&gt; (slave, I_PUSH, &lt;span style="color:#e6db74"&gt;&amp;#34;ptem&amp;#34;&lt;/span&gt;) &lt;span style="color:#f92672"&gt;&amp;lt;&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	&lt;span style="color:#f92672"&gt;||&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;ioctl&lt;/span&gt; (slave, I_PUSH, &lt;span style="color:#e6db74"&gt;&amp;#34;ldterm&amp;#34;&lt;/span&gt;) &lt;span style="color:#f92672"&gt;&amp;lt;&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	&lt;span style="color:#a6e22e"&gt;fail_io&lt;/span&gt; (&lt;span style="color:#e6db74"&gt;&amp;#34;ioctl&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;这样就可以了&lt;br&gt;
+（我不是很喜欢动path这种东西，网上说的其他修改貌似也都不是很关键）&lt;/p&gt;
+&lt;h2 id="0x04-尝试运行"&gt;&amp;lt;0x04&amp;gt; 尝试运行
+&lt;/h2&gt;&lt;p&gt;在工作路径&lt;code&gt;./src&lt;/code&gt;下面一条条执行&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 编译utils的文件&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;cd ./utils
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;make
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 回到./src&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;cd ..
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 编译内核&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;cd ./threads
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;make
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 进入编译好的内核文件夹&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;cd ./build
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 通过提供的脚本运行pintos&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;../../utils/pintos -- run alarm-multiple
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;理论上pintos就会运行了&lt;/p&gt;
+&lt;h2 id="0x05-在vscode中调试"&gt;&amp;lt;0x05&amp;gt; 在vscode中调试
+&lt;/h2&gt;&lt;p&gt;这部分参考了&lt;a class="link" href="https://github.com/huahuaxiaomuzhu/debug-my-pintos" target="_blank" rel="noopener"
+ &gt;这个仓库&lt;/a&gt;的配置文件&lt;/p&gt;
+&lt;p&gt;原本这个东西教程是在命令行用gdb调试&lt;br&gt;
+能调试但不方便&lt;br&gt;
+而vscode的C/C++插件的调试功能就是靠gdb实现的&lt;br&gt;
+我们能不能让vscode调用gdb连接到pintos进行调试呢？&lt;br&gt;
+答案是可以的，只是需要亿点配置&lt;/p&gt;
+&lt;h3 id="vscode连接wsl"&gt;vscode连接wsl
+&lt;/h3&gt;&lt;p&gt;这个在用vscode连接wsl的时候会跳提示，要求安装wsl的插件&lt;br&gt;
+安装就可以了&lt;br&gt;
+安装完会多很多插件，这是对的&lt;/p&gt;
+&lt;p&gt;点击左下角的图标，选择&lt;code&gt;connect to WSL&lt;/code&gt;&lt;br&gt;
+然后vscode就会自己配置远程环境，只要WSL网络正常&lt;/p&gt;
+&lt;h3 id="安装cc插件"&gt;安装C/C++插件
+&lt;/h3&gt;&lt;p&gt;跟平时不同的是，我们需要给WSL安装C/C++插件，不过这很简单&lt;br&gt;
+前面跟往常一样，先是搜索C++，然后安装插件&lt;br&gt;
+不同的是安装后，会提示要不要在远程WSL那边安装，安装就可以了&lt;br&gt;
+然后vscode就会自己装了，等就可以了&lt;br&gt;
+（vscode全自动）&lt;/p&gt;
+&lt;h3 id="tasksjson和launchjson"&gt;tasks.json和launch.json
+&lt;/h3&gt;&lt;h4 id="这俩是什么"&gt;这俩是什么
+&lt;/h4&gt;&lt;p&gt;如果是经常用vscode写C++的用户，多少对这玩意有点印象&lt;br&gt;
+这两个东西算是调试控制脚本和编译控制脚本&lt;br&gt;
+tasks控制怎么启动应用，launch控制怎么启动调试程序&lt;br&gt;
+这两个东西一般是在&lt;code&gt;./.vscode&lt;/code&gt;文件夹里面的&lt;br&gt;
+直接创建就好，vscode会自己识别的&lt;/p&gt;
+&lt;p&gt;如果理解的话可以跳过这部分直接从附录找写好的文件&lt;/p&gt;
+&lt;h4 id="配置tasksjson"&gt;配置tasks.json
+&lt;/h4&gt;&lt;p&gt;创建&lt;code&gt;tasks.json&lt;/code&gt;，然后输入这些东西&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-json" data-lang="json"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;#34;version&amp;#34;&lt;/span&gt;: &lt;span style="color:#e6db74"&gt;&amp;#34;2.0.0&amp;#34;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;#34;tasks&amp;#34;&lt;/span&gt;: [
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;#34;label&amp;#34;&lt;/span&gt;: &lt;span style="color:#e6db74"&gt;&amp;#34;[Lab1] compile&amp;#34;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;#34;type&amp;#34;&lt;/span&gt;: &lt;span style="color:#e6db74"&gt;&amp;#34;shell&amp;#34;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;#34;command&amp;#34;&lt;/span&gt;: &lt;span style="color:#e6db74"&gt;&amp;#34;make&amp;#34;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;#34;options&amp;#34;&lt;/span&gt;: {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;#34;cwd&amp;#34;&lt;/span&gt;: &lt;span style="color:#e6db74"&gt;&amp;#34;${workspaceFolder}/threads&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; },
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;#34;label&amp;#34;&lt;/span&gt;: &lt;span style="color:#e6db74"&gt;&amp;#34;[Lab1] Run In GDB Mode&amp;#34;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;#34;type&amp;#34;&lt;/span&gt;: &lt;span style="color:#e6db74"&gt;&amp;#34;shell&amp;#34;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;#34;isBackground&amp;#34;&lt;/span&gt;: &lt;span style="color:#66d9ef"&gt;true&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;#34;problemMatcher&amp;#34;&lt;/span&gt;: [
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;#34;pattern&amp;#34;&lt;/span&gt;: [
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;#34;regexp&amp;#34;&lt;/span&gt;: &lt;span style="color:#e6db74"&gt;&amp;#34;.&amp;#34;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;#34;file&amp;#34;&lt;/span&gt;: &lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;#34;location&amp;#34;&lt;/span&gt;: &lt;span style="color:#ae81ff"&gt;2&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;#34;message&amp;#34;&lt;/span&gt;: &lt;span style="color:#ae81ff"&gt;3&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; ],
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;#34;background&amp;#34;&lt;/span&gt;: {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;#34;activeOnStart&amp;#34;&lt;/span&gt;: &lt;span style="color:#66d9ef"&gt;true&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;#34;beginsPattern&amp;#34;&lt;/span&gt;: &lt;span style="color:#e6db74"&gt;&amp;#34;.&amp;#34;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;#34;endsPattern&amp;#34;&lt;/span&gt;: &lt;span style="color:#e6db74"&gt;&amp;#34;.&amp;#34;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; ],
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;#34;dependsOn&amp;#34;&lt;/span&gt;: [
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;[P1] compile&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; ],
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;#34;command&amp;#34;&lt;/span&gt;: &lt;span style="color:#e6db74"&gt;&amp;#34;../../utils/pintos -v -k --gdb -- run ${input:test_name}&amp;#34;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;#34;options&amp;#34;&lt;/span&gt;: {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;#34;cwd&amp;#34;&lt;/span&gt;: &lt;span style="color:#e6db74"&gt;&amp;#34;${workspaceFolder}/threads/build&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; ],
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;#34;inputs&amp;#34;&lt;/span&gt;: [
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;#34;id&amp;#34;&lt;/span&gt;: &lt;span style="color:#e6db74"&gt;&amp;#34;test_name&amp;#34;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;#34;type&amp;#34;&lt;/span&gt;: &lt;span style="color:#e6db74"&gt;&amp;#34;promptString&amp;#34;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;#34;description&amp;#34;&lt;/span&gt;: &lt;span style="color:#e6db74"&gt;&amp;#34;Name of the Test to Debug&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; ]
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;这里创建了两个task，一个负责编译，一个复制运行&lt;br&gt;
+如果是自己配置的话注意路径&lt;/p&gt;
+&lt;h4 id="配置launchjson"&gt;配置launch.json
+&lt;/h4&gt;&lt;p&gt;创建&lt;code&gt;launch.json&lt;/code&gt;，输入下面的东西&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-json" data-lang="json"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;#34;version&amp;#34;&lt;/span&gt;: &lt;span style="color:#e6db74"&gt;&amp;#34;0.2.0&amp;#34;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;#34;configurations&amp;#34;&lt;/span&gt;: [
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;#34;name&amp;#34;&lt;/span&gt;: &lt;span style="color:#e6db74"&gt;&amp;#34;[Lab1] Debug&amp;#34;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;#34;type&amp;#34;&lt;/span&gt;: &lt;span style="color:#e6db74"&gt;&amp;#34;cppdbg&amp;#34;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;#34;request&amp;#34;&lt;/span&gt;: &lt;span style="color:#e6db74"&gt;&amp;#34;launch&amp;#34;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;#34;program&amp;#34;&lt;/span&gt;: &lt;span style="color:#e6db74"&gt;&amp;#34;${workspaceFolder}/threads/build/kernel.o&amp;#34;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;#34;miDebuggerServerAddress&amp;#34;&lt;/span&gt;: &lt;span style="color:#e6db74"&gt;&amp;#34;127.0.0.1:1234&amp;#34;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;#34;preLaunchTask&amp;#34;&lt;/span&gt;: &lt;span style="color:#e6db74"&gt;&amp;#34;[P1] Run Test in GDB mode&amp;#34;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;#34;stopAtEntry&amp;#34;&lt;/span&gt;: &lt;span style="color:#66d9ef"&gt;false&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;#34;cwd&amp;#34;&lt;/span&gt;: &lt;span style="color:#e6db74"&gt;&amp;#34;${workspaceFolder}&amp;#34;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;#34;environment&amp;#34;&lt;/span&gt;: [],
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;#34;externalConsole&amp;#34;&lt;/span&gt;: &lt;span style="color:#66d9ef"&gt;false&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;#34;MIMode&amp;#34;&lt;/span&gt;: &lt;span style="color:#e6db74"&gt;&amp;#34;gdb&amp;#34;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;#34;setupCommands&amp;#34;&lt;/span&gt;: [
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;#34;text&amp;#34;&lt;/span&gt;: &lt;span style="color:#e6db74"&gt;&amp;#34;-enable-pretty-printing&amp;#34;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;#34;description&amp;#34;&lt;/span&gt;: &lt;span style="color:#e6db74"&gt;&amp;#34;Enable pretty-printing for gdb&amp;#34;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;#34;ignoreFailures&amp;#34;&lt;/span&gt;: &lt;span style="color:#66d9ef"&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; },
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;#34;text&amp;#34;&lt;/span&gt;: &lt;span style="color:#e6db74"&gt;&amp;#34;source -v ${workspaceFolder}/misc/gdb-macros&amp;#34;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;#34;description&amp;#34;&lt;/span&gt;: &lt;span style="color:#e6db74"&gt;&amp;#34;Import Pintos GDB macros file&amp;#34;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;#34;ignoreFailures&amp;#34;&lt;/span&gt;: &lt;span style="color:#66d9ef"&gt;false&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; ],
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;#34;symbolLoadInfo&amp;#34;&lt;/span&gt;: {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;#34;loadAll&amp;#34;&lt;/span&gt;: &lt;span style="color:#66d9ef"&gt;true&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;#34;exceptionList&amp;#34;&lt;/span&gt;: &lt;span style="color:#e6db74"&gt;&amp;#34;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; ]
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;记得注意路径&lt;/p&gt;
+&lt;h3 id="尝试运行"&gt;尝试运行
+&lt;/h3&gt;&lt;p&gt;首先在&lt;code&gt;./thread/init.c&lt;/code&gt;里面找到main，打个断点，然后运行&lt;br&gt;
+理论上这时候运行会让你选配置文件，选我们创建的debug配置&lt;br&gt;
+这时候就像运行别的C++项目一样，开始debug，体验好多了&lt;/p&gt;
+&lt;p&gt;需要注意的是，上面的配置仅针对lab1，后面的可能需要单独配置&lt;br&gt;
+（后面的我还没开始写）&lt;/p&gt;
+&lt;h2 id="0x06-配置test"&gt;&amp;lt;0x06&amp;gt; 配置Test
+&lt;/h2&gt;&lt;p&gt;因为没把pintos配置到path中，所以在&lt;code&gt;./thread/build&lt;/code&gt;下执行&lt;code&gt;make test&lt;/code&gt;会找不到pintos&lt;br&gt;
+有把pintos添加到path中就不用动这些东西&lt;br&gt;
+这时候就要修改&lt;code&gt;./test&lt;/code&gt;下面的&lt;code&gt;Make.tests&lt;/code&gt;文件&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-makefile" data-lang="makefile"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 大概在55行
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;TESTCMD &lt;span style="color:#f92672"&gt;=&lt;/span&gt; ../../utils/pintos -v -k -T &lt;span style="color:#66d9ef"&gt;$(&lt;/span&gt;TIMEOUT&lt;span style="color:#66d9ef"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;TESTCMD &lt;span style="color:#f92672"&gt;+=&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;$(&lt;/span&gt;SIMULATOR&lt;span style="color:#66d9ef"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;TESTCMD &lt;span style="color:#f92672"&gt;+=&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;$(&lt;/span&gt;PINTOSOPTS&lt;span style="color:#66d9ef"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;这样就可以了&lt;/p&gt;
+&lt;h2 id="警钟长鸣不要用arch编译"&gt;警钟长鸣：不要用Arch编译
+&lt;/h2&gt;&lt;p&gt;如果使用Arch编译这个东西的话可能会遇到loader.bin的大小有128M&lt;br&gt;
+而不是正常的512字节&lt;br&gt;
+不只是WSL中Arch会出现这个问题，物理机Manjaro也会这样&lt;br&gt;
+具体原因不是很清楚，我怀疑是gcc版本问题&lt;br&gt;
+我测试过Ubuntu22的gcc11和Debian12的gcc12，这两个都可以成功编译&lt;br&gt;
+但Arch的是gcc14，可能较高的gcc版本导致编译行为不符合预期&lt;br&gt;
+不过我暂时还没尝试在Arch中使用gcc11编译过 &lt;br&gt;
+（源码编译gcc时间太长了，就摸了）&lt;/p&gt;</description></item><item><title>机革本本装Linux</title><link>https://mlacookie.github.io/post/articles/2024/%E6%9C%BA%E9%9D%A9%E6%9C%AC%E6%9C%AC%E8%A3%85linux/</link><pubDate>Sun, 28 Jul 2024 12:47:37 +0800</pubDate><guid>https://mlacookie.github.io/post/articles/2024/%E6%9C%BA%E9%9D%A9%E6%9C%AC%E6%9C%AC%E8%A3%85linux/</guid><description>&lt;p&gt;暑假经典节目，与Linux大战300回合&lt;/p&gt;
+&lt;p&gt;这次我打算好好配置下Linux并作为日常使用&lt;br&gt;
+发行版的话我使用Manjaro，因为比Arch好配置，也有AUR的便捷&lt;br&gt;
+笔记本是机革的无界14+&lt;/p&gt;
+&lt;p&gt;因为是在笔记本上装，就没啥截图了&lt;/p&gt;
+&lt;h2 id="0x00-安装准备"&gt;&amp;lt;0x00&amp;gt; 安装准备
+&lt;/h2&gt;&lt;p&gt;简单来说，找个U盘，用Ventoy做启动盘，然后把Manjaro的ISO放进去就可以&lt;/p&gt;
+&lt;h3 id="选择你的桌面环境"&gt;选择你的桌面环境
+&lt;/h3&gt;&lt;p&gt;&lt;a class="link" href="https://manjaro.org/products/download/x86" target="_blank" rel="noopener"
+ &gt;ManjaroISO&lt;/a&gt;&lt;br&gt;
+选哪个桌面环境呢，我最后选择了KDE的版本&lt;br&gt;
+经过更新后，KDE的设计总算跟上时代了，颜值不错&lt;br&gt;
+并且KDE环境可设置选项也挺多的，自带很多实用小工具&lt;/p&gt;
+&lt;p&gt;其他的不是说不好，但确实不合适&lt;br&gt;
+Gnome一些习惯我适应不了，xfce不是很适合高分屏，其他的没试过&lt;/p&gt;
+&lt;h3 id="用ventoy做引导"&gt;用Ventoy做引导
+&lt;/h3&gt;&lt;p&gt;Ventoy可以直接引导ISO启动，然后通过ISO本身装系统&lt;br&gt;
+加上ISO格式的PE，完全可以当成PE用，并且装系统也很方便&lt;/p&gt;
+&lt;p&gt;如果有装Scoop或Winget，直接敲命令安装&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Scoop&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;scoop install ventoy
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Winget&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;winget install Ventoy.Ventoy
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;没有的话就自己下载吧&lt;br&gt;
+&lt;a class="link" href="https://www.ventoy.net/en/download.html" target="_blank" rel="noopener"
+ &gt;Ventoy下载&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;下载完后，找个U盘，打开Ventoy，安装即可&lt;br&gt;
+安装好后，把下载好的ISO拖进U盘就可以&lt;/p&gt;
+&lt;h2 id="0x01-安装manjaro"&gt;&amp;lt;0x01&amp;gt; 安装Manjaro
+&lt;/h2&gt;&lt;p&gt;U盘插上笔记本，开机，狂按那几个进BIOS的键&lt;br&gt;
+（&lt;code&gt;ESC&lt;/code&gt;，&lt;code&gt;F1&lt;/code&gt;，&lt;code&gt;F2&lt;/code&gt;，&lt;code&gt;F3&lt;/code&gt;，&lt;code&gt;F10&lt;/code&gt;，&lt;code&gt;F11&lt;/code&gt;，&lt;code&gt;F12&lt;/code&gt;，&lt;code&gt;DEL&lt;/code&gt;）&lt;br&gt;
+进BIOS后，选择U盘启动&lt;br&gt;
+会进入Ventoy的引导界面，选择之前导入的ISO&lt;/p&gt;
+&lt;p&gt;然后系统会从ISO启动，进入Manjaro的启动界面&lt;br&gt;
+这里它默认会使用开源驱动启动（&lt;code&gt;Boot with open source drivers&lt;/code&gt;）&lt;br&gt;
+我建议是按&lt;code&gt;↓&lt;/code&gt;方向键，选择使用专有驱动启动（&lt;code&gt;Boot with proprietary drivers&lt;/code&gt;）&lt;br&gt;
+这样的话之后安装的也是专有驱动，遇到的驱动问题会少点&lt;/p&gt;
+&lt;p&gt;Manjaro安装环境正式启动后，你可以先试试看这个系统&lt;br&gt;
+如果发现系统元素很小，而且调整系统缩放会导致比例很奇怪&lt;br&gt;
+这个没什么办法，因为安装环境下使用的窗口服务是X11，对高分辨率支持不是很好&lt;br&gt;
+不过安装后就可以用新的Wayland启动了，这个对高分辨率支持不错的&lt;/p&gt;
+&lt;p&gt;确定要安装后，就可以双击安装器进行安装，这个跟着安装器指引就可以&lt;br&gt;
+安装完重启，就可以进入Manjaro系统了&lt;/p&gt;
+&lt;h2 id="0x02-安装完要干的事"&gt;&amp;lt;0x02&amp;gt; 安装完要干的事
+&lt;/h2&gt;&lt;h3 id="配置速度快的源"&gt;配置速度快的源
+&lt;/h3&gt;&lt;p&gt;Manjaro内置自动配置快速软件源的工具&lt;br&gt;
+打开终端&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sudo pacman-mirrors -g
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;执行即可，就是因为要把世界上所有源都试一遍，所以等待时间会有点久&lt;/p&gt;
+&lt;h3 id="更新所有的包"&gt;更新所有的包
+&lt;/h3&gt;&lt;p&gt;可以通过&lt;code&gt;升级/删除软件包&lt;/code&gt;用图形化界面更新所有的包&lt;br&gt;
+也可以敲命令&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sudo pacman -Syyu
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;顺便也可以看看前面配置的源的速度&lt;/p&gt;
+&lt;h3 id="安装yay"&gt;安装yay
+&lt;/h3&gt;&lt;p&gt;yay是AUR的管理器，需要注意的是，AUR并非Arch官方维护，需要自己甄别软件的安全性&lt;br&gt;
+不过也正是这样，通过AUR可以非常轻松地获取其他软件&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sudo pacman -S yay base-devel
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;因为AUR的软件需要从源码编译，需要安装&lt;code&gt;base-devel&lt;/code&gt;提供一些基础的工具链&lt;/p&gt;
+&lt;p&gt;yay在安装软件时，会优先检索pacman中的内容，并且语法上跟pacman是一致的&lt;br&gt;
+所以之后软件的安装/升级/删除都可以交给yay&lt;br&gt;
+需要注意的是yay安装软件时不需要sudo，在需要权限提升时，它会要求输入密码的&lt;/p&gt;
+&lt;p&gt;然后安装软件的时候，如果后缀有带bin的，一般说明是二进制版本，优先选择这个&lt;br&gt;
+这样的话就不用从源代码编译了，安装会快很多&lt;/p&gt;
+&lt;h3 id="配置fcitx5"&gt;配置fcitx5
+&lt;/h3&gt;&lt;p&gt;&lt;code&gt;fcitx5&lt;/code&gt;是一个输入法框架，装上后再配置下就可以输入中文了&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sudo pacman -S fcitx5 fcitx5-configtool fcitx5-breeze fcitx5-chinese-addons fcitx5-gtk fcitx5-qt
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;安装好后，在系统设置内会多一个&lt;code&gt;输入法&lt;/code&gt;的页面，先启动下输入法&lt;br&gt;
+然后在&lt;code&gt;系统设置&amp;gt;&amp;gt;键盘&amp;gt;&amp;gt;虚拟键盘&lt;/code&gt;中选择&lt;code&gt;fcitx5&lt;/code&gt;即可&lt;br&gt;
+再在&lt;code&gt;输入法&amp;gt;&amp;gt;配置附加组件&lt;/code&gt;中稍微配置配置些主题之类的就可以了&lt;/p&gt;
+&lt;h4 id="为非wayland应用配置输入法"&gt;为非Wayland应用配置输入法
+&lt;/h4&gt;&lt;p&gt;目前的配置只能在使用Wayland的窗口中使用输入法&lt;br&gt;
+而Linux中仍有许多软件是跑在X11上的&lt;br&gt;
+对于这些软件我们需要通过环境变量让它们识别输入法&lt;br&gt;
+我这里是把环境变量写到&lt;code&gt;/etc/profile&lt;/code&gt;的方式实现&lt;/p&gt;
+&lt;p&gt;Manjaro的&lt;code&gt;/etc/profile&lt;/code&gt;实际上是遍历运行&lt;code&gt;/etc/profile.d&lt;/code&gt;文件夹的内容&lt;br&gt;
+所以最好是在&lt;code&gt;/etc/profile.d&lt;/code&gt;中新建文件，在里面写上环境变量&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;cd /etc/profile.d
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;nano set-fcitx5.sh
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;在文件中输入&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;export XMODIFIERS&lt;span style="color:#f92672"&gt;=&lt;/span&gt;@im&lt;span style="color:#f92672"&gt;=&lt;/span&gt;fcitx
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;保存退出后，重启系统，这块就配置好了&lt;br&gt;
+现在对于大部分运行在x11中的应用是处理完了&lt;br&gt;
+但对于部分软件，可能仍无法使用输入法，这就需要对软件单独配置环境变量&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 如果软件使用QT框架&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;QT_IM_MODULE&lt;span style="color:#f92672"&gt;=&lt;/span&gt;fcitx
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 如果软件使用GTK框架&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;GTK_IM_MODULE&lt;span style="color:#f92672"&gt;=&lt;/span&gt;fcitx
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;这两句虽然是可以直接塞在前面的配置文件中当全局变量，但官方不推荐&lt;/p&gt;
+&lt;h2 id="0x03-安装其他的软件"&gt;&amp;lt;0x03&amp;gt; 安装其他的软件
+&lt;/h2&gt;&lt;h3 id="vs-code"&gt;VS Code
+&lt;/h3&gt;&lt;p&gt;经常用的开发环境&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;yay visual-studio-code-bin
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;安装完修改启动参数来启用wayland&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;--enable-features&lt;span style="color:#f92672"&gt;=&lt;/span&gt;UseOzonePlatform
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;--ozone-platform&lt;span style="color:#f92672"&gt;=&lt;/span&gt;wayland
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;--enable-wayland-ime
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="edge"&gt;Edge
+&lt;/h3&gt;&lt;p&gt;目前我的大部分浏览器数据在Edge上&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;yay microsoft-edge-stable-bin
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;安装完修改启动参数来启用wayland，参数跟上面的&lt;code&gt;VS Code&lt;/code&gt;一样&lt;/p&gt;
+&lt;h3 id="hiddify"&gt;hiddify
+&lt;/h3&gt;&lt;p&gt;魔法学，不细讲&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;yay hiddify-next-bin
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="0x04-其他实用命令"&gt;&amp;lt;0x04&amp;gt; 其他实用命令
+&lt;/h2&gt;&lt;h3 id="删除不需要的依赖"&gt;删除不需要的依赖
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;yay -Rns &lt;span style="color:#66d9ef"&gt;$(&lt;/span&gt;yay -Qdt&lt;span style="color:#66d9ef"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="查看窗口运行服务"&gt;查看窗口运行服务
+&lt;/h3&gt;&lt;p&gt;对于高分屏，wayland的支持是好得多的&lt;br&gt;
+即使KDE跑x11应用时，由于允许应用自行缩放，所以大部分情况下还是清晰的&lt;br&gt;
+但跑在wayland下可以杜绝大部分控件缩放问题&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# qdbus可能不存在，改为qdbus6&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;qdbus org.kde.KWin /KWin org.kde.KWin.showDebugConsole
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;运行后会跳出一个小工具，用来查看所有窗口运行在哪个服务上&lt;/p&gt;
+&lt;h2 id="0x05-遇到的奇怪闪屏问题"&gt;&amp;lt;0x05&amp;gt; 遇到的奇怪闪屏问题
+&lt;/h2&gt;&lt;p&gt;不知道为什么，我安装完系统后发现系统总会有奇怪的闪屏&lt;br&gt;
+换了其他桌面系统后多少都会有点&lt;/p&gt;
+&lt;p&gt;在折腾了很多包之后，我大概定位到是AMD的2D驱动问题&lt;br&gt;
+AMD的显卡驱动很散，OpenGL驱动和Vulkan驱动都是分开装的&lt;br&gt;
+Manjaro默认不会装Xorg的2D加速驱动，这可能是导致奇怪闪屏的原因&lt;/p&gt;
+&lt;p&gt;安装的话很简单&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;yay -S xf86-video-amdgpu 
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;安装上之后，闪屏遇到的少了，但不能根除&lt;/p&gt;
+&lt;p&gt;不排除Vulkan驱动的问题，AMDGPU的节能选项的问题&lt;/p&gt;</description></item></channel></rss>

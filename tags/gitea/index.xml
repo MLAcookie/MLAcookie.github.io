@@ -1,0 +1,358 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Gitea on MLAcookie</title><link>https://mlacookie.github.io/tags/gitea/</link><description>Recent content in Gitea on MLAcookie</description><generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Sat, 06 Sep 2025 00:23:50 +0800</lastBuildDate><atom:link href="https://mlacookie.github.io/tags/gitea/index.xml" rel="self" type="application/rss+xml"/><item><title>Gitea中使用Action</title><link>https://mlacookie.github.io/post/articles/2025/gitea%E4%B8%AD%E4%BD%BF%E7%94%A8action/</link><pubDate>Sat, 06 Sep 2025 00:23:50 +0800</pubDate><guid>https://mlacookie.github.io/post/articles/2025/gitea%E4%B8%AD%E4%BD%BF%E7%94%A8action/</guid><description>&lt;p&gt;有老板赞助了我一台服务器，总算是能做Gitea Action了&lt;br&gt;
+（阿里99一年的性能太差了，没有做的意义）&lt;/p&gt;
+&lt;h2 id="0x01-gitea的action架构"&gt;&amp;lt;0x01&amp;gt; Gitea的Action架构
+&lt;/h2&gt;&lt;p&gt;Gitea中，Action并不是自带支持的&lt;br&gt;
+这很正常，毕竟Action要部署服务，自然是需要用到容器服务的&lt;br&gt;
+Gitea通过&lt;code&gt;act runner&lt;/code&gt;这个程序实现了Action的支持&lt;/p&gt;
+&lt;p&gt;这样可以将Gitea服务器与Runner服务器分离&lt;br&gt;
+而且也方便多添加几个Runner&lt;/p&gt;
+&lt;h2 id="0x02-如何配置"&gt;&amp;lt;0x02&amp;gt; 如何配置
+&lt;/h2&gt;&lt;p&gt;这个&lt;code&gt;act runner&lt;/code&gt;可以在本机运行，也可以通过Docker运行&lt;br&gt;
+为了确保最佳兼容性，这边选择通过Docker运行&lt;/p&gt;
+&lt;p&gt;首先是给服务器安装docker，这个每个系统都有自己的安装方式&lt;br&gt;
+需要注意的是，不要直接&lt;code&gt;apt install docker&lt;/code&gt;，尤其是Debian&lt;br&gt;
+因为Debian库中的Docker版本很老了，很可能导致些意外情况&lt;br&gt;
+建议按照官方文档安装Docker&lt;/p&gt;
+&lt;p&gt;这里通过docker-compose的方式配置&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;mkdir gitea-actrunner
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;cd gitea-actrunner
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;mkdir data &lt;span style="color:#75715e"&gt;# 如果要配置action/cache的话&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;nano docker-compose.yaml
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;配置文件如下&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-yaml" data-lang="yaml"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;version&lt;/span&gt;: &lt;span style="color:#e6db74"&gt;&amp;#34;3.8&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;services&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;act_runner&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;image&lt;/span&gt;: &lt;span style="color:#ae81ff"&gt;gitea/act_runner:latest&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;container_name&lt;/span&gt;: &lt;span style="color:#ae81ff"&gt;act_runner&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;restart&lt;/span&gt;: &lt;span style="color:#ae81ff"&gt;always&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;environment&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;		&lt;span style="color:#75715e"&gt;# 172.17.0.1是Docker容器访问宿主机的地址，3000是gitea默认端口号&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; - &lt;span style="color:#ae81ff"&gt;GITEA_INSTANCE_URL=http://172.17.0.1:3000&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	 &lt;span style="color:#75715e"&gt;# 这里输入你的注册Token&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; - &lt;span style="color:#ae81ff"&gt;GITEA_RUNNER_REGISTRATION_TOKEN=Your Registration token&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	 &lt;span style="color:#75715e"&gt;# 输入你希望给这个Runner的名字&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; - &lt;span style="color:#ae81ff"&gt;GITEA_RUNNER_NAME=Your runner name&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;		&lt;span style="color:#75715e"&gt;# 这里是建议的可用Runner标签&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; - &lt;span style="color:#ae81ff"&gt;GITEA_RUNNER_LABELS=ubuntu-latest:docker://node:16-bullseye,ubuntu-22.04:docker://node:16-bullseye,ubuntu-20.04:docker://node:16-bullseye,ubuntu-18.04:docker://node:16-buster&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; - &lt;span style="color:#ae81ff"&gt;CONFIG_FILE=/config.yaml&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;volumes&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; - &lt;span style="color:#ae81ff"&gt;./config.yaml:/config.yaml&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; - &lt;span style="color:#ae81ff"&gt;./data:/data&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; - &lt;span style="color:#ae81ff"&gt;/var/run/docker.sock:/var/run/docker.sock&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;然后&lt;code&gt;docker compose up&lt;/code&gt;即可启动&lt;br&gt;
+如果没报错，并且gitea的注册界面出现了新的runner就是成功&lt;/p&gt;
+&lt;h2 id="0x03-测试action"&gt;&amp;lt;0x03&amp;gt; 测试Action
+&lt;/h2&gt;&lt;p&gt;创建一个仓库，用来测试action&lt;br&gt;
+在仓库的&lt;code&gt;.gitea/workflow/&lt;/code&gt;下创建一个&lt;code&gt;.yaml&lt;/code&gt;文件&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-yaml" data-lang="yaml"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# demo.yaml&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;name&lt;/span&gt;: &lt;span style="color:#ae81ff"&gt;Gitea Actions Demo&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;run-name&lt;/span&gt;: &lt;span style="color:#ae81ff"&gt;${{ gitea.actor }} is testing out Gitea Actions 🚀&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;on&lt;/span&gt;: [&lt;span style="color:#ae81ff"&gt;push]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;jobs&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;Explore-Gitea-Actions&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;runs-on&lt;/span&gt;: &lt;span style="color:#ae81ff"&gt;ubuntu-latest&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;steps&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; - &lt;span style="color:#f92672"&gt;run&lt;/span&gt;: &lt;span style="color:#ae81ff"&gt;echo &amp;#34;🎉 The job was automatically triggered by a ${{ gitea.event_name }} event.&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; - &lt;span style="color:#f92672"&gt;run&lt;/span&gt;: &lt;span style="color:#ae81ff"&gt;echo &amp;#34;🐧 This job is now running on a ${{ runner.os }} server hosted by Gitea!&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; - &lt;span style="color:#f92672"&gt;run&lt;/span&gt;: &lt;span style="color:#ae81ff"&gt;echo &amp;#34;🔎 The name of your branch is ${{ gitea.ref }} and your repository is ${{ gitea.repository }}.&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; - &lt;span style="color:#f92672"&gt;name&lt;/span&gt;: &lt;span style="color:#ae81ff"&gt;Check out repository code&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;uses&lt;/span&gt;: &lt;span style="color:#ae81ff"&gt;actions/checkout@v4&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; - &lt;span style="color:#f92672"&gt;run&lt;/span&gt;: &lt;span style="color:#ae81ff"&gt;echo &amp;#34;💡 The ${{ gitea.repository }} repository has been cloned to the runner.&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; - &lt;span style="color:#f92672"&gt;run&lt;/span&gt;: &lt;span style="color:#ae81ff"&gt;echo &amp;#34;🖥️ The workflow is now ready to test your code on the runner.&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; - &lt;span style="color:#f92672"&gt;name&lt;/span&gt;: &lt;span style="color:#ae81ff"&gt;List files in the repository&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;run&lt;/span&gt;: |&lt;span style="color:#e6db74"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#e6db74"&gt; ls ${{ gitea.workspace }}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; - &lt;span style="color:#f92672"&gt;run&lt;/span&gt;: &lt;span style="color:#ae81ff"&gt;echo &amp;#34;🍏 This job&amp;#39;s status is ${{ job.status }}.&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="0x04-解决国内获取action脚本慢的问题"&gt;&amp;lt;0x04&amp;gt; 解决国内获取Action脚本慢的问题
+&lt;/h2&gt;&lt;p&gt;众所周知，国内访问Github有点小问题&lt;br&gt;
+而上面的用到了&lt;code&gt;actions/checkout@v4&lt;/code&gt;&lt;br&gt;
+这需要从Github上下载这个&lt;code&gt;checkout&lt;/code&gt;脚本&lt;br&gt;
+有些时候，访问就很慢了&lt;/p&gt;
+&lt;p&gt;可以在自己的gitea中把需要的脚本都Clone过来&lt;br&gt;
+这有些费时费力，但确实是最稳妥的方法&lt;/p&gt;
+&lt;p&gt;如果是快速测试能否使用Action，也可以用下面的方法&lt;br&gt;
+打开&lt;code&gt;config.yaml&lt;/code&gt;&lt;br&gt;
+修改下面的选项&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-yaml" data-lang="yaml"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# ...&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;runner&lt;/span&gt;: 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;# ...&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;github_mirror&lt;/span&gt;: &lt;span style="color:#e6db74"&gt;&amp;#39;https://gh-proxy.com/https://github.com&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;# ...&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# ...&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;这会指引&lt;code&gt;act runner&lt;/code&gt;通过镜像clone脚本&lt;br&gt;
+然后重启runner即可&lt;/p&gt;
+&lt;h2 id="0x05-为什么用docker运行"&gt;&amp;lt;0x05&amp;gt; 为什么用Docker运行
+&lt;/h2&gt;&lt;p&gt;本来我是想本地运行&lt;code&gt;act runner&lt;/code&gt;，但到这服务器的公网是NAT过来的，就行不通&lt;br&gt;
+为什么呢&lt;br&gt;
+首先NAT过来的公网是不能ping到自己的&lt;br&gt;
+也就是说，假设服务器的ip是&lt;code&gt;x.x.x.x&lt;/code&gt;&lt;br&gt;
+那么&lt;code&gt;ping x.x.x.x&lt;/code&gt;是没有结果的&lt;br&gt;
+这就导致在注册时，runner会找不到gitea&lt;/p&gt;
+&lt;p&gt;有人会说了，为什么不能用&lt;code&gt;127.0.0.1&lt;/code&gt;呢&lt;br&gt;
+这个也不行，这会导致容器内拉取不到gitea仓库&lt;br&gt;
+因为runner是在本机上，可以通过&lt;code&gt;127.0.0.1&lt;/code&gt;访问gitea&lt;br&gt;
+但容器的&lt;code&gt;127.0.0.1&lt;/code&gt;访问的就不是gitea了，是容器自己&lt;br&gt;
+除非指定runner运行job也在本机上&lt;br&gt;
+但这样又无法隔离不同的环境&lt;/p&gt;
+&lt;p&gt;所以说，通过Docker运行&lt;code&gt;act runner&lt;/code&gt;是兼容性最佳的方案&lt;/p&gt;</description></item><item><title>Gitea中使用LFS可能遇到的404问题</title><link>https://mlacookie.github.io/post/articles/2025/gitea%E4%B8%AD%E4%BD%BF%E7%94%A8lfs%E5%8F%AF%E8%83%BD%E9%81%87%E5%88%B0%E7%9A%84404%E9%97%AE%E9%A2%98/</link><pubDate>Sun, 04 May 2025 17:47:53 +0800</pubDate><guid>https://mlacookie.github.io/post/articles/2025/gitea%E4%B8%AD%E4%BD%BF%E7%94%A8lfs%E5%8F%AF%E8%83%BD%E9%81%87%E5%88%B0%E7%9A%84404%E9%97%AE%E9%A2%98/</guid><description>&lt;p&gt;最近在做一个项目&lt;br&gt;
+需要做版本管理，并且游戏项目嘛，二进制文件很多&lt;br&gt;
+Github免费LFS额度根本不够用，所以我搭了个Gitea服务器&lt;/p&gt;
+&lt;p&gt;然后就有很神秘的问题&lt;br&gt;
+我在从主分支fork的分支上做更改&lt;br&gt;
+然后每次同步主分支进度后本地pull时，会报LFS找不到目标文件&lt;br&gt;
+之前反正仓库不大，干脆重新clone了，这样也不是事&lt;/p&gt;
+&lt;p&gt;其实需要在Gitea中手动同步一下&lt;br&gt;
+（我目前不知道为啥这么设计）&lt;br&gt;
+找到fork的仓库，然后点击&lt;code&gt;设置&lt;/code&gt;&lt;br&gt;
+设置下面有个&lt;code&gt;LFS&lt;/code&gt;界面，有一个&lt;code&gt;查找指针文件&lt;/code&gt;的选项&lt;br&gt;
+点击这个选项后，可以检查这个仓库LFS指针情况&lt;br&gt;
+会有一个选项让Gitea自动寻找，点击就可以了
+（关联可访问的OID）&lt;br&gt;
+&lt;img class="gallery-image" data-flex-basis="401px" data-flex-grow="167" height="623" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://mlacookie.github.io/post/articles/2025/gitea%E4%B8%AD%E4%BD%BF%E7%94%A8lfs%E5%8F%AF%E8%83%BD%E9%81%87%E5%88%B0%E7%9A%84404%E9%97%AE%E9%A2%98/picture/1.png" srcset="https://mlacookie.github.io/post/articles/2025/gitea%E4%B8%AD%E4%BD%BF%E7%94%A8lfs%E5%8F%AF%E8%83%BD%E9%81%87%E5%88%B0%E7%9A%84404%E9%97%AE%E9%A2%98/picture/1_hu_464102760a1c4752.png 800w, https://mlacookie.github.io/post/articles/2025/gitea%E4%B8%AD%E4%BD%BF%E7%94%A8lfs%E5%8F%AF%E8%83%BD%E9%81%87%E5%88%B0%E7%9A%84404%E9%97%AE%E9%A2%98/picture/1.png 1041w" width="1041"&gt;
+然后在本地pull就不会报404了&lt;/p&gt;
+&lt;p&gt;我也不清楚Github之类的平台对LFS的支持情况，没用过&lt;br&gt;
+（之前真的只用git同步代码的）&lt;/p&gt;</description></item><item><title>搭建hexo+gitea的博客站</title><link>https://mlacookie.github.io/post/categories/blog/%E6%90%AD%E5%BB%BAhexo+gitea%E7%9A%84%E5%8D%9A%E5%AE%A2%E7%AB%99/</link><pubDate>Sun, 23 Apr 2023 15:50:19 +0000</pubDate><guid>https://mlacookie.github.io/post/categories/blog/%E6%90%AD%E5%BB%BAhexo+gitea%E7%9A%84%E5%8D%9A%E5%AE%A2%E7%AB%99/</guid><description>&lt;h2 id="0x00-为什么要用gitea--hexo"&gt;&amp;lt;0x00&amp;gt; 为什么要用gitea + hexo
+&lt;/h2&gt;&lt;p&gt;很简单，gitea 太好用了(才不是因为 git 配置太麻烦)&lt;br&gt;
+而且 hexo 的博客就是静态网页，基本不怎么耗费服务器资源&lt;br&gt;
+如此再搭个 gitea 正好还能当个代码仓库，岂不美哉&lt;/p&gt;
+&lt;h2 id="0x01-整体运行架构"&gt;&amp;lt;0x01&amp;gt; 整体运行架构
+&lt;/h2&gt;&lt;p&gt;就是 gitea 跑 git 仓库&lt;br&gt;
+然后利用 git hook 功能将仓库内容同步到服务器的另一个文件夹&lt;br&gt;
+hexo 的界面靠 nginx 反代
+本地写完靠 hexo 的配置脚本通过 git 同步到服务器&lt;br&gt;
+(其实用 gitea 的话也可以通过插件实现 GitHub Page 的功能的)&lt;/p&gt;
+&lt;h2 id="0x02-先安装些组件"&gt;&amp;lt;0x02&amp;gt; 先安装些组件
+&lt;/h2&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#安装nginx&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sudo apt update &lt;span style="color:#f92672"&gt;&amp;amp;&amp;amp;&lt;/span&gt; sudo apt upgrade
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sudo apt install nginx
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;gitea 的安装在这就不赘述了&lt;br&gt;
+(我之前有从零搭建的教程)&lt;/p&gt;
+&lt;h2 id="0x03-配置git-hook"&gt;&amp;lt;0x03&amp;gt; 配置git hook
+&lt;/h2&gt;&lt;p&gt;git hook 其实就是一个自动化脚本&lt;br&gt;
+简单理解就是 git 到服务器上后服务器要干的事&lt;br&gt;
+首先，在 gitea 里创建一个仓库，名字随意&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#进入对应仓库的hook配置目录&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;cd /var/lib/gitea/data/gitea-repositories/&lt;span style="color:#e6db74"&gt;${&lt;/span&gt;gitea用户名&lt;span style="color:#e6db74"&gt;}&lt;/span&gt;/&lt;span style="color:#e6db74"&gt;${&lt;/span&gt;仓库名&lt;span style="color:#e6db74"&gt;}&lt;/span&gt;.git/hooks/
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;(&lt;code&gt;${gitea用户名}&lt;/code&gt;和&lt;code&gt;${仓库名}&lt;/code&gt;都是按照自己的设置填的)
+这里是 git 的各种 hook，别的现在用不大到&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#进入需要编辑的hook目录&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;cd post-receive.d/
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#创建我们自己的hook，名字随意&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;vim hexo
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;在 hexo 文件中，输入以下内容&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#!/bin/bash
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sss&lt;span style="color:#f92672"&gt;=&lt;/span&gt;/var/lib/gitea/data/gitea-repositories/&lt;span style="color:#e6db74"&gt;${&lt;/span&gt;gitea用户名&lt;span style="color:#e6db74"&gt;}&lt;/span&gt;/&lt;span style="color:#e6db74"&gt;${&lt;/span&gt;仓库名&lt;span style="color:#e6db74"&gt;}&lt;/span&gt;.git
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;ttt&lt;span style="color:#f92672"&gt;=&lt;/span&gt;/var/www/blog
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;rm -rf &lt;span style="color:#e6db74"&gt;${&lt;/span&gt;ttt&lt;span style="color:#e6db74"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;git clone &lt;span style="color:#e6db74"&gt;${&lt;/span&gt;sss&lt;span style="color:#e6db74"&gt;}&lt;/span&gt; &lt;span style="color:#e6db74"&gt;${&lt;/span&gt;ttt&lt;span style="color:#e6db74"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;其中&lt;code&gt;/var/www/blog&lt;/code&gt;是你希望存储网页的地址，可以改成别的&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#给这个hook添加可执行权限&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;chmod a+x hexo
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;现在，理论上当你用 hexo 一键配置脚本的时候，那些网页文件会出现在那个位置&lt;/p&gt;
+&lt;h2 id="0x04-配置存储地址和nginx"&gt;&amp;lt;0x04&amp;gt; 配置存储地址和nginx
+&lt;/h2&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#进入你希望存网页的位置&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;cd /var/www/
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;mkdir blog
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#为第一次git用户删除提供权限&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;chmod -R &lt;span style="color:#ae81ff"&gt;777&lt;/span&gt; ./
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#进入nginx的目录&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;cd /etc/nginx/
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;cd sites-enabled/
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;vim default
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;需要注意的是，这里的nginx版本可能比较新，所以需要修改&lt;code&gt;/etc/nginx/sites-enabled/default&lt;/code&gt;&lt;br&gt;
+如果你在&lt;code&gt;/etc/nginx/nginx.conf&lt;/code&gt;中能看到在&lt;code&gt;http{}&lt;/code&gt;中有&lt;code&gt;server{}&lt;/code&gt;&lt;br&gt;
+那么直接在&lt;code&gt;/etc/nginx/nginx.conf&lt;/code&gt;就行&lt;/p&gt;
+&lt;p&gt;在&lt;code&gt;server{}&lt;/code&gt;中，把&lt;code&gt;root&lt;/code&gt;的值改为存储网页的位置&lt;br&gt;
+在这里是改为&lt;code&gt;root /var/www/blog&lt;/code&gt;
+再在&lt;code&gt;index&lt;/code&gt;后加入&lt;code&gt;index.html&lt;/code&gt;
+(有了就不用加)&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#重启nginx服务&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;nginx -s reload
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;现在，理论上访问服务器 ip 后就是博客首页了&lt;/p&gt;
+&lt;h2 id="0x05-本地的一些修改"&gt;&amp;lt;0x05&amp;gt; 本地的一些修改
+&lt;/h2&gt;&lt;p&gt;打开&lt;code&gt;_config.yml&lt;/code&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-yml" data-lang="yml"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;deploy&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;type&lt;/span&gt;: &lt;span style="color:#ae81ff"&gt;git&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;repo&lt;/span&gt;: &lt;span style="color:#ae81ff"&gt;git@{服务器ip}:{gitea用户名}/{gitea仓库名}.git&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;branch&lt;/span&gt;: &lt;span style="color:#ae81ff"&gt;master&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;现在，当你运行&lt;code&gt;hexo deploy&lt;/code&gt;，网页内容将同步到git仓库并且也会同步到网页存储位置&lt;/p&gt;</description></item><item><title>关闭gitea注册功能</title><link>https://mlacookie.github.io/post/articles/2023/%E5%85%B3%E9%97%ADgitea%E6%B3%A8%E5%86%8C%E5%8A%9F%E8%83%BD/</link><pubDate>Sun, 23 Apr 2023 15:40:43 +0000</pubDate><guid>https://mlacookie.github.io/post/articles/2023/%E5%85%B3%E9%97%ADgitea%E6%B3%A8%E5%86%8C%E5%8A%9F%E8%83%BD/</guid><description>&lt;p&gt;找到gitea的配置文件&lt;br&gt;
+一般在/etc/gitea中(如果按官方文档配置的话)&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#打开gitea配置文件&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;cd /etc/gitea
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;vim app.ini
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;然后往下翻
+找到 &lt;code&gt;DISABLE_REGISTRATION&lt;/code&gt;&lt;br&gt;
+把 &lt;code&gt;false&lt;/code&gt; 改成 &lt;code&gt;true&lt;/code&gt; 就可以了&lt;/p&gt;
+&lt;p&gt;然后记得重启gitea服务&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#如果已经配置了linux服务&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;systemctl restart gitea
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description></item><item><title>从零搭建一个gitea</title><link>https://mlacookie.github.io/post/articles/2023/%E4%BB%8E0%E6%90%AD%E5%BB%BAgitea/</link><pubDate>Thu, 20 Apr 2023 23:05:44 +0000</pubDate><guid>https://mlacookie.github.io/post/articles/2023/%E4%BB%8E0%E6%90%AD%E5%BB%BAgitea/</guid><description>&lt;h2 id="0x00-安装组件"&gt;&amp;lt;0x00&amp;gt; 安装组件
+&lt;/h2&gt;&lt;p&gt;首先肯定要有台服务器嘛，系统倒问题不大，我用的是&lt;code&gt;debian 11&lt;/code&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 安装各种包前先更新是好文明 &lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sudo apt update 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sudo apt upgrade
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 安装git &lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sudo apt install git
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 安装mysql &lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;wget https://dev.mysql.com/get/mysql-apt-config_0.8.22-1_all.deb
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sudo dpkg -i mysql-apt-config_0.8.22-1_all.deb
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 或者安装postgresql&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sudo apt install postgresql
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 这里可能会跳出个界面，直接选最后的ok就可以&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;rm mysql-apt-config_0.8.22-1_all.deb
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sudo apt update
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sudo apt-get install mysql-server
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;安装&lt;code&gt;mysql&lt;/code&gt;的时候会要求你设置数据库 root 账户密码的&lt;/p&gt;
+&lt;h2 id="0x01-配置数据库"&gt;&amp;lt;0x01&amp;gt; 配置数据库
+&lt;/h2&gt;&lt;h3 id="mysql"&gt;mysql
+&lt;/h3&gt;&lt;p&gt;在&lt;code&gt;/etc/mysql/mysql.conf.d/mysqld.cnf&lt;/code&gt;中加入&lt;code&gt;bind-address = 127.0.0.1&lt;/code&gt;
+这个配置文件的位置看版本，我这里的 mysql 版本是8.0.33
+这个&lt;code&gt;bind-address&lt;/code&gt;是控制 mysql 数据库允许远程访问的&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#先进入mysql控制台 &lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;mysql -u root -p&lt;span style="color:#e6db74"&gt;`&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#输入你设置的root账户密码&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#配置gitea的数据库 &lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;CREATE USER &lt;span style="color:#e6db74"&gt;&amp;#39;gitea&amp;#39;&lt;/span&gt; IDENTIFIED BY &lt;span style="color:#e6db74"&gt;&amp;#39;密码&amp;#39;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#这里写的‘密码’是你想设置的密码&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;CREATE DATABASE giteadb CHARACTER SET &lt;span style="color:#e6db74"&gt;&amp;#39;utf8mb4&amp;#39;&lt;/span&gt; COLLATE &lt;span style="color:#e6db74"&gt;&amp;#39;utf8mb4_unicode_ci&amp;#39;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;GRANT ALL PRIVILEGES ON giteadb.* TO &lt;span style="color:#e6db74"&gt;&amp;#39;gitea&amp;#39;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;FLUSH PRIVILEGES;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;exit
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="postgresql"&gt;postgresql
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 进入postgre控制台&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sudo -u postgres psql
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 密码尽量改一下&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;CREATE ROLE gitea WITH LOGIN PASSWORD &lt;span style="color:#e6db74"&gt;&amp;#39;gitea&amp;#39;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 创建数据库&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;CREATE DATABASE giteadb WITH OWNER gitea TEMPLATE template0 ENCODING UTF8 LC_COLLATE &lt;span style="color:#e6db74"&gt;&amp;#39;en_US.UTF-8&amp;#39;&lt;/span&gt; LC_CTYPE &lt;span style="color:#e6db74"&gt;&amp;#39;en_US.UTF-8&amp;#39;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="0x02-配置-gitea-和-git-账户"&gt;&amp;lt;0x02&amp;gt; 配置 gitea 和 git 账户
+&lt;/h2&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#下载git安装包&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;wget -O gitea https://dl.gitea.com/gitea/1.19.0/gitea-1.19.0-linux-amd64
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;chmod +x gitea
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#添加git用户并修改权限 &lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;adduser git
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;mkdir -p /var/lib/gitea/&lt;span style="color:#f92672"&gt;{&lt;/span&gt;custom,data,log&lt;span style="color:#f92672"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;chown -R git:git /var/lib/gitea/
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;chmod -R &lt;span style="color:#ae81ff"&gt;750&lt;/span&gt; /var/lib/gitea/
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;mkdir /etc/gitea
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;chown root:git /etc/gitea
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;chmod &lt;span style="color:#ae81ff"&gt;770&lt;/span&gt; /etc/gitea
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;手动将下列语句加入&lt;code&gt;/etc/profile&lt;/code&gt;文件
+&lt;code&gt;export GITEA_WORK_DIR=/var/lib/gitea/&lt;/code&gt;
+(导出个全局变量)&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#一些剩下的操作 &lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;cp gitea /usr/local/bin/gitea
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sudo vim /etc/systemd/system/gitea.service
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#将gitea.service的内容复制进去，并取消一些服务的注释，如mysql的&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sudo systemctl enable gitea
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sudo systemctl start gitea
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;现在访问&lt;code&gt;(你的ip):3000&lt;/code&gt;应该是能看到&lt;code&gt;gitea&lt;/code&gt;的网页了&lt;/p&gt;
+&lt;h2 id="0x03-网页配置"&gt;&amp;lt;0x03&amp;gt; 网页配置
+&lt;/h2&gt;&lt;p&gt;在网页的安装界面，你需要设置你的数据库用户和用户密码&lt;br&gt;
+然后指定数据库名字&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-txt" data-lang="txt"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;#本次配置的值
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;数据库用户：gitea
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;用户密码：(之前给gitea设置的密码)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;数据库名称：giteadb
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;记得在网页最后那里设置管理员账户&lt;br&gt;
+(不在这配置也行，理论上第一个创建的账户就是管理员)&lt;br&gt;
+创建新用户后记得绑定 sshkey，这样就可以用 ssh 的 clone 地址了&lt;/p&gt;
+&lt;h2 id="0x04-收尾配置"&gt;&amp;lt;0x04&amp;gt; 收尾配置
+&lt;/h2&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#最后记得把一些权限修改回来&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;chmod &lt;span style="color:#ae81ff"&gt;750&lt;/span&gt; /etc/gitea
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;chmod &lt;span style="color:#ae81ff"&gt;640&lt;/span&gt; /etc/gitea/app.ini
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="附录gitservice"&gt;附录：git.service
+&lt;/h2&gt;&lt;p&gt;用什么数据库就取消注释哪一行&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# git.service&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;[&lt;/span&gt;Unit&lt;span style="color:#f92672"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Description&lt;span style="color:#f92672"&gt;=&lt;/span&gt;Gitea &lt;span style="color:#f92672"&gt;(&lt;/span&gt;Git with a cup of tea&lt;span style="color:#f92672"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;After&lt;span style="color:#f92672"&gt;=&lt;/span&gt;syslog.target
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;After&lt;span style="color:#f92672"&gt;=&lt;/span&gt;network.target
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;###&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Don&amp;#39;t forget to add the database service dependencies&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;###&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#Wants=mysql.service&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#After=mysql.service&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#Wants=mariadb.service&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#After=mariadb.service&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#Wants=postgresql.service&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#After=postgresql.service&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#Wants=memcached.service&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#After=memcached.service&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#Wants=redis.service&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#After=redis.service&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;###&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# If using socket activation for main http/s&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;###&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#After=gitea.main.socket&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#Requires=gitea.main.socket&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;###&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# (You can also provide gitea an http fallback and/or ssh socket too)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# An example of /etc/systemd/system/gitea.main.socket&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;###&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;##&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;## [Unit]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;## Description=Gitea Web Socket&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;## PartOf=gitea.service&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;##&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;## [Socket]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;## Service=gitea.service&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;## ListenStream=&amp;lt;some_port&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;## NoDelay=true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;##&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;## [Install]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;## WantedBy=sockets.target&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;##&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;###&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;[&lt;/span&gt;Service&lt;span style="color:#f92672"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Uncomment the next line if you have repos with lots of files and get a HTTP 500 error because of that&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# LimitNOFILE=524288:524288&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;RestartSec&lt;span style="color:#f92672"&gt;=&lt;/span&gt;2s
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Type&lt;span style="color:#f92672"&gt;=&lt;/span&gt;simple
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;User&lt;span style="color:#f92672"&gt;=&lt;/span&gt;git
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Group&lt;span style="color:#f92672"&gt;=&lt;/span&gt;git
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;WorkingDirectory&lt;span style="color:#f92672"&gt;=&lt;/span&gt;/var/lib/gitea/
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# If using Unix socket: tells systemd to create the /run/gitea folder, which will contain the gitea.sock file&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# (manually creating /run/gitea doesn&amp;#39;t work, because it would not persist across reboots)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#RuntimeDirectory=gitea&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;ExecStart&lt;span style="color:#f92672"&gt;=&lt;/span&gt;/usr/local/bin/gitea web --config /etc/gitea/app.ini
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Restart&lt;span style="color:#f92672"&gt;=&lt;/span&gt;always
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Environment&lt;span style="color:#f92672"&gt;=&lt;/span&gt;USER&lt;span style="color:#f92672"&gt;=&lt;/span&gt;git HOME&lt;span style="color:#f92672"&gt;=&lt;/span&gt;/home/git GITEA_WORK_DIR&lt;span style="color:#f92672"&gt;=&lt;/span&gt;/var/lib/gitea
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# If you install Git to directory prefix other than default PATH (which happens&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# for example if you install other versions of Git side-to-side with&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# distribution version), uncomment below line and add that prefix to PATH&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Don&amp;#39;t forget to place git-lfs binary on the PATH below if you want to enable&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Git LFS support&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#Environment=PATH=/path/to/git/bin:/bin:/sbin:/usr/bin:/usr/sbin&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# If you want to bind Gitea to a port below 1024, uncomment&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# the two values below, or use socket activation to pass Gitea its ports as above&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;###&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#CapabilityBoundingSet=CAP_NET_BIND_SERVICE&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#AmbientCapabilities=CAP_NET_BIND_SERVICE&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;###&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# In some cases, when using CapabilityBoundingSet and AmbientCapabilities option, you may want to&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# set the following value to false to allow capabilities to be applied on gitea process. The following&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# value if set to true sandboxes gitea service and prevent any processes from running with privileges&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# in the host user namespace.&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;###&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#PrivateUsers=false&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;###&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;[&lt;/span&gt;Install&lt;span style="color:#f92672"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;WantedBy&lt;span style="color:#f92672"&gt;=&lt;/span&gt;multi-user.target
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;从gitea文档扒的&lt;/p&gt;</description></item></channel></rss>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Python on MLAcookie</title><link>https://mlacookie.github.io/tags/python/</link><description>Recent content in Python on MLAcookie</description><generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Sun, 27 Oct 2024 01:56:36 +0800</lastBuildDate><atom:link href="https://mlacookie.github.io/tags/python/index.xml" rel="self" type="application/rss+xml"/><item><title>scoop安装的python找不到tcl</title><link>https://mlacookie.github.io/post/articles/2024/scoop%E5%AE%89%E8%A3%85%E7%9A%84python%E6%89%BE%E4%B8%8D%E5%88%B0tcl/</link><pubDate>Sun, 27 Oct 2024 01:56:36 +0800</pubDate><guid>https://mlacookie.github.io/post/articles/2024/scoop%E5%AE%89%E8%A3%85%E7%9A%84python%E6%89%BE%E4%B8%8D%E5%88%B0tcl/</guid><description>&lt;p&gt;神秘实验要用python，然后运行报找不到init.tcl的问题&lt;/p&gt;
+&lt;p&gt;理论上tcl/tk是python内置的东西，不可能找不到&lt;br&gt;
+但确实是发生了这样的事情&lt;br&gt;
+我的python是scoop安装的，可能跟这个有关系&lt;/p&gt;
+&lt;p&gt;实际上，scoop安装的python是有这个东西的&lt;br&gt;
+在&lt;code&gt;[scoop目录]/apps/python/current/tcl&lt;/code&gt;里面&lt;br&gt;
+并且执行&lt;code&gt;python -m tkinter&lt;/code&gt;不会报错&lt;br&gt;
+但貌似有些库搜索tcl不是在这个目录里面&lt;/p&gt;
+&lt;p&gt;所以我们添加两个软连接就可以了&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 自己替换下scoop目录&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;New-Item [&lt;span style="color:#66d9ef"&gt;scoop目录&lt;/span&gt;]\apps\python\current\Lib\tcl8.6 -ItemType Junction -Target [&lt;span style="color:#66d9ef"&gt;scoop目录&lt;/span&gt;]\apps\python\current\tcl\tcl8.6
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;New-Item [&lt;span style="color:#66d9ef"&gt;scoop目录&lt;/span&gt;]\apps\python\current\Lib\tk8.6 -ItemType Junction -Target [&lt;span style="color:#66d9ef"&gt;scoop目录&lt;/span&gt;]\apps\python\current\tcl\tk8.6
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description></item><item><title>浙工大数字图像处理课设记录</title><link>https://mlacookie.github.io/post/articles/2024/%E6%B5%99%E5%B7%A5%E5%A4%A7%E6%95%B0%E5%AD%97%E5%9B%BE%E5%83%8F%E5%A4%84%E7%90%86%E8%AF%BE%E8%AE%BE%E8%AE%B0%E5%BD%95/</link><pubDate>Tue, 23 Jul 2024 12:23:45 +0800</pubDate><guid>https://mlacookie.github.io/post/articles/2024/%E6%B5%99%E5%B7%A5%E5%A4%A7%E6%95%B0%E5%AD%97%E5%9B%BE%E5%83%8F%E5%A4%84%E7%90%86%E8%AF%BE%E8%AE%BE%E8%AE%B0%E5%BD%95/</guid><description>&lt;p&gt;数字图像处理我们主要是讲&lt;code&gt;OpenCV&lt;/code&gt;的（虽然实际上代码讲的不多）&lt;br&gt;
+然后作为期末的课程设计，要求我们写一个OpenCV的程序&lt;br&gt;
+主要就是用OpenCV去解决一些现实中的问题，然后要带图形界面&lt;br&gt;
+允许组队，而且在学期初就要定课设的题目&lt;/p&gt;
+&lt;h2 id="0x00-我们做了什么"&gt;&amp;lt;0x00&amp;gt; 我们做了什么
+&lt;/h2&gt;&lt;p&gt;本来打算做一个用OpenCV做相机反求，Godot做渲染的AR项目&lt;br&gt;
+（所以前面有几篇研究怎么用C#做OpenCV开发）&lt;br&gt;
+引擎这块基本都搭完完了，然后估计了下感觉写不完了&lt;br&gt;
+（C#写OpenCV的代码参考太少了，很多代码都是试出来的，开发效率太低了）&lt;/p&gt;
+&lt;p&gt;好在我们还有一个&lt;code&gt;Plan B&lt;/code&gt;，就是参考MIT的运动放大的论文去写一个应用&lt;br&gt;
+（主要是看了Steve Mould的&lt;a class="link" href="https://www.bilibili.com/video/BV1au411c7YJ/?spm_id_from=333.999.0.0" target="_blank" rel="noopener"
+ &gt;视频&lt;/a&gt;）&lt;br&gt;
+这样的话，语言也干脆换成了参考够多的Python，效率高了不少&lt;br&gt;
+问题也有，就是我们Python都不熟，但比起没代码参考好太多了&lt;/p&gt;
+&lt;p&gt;&lt;a class="link" href="https://github.com/MLAcookie/EvmPlayground" target="_blank" rel="noopener"
+ &gt;项目地址&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id="0x0-整体架构"&gt;&amp;lt;0x0&amp;gt; 整体架构
+&lt;/h2&gt;&lt;p&gt;我们采用dearpygui来构建整个图形界面&lt;br&gt;
+使用numpy和scipy来做一些数据的处理&lt;/p&gt;
+&lt;h2 id="0x0-evm原理"&gt;&amp;lt;0x0&amp;gt; EVM原理
+&lt;/h2&gt;&lt;p&gt;具体看&lt;a class="link" href="https://people.csail.mit.edu/mrub/evm/" target="_blank" rel="noopener"
+ &gt;MIT EVM&lt;/a&gt;的介绍，这里就只做大致的讲解&lt;/p&gt;
+&lt;h2 id="0x0-一些感想"&gt;&amp;lt;0x0&amp;gt; 一些感想
+&lt;/h2&gt;&lt;h3 id="关于知识"&gt;关于知识
+&lt;/h3&gt;&lt;p&gt;首先就是确实感觉知道的东西多反而是一种诅咒&lt;br&gt;
+为什么这么说呢，知道的东西多了之后，遇到新的问题总是会用自己知道的知识解决&lt;br&gt;
+这道是正常的，毕竟这也是学习的目的&lt;br&gt;
+但问题是，当知道的东西多了之后，我总是觉得这个问题用已知知识是能解决的&lt;br&gt;
+然后就这样去开发，走一半，会发现这个项目按原计划开发会遇到非常多的问题&lt;br&gt;
+两个选择，要么花很多时间去解决，要么项目推倒重来重新设计架构&lt;br&gt;
+这两个选择都是痛苦的&lt;/p&gt;
+&lt;p&gt;像这个课设，我就犯这样的错误&lt;br&gt;
+一开始我是打算用C#做Opencv开发，然后WPF做前端&lt;br&gt;
+因为Opencv在C#的实现我还是熟的，WPF我也是熟的&lt;br&gt;
+开发到后来发现，EVM需要用到傅里叶变换，Opencv中肯定是不带这种东西的&lt;br&gt;
+这时候其实可以考虑切换到python开发，但我并没有这么做，我选择来了花时间解决&lt;br&gt;
+然而，在我头铁写完了傅里叶变换的流程后，我发现整个算法的运行效率低得很&lt;br&gt;
+（中间的类型转换太多了，我对Mat类型了解也不够）&lt;br&gt;
+这时候又遇到一个抉择，推到重来换python还是花时间研究C#操作Mat类型&lt;br&gt;
+好在这次我选择了推到重来换python，最后完成开发&lt;/p&gt;
+&lt;p&gt;这个问题其实说到底，还是知道的不够多，毕竟这种开发中的问题懂的多了之后，是可以在开发前预知到的&lt;br&gt;
+但还是有一个矛盾，对一块知识，究竟了解到什么程度才能算懂得够多，我不知道&lt;br&gt;
+学的东西多了，确实是能比别人看到更远的东西，但也比别人看到更少的东西&lt;br&gt;
+如果我是新手，这个项目我肯定就用python开发了，哪还要折腾C#啊&lt;br&gt;
+就是因为我了解C#，我才一开始用C#开发&lt;/p&gt;
+&lt;h3 id="关于团队"&gt;关于团队
+&lt;/h3&gt;&lt;p&gt;这个课设虽然可以组队，但这个项目基本是我一个人完成的&lt;br&gt;
+那我的队友在干什么呢？他们在做别的可以组队的项目，并且是一人一个项目&lt;/p&gt;
+&lt;p&gt;我发现，对于计算机的学生来说，可能最好的合作方式就是一人一个项目&lt;br&gt;
+程序开发不是人越多越快的&lt;br&gt;
+如果说有n个人，那么单位时间内代码量是$O(n)$，但沟通成本是$O(n^2)$&lt;br&gt;
+因为程序员开发软件需要的是连贯的思路，脑中需要保存所有代码的逻辑结构&lt;br&gt;
+对于别人写的代码，自己看是很花时间的，只有说问原来的开发者代码功能才是最快的&lt;br&gt;
+更何况程序有BUG，命名规范等等之类的增加沟通成本的问题&lt;br&gt;
+这方面可以看下《人月神话》这本书&lt;/p&gt;
+&lt;p&gt;一个人一个项目，整个项目都在一个人的掌握之中，这样的效率是更高的&lt;br&gt;
+当然，这样的合作方式不是适合所有队伍的&lt;br&gt;
+你需要确保你的队友没有摆子，并且队每个人都可以分到适合其水平的项目&lt;br&gt;
+最重要的，足够的信任，在队友没请求帮助前就尽量不插手队友的工作&lt;br&gt;
+否则还是正常合作吧，这样起码可以保证项目可以写完&lt;/p&gt;
+&lt;h3 id="关于python"&gt;关于python
+&lt;/h3&gt;&lt;p&gt;最后这个课设用python完成的&lt;br&gt;
+我在这个课设之前，可以说我是看不起python的&lt;br&gt;
+总觉得这个语言效率低，语法过于抽象&lt;/p&gt;
+&lt;p&gt;虽然我看习惯了传统的C系代码，看python这种靠tab分隔层次的语言确实需要时间适应&lt;br&gt;
+但挺过阵痛期后，我发现python还挺好用
+整个语言的设计完全是为解决问题去的&lt;br&gt;
+通过丰富的包，让很多问题几行代码就搞定了&lt;/p&gt;
+&lt;p&gt;不过还是有一些小问题的，但这也不是python的问题，应该说是弱类型语言的问题&lt;br&gt;
+因为弱类型，导致很多问题不能在编译期查出&lt;br&gt;
+虽然是可以给变量打注解，但问题也是编译期不检查这个&lt;br&gt;
+所有实际开发中经常出现传参类型出问题，排查好一会儿&lt;/p&gt;
+&lt;p&gt;总之，python这门语言感觉就像是共享单车，解决的是程序最后怎么运行的问题&lt;br&gt;
+当脚本语言是非常合适的&lt;/p&gt;
+&lt;p&gt;所以说，没有最好的语言，只有最适合的语言&lt;/p&gt;</description></item></channel></rss>

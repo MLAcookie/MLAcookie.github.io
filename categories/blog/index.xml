@@ -1,0 +1,1074 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Blog on MLAcookie</title><link>https://mlacookie.github.io/categories/blog/</link><description>Recent content in Blog on MLAcookie</description><generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Sat, 04 Jul 2026 00:40:36 +0800</lastBuildDate><atom:link href="https://mlacookie.github.io/categories/blog/index.xml" rel="self" type="application/rss+xml"/><item><title>26年博客状况更新</title><link>https://mlacookie.github.io/post/categories/blog/26%E5%B9%B4%E5%8D%9A%E5%AE%A2%E7%8A%B6%E5%86%B5%E6%9B%B4%E6%96%B0/</link><pubDate>Sat, 04 Jul 2026 00:40:36 +0800</pubDate><guid>https://mlacookie.github.io/post/categories/blog/26%E5%B9%B4%E5%8D%9A%E5%AE%A2%E7%8A%B6%E5%86%B5%E6%9B%B4%E6%96%B0/</guid><description>&lt;p&gt;从上一篇介绍我怎么搭博客的文章到现在也有些时间了&lt;br&gt;
+期间，虽然样式都没怎么变，但还是优化了许多配置体验&lt;/p&gt;
+&lt;h2 id="主题更新"&gt;主题更新
+&lt;/h2&gt;&lt;p&gt;现在，博客使用的是v4版本的Stack主题&lt;br&gt;
+具体优化了什么确实看不太出来，但在配置方面做了很多优化&lt;/p&gt;
+&lt;p&gt;首先是可以通过hugo module配置&lt;br&gt;
+这个功能除了要安装&lt;code&gt;hugo-extend&lt;/code&gt;还需要安装&lt;code&gt;go&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;配置详见&lt;a class="link" href="https://stack.cai.im/zh/guide/getting-started" target="_blank" rel="noopener"
+ &gt;Stack|开始使用&lt;/a&gt;&lt;br&gt;
+这样配置之后更新主题只需要通过命令就可以了&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;hugo mod get -u github.com/CaiJimmy/hugo-theme-stack/v4
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;hugo mod tidy
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;主题的配置文件从&lt;code&gt;yaml&lt;/code&gt;变成了&lt;code&gt;toml&lt;/code&gt;，大部分的键是没变的&lt;br&gt;
+虽然也可以使用&lt;code&gt;yaml&lt;/code&gt;，但为保险起见，还是使用&lt;code&gt;toml&lt;/code&gt;&lt;br&gt;
+下面给出我的配置以供参考&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-toml" data-lang="toml"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;title&lt;/span&gt; = &lt;span style="color:#e6db74"&gt;&amp;#34;MLAcookie&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;defaultContentLanguage&lt;/span&gt; = &lt;span style="color:#e6db74"&gt;&amp;#34;zh&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;[[&lt;span style="color:#a6e22e"&gt;module&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;imports&lt;/span&gt;]]
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;path&lt;/span&gt; = &lt;span style="color:#e6db74"&gt;&amp;#34;github.com/CaiJimmy/hugo-theme-stack/v4&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;[&lt;span style="color:#a6e22e"&gt;Params&lt;/span&gt;]
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;favicon&lt;/span&gt; = &lt;span style="color:#e6db74"&gt;&amp;#34;favicon.webp&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;rssFullContent&lt;/span&gt; = &lt;span style="color:#66d9ef"&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;comments&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;enabled&lt;/span&gt; = &lt;span style="color:#66d9ef"&gt;false&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; [&lt;span style="color:#a6e22e"&gt;Params&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;sidebar&lt;/span&gt;]
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;compact&lt;/span&gt; = &lt;span style="color:#66d9ef"&gt;false&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;emoji&lt;/span&gt; = &lt;span style="color:#e6db74"&gt;&amp;#34;🤯&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;subtitle&lt;/span&gt; = &lt;span style="color:#e6db74"&gt;&amp;#34;随便记点东西的记事本&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;avatar&lt;/span&gt; = &lt;span style="color:#e6db74"&gt;&amp;#34;img/avatar.png&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; [&lt;span style="color:#a6e22e"&gt;Params&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;widgets&lt;/span&gt;]
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;homepage&lt;/span&gt; = [
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; { &lt;span style="color:#a6e22e"&gt;type&lt;/span&gt; = &lt;span style="color:#e6db74"&gt;&amp;#34;search&amp;#34;&lt;/span&gt; },
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; { &lt;span style="color:#a6e22e"&gt;type&lt;/span&gt; = &lt;span style="color:#e6db74"&gt;&amp;#34;archives&amp;#34;&lt;/span&gt;, &lt;span style="color:#a6e22e"&gt;params&lt;/span&gt; = { &lt;span style="color:#a6e22e"&gt;limit&lt;/span&gt; = &lt;span style="color:#ae81ff"&gt;5&lt;/span&gt; } },
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; { &lt;span style="color:#a6e22e"&gt;type&lt;/span&gt; = &lt;span style="color:#e6db74"&gt;&amp;#34;categories&amp;#34;&lt;/span&gt;, &lt;span style="color:#a6e22e"&gt;params&lt;/span&gt; = { &lt;span style="color:#a6e22e"&gt;limit&lt;/span&gt; = &lt;span style="color:#ae81ff"&gt;10&lt;/span&gt; } },
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; { &lt;span style="color:#a6e22e"&gt;type&lt;/span&gt; = &lt;span style="color:#e6db74"&gt;&amp;#34;tag-cloud&amp;#34;&lt;/span&gt;, &lt;span style="color:#a6e22e"&gt;params&lt;/span&gt; = { &lt;span style="color:#a6e22e"&gt;limit&lt;/span&gt; = &lt;span style="color:#ae81ff"&gt;10&lt;/span&gt; } },
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; ]
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;page&lt;/span&gt; = [{ &lt;span style="color:#a6e22e"&gt;type&lt;/span&gt; = &lt;span style="color:#e6db74"&gt;&amp;#34;toc&amp;#34;&lt;/span&gt; }]
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; [&lt;span style="color:#a6e22e"&gt;Params&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;article&lt;/span&gt;]
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;headingAnchor&lt;/span&gt; = &lt;span style="color:#66d9ef"&gt;false&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;math&lt;/span&gt; = &lt;span style="color:#66d9ef"&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;toc&lt;/span&gt; = &lt;span style="color:#66d9ef"&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;readingTime&lt;/span&gt; = &lt;span style="color:#66d9ef"&gt;false&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; [&lt;span style="color:#a6e22e"&gt;Params&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;article&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;license&lt;/span&gt;]
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;enabled&lt;/span&gt; = &lt;span style="color:#66d9ef"&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;default&lt;/span&gt; = &lt;span style="color:#e6db74"&gt;&amp;#34;CC BY-NC-SA 4.0&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; [&lt;span style="color:#a6e22e"&gt;Params&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;footer&lt;/span&gt;]
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;since&lt;/span&gt; = &lt;span style="color:#ae81ff"&gt;2023&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; [&lt;span style="color:#a6e22e"&gt;Params&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;colorScheme&lt;/span&gt;]
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;toggle&lt;/span&gt; = &lt;span style="color:#66d9ef"&gt;false&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;default&lt;/span&gt; = &lt;span style="color:#e6db74"&gt;&amp;#34;dark&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;[[&lt;span style="color:#a6e22e"&gt;menu&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;social&lt;/span&gt;]]
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;identifier&lt;/span&gt; = &lt;span style="color:#e6db74"&gt;&amp;#34;github&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;name&lt;/span&gt; = &lt;span style="color:#e6db74"&gt;&amp;#34;MLAcookie@Github&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;url&lt;/span&gt; = &lt;span style="color:#e6db74"&gt;&amp;#34;https://github.com/MLAcookie&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;params&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;icon&lt;/span&gt; = &lt;span style="color:#e6db74"&gt;&amp;#34;brand-github&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;[[&lt;span style="color:#a6e22e"&gt;menu&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;social&lt;/span&gt;]]
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;identifier&lt;/span&gt; = &lt;span style="color:#e6db74"&gt;&amp;#34;bilibili&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;name&lt;/span&gt; = &lt;span style="color:#e6db74"&gt;&amp;#34;MLA_cookie@Bilibili&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;url&lt;/span&gt; = &lt;span style="color:#e6db74"&gt;&amp;#34;https://space.bilibili.com/13629146&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;params&lt;/span&gt;.&lt;span style="color:#a6e22e"&gt;icon&lt;/span&gt; = &lt;span style="color:#e6db74"&gt;&amp;#34;brand-bilibili&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="脚本优化"&gt;脚本优化
+&lt;/h2&gt;&lt;p&gt;托LLM的福，优化了大部分部署的脚本&lt;/p&gt;
+&lt;p&gt;首先是全局配置脚本&lt;code&gt;config.ps1&lt;/code&gt;&lt;br&gt;
+添加了Github Page自定义Url需要的CNAME值&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-ps1" data-lang="ps1"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 获取脚本文件夹路径&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;$global:ShellScriptDir = Get-Location
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 获取主目录&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Set-Location ..
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;$global:SiteDir = Get-Location
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Set-Location $global:ShellScriptDir
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 构建目录&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;$global:PublicDir = Join-Path -Path $global:SiteDir -ChildPath &lt;span style="color:#e6db74"&gt;&amp;#34;public&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 内容目录&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;$global:ContentDir = Join-Path -Path $global:SiteDir -ChildPath &lt;span style="color:#e6db74"&gt;&amp;#34;content&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 基础URL&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;$global:BaseURL = &lt;span style="color:#e6db74"&gt;&amp;#34;https://XXX&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 远程Git仓库链接&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;$global:RemoteGitURL = &lt;span style="color:#e6db74"&gt;&amp;#34;https://github.com/XXX/XXX&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 目标分支&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;$global:TargetBranch = &lt;span style="color:#e6db74"&gt;&amp;#34;XXX&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Github Page CNAME&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;$global:CNAME = &lt;span style="color:#e6db74"&gt;&amp;#34;XXX&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;然后是新建文章&lt;code&gt;NewPost.ps1&lt;/code&gt;&lt;br&gt;
+现在会自动根据目录名，添加&lt;code&gt;categories&lt;/code&gt;的值&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-ps1" data-lang="ps1"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;param&lt;/span&gt;(
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; [&lt;span style="color:#66d9ef"&gt;string&lt;/span&gt;]
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; [ValidateNotNullOrEmpty()]
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; $PostName,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; [&lt;span style="color:#66d9ef"&gt;string&lt;/span&gt;]
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; $CategoryName
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;function&lt;/span&gt; ValidatedName {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;param&lt;/span&gt; (
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; [&lt;span style="color:#66d9ef"&gt;string&lt;/span&gt;]
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; [ValidateNotNullOrEmpty()]
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; $Name
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; )
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; $SpecialCharacters = &lt;span style="color:#e6db74"&gt;&amp;#39; !&amp;#34;$%&amp;amp;&amp;#39;&amp;#39;()*,-/:;&amp;lt;=&amp;gt;?@[\]^_`{|}~&amp;#39;&lt;/span&gt;.ToCharArray()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; $Name = $Name.Replace(&lt;span style="color:#e6db74"&gt;&amp;#34;`#&amp;#34;&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;&amp;#34;Sharp&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;# 先每个替换成-&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;foreach&lt;/span&gt; ($Character &lt;span style="color:#66d9ef"&gt;in&lt;/span&gt; $SpecialCharacters) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; $Name = $Name.Replace($Character, &lt;span style="color:#e6db74"&gt;&amp;#34;-&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;# 返回时使用正则表达式匹配连续的-，并替换为单个-&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; $Name &lt;span style="color:#f92672"&gt;-Replace&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#39;([-])+&amp;#39;&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;&amp;#39;-&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 导入配置变量&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;. .\configs.ps1
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 保存当前的工作路径&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;$localDir = Get-Location
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 切换工作路径&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Set-Location $global:SiteDir
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 合法化路径名，不然图片会出问题&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;$validPath = ValidatedName -Name $PostName
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 普通文章创建&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; ($CategoryName &lt;span style="color:#f92672"&gt;-eq&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;&amp;#34;&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;# 新建Hugo文章&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; $newPostPath = Join-Path -Path &lt;span style="color:#e6db74"&gt;&amp;#34;content\post\articles&amp;#34;&lt;/span&gt; -ChildPath (Get-Date -Format &lt;span style="color:#e6db74"&gt;&amp;#34;yyyy&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; $newPostPath = Join-Path -Path (Join-Path -Path $newPostPath -ChildPath $validPath) -ChildPath &lt;span style="color:#e6db74"&gt;&amp;#34;index.md&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; hugo new --kind NormalArticle $newPostPath
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 需要分类的文章&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;else&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;# 新建Hugo文章&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; $categoryPath = Join-Path -Path &lt;span style="color:#e6db74"&gt;&amp;#34;content\post\categories&amp;#34;&lt;/span&gt; -ChildPath $CategoryName
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; $newPostPath = Join-Path -Path (Join-Path -Path $categoryPath -ChildPath $validPath) -ChildPath &lt;span style="color:#e6db74"&gt;&amp;#34;index.md&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; hugo new --kind CategorizedArticle $newPostPath
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; $fullPath = Join-Path -Path $global:SiteDir -ChildPath $newPostPath
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; (Get-Content -Path $fullPath -Raw) &lt;span style="color:#f92672"&gt;-replace&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#39;categories: &amp;#34;&amp;#34;&amp;#39;&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;&amp;#34;categories: &amp;#34;&amp;#34;&lt;/span&gt;$CategoryName&lt;span style="color:#e6db74"&gt;&amp;#34;&amp;#34;&amp;#34;&lt;/span&gt; | Set-Content -Path $fullPath -NoNewline
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 返回之前的工作路径&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Set-Location $localDir
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;最后是部署脚本&lt;code&gt;Deploy.ps1&lt;/code&gt;&lt;br&gt;
+添加了自动复制&lt;code&gt;WebMaster&lt;/code&gt;的认证文件，自动添加&lt;code&gt;CNAME&lt;/code&gt;标识文件&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-ps1" data-lang="ps1"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;param&lt;/span&gt;(
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; [&lt;span style="color:#66d9ef"&gt;switch&lt;/span&gt;]
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; $Force
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;function&lt;/span&gt; Invoke-GitInit {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;param&lt;/span&gt; (
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; [&lt;span style="color:#66d9ef"&gt;switch&lt;/span&gt;]
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; $Force
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; )
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Push-Location $global:PublicDir
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; git init
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; git remote add origin $global:RemoteGitURL
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; git branch -u $global:TargetBranch
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Invoke-GitPush -Force:$Force
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Pop-Location
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;function&lt;/span&gt; Invoke-GitPush {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;param&lt;/span&gt;(
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; [&lt;span style="color:#66d9ef"&gt;switch&lt;/span&gt;]$Force
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; )
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Push-Location $global:PublicDir
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; git pull
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; git add .
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; git commit -m (&lt;span style="color:#e6db74"&gt;&amp;#34;Deploy: &amp;#34;&lt;/span&gt; + (Get-Date -Format &lt;span style="color:#e6db74"&gt;&amp;#34;yyMMdd-HH:mm&amp;#34;&lt;/span&gt;))
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; ($Force) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; git push origin HEAD&lt;span style="color:#960050;background-color:#1e0010"&gt;:&lt;/span&gt;$global:TargetBranch --force
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;else&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; git push origin HEAD&lt;span style="color:#960050;background-color:#1e0010"&gt;:&lt;/span&gt;$global:TargetBranch
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Pop-Location
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;function&lt;/span&gt; Export-WebInfo {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Push-Location $global:PublicDir
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; ($global:CNAME &lt;span style="color:#f92672"&gt;-and&lt;/span&gt; &lt;span style="color:#f92672"&gt;-not&lt;/span&gt; (Test-Path &lt;span style="color:#e6db74"&gt;&amp;#34;CNAME&amp;#34;&lt;/span&gt;)) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Set-Content -Path &lt;span style="color:#e6db74"&gt;&amp;#34;CNAME&amp;#34;&lt;/span&gt; -Value $global:CNAME
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; $authFile = Join-Path -Path $global:ShellScriptDir -ChildPath &lt;span style="color:#e6db74"&gt;&amp;#34;BingSiteAuth.xml&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (Test-Path $authFile) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Copy-Item -Path $authFile -Destination &lt;span style="color:#e6db74"&gt;&amp;#34;BingSiteAuth.xml&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Pop-Location
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 导入配置变量&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;. .\configs.ps1
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 保存当前的工作路径&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;$localDir = Get-Location
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 切换工作路径&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Set-Location $global:SiteDir
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 清除Hugo构建缓存&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; ($Force) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;# 递归删除所有文件&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Remove-Item -Path (Join-Path -Path $global:PublicDir -ChildPath &lt;span style="color:#e6db74"&gt;&amp;#34;*&amp;#34;&lt;/span&gt;) -Recurse
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 构建网页&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;hugo --gc --minify --baseURL $global:BaseURL
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Export-WebInfo
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 准备推送&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 没有初始化git的化就先初始化并强制推送&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (&lt;span style="color:#f92672"&gt;-not&lt;/span&gt; (Test-Path (Join-Path -Path $global:PublicDir -ChildPath &lt;span style="color:#e6db74"&gt;&amp;#34;.git&amp;#34;&lt;/span&gt;))) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Invoke-GitInit -Force
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;else&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Invoke-GitPush -Force:$Force
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 返回之前的工作路径&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Set-Location $localDir
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description></item><item><title>从Hexo到Hugo：记录博客框架切换</title><link>https://mlacookie.github.io/post/categories/blog/%E4%BB%8Ehexo%E5%88%B0hugo%E8%AE%B0%E5%BD%95%E5%8D%9A%E5%AE%A2%E6%A1%86%E6%9E%B6%E5%88%87%E6%8D%A2/</link><pubDate>Sat, 20 Jul 2024 15:02:34 +0800</pubDate><guid>https://mlacookie.github.io/post/categories/blog/%E4%BB%8Ehexo%E5%88%B0hugo%E8%AE%B0%E5%BD%95%E5%8D%9A%E5%AE%A2%E6%A1%86%E6%9E%B6%E5%88%87%E6%8D%A2/</guid><description>&lt;p&gt;嘶，总算是学校的事情忙完了，终于有点时间写写博客了&lt;br&gt;
+这个学期感觉一直都在和时间赛跑，没啥时间写博客，自己的项目也基本都断了&lt;br&gt;
+当然这些都是另外的话题了&lt;/p&gt;
+&lt;p&gt;如果之前有看过我博客的人，应该会发现现在网页大变样了&lt;br&gt;
+现在博客的框架从&lt;code&gt;Hexo&lt;/code&gt;换到了&lt;code&gt;Hugo&lt;/code&gt;&lt;br&gt;
+中间切换花了我很多时间，里面也有很多能说道说道的&lt;br&gt;
+需要注意的是，我的部署方案跟官方的不一样，所以部分配置会和官方文档有所出入&lt;/p&gt;
+&lt;h2 id="0x00-为什么要换框架"&gt;&amp;lt;0x00&amp;gt; 为什么要换框架
+&lt;/h2&gt;&lt;p&gt;简单来说，也算是我闲着没事干&lt;br&gt;
+当然，之前&lt;code&gt;Hexo&lt;/code&gt;的流程不是很舒服，写博客的话图片很不好引用&lt;br&gt;
+然后的话主题也不是很好看（我没时间去改主题）&lt;/p&gt;
+&lt;p&gt;然后正好想尝试下新东西，然后就看到了&lt;code&gt;Hugo&lt;/code&gt;，于是就试了试&lt;br&gt;
+尝试之后发现这个框架使用体验确实舒适很多，于是就打算换框架了&lt;/p&gt;
+&lt;p&gt;换了框架后，好处主要有以下几点：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;文章的图片资源可以更好的管理&lt;/li&gt;
+&lt;li&gt;Obsidian更好的融合&lt;/li&gt;
+&lt;li&gt;舒适的预览体验&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="0x01-安装hugo与新建站点"&gt;&amp;lt;0x01&amp;gt; 安装Hugo与新建站点
+&lt;/h2&gt;&lt;h3 id="安装hugo"&gt;安装Hugo
+&lt;/h3&gt;&lt;p&gt;以&lt;code&gt;windows&lt;/code&gt;为例，其他系统应该没差&lt;br&gt;
+安装&lt;code&gt;Hugo&lt;/code&gt;是很简单的&lt;/p&gt;
+&lt;p&gt;如果有安装&lt;code&gt;scoop&lt;/code&gt;的话，可以直接敲命令安装&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;scoop install hugo-extended
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;这里安装的是带扩展的版本，因为我使用的主题需要这个&lt;/p&gt;
+&lt;p&gt;如果有安装&lt;code&gt;winget&lt;/code&gt;，也可以直接敲命令安装&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;winget install Hugo.Hugo.Extended
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;如果上面两个包管理器都没安装，那么需要从&lt;a class="link" href="https://github.com/gohugoio/hugo/releases" target="_blank" rel="noopener"
+ &gt;Release&lt;/a&gt;中下载预构建的版本&lt;br&gt;
+找到带&lt;code&gt;windows&lt;/code&gt;的压缩包下载，里面会有一个&lt;code&gt;hugo.exe&lt;/code&gt;&lt;br&gt;
+然后丢到什么路径，添加到&lt;code&gt;windows&lt;/code&gt;环境变量里面，这样就可以在命令行中调用了&lt;/p&gt;
+&lt;h3 id="新建hugo站点"&gt;新建Hugo站点
+&lt;/h3&gt;&lt;p&gt;完成安装后，尝试新建站点来测试是否安装成功&lt;/p&gt;
+&lt;p&gt;在希望存放站点内容的位置打开终端&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;hugo new site TestBlog
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;这样会在这个位置创建叫&lt;code&gt;TestBlog&lt;/code&gt;的文件夹，里面会包含&lt;code&gt;hugo&lt;/code&gt;站点的结构&lt;br&gt;
+以上就完成了Hugo站点的搭建&lt;/p&gt;
+&lt;h2 id="0x02-配置stack主题"&gt;&amp;lt;0x02&amp;gt; 配置Stack主题
+&lt;/h2&gt;&lt;p&gt;这里使用的主题是&lt;a class="link" href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener"
+ &gt;Stack&lt;/a&gt;，简洁好看&lt;/p&gt;
+&lt;h3 id="路径约定"&gt;路径约定
+&lt;/h3&gt;&lt;p&gt;&lt;code&gt;./&lt;/code&gt;表示存放所有Hugo站点的路径&lt;br&gt;
+所以&lt;code&gt;./TestBlog&lt;/code&gt;就是存放TestBlog站点的路径&lt;br&gt;
+本文后面所有的路径都将按此表示&lt;/p&gt;
+&lt;h3 id="安装stack主题"&gt;安装Stack主题
+&lt;/h3&gt;&lt;p&gt;&lt;code&gt;./TestBlog/themes&lt;/code&gt;是存放所有主题的路径&lt;br&gt;
+在此打开终端&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;git clone https://github.com/CaiJimmy/hugo-theme-stack.git
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;克隆主题仓库&lt;/p&gt;
+&lt;p&gt;然后回到&lt;code&gt;./TestBlog&lt;/code&gt;，里面有个&lt;code&gt;hugo.toml&lt;/code&gt;&lt;br&gt;
+将&lt;code&gt;theme&lt;/code&gt;的值修改为&lt;code&gt;'hugo-theme-stack'&lt;/code&gt;&lt;/p&gt;
+&lt;h3 id="配置头像"&gt;配置头像
+&lt;/h3&gt;&lt;p&gt;进入&lt;code&gt;./TestBlog/themes/hugo-theme-stack&lt;/code&gt;&lt;br&gt;
+这里是&lt;code&gt;Stack&lt;/code&gt;主题的文件&lt;/p&gt;
+&lt;p&gt;我们需要修改的头像在&lt;code&gt;./TestBlog/themes/hugo-theme-stack/assets/img&lt;/code&gt;中&lt;br&gt;
+那个&lt;code&gt;avatar.png&lt;/code&gt;便是我们我修改的图像&lt;br&gt;
+找自己的头像拖进去然后改名就可以了&lt;/p&gt;
+&lt;h3 id="配置网站图标"&gt;配置网站图标
+&lt;/h3&gt;&lt;p&gt;配置网站图标稍微麻烦点&lt;br&gt;
+首先进入&lt;code&gt;./TestBlog/themes/hugo-theme-stack&lt;/code&gt;&lt;br&gt;
+创建叫&lt;code&gt;static&lt;/code&gt;的文件夹，里面放入网站图标，这里取名&lt;code&gt;favicon.webp&lt;/code&gt;&lt;br&gt;
+然后回到&lt;code&gt;./TestBlog/themes/hugo-theme-stack&lt;/code&gt;，打开文件&lt;code&gt;config.yaml&lt;/code&gt;&lt;br&gt;
+找到&lt;code&gt;favicon&lt;/code&gt;，将值改为&lt;code&gt;favicon.webp&lt;/code&gt;，也就是网站图标的文件名&lt;/p&gt;
+&lt;h3 id="配置社交媒体菜单"&gt;配置社交媒体菜单
+&lt;/h3&gt;&lt;p&gt;（指的是这个东西）&lt;/p&gt;
+&lt;p&gt;&lt;img class="gallery-image" data-flex-basis="379px" data-flex-grow="157" height="126" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://mlacookie.github.io/post/categories/blog/%E4%BB%8Ehexo%E5%88%B0hugo%E8%AE%B0%E5%BD%95%E5%8D%9A%E5%AE%A2%E6%A1%86%E6%9E%B6%E5%88%87%E6%8D%A2/picture/2.png" width="199"&gt;&lt;/p&gt;
+&lt;p&gt;在&lt;code&gt;./TestBlog/themes/hugo-theme-stack&lt;/code&gt;，打开文件&lt;code&gt;config.yaml&lt;/code&gt;&lt;br&gt;
+在文件最后添加这些东西&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-yaml" data-lang="yaml"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;menu&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;main&lt;/span&gt;: []
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;social&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; - &lt;span style="color:#f92672"&gt;identifier&lt;/span&gt;: &lt;span style="color:#ae81ff"&gt;github&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;name&lt;/span&gt;: &lt;span style="color:#ae81ff"&gt;起个名吧&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;url&lt;/span&gt;: &lt;span style="color:#ae81ff"&gt;GitHub链接&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;params&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;icon&lt;/span&gt;: &lt;span style="color:#ae81ff"&gt;brand-github&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; - &lt;span style="color:#f92672"&gt;identifier&lt;/span&gt;: &lt;span style="color:#ae81ff"&gt;bilibili&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;name&lt;/span&gt;: &lt;span style="color:#ae81ff"&gt;起个名吧&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;url&lt;/span&gt;: &lt;span style="color:#ae81ff"&gt;bilibili链接&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;params&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;icon&lt;/span&gt;: &lt;span style="color:#ae81ff"&gt;brand-bilibili&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;但仅仅这样是不行的，如果构建网页会说没有&lt;code&gt;brand-bilibili.svg&lt;/code&gt;&lt;br&gt;
+所以我们需要添加这个svg&lt;br&gt;
+进入&lt;code&gt;./TestBlog/themes/hugo-theme-stack/assets/icons&lt;/code&gt;，里面是所有的图标文件&lt;br&gt;
+新建一个文件，命名为&lt;code&gt;brand-bilibili.svg&lt;/code&gt;，添加以下内容&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-html" data-lang="html"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&amp;lt;&lt;span style="color:#f92672"&gt;svg&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;xmlns&lt;/span&gt;&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;http://www.w3.org/2000/svg&amp;#34;&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;width&lt;/span&gt;&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;24&amp;#34;&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;height&lt;/span&gt;&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;24&amp;#34;&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;viewBox&lt;/span&gt;&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;0 0 24 24&amp;#34;&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;fill&lt;/span&gt;&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;none&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;stroke&lt;/span&gt;&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;currentcolor&amp;#34;&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;stroke-width&lt;/span&gt;&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;2&amp;#34;&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;stroke-linecap&lt;/span&gt;&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;round&amp;#34;&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;stroke-linejoin&lt;/span&gt;&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;round&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;class&lt;/span&gt;&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;icon icon-tabler icons-tabler-outline icon-tabler-brand-bilibili&amp;#34;&lt;/span&gt;&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &amp;lt;&lt;span style="color:#f92672"&gt;path&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;stroke&lt;/span&gt;&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;none&amp;#34;&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;d&lt;/span&gt;&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;M0 0h24v24H0z&amp;#34;&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;fill&lt;/span&gt;&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;none&amp;#34;&lt;/span&gt;&amp;gt;&amp;lt;/&lt;span style="color:#f92672"&gt;path&lt;/span&gt;&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &amp;lt;&lt;span style="color:#f92672"&gt;path&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;d&lt;/span&gt;&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;M3 10a4 4 0 014-4h10a4 4 0 014 4v6a4 4 0 01-4 4H7a4 4 0 01-4-4v-6z&amp;#34;&lt;/span&gt;&amp;gt;&amp;lt;/&lt;span style="color:#f92672"&gt;path&lt;/span&gt;&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &amp;lt;&lt;span style="color:#f92672"&gt;path&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;d&lt;/span&gt;&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;M8 3l2 3&amp;#34;&lt;/span&gt;&amp;gt;&amp;lt;/&lt;span style="color:#f92672"&gt;path&lt;/span&gt;&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &amp;lt;&lt;span style="color:#f92672"&gt;path&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;d&lt;/span&gt;&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;M16 3l-2 3&amp;#34;&lt;/span&gt;&amp;gt;&amp;lt;/&lt;span style="color:#f92672"&gt;path&lt;/span&gt;&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &amp;lt;&lt;span style="color:#f92672"&gt;path&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;d&lt;/span&gt;&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;M9 13v-2&amp;#34;&lt;/span&gt;&amp;gt;&amp;lt;/&lt;span style="color:#f92672"&gt;path&lt;/span&gt;&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &amp;lt;&lt;span style="color:#f92672"&gt;path&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;d&lt;/span&gt;&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;M15 11v2&amp;#34;&lt;/span&gt;&amp;gt;&amp;lt;/&lt;span style="color:#f92672"&gt;path&lt;/span&gt;&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&amp;lt;/&lt;span style="color:#f92672"&gt;svg&lt;/span&gt;&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;（从别人博客薅的）&lt;br&gt;
+保存即可&lt;/p&gt;
+&lt;p&gt;如果要添加其他网站图标也是这样&lt;/p&gt;
+&lt;h2 id="0x03-文章路径与侧栏"&gt;&amp;lt;0x03&amp;gt; 文章路径与侧栏
+&lt;/h2&gt;&lt;p&gt;Hugo的所有文章都是放在&lt;code&gt;./TestBlog/content&lt;/code&gt;里面&lt;/p&gt;
+&lt;p&gt;Hugo支持&lt;code&gt;页面包&lt;/code&gt;来对文章资源进行管理&lt;br&gt;
+页面包就是按路径对文章进行打包，一个文章只能访问自己页面包内的内容&lt;br&gt;
+这样就将每个文章独立开来，不像之前Hexo所有图片都在一个文件夹中&lt;br&gt;
+（或许Hexo也有办法实现，但我不知道）&lt;/p&gt;
+&lt;h3 id="修改默认文章目录"&gt;修改默认文章目录
+&lt;/h3&gt;&lt;p&gt;Stack主题默认指定&lt;code&gt;./TestBlog/content/post&lt;/code&gt;为文章目录&lt;br&gt;
+这里我改成了&lt;code&gt;./TestBlog/content/article&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;在&lt;code&gt;./TestBlog/themes/hugo-theme-stack&lt;/code&gt;，打开文件&lt;code&gt;config.yaml&lt;/code&gt;&lt;br&gt;
+找到&lt;code&gt;mainSections&lt;/code&gt;将值改为&lt;code&gt;article&lt;/code&gt;即可&lt;/p&gt;
+&lt;h3 id="侧栏部分"&gt;侧栏部分
+&lt;/h3&gt;&lt;p&gt;这里的配置建议参考Stack主题给的&lt;code&gt;exampleSite&lt;/code&gt;配置&lt;br&gt;
+直接按page里面的结构配置即可&lt;/p&gt;
+&lt;h3 id="文章路径参考"&gt;文章路径参考
+&lt;/h3&gt;&lt;p&gt;我这的文章路径是这样的&lt;/p&gt;
+&lt;pre tabindex="0"&gt;&lt;code&gt;content
+├── article
+| ├── posts
+| | ├── 随便起的文章名字
+| | | ├── picture
+| | | | └── 1.png
+| | | └── index.md
+| | ├── ...
+| | └── ...
+| └── categories
+| ├── Blog
+| | ├── 随便起的文章名字
+| | | ├── picture
+| | | | └── 1.png
+| | | └── index.md
+| | ├── ...
+| | └── ...
+| ├── ...
+| └── ...
+├── page
+| ├── about
+| | └── index.md
+| ├── archives
+| | └── index.md
+| ├── links
+| | └── index.md
+| └── search
+| └── index.md
+└── _index.md
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id="0x04-obsidian配置"&gt;&amp;lt;0x04&amp;gt; obsidian配置
+&lt;/h2&gt;&lt;p&gt;用obsidian在&lt;code&gt;./TestBlog/content&lt;/code&gt;创建仓库&lt;br&gt;
+obsidian里面需要配置的东西不多，主要是把链接设置为相对文件的路径&lt;br&gt;
+&lt;img class="gallery-image" data-flex-basis="634px" data-flex-grow="264" height="285" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://mlacookie.github.io/post/categories/blog/%E4%BB%8Ehexo%E5%88%B0hugo%E8%AE%B0%E5%BD%95%E5%8D%9A%E5%AE%A2%E6%A1%86%E6%9E%B6%E5%88%87%E6%8D%A2/picture/1.png" width="753"&gt;&lt;br&gt;
+这样配置就可以了&lt;/p&gt;
+&lt;p&gt;由于使用页面包进行管理，所以所有的文章文件名都是&lt;code&gt;index.md&lt;/code&gt;&lt;br&gt;
+这个会导致obsidian节点视图之类的功能显示的都是&lt;code&gt;index&lt;/code&gt;，我目前没有很好的办法&lt;/p&gt;
+&lt;h2 id="0x05-部署到github-page上"&gt;&amp;lt;0x05&amp;gt; 部署到Github Page上
+&lt;/h2&gt;&lt;p&gt;虽然官方文档有讲，但他们采用的是将整个站点push到github上&lt;br&gt;
+然后采用&lt;code&gt;Github Action&lt;/code&gt;来在上面构建网页&lt;br&gt;
+这样的话如果Action脚本有误可能导致github page行为和本地测试不一样&lt;/p&gt;
+&lt;p&gt;我打算本地构建，然后将构建好的网页push到github上面，这样逻辑跟Hexo那套差不多&lt;br&gt;
+但Hugo没有这样的自动部署配置，所以要自己来&lt;br&gt;
+大致流程是在&lt;code&gt;./TestBlog/public&lt;/code&gt;中初始化git仓库&lt;br&gt;
+添加远程git仓库&lt;br&gt;
+拉取后提交所有更改&lt;br&gt;
+如果需要切换分支的话再切换分支&lt;br&gt;
+之后只要构建后提交更改并上传即可&lt;/p&gt;
+&lt;p&gt;具体命令参考下面的自动化脚本&lt;/p&gt;
+&lt;h2 id="0x06-通过powershell实现自动化"&gt;&amp;lt;0x06&amp;gt; 通过PowerShell实现自动化
+&lt;/h2&gt;&lt;p&gt;因为是在windows平台，所以这里采用PowerShell来实现一些自动化&lt;/p&gt;
+&lt;h3 id="统一变量配置"&gt;统一变量配置
+&lt;/h3&gt;&lt;p&gt;因为会有好几个脚本，所以需要一个统一的变量配置&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# configs.ps1&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 获取脚本文件夹路径&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;$global:ShellScriptDir &lt;span style="color:#f92672"&gt;=&lt;/span&gt; Get-Location
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 主目录&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Set-Location ..
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;$global:SiteDir &lt;span style="color:#f92672"&gt;=&lt;/span&gt; Get-Location
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Set-Location $global:ShellScriptDir
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 内容目录&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;$global:ContentDir &lt;span style="color:#f92672"&gt;=&lt;/span&gt; Join-Path -Path $global:SiteDir -ChildPath &lt;span style="color:#e6db74"&gt;&amp;#34;content&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 文章目录&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;$global:ArticleDir &lt;span style="color:#f92672"&gt;=&lt;/span&gt; Join-Path -Path $global:ContentDir -ChildPath &lt;span style="color:#e6db74"&gt;&amp;#34;article&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 一般文章目录&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;$global:PostsDir &lt;span style="color:#f92672"&gt;=&lt;/span&gt; Join-Path -Path $global:ArticleDir -ChildPath &lt;span style="color:#e6db74"&gt;&amp;#34;posts&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 分类文章目录&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;$global:CategoriesDir &lt;span style="color:#f92672"&gt;=&lt;/span&gt; Join-Path -Path $global:ArticleDir -ChildPath &lt;span style="color:#e6db74"&gt;&amp;#34;categories&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 基础URL&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;$global:BaseURL &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;[...]&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 远程Git仓库链接&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;$global:RemoteGitURL &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;[...]&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 目标分支&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;$global:TargetBranch &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;[...]&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 编辑器路径&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;$global:EditorPath &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;[...]&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="创建文章"&gt;创建文章
+&lt;/h3&gt;&lt;p&gt;因为希望每次创建文章都会自动创建对应的页面包，所以也需要一个脚本&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# NewPost.ps1&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;param&lt;span style="color:#f92672"&gt;(&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;[&lt;/span&gt;string&lt;span style="color:#f92672"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;[&lt;/span&gt;ValidateNotNullOrEmpty&lt;span style="color:#f92672"&gt;()]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; $PostName,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;[&lt;/span&gt;string&lt;span style="color:#f92672"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; $CategoryName,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;[&lt;/span&gt;bool&lt;span style="color:#f92672"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; $IsStartServer &lt;span style="color:#f92672"&gt;=&lt;/span&gt; $false,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;[&lt;/span&gt;bool&lt;span style="color:#f92672"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; $IsCreatePictureFolder &lt;span style="color:#f92672"&gt;=&lt;/span&gt; $false
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;function&lt;/span&gt; ValidatedName &lt;span style="color:#f92672"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; param &lt;span style="color:#f92672"&gt;(&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;[&lt;/span&gt;string&lt;span style="color:#f92672"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;[&lt;/span&gt;ValidateNotNullOrEmpty&lt;span style="color:#f92672"&gt;()]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; $Name
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;# 其他的特殊字符&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; $SpecialCharacters &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#f92672"&gt;[&lt;/span&gt;char&lt;span style="color:#f92672"&gt;[]]&lt;/span&gt;@&lt;span style="color:#f92672"&gt;(&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;` &amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;`!&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;`&lt;/span&gt;$&lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;`%&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;`&amp;amp;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;`&amp;#39;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;(&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;)&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;*&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;,&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;-&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;/&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;:&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;&amp;lt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;=&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;&amp;gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;?&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;@&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;[&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;]&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;^&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;_&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;``&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;{&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;|&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;}&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;~&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;# 因为我会写C#相关的文章，#有一些意义，对#做特殊替换&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; $Name &lt;span style="color:#f92672"&gt;=&lt;/span&gt; $Name.Replace&lt;span style="color:#f92672"&gt;(&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;`#&amp;#34;&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;&amp;#34;Sharp&amp;#34;&lt;/span&gt;&lt;span style="color:#f92672"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;# 先每个替换成-&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; foreach &lt;span style="color:#f92672"&gt;(&lt;/span&gt;$Character in $SpecialCharacters&lt;span style="color:#f92672"&gt;)&lt;/span&gt; &lt;span style="color:#f92672"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; $Name &lt;span style="color:#f92672"&gt;=&lt;/span&gt; $Name.Replace&lt;span style="color:#f92672"&gt;(&lt;/span&gt;$Character, &lt;span style="color:#e6db74"&gt;&amp;#34;-&amp;#34;&lt;/span&gt;&lt;span style="color:#f92672"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;# 返回时使用正则表达式匹配连续的-，并替换为单个-&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; $Name -Replace &lt;span style="color:#e6db74"&gt;&amp;#39;([-])+&amp;#39;&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;&amp;#39;-&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 保存当前的工作路径&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;$localDir &lt;span style="color:#f92672"&gt;=&lt;/span&gt; Get-Location
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 导入配置变量&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;. .&lt;span style="color:#ae81ff"&gt;\c&lt;/span&gt;onfigs.ps1
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 切换工作路径&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Set-Location $global:SiteDir
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 合法化路径名，不然图片会出问题&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;$validPath &lt;span style="color:#f92672"&gt;=&lt;/span&gt; ValidatedName -Name $PostName
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 普通文章创建&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; &lt;span style="color:#f92672"&gt;(&lt;/span&gt;$CategoryName -eq &lt;span style="color:#e6db74"&gt;&amp;#34;&amp;#34;&lt;/span&gt;&lt;span style="color:#f92672"&gt;)&lt;/span&gt; &lt;span style="color:#f92672"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;# 新建Hugo文章&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; $newPostPath &lt;span style="color:#f92672"&gt;=&lt;/span&gt; Join-Path -Path &lt;span style="color:#e6db74"&gt;&amp;#34;content\article\posts&amp;#34;&lt;/span&gt; -ChildPath &lt;span style="color:#f92672"&gt;(&lt;/span&gt;Get-Date -Format &lt;span style="color:#e6db74"&gt;&amp;#34;yyyy&amp;#34;&lt;/span&gt;&lt;span style="color:#f92672"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; $newPostPath &lt;span style="color:#f92672"&gt;=&lt;/span&gt; Join-Path -Path &lt;span style="color:#f92672"&gt;(&lt;/span&gt;Join-Path -Path $newPostPath -ChildPath $validPath&lt;span style="color:#f92672"&gt;)&lt;/span&gt; -ChildPath &lt;span style="color:#e6db74"&gt;&amp;#34;index.md&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; hugo new $newPostPath
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;# 生成图片文件夹路径&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; $newPostPicture &lt;span style="color:#f92672"&gt;=&lt;/span&gt; Join-Path -Path &lt;span style="color:#f92672"&gt;(&lt;/span&gt;Join-Path -Path $global:PostsDir -ChildPath $validPath&lt;span style="color:#f92672"&gt;)&lt;/span&gt; -ChildPath &lt;span style="color:#e6db74"&gt;&amp;#34;picture&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 需要分类的文章&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;else&lt;/span&gt; &lt;span style="color:#f92672"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;# 新建Hugo文章&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; $categoryPath &lt;span style="color:#f92672"&gt;=&lt;/span&gt; Join-Path -Path &lt;span style="color:#e6db74"&gt;&amp;#34;content\article\categories&amp;#34;&lt;/span&gt; -ChildPath $CategoryName
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; $newPostPath &lt;span style="color:#f92672"&gt;=&lt;/span&gt; Join-Path -Path &lt;span style="color:#f92672"&gt;(&lt;/span&gt;Join-Path -Path $categoryPath -ChildPath $validPath&lt;span style="color:#f92672"&gt;)&lt;/span&gt; -ChildPath &lt;span style="color:#e6db74"&gt;&amp;#34;index.md&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; hugo new $newPostPath
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;# 生成图片文件夹路径&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; $categoryPath &lt;span style="color:#f92672"&gt;=&lt;/span&gt; Join-Path -Path $global:CategoriesDir -ChildPath $CategoryName
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; $newPostPicture &lt;span style="color:#f92672"&gt;=&lt;/span&gt; Join-Path -Path &lt;span style="color:#f92672"&gt;(&lt;/span&gt;Join-Path -Path $categoryPath -ChildPath $validPath&lt;span style="color:#f92672"&gt;)&lt;/span&gt; -ChildPath &lt;span style="color:#e6db74"&gt;&amp;#34;picture&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 需要创建图片文件夹的话就创建&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; &lt;span style="color:#f92672"&gt;(&lt;/span&gt;$IsCreatePictureFolder&lt;span style="color:#f92672"&gt;)&lt;/span&gt; &lt;span style="color:#f92672"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; mkdir $newPostPicture
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 启动编辑器&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Start-Process $global:EditorPath&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 是否开启服务器预览&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; &lt;span style="color:#f92672"&gt;(&lt;/span&gt;$IsStartServer&lt;span style="color:#f92672"&gt;)&lt;/span&gt; &lt;span style="color:#f92672"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; hugo server
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 返回之前的工作路径&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Set-Location $localDir
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;使用示例&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 创建一篇普通的文章&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;.&lt;span style="color:#ae81ff"&gt;\N&lt;/span&gt;ewPost.ps1 -PostName 从Hexo到Hugo-记录博客框架切换
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 创建一篇文章，并分类为Blog&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;.&lt;span style="color:#ae81ff"&gt;\N&lt;/span&gt;ewPost.ps1 -PostName 从Hexo到Hugo-记录博客框架切换 -CategoryName Blog
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;运行后会创建对应的页面包&lt;/p&gt;
+&lt;h3 id="发布"&gt;发布
+&lt;/h3&gt;&lt;p&gt;这里涉及到两个文件，一个&lt;code&gt;InitGit.ps1&lt;/code&gt;用来初始化git仓库，一个&lt;code&gt;Deploy.ps1&lt;/code&gt;做推送&lt;/p&gt;
+&lt;p&gt;InitGit.ps1如下&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# InitGit.ps1&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;param&lt;span style="color:#f92672"&gt;(&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;[&lt;/span&gt;bool&lt;span style="color:#f92672"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; $IsForcePush &lt;span style="color:#f92672"&gt;=&lt;/span&gt; $false
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 保存当前的工作路径&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;$localDir &lt;span style="color:#f92672"&gt;=&lt;/span&gt; Get-Location
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 导入配置变量&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;. .&lt;span style="color:#ae81ff"&gt;\c&lt;/span&gt;onfigs.ps1
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 切换工作路径&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Set-Location &lt;span style="color:#f92672"&gt;(&lt;/span&gt;Join-Path -Path $global:SiteDir -ChildPath &lt;span style="color:#e6db74"&gt;&amp;#34;public&amp;#34;&lt;/span&gt;&lt;span style="color:#f92672"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 初始化git&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;git init
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;git remote add origin $global:RemoteGitURL
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;git pull
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;git add .
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;git commit -m &lt;span style="color:#f92672"&gt;(&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;Init: &amp;#34;&lt;/span&gt; + &lt;span style="color:#f92672"&gt;(&lt;/span&gt;Get-Date -Format &lt;span style="color:#e6db74"&gt;&amp;#34;yyMMdd-HH:mm&amp;#34;&lt;/span&gt;&lt;span style="color:#f92672"&gt;))&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;git branch -u $global:TargetBranch
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; &lt;span style="color:#f92672"&gt;(&lt;/span&gt;$IsForcePush&lt;span style="color:#f92672"&gt;)&lt;/span&gt; &lt;span style="color:#f92672"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; git push origin HEAD:$global:TargetBranch --force
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 返回之前的工作路径&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Set-Location $localDir
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Deploy.ps1如下&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Deploy.ps1&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;param&lt;span style="color:#f92672"&gt;(&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;[&lt;/span&gt;bool&lt;span style="color:#f92672"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; $IsForcePush &lt;span style="color:#f92672"&gt;=&lt;/span&gt; $false,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;[&lt;/span&gt;bool&lt;span style="color:#f92672"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; $IsClearDeploy &lt;span style="color:#f92672"&gt;=&lt;/span&gt; $false
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 保存当前的工作路径&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;$localDir &lt;span style="color:#f92672"&gt;=&lt;/span&gt; Get-Location
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 导入配置变量&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;. .&lt;span style="color:#ae81ff"&gt;\c&lt;/span&gt;onfigs.ps1
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 切换工作路径&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Set-Location $global:SiteDir
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 清除Hugo构建缓存&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; &lt;span style="color:#f92672"&gt;(&lt;/span&gt;$IsClearDeploy&lt;span style="color:#f92672"&gt;)&lt;/span&gt; &lt;span style="color:#f92672"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;# 递归删除所有文件&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Remove-Item -Path &lt;span style="color:#f92672"&gt;(&lt;/span&gt;Join-Path -Path $global:PublicDir -ChildPath &lt;span style="color:#e6db74"&gt;&amp;#34;*&amp;#34;&lt;/span&gt;&lt;span style="color:#f92672"&gt;)&lt;/span&gt; -Recurse
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 构建网页&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;hugo --gc --minify --baseURL $global:BaseURL
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 准备推送&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Set-Location $global:PublicDir
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 没有初始化git的化就先初始化并强制推送&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; &lt;span style="color:#f92672"&gt;(&lt;/span&gt;-not &lt;span style="color:#f92672"&gt;(&lt;/span&gt;Test-Path &lt;span style="color:#e6db74"&gt;&amp;#34;.git&amp;#34;&lt;/span&gt;&lt;span style="color:#f92672"&gt;))&lt;/span&gt; &lt;span style="color:#f92672"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; . &lt;span style="color:#f92672"&gt;(&lt;/span&gt;Join-Path -Path $global:ShellScriptDir -ChildPath &lt;span style="color:#e6db74"&gt;&amp;#34;InitGit.ps1&amp;#34;&lt;/span&gt;&lt;span style="color:#f92672"&gt;)&lt;/span&gt; -IsForcePush $true
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;else&lt;/span&gt; &lt;span style="color:#f92672"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; git add .
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; git commit -m &lt;span style="color:#f92672"&gt;(&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;Deploy: &amp;#34;&lt;/span&gt; + &lt;span style="color:#f92672"&gt;(&lt;/span&gt;Get-Date -Format &lt;span style="color:#e6db74"&gt;&amp;#34;yyMMdd-HH:mm&amp;#34;&lt;/span&gt;&lt;span style="color:#f92672"&gt;))&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;# 是否强制推送&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; &lt;span style="color:#f92672"&gt;(&lt;/span&gt;$IsForcePush&lt;span style="color:#f92672"&gt;)&lt;/span&gt; &lt;span style="color:#f92672"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; git push origin HEAD:$global:TargetBranch --force
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;else&lt;/span&gt; &lt;span style="color:#f92672"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; git push origin HEAD:$global:TargetBranch
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 返回之前的工作路径&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Set-Location $localDir
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;使用示例&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 正常的发布&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;.&lt;span style="color:#ae81ff"&gt;\D&lt;/span&gt;eploy.ps1
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 清空所有构建缓存发布&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;.&lt;span style="color:#ae81ff"&gt;\D&lt;/span&gt;eploy.ps1 -IsClearDeploy
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;运行即可推送到GitHub Page上&lt;/p&gt;
+&lt;h3 id="批量创建页面包路径结构"&gt;批量创建页面包路径结构
+&lt;/h3&gt;&lt;p&gt;因为之前使用的是hexo，里面都是单独的markdown文件&lt;br&gt;
+如果自己手动一个一个移动并创建picture文件夹那就太累了&lt;br&gt;
+所以还是要写一个脚本完成自动化&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# TransFromSingleFile.ps1&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;param&lt;span style="color:#f92672"&gt;(&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;[&lt;/span&gt;string&lt;span style="color:#f92672"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;[&lt;/span&gt;ValidateNotNullOrEmpty&lt;span style="color:#f92672"&gt;()]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; $postDir
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 排除文件名单&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;$excludeList &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#34;_index&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Get-ChildItem -Path $postDir -File | ForEach-Object &lt;span style="color:#f92672"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; &lt;span style="color:#f92672"&gt;(&lt;/span&gt;$_.BaseName -notin $excludeList&lt;span style="color:#f92672"&gt;)&lt;/span&gt; &lt;span style="color:#f92672"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;# 创建文件夹并移动&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; $destDir &lt;span style="color:#f92672"&gt;=&lt;/span&gt; Join-Path -Path $postDir -ChildPath $_.BaseName
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; New-Item -ItemType Directory -Force -Path $destDir
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Move-Item -Path $_.FullName -Destination &lt;span style="color:#f92672"&gt;(&lt;/span&gt;Join-Path -Path $destDir -ChildPath &lt;span style="color:#e6db74"&gt;&amp;#34;index&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;$(&lt;/span&gt;$_.Extension&lt;span style="color:#66d9ef"&gt;)&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt;&lt;span style="color:#f92672"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;# 创建对应的picture文件夹&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; $newPostPicture &lt;span style="color:#f92672"&gt;=&lt;/span&gt; Join-Path -Path $destDir -ChildPath &lt;span style="color:#e6db74"&gt;&amp;#34;picture&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; mkdir $newPostPicture
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;使用示例&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;.&lt;span style="color:#ae81ff"&gt;\T&lt;/span&gt;ransFromSingleFile.ps1 &lt;span style="color:#f92672"&gt;[&lt;/span&gt;某个路径&lt;span style="color:#f92672"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;运行可以为路径内所有文件创建同名文件夹，并将文件移动至对应文件夹后重命名为&lt;code&gt;index.md&lt;/code&gt;&lt;br&gt;
+里面也会创建&lt;code&gt;picture&lt;/code&gt;文件夹&lt;/p&gt;</description></item><item><title>我的hexo配合obsidian的配置</title><link>https://mlacookie.github.io/post/categories/blog/%E6%88%91%E7%9A%84hexo%E9%85%8D%E5%90%88obsidian%E7%9A%84%E9%85%8D%E7%BD%AE/</link><pubDate>Sun, 03 Mar 2024 13:24:40 +0000</pubDate><guid>https://mlacookie.github.io/post/categories/blog/%E6%88%91%E7%9A%84hexo%E9%85%8D%E5%90%88obsidian%E7%9A%84%E9%85%8D%E7%BD%AE/</guid><description>&lt;p&gt;闲着没事想着优化一下hexo的博客配置
+我原来一直都是用&lt;code&gt;vscode&lt;/code&gt;写markdown的，至于体验嘛，能写但不是很舒适
+所以我就尝试换成了现在在用的&lt;code&gt;obsidian&lt;/code&gt;，体验就好多了&lt;/p&gt;
+&lt;p&gt;然后就按网上的教程，尝试配置更加优雅的流程
+然后发现原来用的&lt;code&gt;hexo&lt;/code&gt;框架有点老了，就干脆重装了
+没想到啊，重装个&lt;code&gt;hexo&lt;/code&gt;又出了很多问题
+所以这篇博客就从&lt;code&gt;hexo&lt;/code&gt;的安装开始讲吧&lt;/p&gt;
+&lt;h2 id="0x00-hexo的安装"&gt;&amp;lt;0x00&amp;gt; hexo的安装
+&lt;/h2&gt;&lt;p&gt;（一般情况下跟着&lt;a class="link" href="https://hexo.io/zh-cn/docs/" target="_blank" rel="noopener"
+ &gt;hexo官方教程&lt;/a&gt;没啥问题）
+首先是要有&lt;code&gt;Node.js&lt;/code&gt;环境，这个随意，最好是最新的版本
+还要安装&lt;code&gt;git&lt;/code&gt;，这个直接网上找安装包安装就好了&lt;/p&gt;
+&lt;h3 id="npm换源"&gt;npm换源
+&lt;/h3&gt;&lt;p&gt;&lt;code&gt;npm&lt;/code&gt;原本的国内连接不畅，所以要换源
+一般是换成国内的淘宝源&lt;/p&gt;
+&lt;h4 id="一般敲命令方法"&gt;一般敲命令方法
+&lt;/h4&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;npm config set registry https://registry.npm.taobao.org
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h4 id="通过nrm切换"&gt;通过nrm切换
+&lt;/h4&gt;&lt;p&gt;&lt;code&gt;nrm&lt;/code&gt;是&lt;code&gt;npm&lt;/code&gt;的源管理器，可以在不同的源中切换
+如果没有什么特殊上网方式访问原本的源的话还是建议先手动切换源
+（&lt;code&gt;nrm&lt;/code&gt;也是靠&lt;code&gt;npm&lt;/code&gt;下载的）&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# -g参数表示全局安装，这样的话可以在任何目录中使用nrm&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;npm install -g nrm
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;nrm use taobao
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 查看其它可以用的源&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;nrm ls
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 测试源&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;nrm test
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="安装hexo"&gt;安装hexo
+&lt;/h3&gt;&lt;p&gt;首先是安装hexo环境&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;npm install -g hexo-cli
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;然后挑一个空的文件夹，初始化
+（这里取名叫HexoBlog了）&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;hexo init ./HexoBlog
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;然后原本空的文件夹里面会生成一些文件
+安装&lt;code&gt;hexo&lt;/code&gt;依赖&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;cd ./HexoBlog
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;npm install
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;这样之后，&lt;code&gt;hexo&lt;/code&gt;就搭建好了
+但貌似&lt;code&gt;hexo&lt;/code&gt;的依赖文件写的版本可能比较老了，最好还是更新一下&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;npm update
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="0x01-安装anatolo主题"&gt;&amp;lt;0x01&amp;gt; 安装Anatolo主题
+&lt;/h2&gt;&lt;p&gt;别的主题就看具体的安装说明了，我这里还是用&lt;a class="link" href="https://github.com/Lhcfl/hexo-theme-anatolo" target="_blank" rel="noopener"
+ &gt;Anatolo&lt;/a&gt;了&lt;/p&gt;
+&lt;p&gt;首先是在&lt;code&gt;HexoBlog&lt;/code&gt;文件夹&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;git clone https://gitee.com/Lhcfl/hexo-theme-anatolo.git themes/Anatolo
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;npm install hexo-renderer-pug --save
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;npm install hexo-renderer-stylus --save
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;然后进入&lt;code&gt;HexoBlog/themes/Anatolo&lt;/code&gt;中，复制&lt;code&gt;_config.example.yml&lt;/code&gt;为&lt;code&gt;_config.yml&lt;/code&gt;
+这个&lt;code&gt;_config.yml&lt;/code&gt;是&lt;code&gt;Anatolo&lt;/code&gt;的配置文件
+这里还需要多做一步，这一步在原本的安装文件中没有说&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;npm install
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;需要在Anatolo中再安装一次依赖，如果没有这一步的话运行时会报错找不到模块
+我的猜想是我们在安装&lt;code&gt;hexo&lt;/code&gt;依赖时没有全局安装，所以要在这里再安装一次
+（或者所有的&lt;code&gt;npm&lt;/code&gt;都&lt;code&gt;-g&lt;/code&gt;全局安装也行，但这样对C盘不友好，尤其是像我并不是专门做Nodejs开发的人）&lt;/p&gt;
+&lt;p&gt;然后回到&lt;code&gt;HexoBlog&lt;/code&gt;，修改&lt;code&gt;_config.yml&lt;/code&gt;中的&lt;code&gt;theme: Anatolo&lt;/code&gt;
+这样主题也安装好了&lt;/p&gt;
+&lt;h2 id="0x02-优化hexo配置"&gt;&amp;lt;0x02&amp;gt; 优化Hexo配置
+&lt;/h2&gt;&lt;h3 id="部署到github-page上"&gt;部署到Github Page上
+&lt;/h3&gt;&lt;p&gt;这个网上的教程足够多了，这边不细讲
+就是记得安装&lt;code&gt;hexo-deployer-git&lt;/code&gt;插件就好
+在&lt;code&gt;HexoBlog&lt;/code&gt;中&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;npm install hexo-deployer-git --save
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="更方便的分文件管理"&gt;更方便的分文件管理
+&lt;/h3&gt;&lt;p&gt;&lt;code&gt;hexo&lt;/code&gt;的默认所有的博客文章都存放在&lt;code&gt;HexoBlog/source/_posts&lt;/code&gt;下面
+虽然可以在里面用文件夹归类不同的文章，但需要给这些博客手动写上&lt;code&gt;categories&lt;/code&gt;属性
+这就很麻烦了，手写麻烦还容易出错&lt;/p&gt;
+&lt;p&gt;可以安装一个插件，&lt;code&gt;hexo-auto-category&lt;/code&gt;
+它可以在&lt;code&gt;hexo&lt;/code&gt;生成网页时自动给每个博客打上对应的&lt;code&gt;categories&lt;/code&gt;属性&lt;/p&gt;
+&lt;p&gt;在&lt;code&gt;HexoBlog&lt;/code&gt;中&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;npm install hexo-auto-category --save
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;修改&lt;code&gt;_config.yml&lt;/code&gt;，添加下面的语句&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-yml" data-lang="yml"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;auto_category&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;enable&lt;/span&gt;: &lt;span style="color:#66d9ef"&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;depth&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;这样就安装好并启用了&lt;/p&gt;
+&lt;h2 id="0x03-使用obsidian作为编辑器"&gt;&amp;lt;0x03&amp;gt; 使用obsidian作为编辑器
+&lt;/h2&gt;&lt;p&gt;&lt;code&gt;obsidian&lt;/code&gt;确实香，比起原本的&lt;code&gt;vscode&lt;/code&gt;好多了，毕竟是专门的&lt;code&gt;markdown&lt;/code&gt;编辑器
+但要在&lt;code&gt;hexo&lt;/code&gt;中使用&lt;code&gt;obsidian&lt;/code&gt;作为编辑器，还需要做一些小优化&lt;/p&gt;
+&lt;p&gt;仓库的话，用obsidian打开&lt;code&gt;HexoBlog/source/_posts&lt;/code&gt;就可以了&lt;/p&gt;
+&lt;h3 id="图片问题"&gt;图片问题
+&lt;/h3&gt;&lt;p&gt;hexo在生成时，图片需要在&lt;code&gt;HexoBlog/source&lt;/code&gt;下面
+但由于obsidian打开的目录在&lt;code&gt;HexoBlog/source/_posts&lt;/code&gt;，所以会检索不到图片&lt;/p&gt;
+&lt;p&gt;我的解决方案是在&lt;code&gt;HexoBlog/source&lt;/code&gt;下面新建&lt;code&gt;picture&lt;/code&gt;文件夹来专门存图片
+然后在&lt;code&gt;HexoBlog/source/_posts&lt;/code&gt;下面添加&lt;code&gt;picture&lt;/code&gt;软连接，让&lt;code&gt;obsidian&lt;/code&gt;可以检索到&lt;/p&gt;
+&lt;p&gt;添加软连接的命令在&lt;code&gt;powershell&lt;/code&gt;下和&lt;code&gt;cmd&lt;/code&gt;下面有所不同，但都需要管理员权限&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# powershell&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;New-Item -ItemType SymbolicLink -Path $放的地方 -Name $名字 -Target $连接的目标
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# cmd&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;mklink /d $软连接存放路径 $连接的目标
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;然后就是在&lt;code&gt;obsidian&lt;/code&gt;中编辑时，引用图片的格式应是&lt;code&gt;![](/picture/...)&lt;/code&gt;
+最好把&lt;code&gt;obsidian&lt;/code&gt;的&lt;code&gt;文件与链接&amp;gt; &amp;gt; 自动添加wiki引用&lt;/code&gt;关了，&lt;code&gt;[[]]&lt;/code&gt;格式的连接hexo本身解析不了
+&lt;img class="gallery-image" data-flex-basis="2475px" data-flex-grow="1031" height="76" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://mlacookie.github.io/post/categories/blog/%E6%88%91%E7%9A%84hexo%E9%85%8D%E5%90%88obsidian%E7%9A%84%E9%85%8D%E7%BD%AE/picture/1.png" width="784"&gt;
+（貌似有插件在解决这个问题，但我没试成功过）&lt;/p&gt;
+&lt;h2 id="0x04-使用脚本做自动化"&gt;&amp;lt;0x04&amp;gt; 使用脚本做自动化
+&lt;/h2&gt;&lt;p&gt;&lt;code&gt;hexo&lt;/code&gt;的生成和部署都还是靠cli命令的
+所以可以写一些脚本来做一些自动化
+这里的脚本都是&lt;code&gt;powershell&lt;/code&gt;脚本&lt;/p&gt;
+&lt;h3 id="新建博客文章并编辑"&gt;新建博客文章并编辑
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# (@24-03-07) 优化脚本，增加去除URL特殊字符&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;param&lt;/span&gt;(
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;    [&lt;span style="color:#66d9ef"&gt;string&lt;/span&gt;]
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;    [ValidateNotNullOrEmpty()]
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;    $Name
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;function&lt;/span&gt; ValidatedName {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;    &lt;span style="color:#66d9ef"&gt;param&lt;/span&gt; (
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;        [&lt;span style="color:#66d9ef"&gt;string&lt;/span&gt;]
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;        [ValidateNotNullOrEmpty()]
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;        $Name
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;    )
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;    $SpecialCharacters = [&lt;span style="color:#66d9ef"&gt;char[]&lt;/span&gt;]@(
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;        &lt;span style="color:#e6db74"&gt;&amp;#34;` &amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;        &lt;span style="color:#e6db74"&gt;&amp;#34;`!&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;        &lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;`&amp;#34;&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;        &lt;span style="color:#e6db74"&gt;&amp;#34;`#&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;        &lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;`$&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;        &lt;span style="color:#e6db74"&gt;&amp;#34;`%&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;        &lt;span style="color:#e6db74"&gt;&amp;#34;`&amp;amp;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;        &lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;`&amp;#39;&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;        &lt;span style="color:#e6db74"&gt;&amp;#34;(&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;        &lt;span style="color:#e6db74"&gt;&amp;#34;)&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;        &lt;span style="color:#e6db74"&gt;&amp;#34;*&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;        &lt;span style="color:#e6db74"&gt;&amp;#34;+&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;        &lt;span style="color:#e6db74"&gt;&amp;#34;,&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;        &lt;span style="color:#e6db74"&gt;&amp;#34;-&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;        &lt;span style="color:#e6db74"&gt;&amp;#34;.&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;        &lt;span style="color:#e6db74"&gt;&amp;#34;/&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;        &lt;span style="color:#e6db74"&gt;&amp;#34;:&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;        &lt;span style="color:#e6db74"&gt;&amp;#34;;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;        &lt;span style="color:#e6db74"&gt;&amp;#34;&amp;lt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;        &lt;span style="color:#e6db74"&gt;&amp;#34;=&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;        &lt;span style="color:#e6db74"&gt;&amp;#34;&amp;gt; &amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;        &lt;span style="color:#e6db74"&gt;&amp;#34;?&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;        &lt;span style="color:#e6db74"&gt;&amp;#34;@&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;        &lt;span style="color:#e6db74"&gt;&amp;#34;[&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;        &lt;span style="color:#e6db74"&gt;&amp;#34;\&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;        &lt;span style="color:#e6db74"&gt;&amp;#34;]&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;        &lt;span style="color:#e6db74"&gt;&amp;#34;^&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;        &lt;span style="color:#e6db74"&gt;&amp;#34;_&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;        &lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt;&lt;span style="color:#ae81ff"&gt;``&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;        &lt;span style="color:#e6db74"&gt;&amp;#34;{&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;        &lt;span style="color:#e6db74"&gt;&amp;#34;|&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;        &lt;span style="color:#e6db74"&gt;&amp;#34;}&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;        &lt;span style="color:#e6db74"&gt;&amp;#34;~&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;    )
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;    &lt;span style="color:#75715e"&gt;# 先每个替换成-&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;    &lt;span style="color:#66d9ef"&gt;foreach&lt;/span&gt; ($Character &lt;span style="color:#66d9ef"&gt;in&lt;/span&gt; $SpecialCharacters) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;        $Name = $Name.Replace($Character, &lt;span style="color:#e6db74"&gt;&amp;#34;-&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;    &lt;span style="color:#75715e"&gt;# 返回时使用正则表达式匹配连续的-，并替换为单个-&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;    &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; $Name &lt;span style="color:#f92672"&gt;-Replace&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#39;([-])+&amp;#39;&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;&amp;#39;-&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 指定Obsidian目录&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;$ObsidianPath = &lt;span style="color:#e6db74"&gt;&amp;#34;C:\Users\cookie\scoop\apps\obsidian\current\Obsidian.exe&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 新建hexo博客&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;hexo new $Name
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 去除URL特殊字符&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;$Name=ValidatedName -Name $Name
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 创建图片文件夹&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;mkdir ./source/picture/$Name
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 启动Obsidian&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Start-Process $ObsidianPath -ArgumentList ./source/_posts
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# cls&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;Clear-Host
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="本地化部署测试"&gt;本地化部署测试
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;param&lt;/span&gt;(
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;    [&lt;span style="color:#66d9ef"&gt;Int16&lt;/span&gt;]
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;    $Port
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 清理hexo缓存&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;hexo clean
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# hexo生成&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;hexo g
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 启动本地hexo服务器&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; ($Port &lt;span style="color:#f92672"&gt;-eq&lt;/span&gt; $null) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;    hexo server
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;else&lt;/span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;    hexo server -p $Port
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="0x05-安装过程中可能的问题"&gt;&amp;lt;0x05&amp;gt; 安装过程中可能的问题
+&lt;/h2&gt;&lt;p&gt;&lt;code&gt;hexo&lt;/code&gt;的有些依赖可能已经已放弃维护了
+比如说&lt;code&gt;hexo-renderer-sass&lt;/code&gt;，这个非常容易报错
+（貌似删了不影响整体运行）
+可以替换成&lt;code&gt;hexo-renderer-sass-next&lt;/code&gt;，这个稳定很多&lt;/p&gt;
+&lt;h2 id="0x06-这套方案的问题"&gt;&amp;lt;0x06&amp;gt; 这套方案的问题
+&lt;/h2&gt;&lt;p&gt;不支持Obsidian的wiki链接解析
+也没用上Obsidian自带的模板功能
+文章之间相互引用也很麻烦，要知道文章的具体URL&lt;/p&gt;</description></item><item><title>给侧边栏加个B站图标</title><link>https://mlacookie.github.io/post/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/</link><pubDate>Wed, 26 Apr 2023 21:59:57 +0000</pubDate><guid>https://mlacookie.github.io/post/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/</guid><description>&lt;p&gt;搭个博客嘛，肯定要加点个人的一些账号。然后呢，我想加个B站的链接，但是在 Anatolo 的模板里没有，这下只能自己动手了。&lt;/p&gt;
+&lt;h2 id="一些约定的符号"&gt;一些约定的符号
+&lt;/h2&gt;&lt;p&gt;&lt;code&gt;./&lt;/code&gt; 表示 hexo 博客的根目录&lt;/p&gt;
+&lt;h2 id="0x00-分析"&gt;&amp;lt;0x00&amp;gt; 分析
+&lt;/h2&gt;&lt;p&gt;我先是在 &lt;code&gt;./themes/Anatolo/source/images&lt;/code&gt; 里找，发现里面只有网站的 icon 和主要图标，没有那些社交媒体的图标
+&lt;img alt="演示" class="gallery-image" data-flex-basis="745px" data-flex-grow="310" height="28" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://mlacookie.github.io/post/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/1.jpg" width="87"&gt;&lt;br&gt;
+(比如这样的图标，B站的图标原来是没有的)&lt;br&gt;
+然后就又去找 &lt;code&gt;./themes/Anatolo/layout/partial&lt;/code&gt; 下面的各种文件，发现有个叫 &lt;code&gt;sidebar.pug&lt;/code&gt; 和 &lt;code&gt;social_links.pug&lt;/code&gt; 这两个文件。问题来了，&lt;code&gt;.pub&lt;/code&gt; 是啥文件啊(之前真没接触过)。百度了以下，这是个排版引擎的语言。行吧，直接在线学习。&lt;/p&gt;
+&lt;p&gt;然后打开了 &lt;code&gt;sidebar.pug&lt;/code&gt; 简单分析下，感觉关系不大。打开 &lt;code&gt;social_links.pug&lt;/code&gt;&lt;/p&gt;
+&lt;pre tabindex="0"&gt;&lt;code class="language-pug" data-lang="pug"&gt;// social_links.pug
+ul.social-links
+ if theme.github
+ li
+ a(href= theme.github)
+ i.fa.fa-github
+ if theme.mail
+ li
+ //- a(href= &amp;#34;javascript:alert(\&amp;#34;&amp;#34; + theme.mail +&amp;#34;\&amp;#34;)&amp;#34; )
+ a(href= &amp;#34;mailto:&amp;#34; + theme.mail )
+ i.fa.fa-envelope
+ if theme.QQ
+ li
+ a(href= &amp;#34;http://sighttp.qq.com/authd?IDKEY=&amp;#34; + theme.QQ)
+ i.fa.fa-qq
+ if theme.zhihu
+ li
+ a(href= theme.zhihu)
+ i.fa.fa-mortar-board
+ if theme.twitter
+ li
+ a(href= theme.twitter)
+ i.fa.fa-twitter
+ if theme.instagram
+ li
+ a(href= theme.instagram)
+ i.fa.fa-instagram
+ if theme.rss
+ li
+ a(href= url_for(theme.rss))
+ i.fa.fa-rss
+ if theme.weibo
+ li
+ a(href= theme.weibo)
+ i.fa.fa-weibo
+ if theme.facebook
+ li
+ a(href= theme.facebook)
+ i.fa.fa-facebook
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;感觉很有关系&lt;/p&gt;
+&lt;h2 id="0x01-简单的尝试"&gt;&amp;lt;0x01&amp;gt; 简单的尝试
+&lt;/h2&gt;&lt;p&gt;于是我就直接很粗暴的在 &lt;code&gt;social_links.pug&lt;/code&gt; 里加上这个&lt;/p&gt;
+&lt;pre tabindex="0"&gt;&lt;code class="language-pug" data-lang="pug"&gt;if theme.bilibili
+ li
+ a(href= theme.bilibili)
+ i.fa.fa-bilibili
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;还有在 &lt;code&gt;./themes/Anatolo/_config.yml&lt;/code&gt; 里加上这个&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-yml" data-lang="yml"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;bilibili&lt;/span&gt;: &lt;span style="color:#ae81ff"&gt;https://space.bilibili.com/13629146&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;一编译，一部署，一看，果不其然，直接是空白。
+然后看看开发者工具，发现在对应地方的 html 代码里多了这些&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-html" data-lang="html"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&amp;lt;&lt;span style="color:#f92672"&gt;li&lt;/span&gt;&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &amp;lt;&lt;span style="color:#f92672"&gt;a&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;target&lt;/span&gt;&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;_blank&amp;#34;&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;rel&lt;/span&gt;&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;noopener&amp;#34;&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;href&lt;/span&gt;&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;https://space.bilibili.com/13629146&amp;#34;&lt;/span&gt;&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &amp;lt;&lt;span style="color:#f92672"&gt;i&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;class&lt;/span&gt;&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;fa fa-bilibili&amp;#34;&lt;/span&gt;&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &amp;lt;/&lt;span style="color:#f92672"&gt;i&lt;/span&gt;&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &amp;lt;/&lt;span style="color:#f92672"&gt;a&lt;/span&gt;&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&amp;lt;/&lt;span style="color:#f92672"&gt;li&lt;/span&gt;&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;也就是说，其实添加是添加进去了，但就是没有对应的图标而已&lt;br&gt;
+问题来了，&lt;code&gt;&amp;lt;i class=&amp;quot;fa fa-bilibili&amp;quot;&amp;gt;&lt;/code&gt; 里面的 &lt;code&gt;fa&lt;/code&gt; 指的是什么呢?&lt;/p&gt;
+&lt;h2 id="0x02-二度分析"&gt;&amp;lt;0x02&amp;gt; 二度分析
+&lt;/h2&gt;&lt;p&gt;搜索了一下，&lt;code&gt;fa&lt;/code&gt; 指的是 Font awesome，是有各种常见图标的字体。找的官网，看了看图标列表，果然没有B站&lt;br&gt;
+这下不得不自己做字体了(如果直接插入图片会更简单倒是)&lt;/p&gt;
+&lt;p&gt;翻了翻 &lt;code&gt;./themes/Anatolo/source/fonts&lt;/code&gt; 果然有 FontAwesome 的字体文件&lt;br&gt;
+(有 &lt;code&gt;.otf&lt;/code&gt; &lt;code&gt;.eot&lt;/code&gt; &lt;code&gt;.svg&lt;/code&gt; &lt;code&gt;.ttf&lt;/code&gt; &lt;code&gt;.woff&lt;/code&gt; &lt;code&gt;.woff2&lt;/code&gt;)&lt;/p&gt;
+&lt;h2 id="0x03-制作图标"&gt;&amp;lt;0x03&amp;gt; 制作图标
+&lt;/h2&gt;&lt;p&gt;首先需要一个工具网站，用来做字体。然后还需要一个矢量图编辑器。&lt;br&gt;
+网站是 &lt;a class="link" href="https://icomoon.io/" target="_blank" rel="noopener"
+ &gt;icomoon.io&lt;/a&gt; 直接点击右上角的 &lt;code&gt;IcoMoon App&lt;/code&gt; 即可&lt;br&gt;
+矢量图编辑器随意，我这里用的是 &lt;a class="link" href="https://inkscape.org/" target="_blank" rel="noopener"
+ &gt;inkscape&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;进入 &lt;code&gt;IcoMoon App&lt;/code&gt; 后，点击左上角 &lt;code&gt;Import Icons&lt;/code&gt;，选择 &lt;code&gt;.svg&lt;/code&gt; 文件&lt;br&gt;
+左上角选择铅笔，然后随便选一个图标，点击 &lt;code&gt;Download(SVG)&lt;/code&gt; 下载这个图标的 &lt;code&gt;.svg&lt;/code&gt; 文件。&lt;/p&gt;
+&lt;p&gt;然后在本地用矢量图编辑器打开，把原来的图清掉，然后再在上面画矢量图就可以了。&lt;/p&gt;
+&lt;p&gt;画的时候注意不要用描边，要用填充来构成图形。如果不小心用描边构成了图形，那么也可以选中路径，然后找到这个&lt;br&gt;
+&lt;img alt="路径→描边转路径" class="gallery-image" data-flex-basis="97px" data-flex-grow="40" height="581" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://mlacookie.github.io/post/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/2.jpg" width="235"&gt;&lt;br&gt;
+点一下就会自动转换成填充了&lt;br&gt;
+画的时候要尽可能把画布填满，如果上下留白很多的话可以适当减小。&lt;br&gt;
+画布大小可以在&lt;code&gt;文件→文档属性&lt;/code&gt;里修改&lt;br&gt;
+如果贝塞尔曲线画不好的话可以先用有理B样条来画，后者好画一点，但画出来就是比较圆润。
+&lt;img alt="第一个是贝塞尔，第三个是B样条" class="gallery-image" data-flex-basis="209px" data-flex-grow="87" height="326" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://mlacookie.github.io/post/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/3.jpg" width="284"&gt;&lt;br&gt;
+用贝塞尔曲线画的画，尽可能让每个节点的手柄要么水平，要么垂直，这样画会相对简单一点&lt;br&gt;
+如果图标有一定的对称性，那么节点要对称，而且手柄的长度也要对称&lt;br&gt;
+&lt;img alt="我的成果" class="gallery-image" data-flex-basis="440px" data-flex-grow="183" height="1050" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://mlacookie.github.io/post/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/4.jpg" srcset="https://mlacookie.github.io/post/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/4_hu_d2eb88edbc1409a1.jpg 800w, https://mlacookie.github.io/post/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/4_hu_498109de6c8c40c7.jpg 1600w, https://mlacookie.github.io/post/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/4.jpg 1928w" width="1928"&gt;&lt;br&gt;
+我的成果供大家参考。&lt;/p&gt;
+&lt;p&gt;然后，保存文件，回到之前的网页。导入我们制作的 &lt;code&gt;.svg&lt;/code&gt; 文件。&lt;br&gt;
+&lt;img alt="Import to set" class="gallery-image" data-flex-basis="438px" data-flex-grow="182" height="1050" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://mlacookie.github.io/post/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/5.jpg" srcset="https://mlacookie.github.io/post/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/5_hu_482f7a1259890c3.jpg 800w, https://mlacookie.github.io/post/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/5_hu_8bce6b9879a72a04.jpg 1600w, https://mlacookie.github.io/post/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/5.jpg 1920w" width="1920"&gt;&lt;br&gt;
+然后选择右上角移动工具&lt;br&gt;
+&lt;img alt="移动工具" class="gallery-image" data-flex-basis="1200px" data-flex-grow="500" height="32" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://mlacookie.github.io/post/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/6.jpg" width="160"&gt;&lt;br&gt;
+把我们的图标移到列表的最后一个。&lt;br&gt;
+最后选择 &lt;code&gt;Generate Font&lt;/code&gt; 生成字体文件。下载前找到我们新制作的图标，可以先检查下有没有什么问题。&lt;/p&gt;
+&lt;h2 id="0x04-替换原有字体"&gt;&amp;lt;0x04&amp;gt; 替换原有字体
+&lt;/h2&gt;&lt;p&gt;下载后解压缩，里面有个 &lt;code&gt;demo.html&lt;/code&gt; 可以用来查看字体和字体编号(字体编号很重要)，还有 &lt;code&gt;fonts&lt;/code&gt; 文件夹，里面就是我们生成的字体了。&lt;/p&gt;
+&lt;p&gt;打开 &lt;code&gt;demo.html&lt;/code&gt;，找到我们的图标，记下图标的编号(这个编号在字体生成里也能改)，比如我的字体编号是 &lt;code&gt;f2e1&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;把 &lt;code&gt;fonts&lt;/code&gt; 文件下的文件复制到 &lt;code&gt;./themes/Anatolo/source/fonts&lt;/code&gt;&lt;br&gt;
+在 &lt;code&gt;./themes/Anatolo/source/css&lt;/code&gt; 里找到 &lt;code&gt;font-awesome.css&lt;/code&gt; 和 &lt;code&gt;font-awesome.min.css&lt;/code&gt; (建议每个复制一个作备份)，打开。&lt;br&gt;
+在 &lt;code&gt;font-awesome.css&lt;/code&gt; 修改&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-css" data-lang="css"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;/*原来的*/&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;@&lt;span style="color:#66d9ef"&gt;font-face&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;font-family&lt;/span&gt;&lt;span style="color:#f92672"&gt;:&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#39;FontAwesome&amp;#39;&lt;/span&gt;&lt;span style="color:#f92672"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;src&lt;/span&gt;&lt;span style="color:#f92672"&gt;:&lt;/span&gt; &lt;span style="color:#f92672"&gt;url&lt;/span&gt;&lt;span style="color:#f92672"&gt;(&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#39;../fonts/fontawesome-webfont.eot?v=4.7.0&amp;#39;&lt;/span&gt;&lt;span style="color:#f92672"&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;src&lt;/span&gt;&lt;span style="color:#f92672"&gt;:&lt;/span&gt; &lt;span style="color:#f92672"&gt;url&lt;/span&gt;&lt;span style="color:#f92672"&gt;(&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#39;../fonts/fontawesome-webfont.eot?#iefix&amp;amp;v=4.7.0&amp;#39;&lt;/span&gt;&lt;span style="color:#f92672"&gt;)&lt;/span&gt; &lt;span style="color:#f92672"&gt;format&lt;/span&gt;&lt;span style="color:#f92672"&gt;(&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#39;embedded-opentype&amp;#39;&lt;/span&gt;&lt;span style="color:#f92672"&gt;),&lt;/span&gt; &lt;span style="color:#f92672"&gt;url&lt;/span&gt;&lt;span style="color:#f92672"&gt;(&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#39;../fonts/fontawesome-webfont.woff2?v=4.7.0&amp;#39;&lt;/span&gt;&lt;span style="color:#f92672"&gt;)&lt;/span&gt; &lt;span style="color:#f92672"&gt;format&lt;/span&gt;&lt;span style="color:#f92672"&gt;(&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#39;woff2&amp;#39;&lt;/span&gt;&lt;span style="color:#f92672"&gt;),&lt;/span&gt; &lt;span style="color:#f92672"&gt;url&lt;/span&gt;&lt;span style="color:#f92672"&gt;(&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#39;../fonts/fontawesome-webfont.woff?v=4.7.0&amp;#39;&lt;/span&gt;&lt;span style="color:#f92672"&gt;)&lt;/span&gt; &lt;span style="color:#f92672"&gt;format&lt;/span&gt;&lt;span style="color:#f92672"&gt;(&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#39;woff&amp;#39;&lt;/span&gt;&lt;span style="color:#f92672"&gt;),&lt;/span&gt; &lt;span style="color:#f92672"&gt;url&lt;/span&gt;&lt;span style="color:#f92672"&gt;(&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#39;../fonts/fontawesome-webfont.ttf?v=4.7.0&amp;#39;&lt;/span&gt;&lt;span style="color:#f92672"&gt;)&lt;/span&gt; &lt;span style="color:#f92672"&gt;format&lt;/span&gt;&lt;span style="color:#f92672"&gt;(&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#39;truetype&amp;#39;&lt;/span&gt;&lt;span style="color:#f92672"&gt;),&lt;/span&gt; &lt;span style="color:#f92672"&gt;url&lt;/span&gt;&lt;span style="color:#f92672"&gt;(&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#39;../fonts/fontawesome-webfont.svg?v=4.7.0#fontawesomeregular&amp;#39;&lt;/span&gt;&lt;span style="color:#f92672"&gt;)&lt;/span&gt; &lt;span style="color:#f92672"&gt;format&lt;/span&gt;&lt;span style="color:#f92672"&gt;(&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#39;svg&amp;#39;&lt;/span&gt;&lt;span style="color:#f92672"&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;font-weight&lt;/span&gt;&lt;span style="color:#f92672"&gt;:&lt;/span&gt; &lt;span style="color:#f92672"&gt;normal&lt;/span&gt;&lt;span style="color:#f92672"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;font-style&lt;/span&gt;&lt;span style="color:#f92672"&gt;:&lt;/span&gt; &lt;span style="color:#f92672"&gt;normal&lt;/span&gt;&lt;span style="color:#f92672"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;/*修改为*/&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;@&lt;span style="color:#66d9ef"&gt;font-face&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;font-family&lt;/span&gt;&lt;span style="color:#f92672"&gt;:&lt;/span&gt; &lt;span style="color:#e6db74"&gt;&amp;#39;FontAwesome&amp;#39;&lt;/span&gt;&lt;span style="color:#f92672"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;src&lt;/span&gt;&lt;span style="color:#f92672"&gt;:&lt;/span&gt; &lt;span style="color:#f92672"&gt;url&lt;/span&gt;&lt;span style="color:#f92672"&gt;(&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#39;../fonts/fontawesome-webfont.eot&amp;#39;&lt;/span&gt;&lt;span style="color:#f92672"&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;src&lt;/span&gt;&lt;span style="color:#f92672"&gt;:&lt;/span&gt; &lt;span style="color:#f92672"&gt;url&lt;/span&gt;&lt;span style="color:#f92672"&gt;(&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#39;../fonts/fontawesome-webfont.eot&amp;#39;&lt;/span&gt;&lt;span style="color:#f92672"&gt;)&lt;/span&gt; &lt;span style="color:#f92672"&gt;format&lt;/span&gt;&lt;span style="color:#f92672"&gt;(&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#39;embedded-opentype&amp;#39;&lt;/span&gt;&lt;span style="color:#f92672"&gt;),&lt;/span&gt; &lt;span style="color:#f92672"&gt;url&lt;/span&gt;&lt;span style="color:#f92672"&gt;(&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#39;../fonts/fontawesome-webfont.woff&amp;#39;&lt;/span&gt;&lt;span style="color:#f92672"&gt;)&lt;/span&gt; &lt;span style="color:#f92672"&gt;format&lt;/span&gt;&lt;span style="color:#f92672"&gt;(&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#39;woff&amp;#39;&lt;/span&gt;&lt;span style="color:#f92672"&gt;),&lt;/span&gt; &lt;span style="color:#f92672"&gt;url&lt;/span&gt;&lt;span style="color:#f92672"&gt;(&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#39;../fonts/fontawesome-webfont.ttf&amp;#39;&lt;/span&gt;&lt;span style="color:#f92672"&gt;)&lt;/span&gt; &lt;span style="color:#f92672"&gt;format&lt;/span&gt;&lt;span style="color:#f92672"&gt;(&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#39;truetype&amp;#39;&lt;/span&gt;&lt;span style="color:#f92672"&gt;),&lt;/span&gt; &lt;span style="color:#f92672"&gt;url&lt;/span&gt;&lt;span style="color:#f92672"&gt;(&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#39;../fonts/fontawesome-webfont.svg&amp;#39;&lt;/span&gt;&lt;span style="color:#f92672"&gt;)&lt;/span&gt; &lt;span style="color:#f92672"&gt;format&lt;/span&gt;&lt;span style="color:#f92672"&gt;(&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#39;svg&amp;#39;&lt;/span&gt;&lt;span style="color:#f92672"&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;font-weight&lt;/span&gt;&lt;span style="color:#f92672"&gt;:&lt;/span&gt; &lt;span style="color:#f92672"&gt;normal&lt;/span&gt;&lt;span style="color:#f92672"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;font-style&lt;/span&gt;&lt;span style="color:#f92672"&gt;:&lt;/span&gt; &lt;span style="color:#f92672"&gt;normal&lt;/span&gt;&lt;span style="color:#f92672"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;我这里的字体名还是 &lt;code&gt;fontawesome-webfont&lt;/code&gt; 这里名字按自己的来&lt;/p&gt;
+&lt;p&gt;然后加上这些&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-css" data-lang="css"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;.&lt;span style="color:#a6e22e"&gt;fa-bilibili-alt&lt;/span&gt;:&lt;span style="color:#a6e22e"&gt;before&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;content&lt;/span&gt;: &lt;span style="color:#e6db74"&gt;&amp;#34;\f2e1&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;反正有很多长差不多的，加在那里面就可以。&lt;br&gt;
+&lt;code&gt;\f2e1&lt;/code&gt; 这里要看你的编号填，&lt;code&gt;.fa-bilibili-alt&lt;/code&gt; 这个算是给图标起个名字，随意就好。&lt;br&gt;
+&lt;code&gt;font-awesome.min.css&lt;/code&gt; 就是 &lt;code&gt;font-awesome.css&lt;/code&gt; 去掉所有缩进的版本，也要加上并修改些东西，在这里就不讲了。&lt;/p&gt;
+&lt;h2 id="0x05-部署试试"&gt;&amp;lt;0x05&amp;gt; 部署试试
+&lt;/h2&gt;&lt;p&gt;(记得加上&amp;lt;0x02&amp;gt;的多出来的代码)&lt;br&gt;
+编译，部署。访问下网页看看有没有新图标出现。如果没有，清除或禁用网页缓存后再试试。理论上自己加入的图标就会出现。&lt;br&gt;
+&lt;img alt="成功示例" class="gallery-image" data-flex-basis="556px" data-flex-grow="232" height="100" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://mlacookie.github.io/post/categories/blog/%E7%BB%99%E4%BE%A7%E8%BE%B9%E6%A0%8F%E5%8A%A0%E4%B8%AAb%E7%AB%99%E5%9B%BE%E6%A0%87/picture/7.jpg" width="232"&gt;&lt;br&gt;
+就像这样。&lt;/p&gt;</description></item><item><title>如何一个hexo博客同时部署多git</title><link>https://mlacookie.github.io/post/categories/blog/%E5%A6%82%E4%BD%95%E4%B8%80%E4%B8%AAhexo%E5%8D%9A%E5%AE%A2%E5%90%8C%E6%97%B6%E9%83%A8%E7%BD%B2%E5%A4%9Agit/</link><pubDate>Sun, 23 Apr 2023 16:35:19 +0000</pubDate><guid>https://mlacookie.github.io/post/categories/blog/%E5%A6%82%E4%BD%95%E4%B8%80%E4%B8%AAhexo%E5%8D%9A%E5%AE%A2%E5%90%8C%E6%97%B6%E9%83%A8%E7%BD%B2%E5%A4%9Agit/</guid><description>&lt;h2 id="0x01-如何实现"&gt;&amp;lt;0x01&amp;gt; 如何实现
+&lt;/h2&gt;&lt;p&gt;思路是本地多写几份 config 文件&lt;br&gt;
+在部署时切换就可以&lt;/p&gt;
+&lt;h2 id="0x02-开搞"&gt;&amp;lt;0x02&amp;gt; 开搞
+&lt;/h2&gt;&lt;p&gt;首先先新建几个 config 文件&lt;br&gt;
+建议直接复制原来的&lt;code&gt;_config.yml&lt;/code&gt;&lt;br&gt;
+复制的文件名字随意
+我们只需要修改最下面的&lt;code&gt;deploy&lt;/code&gt;部分就好&lt;/p&gt;
+&lt;p&gt;比如我在 hexo 目录建了两个文件&lt;br&gt;
+分别是&lt;code&gt;_GitPageConfig.yml&lt;/code&gt;与&lt;code&gt;_ServerConfig.yml&lt;/code&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-yml" data-lang="yml"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# _GitPageConfig.yml的部分&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;deploy&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;type&lt;/span&gt;: &lt;span style="color:#ae81ff"&gt;git&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;repo&lt;/span&gt;: &lt;span style="color:#ae81ff"&gt;git@github.com:{github用户名}/{github用户名}.github.io.git&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;branch&lt;/span&gt;: &lt;span style="color:#ae81ff"&gt;gh-pages&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-yml" data-lang="yml"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# _ServerConfig.yml的部分&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;deploy&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;type&lt;/span&gt;: &lt;span style="color:#ae81ff"&gt;git&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;repo&lt;/span&gt;: &lt;span style="color:#ae81ff"&gt;git@{服务器ip}:{gitea用户名}/{gitea仓库名}.git&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;branch&lt;/span&gt;: &lt;span style="color:#ae81ff"&gt;master&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;然后新建一个脚本文件&lt;br&gt;
+这里用 windows 配置，所以新建了个 powershell 脚本&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-ps1" data-lang="ps1"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# deploy.ps1&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;copy _ServerConfig.yml _config.yml
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;hexo g -d
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;del _config.yml
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;copy _GitPageConfig.yml _config.yml
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;hexo g -d
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;del _config.yml
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;如果要部署到更多的git仓库，以此类推
+之后部署只需要执行&lt;code&gt;deploy.ps1&lt;/code&gt;即可&lt;/p&gt;
+&lt;h2 id="0x03-为什么不单文件解决"&gt;&amp;lt;0x03&amp;gt; 为什么不单文件解决
+&lt;/h2&gt;&lt;p&gt;(@ 23-07-07)&lt;br&gt;
+经过我的实际测试，确实也可以直接单文件搞定&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-yml" data-lang="yml"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# _config.yml&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;deploy&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;- &lt;span style="color:#f92672"&gt;type&lt;/span&gt;: &lt;span style="color:#ae81ff"&gt;git&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;repo&lt;/span&gt;: &lt;span style="color:#ae81ff"&gt;git@{服务器ip}:{gitea用户名}/{gitea仓库名}.git&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;branch&lt;/span&gt;: &lt;span style="color:#ae81ff"&gt;master&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;- &lt;span style="color:#f92672"&gt;type&lt;/span&gt;: &lt;span style="color:#ae81ff"&gt;git&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;repo&lt;/span&gt;: &lt;span style="color:#ae81ff"&gt;git@github.com:{github用户名}/{github用户名}.github.io.git&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;branch&lt;/span&gt;: &lt;span style="color:#ae81ff"&gt;gh-pages&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;这样写也可以，&lt;code&gt;hexo&lt;/code&gt;会按从上到下的顺序依次部署&lt;/p&gt;
+&lt;p&gt;但这样写会导致一个问题，就是网址的根域名会对不上&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-yml" data-lang="yml"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# _config.yml&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 部署到我自己的网站&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;url&lt;/span&gt;: &lt;span style="color:#ae81ff"&gt;http://mlacookie.top/&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 部署到GitHubPage&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;url&lt;/span&gt;: &lt;span style="color:#ae81ff"&gt;https://MLAcookie.github.io/&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;如果仅靠单一文件的话，两个部署的根域名会是一样的&lt;br&gt;
+这样可能会造成一些小问题&lt;/p&gt;
+&lt;p&gt;靠&lt;code&gt;powershell&lt;/code&gt;还可以顺便做部署前的一些操作，挺方便的&lt;/p&gt;</description></item><item><title>搭建hexo+gitea的博客站</title><link>https://mlacookie.github.io/post/categories/blog/%E6%90%AD%E5%BB%BAhexo+gitea%E7%9A%84%E5%8D%9A%E5%AE%A2%E7%AB%99/</link><pubDate>Sun, 23 Apr 2023 15:50:19 +0000</pubDate><guid>https://mlacookie.github.io/post/categories/blog/%E6%90%AD%E5%BB%BAhexo+gitea%E7%9A%84%E5%8D%9A%E5%AE%A2%E7%AB%99/</guid><description>&lt;h2 id="0x00-为什么要用gitea--hexo"&gt;&amp;lt;0x00&amp;gt; 为什么要用gitea + hexo
+&lt;/h2&gt;&lt;p&gt;很简单，gitea 太好用了(才不是因为 git 配置太麻烦)&lt;br&gt;
+而且 hexo 的博客就是静态网页，基本不怎么耗费服务器资源&lt;br&gt;
+如此再搭个 gitea 正好还能当个代码仓库，岂不美哉&lt;/p&gt;
+&lt;h2 id="0x01-整体运行架构"&gt;&amp;lt;0x01&amp;gt; 整体运行架构
+&lt;/h2&gt;&lt;p&gt;就是 gitea 跑 git 仓库&lt;br&gt;
+然后利用 git hook 功能将仓库内容同步到服务器的另一个文件夹&lt;br&gt;
+hexo 的界面靠 nginx 反代
+本地写完靠 hexo 的配置脚本通过 git 同步到服务器&lt;br&gt;
+(其实用 gitea 的话也可以通过插件实现 GitHub Page 的功能的)&lt;/p&gt;
+&lt;h2 id="0x02-先安装些组件"&gt;&amp;lt;0x02&amp;gt; 先安装些组件
+&lt;/h2&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#安装nginx&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sudo apt update &lt;span style="color:#f92672"&gt;&amp;amp;&amp;amp;&lt;/span&gt; sudo apt upgrade
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sudo apt install nginx
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;gitea 的安装在这就不赘述了&lt;br&gt;
+(我之前有从零搭建的教程)&lt;/p&gt;
+&lt;h2 id="0x03-配置git-hook"&gt;&amp;lt;0x03&amp;gt; 配置git hook
+&lt;/h2&gt;&lt;p&gt;git hook 其实就是一个自动化脚本&lt;br&gt;
+简单理解就是 git 到服务器上后服务器要干的事&lt;br&gt;
+首先，在 gitea 里创建一个仓库，名字随意&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#进入对应仓库的hook配置目录&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;cd /var/lib/gitea/data/gitea-repositories/&lt;span style="color:#e6db74"&gt;${&lt;/span&gt;gitea用户名&lt;span style="color:#e6db74"&gt;}&lt;/span&gt;/&lt;span style="color:#e6db74"&gt;${&lt;/span&gt;仓库名&lt;span style="color:#e6db74"&gt;}&lt;/span&gt;.git/hooks/
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;(&lt;code&gt;${gitea用户名}&lt;/code&gt;和&lt;code&gt;${仓库名}&lt;/code&gt;都是按照自己的设置填的)
+这里是 git 的各种 hook，别的现在用不大到&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#进入需要编辑的hook目录&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;cd post-receive.d/
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#创建我们自己的hook，名字随意&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;vim hexo
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;在 hexo 文件中，输入以下内容&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#!/bin/bash
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sss&lt;span style="color:#f92672"&gt;=&lt;/span&gt;/var/lib/gitea/data/gitea-repositories/&lt;span style="color:#e6db74"&gt;${&lt;/span&gt;gitea用户名&lt;span style="color:#e6db74"&gt;}&lt;/span&gt;/&lt;span style="color:#e6db74"&gt;${&lt;/span&gt;仓库名&lt;span style="color:#e6db74"&gt;}&lt;/span&gt;.git
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;ttt&lt;span style="color:#f92672"&gt;=&lt;/span&gt;/var/www/blog
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;rm -rf &lt;span style="color:#e6db74"&gt;${&lt;/span&gt;ttt&lt;span style="color:#e6db74"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;git clone &lt;span style="color:#e6db74"&gt;${&lt;/span&gt;sss&lt;span style="color:#e6db74"&gt;}&lt;/span&gt; &lt;span style="color:#e6db74"&gt;${&lt;/span&gt;ttt&lt;span style="color:#e6db74"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;其中&lt;code&gt;/var/www/blog&lt;/code&gt;是你希望存储网页的地址，可以改成别的&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#给这个hook添加可执行权限&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;chmod a+x hexo
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;现在，理论上当你用 hexo 一键配置脚本的时候，那些网页文件会出现在那个位置&lt;/p&gt;
+&lt;h2 id="0x04-配置存储地址和nginx"&gt;&amp;lt;0x04&amp;gt; 配置存储地址和nginx
+&lt;/h2&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#进入你希望存网页的位置&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;cd /var/www/
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;mkdir blog
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#为第一次git用户删除提供权限&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;chmod -R &lt;span style="color:#ae81ff"&gt;777&lt;/span&gt; ./
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#进入nginx的目录&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;cd /etc/nginx/
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;cd sites-enabled/
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;vim default
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;需要注意的是，这里的nginx版本可能比较新，所以需要修改&lt;code&gt;/etc/nginx/sites-enabled/default&lt;/code&gt;&lt;br&gt;
+如果你在&lt;code&gt;/etc/nginx/nginx.conf&lt;/code&gt;中能看到在&lt;code&gt;http{}&lt;/code&gt;中有&lt;code&gt;server{}&lt;/code&gt;&lt;br&gt;
+那么直接在&lt;code&gt;/etc/nginx/nginx.conf&lt;/code&gt;就行&lt;/p&gt;
+&lt;p&gt;在&lt;code&gt;server{}&lt;/code&gt;中，把&lt;code&gt;root&lt;/code&gt;的值改为存储网页的位置&lt;br&gt;
+在这里是改为&lt;code&gt;root /var/www/blog&lt;/code&gt;
+再在&lt;code&gt;index&lt;/code&gt;后加入&lt;code&gt;index.html&lt;/code&gt;
+(有了就不用加)&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#重启nginx服务&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;nginx -s reload
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;现在，理论上访问服务器 ip 后就是博客首页了&lt;/p&gt;
+&lt;h2 id="0x05-本地的一些修改"&gt;&amp;lt;0x05&amp;gt; 本地的一些修改
+&lt;/h2&gt;&lt;p&gt;打开&lt;code&gt;_config.yml&lt;/code&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-yml" data-lang="yml"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;deploy&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;type&lt;/span&gt;: &lt;span style="color:#ae81ff"&gt;git&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;repo&lt;/span&gt;: &lt;span style="color:#ae81ff"&gt;git@{服务器ip}:{gitea用户名}/{gitea仓库名}.git&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;branch&lt;/span&gt;: &lt;span style="color:#ae81ff"&gt;master&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;现在，当你运行&lt;code&gt;hexo deploy&lt;/code&gt;，网页内容将同步到git仓库并且也会同步到网页存储位置&lt;/p&gt;</description></item></channel></rss>

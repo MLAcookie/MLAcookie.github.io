@@ -1,0 +1,310 @@
+<!doctype html><html lang=zh dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content="<0x01> 任务说明 缓冲区高速缓存 可扩展大小的文件 子目录 同步 <0x02> 代码实现 缓冲区高速缓存 首先我们要确定下我们要缓存什么东西\npintos中，文件在硬盘中按块存储，块大小512字节\n每个块有一个块号，可以用这个块号访问到硬盘中的数据块\n那我们的缓存其实是让系统先别去读写硬盘\n先在缓冲中读写，然后在合适的时机再写入到硬盘中\n为什么这么做呢，软件运行过程中可能会对同一个文件多次读写\n如果访问硬盘的话每次都要等硬盘响应，效率不行\n如果是缓存的话，访问的就是内存了，快多了\n首先先声明一个缓存对象与缓存本身\nstruct cache_buffer { char data[BLOCK_SECTOR_SIZE]; }; static struct cache_buffer cache[NUM_SECTORS]; // cache本身 // 缓存块类型 struct cache_entry { block_sector_t sector; // 硬盘块号 size_t index; // 缓存标号 struct condition queue; // 对于多线程读写的同步控制 struct hash_elem elem; // 使用hash数据结构 bool dirty; // 有无修改 }; 对于这个数据结构，我们采用控制块与数据块分离的方式\n这样方便内存对齐\n（cache_buffer的东西放在cache_entry里面也是可以的）\n这里采用的缓存算法是clock算法，并带有两个标识位\n使用pintos自带的bitmap类型表示所有64个块的标识符\n（一样，这个东西放在cache_entry也是可以的）\n然后考虑检索效率，使用hashmap作为检索结构\n如果使用list，虽然也可以通过遍历的方式检索\n但考虑到缓存时常可能没缓存到需要的块，这时候需要遍历整个链表，效率不高\n整体声明如下\nstruct cache_buffer { char data[BLOCK_SECTOR_SIZE]; }; static size_t clock_index; // clock算法的index static struct cache_buffer cache[NUM_SECTORS]; // cache本身 static struct cache_entry *entries[NUM_SECTORS]; // 缓存的数据结构列表 static struct bitmap *refbits; // 是否被访问 static struct bitmap *usebits; // 是否被修改 static struct hash cache_hashmap; // cache的hashmap static struct lock cache_lock; // cache锁 static struct condition cache_cond; // 如果所有的缓存块都有使用就阻塞 下面是clock算法的实现\n"><title>Zjut-Os-05 Filesys 记录</title><link rel=canonical href=https://mlacookie.github.io/post/categories/cs162/zjut-os-05-%E8%AE%B0%E5%BD%95/><link rel=preconnect href=https://fonts.googleapis.com><link rel=preconnect href=https://fonts.gstatic.com crossorigin><link rel=preload as=style href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap"><link rel=stylesheet href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap"><link rel=stylesheet href=/scss/style.min.e62e09c60ba428a627e03568fa3df938f6a8224f815b5846f00816c17d4a0be4.css><meta property='og:title' content="Zjut-Os-05 Filesys 记录"><meta property='og:description' content="<0x01> 任务说明 缓冲区高速缓存 可扩展大小的文件 子目录 同步 <0x02> 代码实现 缓冲区高速缓存 首先我们要确定下我们要缓存什么东西\npintos中，文件在硬盘中按块存储，块大小512字节\n每个块有一个块号，可以用这个块号访问到硬盘中的数据块\n那我们的缓存其实是让系统先别去读写硬盘\n先在缓冲中读写，然后在合适的时机再写入到硬盘中\n为什么这么做呢，软件运行过程中可能会对同一个文件多次读写\n如果访问硬盘的话每次都要等硬盘响应，效率不行\n如果是缓存的话，访问的就是内存了，快多了\n首先先声明一个缓存对象与缓存本身\nstruct cache_buffer { char data[BLOCK_SECTOR_SIZE]; }; static struct cache_buffer cache[NUM_SECTORS]; // cache本身 // 缓存块类型 struct cache_entry { block_sector_t sector; // 硬盘块号 size_t index; // 缓存标号 struct condition queue; // 对于多线程读写的同步控制 struct hash_elem elem; // 使用hash数据结构 bool dirty; // 有无修改 }; 对于这个数据结构，我们采用控制块与数据块分离的方式\n这样方便内存对齐\n（cache_buffer的东西放在cache_entry里面也是可以的）\n这里采用的缓存算法是clock算法，并带有两个标识位\n使用pintos自带的bitmap类型表示所有64个块的标识符\n（一样，这个东西放在cache_entry也是可以的）\n然后考虑检索效率，使用hashmap作为检索结构\n如果使用list，虽然也可以通过遍历的方式检索\n但考虑到缓存时常可能没缓存到需要的块，这时候需要遍历整个链表，效率不高\n整体声明如下\nstruct cache_buffer { char data[BLOCK_SECTOR_SIZE]; }; static size_t clock_index; // clock算法的index static struct cache_buffer cache[NUM_SECTORS]; // cache本身 static struct cache_entry *entries[NUM_SECTORS]; // 缓存的数据结构列表 static struct bitmap *refbits; // 是否被访问 static struct bitmap *usebits; // 是否被修改 static struct hash cache_hashmap; // cache的hashmap static struct lock cache_lock; // cache锁 static struct condition cache_cond; // 如果所有的缓存块都有使用就阻塞 下面是clock算法的实现\n"><meta property='og:url' content='https://mlacookie.github.io/post/categories/cs162/zjut-os-05-%E8%AE%B0%E5%BD%95/'><meta property='og:site_name' content='MLAcookie'><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:tag' content='CourseProject'><meta property='article:published_time' content='2025-01-06T05:05:48+08:00'><meta property='article:modified_time' content='2025-01-06T05:05:48+08:00'><meta name=twitter:title content="Zjut-Os-05 Filesys 记录"><meta name=twitter:description content="<0x01> 任务说明 缓冲区高速缓存 可扩展大小的文件 子目录 同步 <0x02> 代码实现 缓冲区高速缓存 首先我们要确定下我们要缓存什么东西\npintos中，文件在硬盘中按块存储，块大小512字节\n每个块有一个块号，可以用这个块号访问到硬盘中的数据块\n那我们的缓存其实是让系统先别去读写硬盘\n先在缓冲中读写，然后在合适的时机再写入到硬盘中\n为什么这么做呢，软件运行过程中可能会对同一个文件多次读写\n如果访问硬盘的话每次都要等硬盘响应，效率不行\n如果是缓存的话，访问的就是内存了，快多了\n首先先声明一个缓存对象与缓存本身\nstruct cache_buffer { char data[BLOCK_SECTOR_SIZE]; }; static struct cache_buffer cache[NUM_SECTORS]; // cache本身 // 缓存块类型 struct cache_entry { block_sector_t sector; // 硬盘块号 size_t index; // 缓存标号 struct condition queue; // 对于多线程读写的同步控制 struct hash_elem elem; // 使用hash数据结构 bool dirty; // 有无修改 }; 对于这个数据结构，我们采用控制块与数据块分离的方式\n这样方便内存对齐\n（cache_buffer的东西放在cache_entry里面也是可以的）\n这里采用的缓存算法是clock算法，并带有两个标识位\n使用pintos自带的bitmap类型表示所有64个块的标识符\n（一样，这个东西放在cache_entry也是可以的）\n然后考虑检索效率，使用hashmap作为检索结构\n如果使用list，虽然也可以通过遍历的方式检索\n但考虑到缓存时常可能没缓存到需要的块，这时候需要遍历整个链表，效率不高\n整体声明如下\nstruct cache_buffer { char data[BLOCK_SECTOR_SIZE]; }; static size_t clock_index; // clock算法的index static struct cache_buffer cache[NUM_SECTORS]; // cache本身 static struct cache_entry *entries[NUM_SECTORS]; // 缓存的数据结构列表 static struct bitmap *refbits; // 是否被访问 static struct bitmap *usebits; // 是否被修改 static struct hash cache_hashmap; // cache的hashmap static struct lock cache_lock; // cache锁 static struct condition cache_cond; // 如果所有的缓存块都有使用就阻塞 下面是clock算法的实现\n"><link rel="shortcut icon" href=favicon.webp></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.setItem(e,"dark")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar.png width=640 height=640 class=site-logo loading=lazy alt=Avatar>
+</a><span class=emoji>🤯</span></figure><div class=site-meta><h1 class=site-name><a href=/>MLAcookie</a></h1><h2 class=site-description>随便记点东西的记事本</h2></div></header><ol class=menu-social><li><a href=https://space.bilibili.com/13629146 title=MLA_cookie@Bilibili rel=me><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-bilibili"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 10a4 4 0 014-4h10a4 4 0 014 4v6a4 4 0 01-4 4H7a4 4 0 01-4-4v-6z"/><path d="M8 3l2 3"/><path d="M16 3l-2 3"/><path d="M9 13v-2"/><path d="M15 11v2"/></svg></a></li><li><a href=https://github.com/MLAcookie title=MLAcookie@Github rel=me><svg class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
+<span>Home</span></a></li><li><a href=/page/archives/><svg class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+<span>Archives</span></a></li><li><a href=/page/search/><svg class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg>
+<span>Search</span></a></li><li><a href=/page/links/><svg class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M10 14a3.5 3.5.0 005 0l4-4a3.5 3.5.0 00-5-5l-.5.5"/><path d="M14 10a3.5 3.5.0 00-5 0l-4 4a3.5 3.5.0 005 5l.5-.5"/></svg>
+<span>Links</span></a></li><li><a href=/page/about/><svg class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg>
+<span>About</span></a></li><li class=menu-bottom-section><ol class=menu></ol></li></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">目录</h2><div class=widget--toc><nav class=toc-nav id=TableOfContents><ul><li><a href=#0x01-任务说明>&lt;0x01> 任务说明</a><ul><li><a href=#缓冲区高速缓存>缓冲区高速缓存</a></li><li><a href=#可扩展大小的文件>可扩展大小的文件</a></li><li><a href=#子目录>子目录</a></li><li><a href=#同步>同步</a></li></ul></li><li><a href=#0x02-代码实现>&lt;0x02> 代码实现</a><ul><li><a href=#缓冲区高速缓存-1>缓冲区高速缓存</a></li><li><a href=#可扩展的文件大小>可扩展的文件大小</a></li><li><a href=#子目录-1>子目录</a></li></ul></li><li><a href=#0x03-测试相关>&lt;0x03> 测试相关</a></li></ul></nav></div></section></aside><main class="main full-width"><article class=main-article><header class=article-header><div class=article-details><header class=article-category><a href=/categories/cs162/ style=background-color:#d9efbe;color:#293d0f>CS162</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/post/categories/cs162/zjut-os-05-%E8%AE%B0%E5%BD%95/>Zjut-Os-05 Filesys 记录</a></h2></div><footer class=article-meta><div class=inline-meta><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
+<time class=article-time--published datetime=2025-01-06T05:05:48+08:00>2025年1月6日星期一</time></div></footer></div></header><aside class=article-toc><details><summary><div class=article-toc-title><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-chevron-right"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 6l6 6-6 6"/></svg>
+<span>目录</span></div></summary><nav class=toc-nav><ul><li><a href=#0x01-任务说明>&lt;0x01> 任务说明</a><ul><li><a href=#缓冲区高速缓存>缓冲区高速缓存</a></li><li><a href=#可扩展大小的文件>可扩展大小的文件</a></li><li><a href=#子目录>子目录</a></li><li><a href=#同步>同步</a></li></ul></li><li><a href=#0x02-代码实现>&lt;0x02> 代码实现</a><ul><li><a href=#缓冲区高速缓存-1>缓冲区高速缓存</a></li><li><a href=#可扩展的文件大小>可扩展的文件大小</a></li><li><a href=#子目录-1>子目录</a></li></ul></li><li><a href=#0x03-测试相关>&lt;0x03> 测试相关</a></li></ul></nav></details></aside><section class=article-content><h2 id=0x01-任务说明>&lt;0x01> 任务说明</h2><h3 id=缓冲区高速缓存>缓冲区高速缓存</h3><h3 id=可扩展大小的文件>可扩展大小的文件</h3><h3 id=子目录>子目录</h3><h3 id=同步>同步</h3><h2 id=0x02-代码实现>&lt;0x02> 代码实现</h2><h3 id=缓冲区高速缓存-1>缓冲区高速缓存</h3><p>首先我们要确定下我们要缓存什么东西<br>pintos中，文件在硬盘中按块存储，块大小512字节<br>每个块有一个块号，可以用这个块号访问到硬盘中的数据块</p><p>那我们的缓存其实是让系统先别去读写硬盘<br>先在缓冲中读写，然后在合适的时机再写入到硬盘中<br>为什么这么做呢，软件运行过程中可能会对同一个文件多次读写<br>如果访问硬盘的话每次都要等硬盘响应，效率不行<br>如果是缓存的话，访问的就是内存了，快多了</p><p>首先先声明一个缓存对象与缓存本身</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-c data-lang=c><span style=display:flex><span><span style=color:#66d9ef>struct</span> cache_buffer
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>char</span> data[BLOCK_SECTOR_SIZE];
+</span></span><span style=display:flex><span>};
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>static</span> <span style=color:#66d9ef>struct</span> cache_buffer cache[NUM_SECTORS];   <span style=color:#75715e>// cache本身
+</span></span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>// 缓存块类型
+</span></span></span><span style=display:flex><span><span style=color:#66d9ef>struct</span> cache_entry
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>block_sector_t</span> sector;  <span style=color:#75715e>// 硬盘块号
+</span></span></span><span style=display:flex><span>    <span style=color:#66d9ef>size_t</span> index;           <span style=color:#75715e>// 缓存标号
+</span></span></span><span style=display:flex><span>    <span style=color:#66d9ef>struct</span> condition queue; <span style=color:#75715e>// 对于多线程读写的同步控制
+</span></span></span><span style=display:flex><span>    <span style=color:#66d9ef>struct</span> hash_elem elem;  <span style=color:#75715e>// 使用hash数据结构
+</span></span></span><span style=display:flex><span>    <span style=color:#66d9ef>bool</span> dirty;             <span style=color:#75715e>// 有无修改
+</span></span></span><span style=display:flex><span>};
+</span></span></code></pre></div><p>对于这个数据结构，我们采用控制块与数据块分离的方式<br>这样方便内存对齐<br>（cache_buffer的东西放在cache_entry里面也是可以的）</p><p>这里采用的缓存算法是clock算法，并带有两个标识位<br>使用pintos自带的bitmap类型表示所有64个块的标识符<br>（一样，这个东西放在cache_entry也是可以的）</p><p>然后考虑检索效率，使用hashmap作为检索结构<br>如果使用list，虽然也可以通过遍历的方式检索<br>但考虑到缓存时常可能没缓存到需要的块，这时候需要遍历整个链表，效率不高</p><p>整体声明如下</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-c data-lang=c><span style=display:flex><span><span style=color:#66d9ef>struct</span> cache_buffer
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>char</span> data[BLOCK_SECTOR_SIZE];
+</span></span><span style=display:flex><span>};
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>static</span> <span style=color:#66d9ef>size_t</span> clock_index;                       <span style=color:#75715e>// clock算法的index
+</span></span></span><span style=display:flex><span><span style=color:#66d9ef>static</span> <span style=color:#66d9ef>struct</span> cache_buffer cache[NUM_SECTORS];   <span style=color:#75715e>// cache本身
+</span></span></span><span style=display:flex><span><span style=color:#66d9ef>static</span> <span style=color:#66d9ef>struct</span> cache_entry <span style=color:#f92672>*</span>entries[NUM_SECTORS]; <span style=color:#75715e>// 缓存的数据结构列表
+</span></span></span><span style=display:flex><span><span style=color:#66d9ef>static</span> <span style=color:#66d9ef>struct</span> bitmap <span style=color:#f92672>*</span>refbits;                   <span style=color:#75715e>// 是否被访问
+</span></span></span><span style=display:flex><span><span style=color:#66d9ef>static</span> <span style=color:#66d9ef>struct</span> bitmap <span style=color:#f92672>*</span>usebits;                   <span style=color:#75715e>// 是否被修改
+</span></span></span><span style=display:flex><span><span style=color:#66d9ef>static</span> <span style=color:#66d9ef>struct</span> hash cache_hashmap;                <span style=color:#75715e>// cache的hashmap
+</span></span></span><span style=display:flex><span><span style=color:#66d9ef>static</span> <span style=color:#66d9ef>struct</span> lock cache_lock;                   <span style=color:#75715e>// cache锁
+</span></span></span><span style=display:flex><span><span style=color:#66d9ef>static</span> <span style=color:#66d9ef>struct</span> condition cache_cond;              <span style=color:#75715e>// 如果所有的缓存块都有使用就阻塞
+</span></span></span></code></pre></div><p>下面是clock算法的实现</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-c data-lang=c><span style=display:flex><span><span style=color:#75715e>// 寻找是否在缓存中，如果没有，就用clock算法替换一块
+</span></span></span><span style=display:flex><span><span style=color:#66d9ef>static</span> <span style=color:#66d9ef>bool</span> <span style=color:#a6e22e>cache_find_entry</span>(<span style=color:#66d9ef>block_sector_t</span> sector, <span style=color:#66d9ef>struct</span> cache_entry <span style=color:#f92672>**</span>entry)
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>struct</span> cache_entry <span style=color:#f92672>*</span>e <span style=color:#f92672>=</span> <span style=color:#a6e22e>malloc</span>(<span style=color:#66d9ef>sizeof</span>(<span style=color:#66d9ef>struct</span> cache_entry));
+</span></span><span style=display:flex><span>    e<span style=color:#f92672>-&gt;</span>sector <span style=color:#f92672>=</span> sector;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// 如果所有的缓存块都在等
+</span></span></span><span style=display:flex><span>    <span style=color:#66d9ef>while</span> (<span style=color:#a6e22e>bitmap_all</span>(usebits, <span style=color:#ae81ff>0</span>, NUM_SECTORS))
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>cond_wait</span>(<span style=color:#f92672>&amp;</span>cache_cond, <span style=color:#f92672>&amp;</span>cache_lock);
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>struct</span> hash_elem <span style=color:#f92672>*</span>found <span style=color:#f92672>=</span> <span style=color:#a6e22e>hash_insert</span>(<span style=color:#f92672>&amp;</span>cache_hashmap, <span style=color:#f92672>&amp;</span>e<span style=color:#f92672>-&gt;</span>elem);
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> (found <span style=color:#f92672>==</span> NULL)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#75715e>// clock算法循环
+</span></span></span><span style=display:flex><span>        <span style=color:#66d9ef>while</span> (<span style=color:#a6e22e>bitmap_test</span>(refbits, clock_index) <span style=color:#f92672>||</span> <span style=color:#a6e22e>bitmap_test</span>(usebits, clock_index))
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            <span style=color:#a6e22e>bitmap_reset</span>(refbits, clock_index);
+</span></span><span style=display:flex><span>            clock_index <span style=color:#f92672>=</span> (clock_index <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>) <span style=color:#f92672>%</span> NUM_SECTORS;
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>        <span style=color:#75715e>// 释放旧块
+</span></span></span><span style=display:flex><span>        <span style=color:#66d9ef>struct</span> cache_entry <span style=color:#f92672>*</span>old_entry <span style=color:#f92672>=</span> entries[clock_index];
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>if</span> (old_entry <span style=color:#f92672>!=</span> NULL)
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            <span style=color:#a6e22e>block_write</span>(fs_device, old_entry<span style=color:#f92672>-&gt;</span>sector, <span style=color:#f92672>&amp;</span>cache[old_entry<span style=color:#f92672>-&gt;</span>index]);
+</span></span><span style=display:flex><span>            <span style=color:#a6e22e>hash_delete</span>(<span style=color:#f92672>&amp;</span>cache_hashmap, <span style=color:#f92672>&amp;</span>old_entry<span style=color:#f92672>-&gt;</span>elem);
+</span></span><span style=display:flex><span>            <span style=color:#a6e22e>free</span>(old_entry);
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>        <span style=color:#75715e>// 构建新块
+</span></span></span><span style=display:flex><span>        <span style=color:#a6e22e>cond_init</span>(<span style=color:#f92672>&amp;</span>e<span style=color:#f92672>-&gt;</span>queue);
+</span></span><span style=display:flex><span>        e<span style=color:#f92672>-&gt;</span>dirty <span style=color:#f92672>=</span> false;
+</span></span><span style=display:flex><span>        e<span style=color:#f92672>-&gt;</span>index <span style=color:#f92672>=</span> clock_index;
+</span></span><span style=display:flex><span>        entries[e<span style=color:#f92672>-&gt;</span>index] <span style=color:#f92672>=</span> e;
+</span></span><span style=display:flex><span>        clock_index <span style=color:#f92672>=</span> (clock_index <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>) <span style=color:#f92672>%</span> NUM_SECTORS;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>else</span>
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>free</span>(e);
+</span></span><span style=display:flex><span>        e <span style=color:#f92672>=</span> <span style=color:#a6e22e>hash_entry</span>(found, <span style=color:#66d9ef>struct</span> cache_entry, elem);
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>while</span> (<span style=color:#a6e22e>bitmap_test</span>(usebits, e<span style=color:#f92672>-&gt;</span>index))
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            <span style=color:#a6e22e>cond_wait</span>(<span style=color:#f92672>&amp;</span>e<span style=color:#f92672>-&gt;</span>queue, <span style=color:#f92672>&amp;</span>cache_lock);
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// 标记新块被使用
+</span></span></span><span style=display:flex><span>    <span style=color:#a6e22e>bitmap_mark</span>(usebits, e<span style=color:#f92672>-&gt;</span>index);
+</span></span><span style=display:flex><span>    <span style=color:#f92672>*</span>entry <span style=color:#f92672>=</span> e;
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> (found <span style=color:#f92672>!=</span> NULL);
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>然后是同步相关的问题（后面就不写了）<br>可以看到上面的代码已经包含了所有缓存块都使用的情况和单独缓存块使用的情况<br>对于所有缓存块都使用的情况，那么线程就必须等待有缓存块释放<br>对于单个缓存块使用的情况，其实等同于单个硬盘快被多个线程使用<br>这时候也是等待<br>在buffer_cache_release中，会释放对应的锁</p><p>最后是需要定期得清理缓存，这里直接新建一个线程，差不多隔1.5秒执行一次<br>（我这里设定TIMER_FREQ为1000）<br>所谓清理就是把缓存中使用过得，有数据就写到硬盘里</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-c data-lang=c><span style=display:flex><span><span style=color:#a6e22e>thread_create</span>(<span style=color:#e6db74>&#34;cache-sync&#34;</span>, PRI_MAX, cache_write_thread_func, NULL);
+</span></span><span style=display:flex><span><span style=color:#75715e>// 刷新所有的缓存块
+</span></span></span><span style=display:flex><span><span style=color:#66d9ef>void</span> <span style=color:#a6e22e>buffer_cache_flush</span>(<span style=color:#66d9ef>void</span>)
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>lock_acquire</span>(<span style=color:#f92672>&amp;</span>cache_lock);
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>size_t</span> i <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>; i <span style=color:#f92672>&lt;</span> NUM_SECTORS; i<span style=color:#f92672>++</span>)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#75715e>// 同步缓存中脏块的更改
+</span></span></span><span style=display:flex><span>        <span style=color:#66d9ef>if</span> (entries[i] <span style=color:#f92672>!=</span> NULL <span style=color:#f92672>&amp;&amp;</span> entries[i]<span style=color:#f92672>-&gt;</span>dirty <span style=color:#f92672>&amp;&amp;</span> <span style=color:#f92672>!</span><span style=color:#a6e22e>bitmap_test</span>(usebits, i))
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            <span style=color:#a6e22e>block_write</span>(fs_device, entries[i]<span style=color:#f92672>-&gt;</span>sector, <span style=color:#f92672>&amp;</span>cache[i]);
+</span></span><span style=display:flex><span>            entries[i]<span style=color:#f92672>-&gt;</span>dirty <span style=color:#f92672>=</span> false;
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>lock_release</span>(<span style=color:#f92672>&amp;</span>cache_lock);
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>// 清理缓存块的线程函数
+</span></span></span><span style=display:flex><span><span style=color:#66d9ef>void</span> <span style=color:#a6e22e>cache_write_thread_func</span>(<span style=color:#66d9ef>void</span> <span style=color:#f92672>*</span>aux UNUSED)
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>while</span> (true)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>timer_sleep</span>(<span style=color:#ae81ff>1500</span>);
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>buffer_cache_flush</span>();
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>然后别忘了在filesys_done里面最后保存一次缓存数据</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-c data-lang=c><span style=display:flex><span><span style=color:#66d9ef>void</span> <span style=color:#a6e22e>filesys_done</span>(<span style=color:#66d9ef>void</span>)
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// 关闭前强制同步下缓存的内容
+</span></span></span><span style=display:flex><span>    <span style=color:#a6e22e>buffer_cache_flush</span>();
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>free_map_close</span>();
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>其他的代码都是简单的转换和处理，这里就不写明了<br>具体代码看仓库吧</p><h3 id=可扩展的文件大小>可扩展的文件大小</h3><p>首先我们看到inode_disk的部分<br>这个是硬盘数据块的抽象</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-c data-lang=c><span style=display:flex><span><span style=color:#66d9ef>struct</span> inode_disk
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>block_sector_t</span> start; <span style=color:#75715e>/* First data sector. */</span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>off_t</span> length;         <span style=color:#75715e>/* File size in bytes. */</span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>unsigned</span> magic;       <span style=color:#75715e>/* Magic number. */</span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>uint32_t</span> unused[<span style=color:#ae81ff>125</span>]; <span style=color:#75715e>/* Not used. */</span>
+</span></span><span style=display:flex><span>};
+</span></span></code></pre></div><p>可以看到就一个数据起始点，然后一个文件大小，剩下的都没啥用<br>通过学习操作系统<br>我们知道，现代操作系统的文件系统喜欢搞什么直接引用块，间接引用块之类的<br>这就是我们要实现的东西</p><p>首先我们先把这个类改造成这样</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-c data-lang=c><span style=display:flex><span><span style=color:#66d9ef>struct</span> inode_disk
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>block_sector_t</span> parent_dir;      <span style=color:#75715e>// 指向父目录（不是这步的东西）
+</span></span></span><span style=display:flex><span>    <span style=color:#66d9ef>bool</span> is_dir;                    <span style=color:#75715e>// 是否为路径（不是这步的东西）
+</span></span></span><span style=display:flex><span>    <span style=color:#66d9ef>off_t</span> length;                   <span style=color:#75715e>// 文件大小，字节
+</span></span></span><span style=display:flex><span>    <span style=color:#66d9ef>block_sector_t</span> direct[<span style=color:#ae81ff>122</span>];     <span style=color:#75715e>// 直接寻址块
+</span></span></span><span style=display:flex><span>    <span style=color:#66d9ef>block_sector_t</span> indirect;        <span style=color:#75715e>// 一层间接
+</span></span></span><span style=display:flex><span>    <span style=color:#66d9ef>block_sector_t</span> doubly_indirect; <span style=color:#75715e>// 二层间接
+</span></span></span><span style=display:flex><span>    <span style=color:#66d9ef>unsigned</span> magic;                 <span style=color:#75715e>/* Magic number. */</span>
+</span></span><span style=display:flex><span>};
+</span></span></code></pre></div><p>这里需要注意，block_sector_t部分不能超过126个单元<br>因为硬盘的扇区是512字节，block_sector_t是4字节<br>off_t也是4字节，然后神秘magic数字也是4字节<br>这样的话刚好512字节</p><p>然后声明下这两个类型，作为一次间接和二次间接</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-c data-lang=c><span style=display:flex><span><span style=color:#66d9ef>struct</span> indirect_block
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>block_sector_t</span> direct[<span style=color:#ae81ff>128</span>];
+</span></span><span style=display:flex><span>};
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>struct</span> doubly_indirect_block
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>block_sector_t</span> indirect_block[<span style=color:#ae81ff>128</span>];
+</span></span><span style=display:flex><span>};
+</span></span></code></pre></div><p>后面就是想办法分配和回收这些东西了<br>这里别的就不讲了，主要讲文件大小扩展的事情</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-c data-lang=c><span style=display:flex><span><span style=color:#75715e>// 扩展下文件长度
+</span></span></span><span style=display:flex><span><span style=color:#66d9ef>static</span> <span style=color:#66d9ef>bool</span> <span style=color:#a6e22e>extend_inode_length</span>(<span style=color:#66d9ef>struct</span> inode_disk <span style=color:#f92672>*</span>inode, <span style=color:#66d9ef>off_t</span> length)
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>ASSERT</span>(inode <span style=color:#f92672>!=</span> NULL);
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>ASSERT</span>(length <span style=color:#f92672>&lt;=</span> MAX_LENGTH);
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> (length <span style=color:#f92672>==</span> inode<span style=color:#f92672>-&gt;</span>length)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> true;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>ASSERT</span>(length <span style=color:#f92672>&gt;</span> inode<span style=color:#f92672>-&gt;</span>length);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>size_t</span> origin <span style=color:#f92672>=</span> <span style=color:#a6e22e>bytes_to_sectors</span>(inode<span style=color:#f92672>-&gt;</span>length);
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>size_t</span> need <span style=color:#f92672>=</span> <span style=color:#a6e22e>bytes_to_sectors</span>(length);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// 不需要分配新块的情况
+</span></span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> (origin <span style=color:#f92672>==</span> need)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        inode<span style=color:#f92672>-&gt;</span>length <span style=color:#f92672>=</span> length;
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> true;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>lock_acquire</span>(<span style=color:#f92672>&amp;</span>free_map_lock);
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// 是否剩余空间够用
+</span></span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> (<span style=color:#a6e22e>free_map_available_space</span>() <span style=color:#f92672>&lt;</span> need <span style=color:#f92672>-</span> origin)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>lock_release</span>(<span style=color:#f92672>&amp;</span>free_map_lock);
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> false;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// 初始化一层引用
+</span></span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> (origin <span style=color:#f92672>&lt;=</span> NUM_DIRECT <span style=color:#f92672>&amp;&amp;</span> NUM_DIRECT <span style=color:#f92672>&lt;</span> need)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>free_map_allocate</span>(<span style=color:#ae81ff>1</span>, <span style=color:#f92672>&amp;</span>inode<span style=color:#f92672>-&gt;</span>indirect);
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>block_write_zero</span>(inode<span style=color:#f92672>-&gt;</span>indirect);
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// 初始化二层引用
+</span></span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> (origin <span style=color:#f92672>&lt;=</span> NUM_DIRECT_PLUS_INDIRECT <span style=color:#f92672>&amp;&amp;</span> NUM_DIRECT_PLUS_INDIRECT <span style=color:#f92672>&lt;</span> need)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>free_map_allocate</span>(<span style=color:#ae81ff>1</span>, <span style=color:#f92672>&amp;</span>inode<span style=color:#f92672>-&gt;</span>doubly_indirect);
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>block_write_zero</span>(inode<span style=color:#f92672>-&gt;</span>doubly_indirect);
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// 分配所有需要的节点
+</span></span></span><span style=display:flex><span>    <span style=color:#66d9ef>bool</span> success <span style=color:#f92672>=</span> <span style=color:#a6e22e>inode_map_sectors_allocate</span>(inode, origin, need);
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>lock_release</span>(<span style=color:#f92672>&amp;</span>free_map_lock);
+</span></span><span style=display:flex><span>    inode<span style=color:#f92672>-&gt;</span>length <span style=color:#f92672>=</span> length;
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> success;
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>分配一次引用和二次引用关键是计算需要多少块，然后什么范围需要一次引用或二次引用<br>这里就不讲了</p><h3 id=子目录-1>子目录</h3><p>目录的本身也是一种文件数据块<br>前面可扩展大小文件也看到类型声明里面就有相关的代码</p><p>目录本身其实也可以看作是一个文件<br>只不过这个文件保存的就是目录名字</p><p>这部分的工作主要在filesys中完成<br>有了前面的实现，其实这步主要是一些逻辑部分</p><p>这里只举两个例子，因为别的也差不多，看源代码吧</p><p>下面是文件创建的代码</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-c data-lang=c><span style=display:flex><span><span style=color:#66d9ef>bool</span> <span style=color:#a6e22e>filesys_create</span>(<span style=color:#66d9ef>const</span> <span style=color:#66d9ef>char</span> <span style=color:#f92672>*</span>name, <span style=color:#66d9ef>off_t</span> initial_size)
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>	<span style=color:#75715e>// 打开当前线程的工作路径
+</span></span></span><span style=display:flex><span>    <span style=color:#66d9ef>struct</span> dir <span style=color:#f92672>*</span>dir <span style=color:#f92672>=</span> <span style=color:#a6e22e>dir_open_cwd</span>(name);
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>struct</span> inode <span style=color:#f92672>*</span>inode <span style=color:#f92672>=</span> NULL;
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>const</span> <span style=color:#66d9ef>char</span> <span style=color:#f92672>**</span>name_cp <span style=color:#f92672>=</span> <span style=color:#f92672>&amp;</span>name;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>while</span> (true)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>if</span> (<span style=color:#f92672>!</span><span style=color:#a6e22e>dir_is_valid</span>(dir))
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>return</span> false;
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>char</span> part[NAME_MAX <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>];
+</span></span><span style=display:flex><span>        <span style=color:#75715e>// 获取下一个目录名
+</span></span></span><span style=display:flex><span>        <span style=color:#66d9ef>int</span> status <span style=color:#f92672>=</span> <span style=color:#a6e22e>get_next_part</span>(part, name_cp);
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>if</span> (status <span style=color:#f92672>&lt;</span> <span style=color:#ae81ff>1</span>)
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>return</span> false;
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>        <span style=color:#75715e>// 创建文件
+</span></span></span><span style=display:flex><span>        <span style=color:#66d9ef>if</span> (<span style=color:#f92672>**</span>name_cp <span style=color:#f92672>==</span> <span style=color:#e6db74>&#39;\0&#39;</span>)
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>block_sector_t</span> inode_sector <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>;
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>bool</span> success <span style=color:#f92672>=</span> (<span style=color:#a6e22e>free_map_allocate</span>(<span style=color:#ae81ff>1</span>, <span style=color:#f92672>&amp;</span>inode_sector) <span style=color:#f92672>&amp;&amp;</span>
+</span></span><span style=display:flex><span>                            <span style=color:#a6e22e>inode_create_with_dir_info</span>(inode_sector, initial_size, <span style=color:#a6e22e>get_dir_inumber</span>(dir), false) <span style=color:#f92672>&amp;&amp;</span>
+</span></span><span style=display:flex><span>                            <span style=color:#a6e22e>dir_add</span>(dir, part, inode_sector));
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>if</span> (<span style=color:#f92672>!</span>success <span style=color:#f92672>&amp;&amp;</span> inode_sector <span style=color:#f92672>!=</span> <span style=color:#ae81ff>0</span>)
+</span></span><span style=display:flex><span>            {
+</span></span><span style=display:flex><span>                <span style=color:#a6e22e>free_map_release</span>(inode_sector, <span style=color:#ae81ff>1</span>);
+</span></span><span style=display:flex><span>            }
+</span></span><span style=display:flex><span>            <span style=color:#a6e22e>dir_close</span>(dir);
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>return</span> success;
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>        <span style=color:#75715e>// 打开下一级目录
+</span></span></span><span style=display:flex><span>        <span style=color:#a6e22e>dir_lookup</span>(dir, part, <span style=color:#f92672>&amp;</span>inode);
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>dir_close</span>(dir);
+</span></span><span style=display:flex><span>        dir <span style=color:#f92672>=</span> <span style=color:#a6e22e>dir_open</span>(inode);
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> false;
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>这个是切换工作路径的代码</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-c data-lang=c><span style=display:flex><span><span style=color:#66d9ef>block_sector_t</span> <span style=color:#a6e22e>filesys_chdir</span>(<span style=color:#66d9ef>const</span> <span style=color:#66d9ef>char</span> <span style=color:#f92672>*</span>path_name)
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>	<span style=color:#75715e>// 空返回
+</span></span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> (path_name <span style=color:#f92672>==</span> NULL <span style=color:#f92672>||</span> (<span style=color:#e6db74>&#39;\0&#39;</span> <span style=color:#f92672>==</span> path_name[<span style=color:#ae81ff>0</span>]))
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> <span style=color:#ae81ff>0</span>;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// 如果要返回上一级
+</span></span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> (<span style=color:#f92672>!</span><span style=color:#a6e22e>strcmp</span>(path_name, <span style=color:#e6db74>&#34;..&#34;</span>))
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>inode_get_parent_dir</span>(<span style=color:#a6e22e>inode_open</span>(<span style=color:#a6e22e>thread_current</span>()<span style=color:#f92672>-&gt;</span>cwd));
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>const</span> <span style=color:#66d9ef>char</span> <span style=color:#f92672>**</span>name_cp <span style=color:#f92672>=</span> <span style=color:#f92672>&amp;</span>path_name;
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>struct</span> dir <span style=color:#f92672>*</span>dir <span style=color:#f92672>=</span> <span style=color:#a6e22e>dir_open_cwd</span>(path_name);
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>while</span> (true)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>struct</span> inode <span style=color:#f92672>*</span>inode <span style=color:#f92672>=</span> NULL;
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>char</span> part[NAME_MAX <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>];
+</span></span><span style=display:flex><span>        <span style=color:#75715e>// 获取下一级目录
+</span></span></span><span style=display:flex><span>        <span style=color:#a6e22e>get_next_part</span>(part, name_cp);
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>if</span> (dir <span style=color:#f92672>!=</span> NULL)
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            <span style=color:#a6e22e>dir_lookup</span>(dir, part, <span style=color:#f92672>&amp;</span>inode);
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>dir_close</span>(dir);
+</span></span><span style=display:flex><span>        <span style=color:#75715e>// 如果已经找到最后
+</span></span></span><span style=display:flex><span>        <span style=color:#66d9ef>if</span> (<span style=color:#f92672>**</span>name_cp <span style=color:#f92672>==</span> <span style=color:#e6db74>&#39;\0&#39;</span>)
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>if</span> (inode <span style=color:#f92672>==</span> NULL)
+</span></span><span style=display:flex><span>            {
+</span></span><span style=display:flex><span>                <span style=color:#66d9ef>return</span> <span style=color:#ae81ff>0</span>;
+</span></span><span style=display:flex><span>            }
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>inode_get_inumber</span>(inode);
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>if</span> (inode <span style=color:#f92672>==</span> NULL)
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>return</span> <span style=color:#ae81ff>0</span>;
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>        dir <span style=color:#f92672>=</span> <span style=color:#a6e22e>dir_open</span>(inode);
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>if</span> (dir <span style=color:#f92672>==</span> NULL)
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>return</span> <span style=color:#ae81ff>0</span>;
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> <span style=color:#ae81ff>0</span>;
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>系统调用chdir是调用这个代码<br>剩下的部分也都是这样，用已经实现的结构写逻辑就可以了</p><p>然后记得写系统调用那边的实现就可以了</p><h2 id=0x03-测试相关>&lt;0x03> 测试相关</h2><p>如果跟我一样没写相关的PATH，那么就要改下make.var</p></section><footer class="article-meta article-footer"><section class=article-tags><a href=/tags/courseproject/>CourseProject</a></section><section class="article-copyright inline-meta"><svg class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg>
+<span>CC BY-NC-SA 4.0</span></section></footer><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css integrity=sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV crossorigin=anonymous><script src=https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js integrity=sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8 crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js integrity=sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05 crossorigin=anonymous defer></script><script>window.addEventListener("DOMContentLoaded",()=>{const e=[".main-article",".widget--toc"];e.forEach(e=>{const t=document.querySelector(e);t&&renderMathInElement(t,{delimiters:[{left:"$$",right:"$$",display:!0},{left:"$",right:"$",display:!1},{left:"\\(",right:"\\)",display:!1},{left:"\\[",right:"\\]",display:!0}],ignoredClasses:["gist"]})})})</script></article><aside><h2 class=section-title>相关文章</h2><div class=subsection-list><div class=article-list--tile><article><a href=/post/categories/cs162/zjut-os-03-%E8%AE%B0%E5%BD%95/><div class=article-details><h2 class=article-title>Zjut-Os-03 Userprog 记录</h2></div></a></article><article><a href=/post/categories/cs162/zjut-os-%E5%90%8E%E8%AE%B0/><div class=article-details><h2 class=article-title>Zjut-OS 后记</h2></div></a></article><article><a href=/post/categories/cs162/zjut-os-01-%E8%AE%B0%E5%BD%95/><div class=article-details><h2 class=article-title>Zjut-Os-01 Introduction 记录</h2></div></a></article><article><a href=/post/categories/cs162/zjut-os-02-%E8%AE%B0%E5%BD%95/><div class=article-details><h2 class=article-title>Zjut-OS-02 Shell 记录</h2></div></a></article><article><a href=/post/categories/cs162/zjut-os-04-%E8%AE%B0%E5%BD%95/><div class=article-details><h2 class=article-title>Zjut-OS-04 Threads 记录</h2></div></a></article></div></div></aside><footer class=site-footer><section class=copyright>&copy;
+2023 -
+2026 MLAcookie</section><section class=powerby>使用 <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> 构建<br>主题 <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=4.0.3>Stack</a></b> 由 <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a> 设计</section></footer><script type=module>
+    import gallery from '\/ts\/gallery.js';
+
+    const articleContent = document.querySelector('.article-content');
+    const shouldLoad = articleContent && (articleContent.querySelectorAll('figure').length > 0 || articleContent.querySelectorAll('img.gallery-image').length > 0);
+    
+    if (shouldLoad) {
+        gallery(articleContent);
+
+        const PhotoSwipeLightbox = (await import("https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe-lightbox.esm.min.js")).default;
+        const styleHref = "https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe.css";
+
+        const styleTag = document.createElement('link');
+        styleTag.rel = 'stylesheet';
+        styleTag.href = styleHref;
+        document.head.appendChild(styleTag);
+
+        const lightbox = new PhotoSwipeLightbox({
+            gallerySelector: '.article-content',
+            childSelector: 'figure a.image-link',
+            pswpModule: () => import("https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe.esm.min.js")
+        });
+        lightbox.init();
+    }
+</script></main></div><script type=text/javascript src=/ts/main.f856840516f7c2ad1769a8f5937e3d08d6cb386e2cd2dd025ae696e0ff207958.js defer></script></body></html>

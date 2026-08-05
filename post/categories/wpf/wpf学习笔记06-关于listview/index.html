@@ -1,0 +1,353 @@
+<!doctype html><html lang=zh dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content='<0x00> ListView是什么 贴张图就好了\n就是类似这种一行一行展示信息的控件\n当然也不一定是像这种的类似表格的样子(这种后面会讲)\n但都是一行一行的以行为单位的显示一些集合类的显示控件\n<0x01> 先讲WPF里面自带的ListView 先给个代码，做一个最简单的演示\n<!--MainWindow.xaml--> <Window ...> <Window.DataContext> <local:ViewModel/> </Window.DataContext> <ListView ItemsSource="{Binding SomeItems}"/> </Window> //ViewModel.cs //常用引用 namespace WPFTest { internal class ViewModel { public List<string> SomeItems { get; set; } = new List<string>() { "aaa", "bbb", "ccc", "ddd", "fff", }; } } 演示的结果\n这个就是最简单的ListView，也是WPF默认的样式\n(从这期开始的图会多一点，以前的博文也会慢慢补图，感觉没图还是不好理解)\n'><title>WPF学习笔记06-关于ListView</title><link rel=canonical href=https://mlacookie.github.io/post/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B006-%E5%85%B3%E4%BA%8Elistview/><link rel=preconnect href=https://fonts.googleapis.com><link rel=preconnect href=https://fonts.gstatic.com crossorigin><link rel=preload as=style href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap"><link rel=stylesheet href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap"><link rel=stylesheet href=/scss/style.min.e62e09c60ba428a627e03568fa3df938f6a8224f815b5846f00816c17d4a0be4.css><meta property='og:title' content="WPF学习笔记06-关于ListView"><meta property='og:description' content='<0x00> ListView是什么 贴张图就好了\n就是类似这种一行一行展示信息的控件\n当然也不一定是像这种的类似表格的样子(这种后面会讲)\n但都是一行一行的以行为单位的显示一些集合类的显示控件\n<0x01> 先讲WPF里面自带的ListView 先给个代码，做一个最简单的演示\n<!--MainWindow.xaml--> <Window ...> <Window.DataContext> <local:ViewModel/> </Window.DataContext> <ListView ItemsSource="{Binding SomeItems}"/> </Window> //ViewModel.cs //常用引用 namespace WPFTest { internal class ViewModel { public List<string> SomeItems { get; set; } = new List<string>() { "aaa", "bbb", "ccc", "ddd", "fff", }; } } 演示的结果\n这个就是最简单的ListView，也是WPF默认的样式\n(从这期开始的图会多一点，以前的博文也会慢慢补图，感觉没图还是不好理解)\n'><meta property='og:url' content='https://mlacookie.github.io/post/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B006-%E5%85%B3%E4%BA%8Elistview/'><meta property='og:site_name' content='MLAcookie'><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:tag' content='CSharp'><meta property='article:published_time' content='2023-09-18T20:10:22+00:00'><meta property='article:modified_time' content='2023-09-18T20:10:22+00:00'><meta name=twitter:title content="WPF学习笔记06-关于ListView"><meta name=twitter:description content='<0x00> ListView是什么 贴张图就好了\n就是类似这种一行一行展示信息的控件\n当然也不一定是像这种的类似表格的样子(这种后面会讲)\n但都是一行一行的以行为单位的显示一些集合类的显示控件\n<0x01> 先讲WPF里面自带的ListView 先给个代码，做一个最简单的演示\n<!--MainWindow.xaml--> <Window ...> <Window.DataContext> <local:ViewModel/> </Window.DataContext> <ListView ItemsSource="{Binding SomeItems}"/> </Window> //ViewModel.cs //常用引用 namespace WPFTest { internal class ViewModel { public List<string> SomeItems { get; set; } = new List<string>() { "aaa", "bbb", "ccc", "ddd", "fff", }; } } 演示的结果\n这个就是最简单的ListView，也是WPF默认的样式\n(从这期开始的图会多一点，以前的博文也会慢慢补图，感觉没图还是不好理解)\n'><link rel="shortcut icon" href=favicon.webp></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.setItem(e,"dark")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar.png width=640 height=640 class=site-logo loading=lazy alt=Avatar>
+</a><span class=emoji>🤯</span></figure><div class=site-meta><h1 class=site-name><a href=/>MLAcookie</a></h1><h2 class=site-description>随便记点东西的记事本</h2></div></header><ol class=menu-social><li><a href=https://space.bilibili.com/13629146 title=MLA_cookie@Bilibili rel=me><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-bilibili"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 10a4 4 0 014-4h10a4 4 0 014 4v6a4 4 0 01-4 4H7a4 4 0 01-4-4v-6z"/><path d="M8 3l2 3"/><path d="M16 3l-2 3"/><path d="M9 13v-2"/><path d="M15 11v2"/></svg></a></li><li><a href=https://github.com/MLAcookie title=MLAcookie@Github rel=me><svg class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
+<span>Home</span></a></li><li><a href=/page/archives/><svg class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+<span>Archives</span></a></li><li><a href=/page/search/><svg class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg>
+<span>Search</span></a></li><li><a href=/page/links/><svg class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M10 14a3.5 3.5.0 005 0l4-4a3.5 3.5.0 00-5-5l-.5.5"/><path d="M14 10a3.5 3.5.0 00-5 0l-4 4a3.5 3.5.0 005 5l.5-.5"/></svg>
+<span>Links</span></a></li><li><a href=/page/about/><svg class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg>
+<span>About</span></a></li><li class=menu-bottom-section><ol class=menu></ol></li></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">目录</h2><div class=widget--toc><nav class=toc-nav id=TableOfContents><ul><li><a href=#0x00-listview是什么>&lt;0x00> ListView是什么</a></li><li><a href=#0x01-先讲wpf里面自带的listview>&lt;0x01> 先讲WPF里面自带的ListView</a><ul><li><a href=#单项添加>单项添加</a></li><li><a href=#美化子项>美化子项</a></li><li><a href=#和程序行为合并>和程序行为合并</a></li><li><a href=#网格布局gridview>网格布局GridView</a></li></ul></li><li><a href=#0x02-讲讲modernwpf的listview>&lt;0x02> 讲讲ModernWPF的ListView</a></li></ul></nav></div></section></aside><main class="main full-width"><article class=main-article><header class=article-header><div class=article-details><header class=article-category><a href=/categories/wpf/ style=background-color:#c1efbe;color:#123d0f>WPF</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/post/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B006-%E5%85%B3%E4%BA%8Elistview/>WPF学习笔记06-关于ListView</a></h2></div><footer class=article-meta><div class=inline-meta><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
+<time class=article-time--published datetime=2023-09-18T20:10:22Z>2023年9月18日星期一</time></div></footer></div></header><aside class=article-toc><details><summary><div class=article-toc-title><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-chevron-right"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 6l6 6-6 6"/></svg>
+<span>目录</span></div></summary><nav class=toc-nav><ul><li><a href=#0x00-listview是什么>&lt;0x00> ListView是什么</a></li><li><a href=#0x01-先讲wpf里面自带的listview>&lt;0x01> 先讲WPF里面自带的ListView</a><ul><li><a href=#单项添加>单项添加</a></li><li><a href=#美化子项>美化子项</a></li><li><a href=#和程序行为合并>和程序行为合并</a></li><li><a href=#网格布局gridview>网格布局GridView</a></li></ul></li><li><a href=#0x02-讲讲modernwpf的listview>&lt;0x02> 讲讲ModernWPF的ListView</a></li></ul></nav></details></aside><section class=article-content><h2 id=0x00-listview是什么>&lt;0x00> ListView是什么</h2><p>贴张图就好了<br><img alt=微软给的图 class=gallery-image data-flex-basis=868px data-flex-grow=362 height=87 loading=lazy sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src=/post/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B006-%E5%85%B3%E4%BA%8Elistview/picture/1.png width=315><br>就是类似这种一行一行展示信息的控件<br>当然也不一定是像这种的类似表格的样子(这种后面会讲)<br>但都是一行一行的以行为单位的显示一些集合类的显示控件</p><h2 id=0x01-先讲wpf里面自带的listview>&lt;0x01> 先讲WPF里面自带的ListView</h2><p>先给个代码，做一个最简单的演示</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-xml data-lang=xml><span style=display:flex><span><span style=color:#75715e>&lt;!--MainWindow.xaml--&gt;</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>&lt;Window</span> <span style=color:#960050;background-color:#1e0010>...</span><span style=color:#f92672>&gt;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&lt;Window.DataContext&gt;</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&lt;local:ViewModel/&gt;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&lt;/Window.DataContext&gt;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&lt;ListView</span> <span style=color:#a6e22e>ItemsSource=</span><span style=color:#e6db74>&#34;{Binding SomeItems}&#34;</span><span style=color:#f92672>/&gt;</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>&lt;/Window&gt;</span>
+</span></span></code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-cs data-lang=cs><span style=display:flex><span><span style=color:#75715e>//ViewModel.cs</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>//常用引用</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>namespace</span> WPFTest
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>internal</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>ViewModel</span>
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>public</span> List&lt;<span style=color:#66d9ef>string</span>&gt; SomeItems { <span style=color:#66d9ef>get</span>; <span style=color:#66d9ef>set</span>; } = <span style=color:#66d9ef>new</span> List&lt;<span style=color:#66d9ef>string</span>&gt;()
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#34;aaa&#34;</span>,
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#34;bbb&#34;</span>,
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#34;ccc&#34;</span>,
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#34;ddd&#34;</span>,
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#34;fff&#34;</span>,
+</span></span><span style=display:flex><span>        };
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>演示的结果<br><img alt=演示 class=gallery-image data-flex-basis=566px data-flex-grow=236 height=130 loading=lazy sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src=/post/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B006-%E5%85%B3%E4%BA%8Elistview/picture/2.png width=307><br>这个就是最简单的ListView，也是WPF默认的样式<br>(从这期开始的图会多一点，以前的博文也会慢慢补图，感觉没图还是不好理解)</p><p>我们可以先分析下这个控件需要什么，我们能得到什么<br>首先就肯定是需要一个集合啦<br>集合无所谓类型(应该都能用，看你怎么绑定)<br>然后我们能得到一个这样的显示<br>我们可以看到，在这个控件里面已经实现了页面滚动与子项的选择<br>(可以说除了有点不符合当代审美之外都没啥问题)</p><h3 id=单项添加>单项添加</h3><p>有时候可能也不是集合提供子项，可能本身就是写死的<br>这时候就要自己写<code>ListViewItem</code>了</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-xml data-lang=xml><span style=display:flex><span><span style=color:#75715e>&lt;!--MainWindow.xaml--&gt;</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>&lt;Window</span> <span style=color:#960050;background-color:#1e0010>...</span><span style=color:#f92672>&gt;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&lt;ListView</span>
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>SelectionMode=</span><span style=color:#e6db74>&#34;Single&#34;</span><span style=color:#f92672>&gt;</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&lt;ListViewItem</span> <span style=color:#a6e22e>Content=</span><span style=color:#e6db74>&#34;something1&#34;</span><span style=color:#f92672>/&gt;</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&lt;ListViewItem</span> <span style=color:#a6e22e>Content=</span><span style=color:#e6db74>&#34;something2&#34;</span><span style=color:#f92672>/&gt;</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&lt;ListViewItem</span> <span style=color:#a6e22e>Content=</span><span style=color:#e6db74>&#34;something3&#34;</span><span style=color:#f92672>/&gt;</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&lt;ListViewItem</span> <span style=color:#a6e22e>Content=</span><span style=color:#e6db74>&#34;something4&#34;</span><span style=color:#f92672>/&gt;</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&lt;ListViewItem</span> <span style=color:#a6e22e>Content=</span><span style=color:#e6db74>&#34;something5&#34;</span><span style=color:#f92672>/&gt;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&lt;/ListView&gt;</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>&lt;/Window&gt;</span>
+</span></span></code></pre></div><p><img alt=效果 class=gallery-image data-flex-basis=523px data-flex-grow=218 height=132 loading=lazy sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src=/post/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B006-%E5%85%B3%E4%BA%8Elistview/picture/3.png width=288></p><p>每个<code>ListViewItem</code>也都能设置自己的<code>Background</code>之类的属性，这里就不多写了</p><h3 id=美化子项>美化子项</h3><p>那我们还是要稍微美化一下的，虽然这样搞已经能用了<br>我们有两种方式<br>一个是操作<code>ItemStyle</code>，另一个是操作<code>ItemTemplate</code></p><h4 id=操作itemstyle>操作ItemStyle</h4><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-xml data-lang=xml><span style=display:flex><span><span style=color:#75715e>&lt;!--MainWindow.xaml--&gt;</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>&lt;Window</span> <span style=color:#960050;background-color:#1e0010>...</span><span style=color:#f92672>&gt;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&lt;Window.DataContext&gt;</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&lt;local:ViewModel/&gt;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&lt;/Window.DataContext&gt;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&lt;ListView</span> <span style=color:#a6e22e>ItemsSource=</span><span style=color:#e6db74>&#34;{Binding SomeItems}&#34;</span><span style=color:#f92672>&gt;</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&lt;ListView.ItemContainerStyle&gt;</span>
+</span></span><span style=display:flex><span>            <span style=color:#f92672>&lt;Style</span> <span style=color:#a6e22e>TargetType=</span><span style=color:#e6db74>&#34;ListViewItem&#34;</span><span style=color:#f92672>&gt;</span>
+</span></span><span style=display:flex><span>                <span style=color:#f92672>&lt;Setter</span> <span style=color:#a6e22e>Property=</span><span style=color:#e6db74>&#34;FontSize&#34;</span> <span style=color:#a6e22e>Value=</span><span style=color:#e6db74>&#34;20&#34;</span><span style=color:#f92672>/&gt;</span>
+</span></span><span style=display:flex><span>                <span style=color:#f92672>&lt;Setter</span> <span style=color:#a6e22e>Property=</span><span style=color:#e6db74>&#34;Foreground&#34;</span> <span style=color:#a6e22e>Value=</span><span style=color:#e6db74>&#34;Red&#34;</span><span style=color:#f92672>/&gt;</span>
+</span></span><span style=display:flex><span>                <span style=color:#f92672>&lt;Setter</span> <span style=color:#a6e22e>Property=</span><span style=color:#e6db74>&#34;Background&#34;</span> <span style=color:#a6e22e>Value=</span><span style=color:#e6db74>&#34;BurlyWood&#34;</span><span style=color:#f92672>/&gt;</span>
+</span></span><span style=display:flex><span>                <span style=color:#f92672>&lt;Style.Triggers&gt;</span>
+</span></span><span style=display:flex><span>                    <span style=color:#75715e>&lt;!--Trigger这里就偷懒了--&gt;</span>
+</span></span><span style=display:flex><span>                <span style=color:#f92672>&lt;/Style.Triggers&gt;</span>
+</span></span><span style=display:flex><span>            <span style=color:#f92672>&lt;/Style&gt;</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&lt;/ListView.ItemContainerStyle&gt;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&lt;/ListView&gt;</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>&lt;/Window&gt;</span>
+</span></span></code></pre></div><p>通过<code>ListView.ItemContainerStyle</code>里面设置<code>ListViewItem</code>的样式<br>样式就按一般的方式走，这里就随便设置了下，<code>Triggers</code>也能设置，这里懒得写了<br><img alt=ItemViewStyle方法 class=gallery-image data-flex-basis=544px data-flex-grow=226 height=179 loading=lazy sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src=/post/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B006-%E5%85%B3%E4%BA%8Elistview/picture/4.png width=406></p><h4 id=操作itemtemplate>操作ItemTemplate</h4><p>这里需要修改下ViewModel，为了更方便的绑定</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-cs data-lang=cs><span style=display:flex><span><span style=color:#75715e>//ViewModel2.cs</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>//常用引用</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>namespace</span> WPFTest
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>internal</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>ViewModel2</span>
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>public</span> List&lt;TypicalItem&gt; SomeItems { <span style=color:#66d9ef>get</span>; <span style=color:#66d9ef>set</span>; } = <span style=color:#66d9ef>new</span> List&lt;TypicalItem&gt;()
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>new</span> TypicalItem(<span style=color:#e6db74>&#34;aaa&#34;</span>, <span style=color:#66d9ef>new</span> SolidColorBrush(Color.FromRgb(<span style=color:#ae81ff>82</span>,<span style=color:#ae81ff>114</span>,<span style=color:#ae81ff>248</span>))),
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>new</span> TypicalItem(<span style=color:#e6db74>&#34;bbb&#34;</span>, <span style=color:#66d9ef>new</span> SolidColorBrush(Color.FromRgb(<span style=color:#ae81ff>72</span>,<span style=color:#ae81ff>137</span>,<span style=color:#ae81ff>217</span>))),
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>new</span> TypicalItem(<span style=color:#e6db74>&#34;ccc&#34;</span>, <span style=color:#66d9ef>new</span> SolidColorBrush(Color.FromRgb(<span style=color:#ae81ff>91</span>,<span style=color:#ae81ff>199</span>,<span style=color:#ae81ff>240</span>))),
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>new</span> TypicalItem(<span style=color:#e6db74>&#34;ddd&#34;</span>, <span style=color:#66d9ef>new</span> SolidColorBrush(Color.FromRgb(<span style=color:#ae81ff>72</span>,<span style=color:#ae81ff>214</span>,<span style=color:#ae81ff>217</span>))),
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>new</span> TypicalItem(<span style=color:#e6db74>&#34;eee&#34;</span>, <span style=color:#66d9ef>new</span> SolidColorBrush(Color.FromRgb(<span style=color:#ae81ff>82</span>,<span style=color:#ae81ff>248</span>,<span style=color:#ae81ff>205</span>))),
+</span></span><span style=display:flex><span>        };
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>TypicalItem</span>
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>string</span> Name { <span style=color:#66d9ef>get</span>; <span style=color:#66d9ef>set</span>; }
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>public</span> Brush Color { <span style=color:#66d9ef>get</span>; <span style=color:#66d9ef>set</span>; }
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>public</span> TypicalItem(<span style=color:#66d9ef>string</span> name, Brush color)
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            Name = name;
+</span></span><span style=display:flex><span>            Color = color;
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-xml data-lang=xml><span style=display:flex><span><span style=color:#75715e>&lt;!--MainWindow.xaml--&gt;</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>&lt;Window</span> <span style=color:#960050;background-color:#1e0010>...</span><span style=color:#f92672>&gt;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&lt;Window.DataContext&gt;</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&lt;local:ViewModel2/&gt;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&lt;/Window.DataContext&gt;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&lt;ListView</span> <span style=color:#a6e22e>ItemsSource=</span><span style=color:#e6db74>&#34;{Binding SomeItems}&#34;</span><span style=color:#f92672>&gt;</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&lt;ListView.ItemTemplate&gt;</span>
+</span></span><span style=display:flex><span>            <span style=color:#f92672>&lt;DataTemplate</span> <span style=color:#a6e22e>DataType=</span><span style=color:#e6db74>&#34;ListViewItem&#34;</span><span style=color:#f92672>&gt;</span>
+</span></span><span style=display:flex><span>                <span style=color:#f92672>&lt;Border&gt;</span>
+</span></span><span style=display:flex><span>                    <span style=color:#f92672>&lt;TextBox</span>
+</span></span><span style=display:flex><span>                        <span style=color:#a6e22e>Text=</span><span style=color:#e6db74>&#34;{Binding Name}&#34;</span>
+</span></span><span style=display:flex><span>                        <span style=color:#a6e22e>Background=</span><span style=color:#e6db74>&#34;{Binding Color}&#34;</span>
+</span></span><span style=display:flex><span>                        <span style=color:#a6e22e>FontSize=</span><span style=color:#e6db74>&#34;20&#34;</span><span style=color:#f92672>/&gt;</span>
+</span></span><span style=display:flex><span>                <span style=color:#f92672>&lt;/Border&gt;</span>
+</span></span><span style=display:flex><span>            <span style=color:#f92672>&lt;/DataTemplate&gt;</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&lt;/ListView.ItemTemplate&gt;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&lt;/ListView&gt;</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>&lt;/Window&gt;</span>
+</span></span></code></pre></div><p><img alt=ItemTemplate方法 class=gallery-image data-flex-basis=478px data-flex-grow=199 height=193 loading=lazy sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src=/post/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B006-%E5%85%B3%E4%BA%8Elistview/picture/5.png width=385><br>效果就差不多这样</p><h4 id=区别>区别</h4><p>实际上两个的侧重点是不一样的<br><code>ItemContainerStyle</code>重点在每个子项的样式设置<br>比方说就是每个子项的背景，子项按下的动画效果之类的<br><code>ItemTemplate</code>侧重在子项内部是怎么显示的<br>比方说写了个数据类型，里面有好几条属性<br>那么就可以用<code>ItemTemplate</code>来自定义这些属性怎么显示</p><p>我怀疑<code>ListViewItem</code>里面就是包着自己的UI树的<br>但可视化树没显示，也不敢说死</p><p>这两个的效果肯定是能合并在一起的，毕竟这俩侧重点是完全不一样的</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-xml data-lang=xml><span style=display:flex><span><span style=color:#75715e>&lt;!--MainWindow.xaml--&gt;</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>&lt;Window</span> <span style=color:#960050;background-color:#1e0010>...</span><span style=color:#f92672>&gt;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&lt;Window.DataContext&gt;</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&lt;local:ViewModel2/&gt;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&lt;/Window.DataContext&gt;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&lt;ListView</span>
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>ItemsSource=</span><span style=color:#e6db74>&#34;{Binding SomeItems}&#34;</span><span style=color:#f92672>&gt;</span>
+</span></span><span style=display:flex><span>        <span style=color:#75715e>&lt;!--其实就加了这一个块--&gt;</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&lt;ListView.ItemContainerStyle&gt;</span>
+</span></span><span style=display:flex><span>            <span style=color:#f92672>&lt;Style</span> <span style=color:#a6e22e>TargetType=</span><span style=color:#e6db74>&#34;ListViewItem&#34;</span><span style=color:#f92672>&gt;</span>
+</span></span><span style=display:flex><span>                <span style=color:#f92672>&lt;Setter</span> <span style=color:#a6e22e>Property=</span><span style=color:#e6db74>&#34;Background&#34;</span> <span style=color:#a6e22e>Value=</span><span style=color:#e6db74>&#34;BurlyWood&#34;</span><span style=color:#f92672>/&gt;</span>
+</span></span><span style=display:flex><span>            <span style=color:#f92672>&lt;/Style&gt;</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&lt;/ListView.ItemContainerStyle&gt;</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&lt;ListView.ItemTemplate&gt;</span>
+</span></span><span style=display:flex><span>            <span style=color:#f92672>&lt;DataTemplate</span> <span style=color:#a6e22e>DataType=</span><span style=color:#e6db74>&#34;ListViewItem&#34;</span><span style=color:#f92672>&gt;</span>
+</span></span><span style=display:flex><span>                <span style=color:#f92672>&lt;Border&gt;</span>
+</span></span><span style=display:flex><span>                    <span style=color:#f92672>&lt;TextBox</span> <span style=color:#a6e22e>Text=</span><span style=color:#e6db74>&#34;{Binding Name}&#34;</span> <span style=color:#a6e22e>Background=</span><span style=color:#e6db74>&#34;{Binding Color}&#34;</span> <span style=color:#a6e22e>FontSize=</span><span style=color:#e6db74>&#34;20&#34;</span><span style=color:#f92672>/&gt;</span>
+</span></span><span style=display:flex><span>                <span style=color:#f92672>&lt;/Border&gt;</span>
+</span></span><span style=display:flex><span>            <span style=color:#f92672>&lt;/DataTemplate&gt;</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&lt;/ListView.ItemTemplate&gt;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&lt;/ListView&gt;</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>&lt;/Window&gt;</span>
+</span></span></code></pre></div><p><img alt=合并 class=gallery-image data-flex-basis=502px data-flex-grow=209 height=191 loading=lazy sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src=/post/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B006-%E5%85%B3%E4%BA%8Elistview/picture/6.png width=400></p><h3 id=和程序行为合并>和程序行为合并</h3><p>那下一步就是写选中子项的行为了<br>我们可以通过设置<code>SelectionChanged</code>事件<br>为了演示，先修改下前端代码，这里举选择子项切换Border背景颜色的例子</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-xml data-lang=xml><span style=display:flex><span><span style=color:#75715e>&lt;!--MainWindow.xaml--&gt;</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>&lt;Window</span> <span style=color:#960050;background-color:#1e0010>...</span><span style=color:#f92672>&gt;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&lt;Window.DataContext&gt;</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&lt;local:ViewModel2/&gt;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&lt;/Window.DataContext&gt;</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>&lt;!--加了个Grid，上下分割--&gt;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&lt;Grid&gt;</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&lt;Grid.RowDefinitions&gt;</span>
+</span></span><span style=display:flex><span>            <span style=color:#f92672>&lt;RowDefinition/&gt;</span>
+</span></span><span style=display:flex><span>            <span style=color:#f92672>&lt;RowDefinition/&gt;</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&lt;/Grid.RowDefinitions&gt;</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&lt;ListView</span>
+</span></span><span style=display:flex><span>            <span style=color:#a6e22e>ItemsSource=</span><span style=color:#e6db74>&#34;{Binding SomeItems}&#34;</span>
+</span></span><span style=display:flex><span>            <span style=color:#a6e22e>SelectionMode=</span><span style=color:#e6db74>&#34;Single&#34;</span>
+</span></span><span style=display:flex><span>            <span style=color:#a6e22e>SelectionChanged=</span><span style=color:#e6db74>&#34;ListView_SelectionChanged&#34;</span><span style=color:#f92672>&gt;</span>
+</span></span><span style=display:flex><span>            <span style=color:#f92672>&lt;ListView.ItemContainerStyle&gt;</span>
+</span></span><span style=display:flex><span>                <span style=color:#f92672>&lt;Style</span> <span style=color:#a6e22e>TargetType=</span><span style=color:#e6db74>&#34;ListViewItem&#34;</span><span style=color:#f92672>&gt;</span>
+</span></span><span style=display:flex><span>                    <span style=color:#f92672>&lt;Setter</span> <span style=color:#a6e22e>Property=</span><span style=color:#e6db74>&#34;Background&#34;</span> <span style=color:#a6e22e>Value=</span><span style=color:#e6db74>&#34;BurlyWood&#34;</span><span style=color:#f92672>/&gt;</span>
+</span></span><span style=display:flex><span>                <span style=color:#f92672>&lt;/Style&gt;</span>
+</span></span><span style=display:flex><span>            <span style=color:#f92672>&lt;/ListView.ItemContainerStyle&gt;</span>
+</span></span><span style=display:flex><span>            <span style=color:#f92672>&lt;ListView.ItemTemplate&gt;</span>
+</span></span><span style=display:flex><span>                <span style=color:#f92672>&lt;DataTemplate</span> <span style=color:#a6e22e>DataType=</span><span style=color:#e6db74>&#34;ListViewItem&#34;</span><span style=color:#f92672>&gt;</span>
+</span></span><span style=display:flex><span>                    <span style=color:#f92672>&lt;Border&gt;</span>
+</span></span><span style=display:flex><span>                        <span style=color:#f92672>&lt;TextBox</span> <span style=color:#a6e22e>Text=</span><span style=color:#e6db74>&#34;{Binding Name}&#34;</span> <span style=color:#a6e22e>Background=</span><span style=color:#e6db74>&#34;{Binding Color}&#34;</span> <span style=color:#a6e22e>FontSize=</span><span style=color:#e6db74>&#34;20&#34;</span><span style=color:#f92672>/&gt;</span>
+</span></span><span style=display:flex><span>                    <span style=color:#f92672>&lt;/Border&gt;</span>
+</span></span><span style=display:flex><span>                <span style=color:#f92672>&lt;/DataTemplate&gt;</span>
+</span></span><span style=display:flex><span>            <span style=color:#f92672>&lt;/ListView.ItemTemplate&gt;</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&lt;/ListView&gt;</span>
+</span></span><span style=display:flex><span>        <span style=color:#75715e>&lt;!--用来显示子项切换的效果的Border--&gt;</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&lt;Border</span> <span style=color:#a6e22e>Grid.Row=</span><span style=color:#e6db74>&#34;1&#34;</span> <span style=color:#a6e22e>Name=</span><span style=color:#e6db74>&#34;MyBorder&#34;</span><span style=color:#f92672>/&gt;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&lt;/Grid&gt;</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>&lt;/Window&gt;</span>
+</span></span></code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-cs data-lang=cs><span style=display:flex><span><span style=color:#75715e>//MainWindow.xaml.cs</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>//引用</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>namespace</span> WPFTest
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>partial</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>MainWindow</span> : Window
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>public</span> MainWindow()
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            InitializeComponent();
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>private</span> <span style=color:#66d9ef>void</span> ListView_SelectionChanged(<span style=color:#66d9ef>object</span> sender, SelectionChangedEventArgs e)
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            MyBorder.Background = (e.AddedItems[<span style=color:#ae81ff>0</span>] <span style=color:#66d9ef>as</span> TypicalItem).Color;
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p><img alt=简单的演示 class=gallery-image data-flex-basis=240px data-flex-grow=100 height=400 loading=lazy sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src=/post/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B006-%E5%85%B3%E4%BA%8Elistview/picture/7.png width=400><br>这样就解决了<br><code>.xaml</code>的代码就不解释了，<code>.cs</code>的代码还是能讲一下的<br>主要就是用<code>e.AddedItems[0]</code>拿到选中的<code>TypicalItem</code>对象<br>(<code>e.AddedItems[0]</code>这个语法确实很怪，估计是主要是为了支持多个选中的情况)</p><p>如果给<code>ListView</code>起了名字的话也可以这么写(这里起名是<code>MyListView</code>)</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-cs data-lang=cs><span style=display:flex><span><span style=color:#75715e>//MainWindow.xaml.cs</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>//引用</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>namespace</span> WPFTest
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>partial</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>MainWindow</span> : Window
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>public</span> MainWindow()
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            InitializeComponent();
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>private</span> <span style=color:#66d9ef>void</span> MyListView_SelectionChanged(<span style=color:#66d9ef>object</span> sender, SelectionChangedEventArgs e)
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            MyBorder.Background = (MyListView.SelectedItem <span style=color:#66d9ef>as</span> TypicalItem).Color;
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>一般来说这么访问选中的子项会多一点<br>因为有些时候会去想双击的代码，这就要用<code>MouseDoubleClick</code>事件了<br>但<code>MouseDoubleClick</code>是不带<code>SelectionChangedEventArgs e</code>的<br>也就是说我们是不能靠<code>传参变量e</code>来获取选择了哪个子项的<br>但靠<code>MyListView.SelectedItem</code>这种方式就方便很多，都能用了</p><p>顺便在这里提一点，如果要定义多个鼠标事件，不能采用传统的<code>.xaml</code>写事件然后在<code>.cs</code>写<br>因为这么写运行的时候这些<code>MouseHandler</code>会相互屏蔽而导致有些就触发不了<br>比如按传统方式同时设置<code>MouseDoubleClick</code>和<code>MouseRightButtonDown</code>，只能触发前者<br>要都能触发，应该在控件的初始化用代码初始化这些<code>Handler</code><br><code>.xaml</code>里面可以按传统方法留一个，但别的都要靠代码方式添加</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-cs data-lang=cs><span style=display:flex><span><span style=color:#75715e>//MainWindow.xaml.cs(随便举例的，与前面的代码无关)</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>//引用</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>namespace</span> WPFTest
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>partial</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>MainWindow</span> : Window
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>public</span> MainWindow()
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            InitializeComponent();
+</span></span><span style=display:flex><span>            <span style=color:#75715e>//就是在这里自己添加</span>
+</span></span><span style=display:flex><span>            MyListView.AddHandler(MouseDoubleClickEvent, <span style=color:#66d9ef>new</span> MouseButtonEventHandler(<span style=color:#66d9ef>this</span>.MyListView_MouseDoubleClick), <span style=color:#66d9ef>true</span>);
+</span></span><span style=display:flex><span>            MyListView.AddHandler(MouseRightButtonDownEvent, <span style=color:#66d9ef>new</span> MouseButtonEventHandler(<span style=color:#66d9ef>this</span>.MyListView_MouseRightButtonDown), <span style=color:#66d9ef>true</span>);
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>private</span> <span style=color:#66d9ef>void</span> MyListView_MouseDoubleClick(<span style=color:#66d9ef>object</span> sender, MouseButtonEventArgs e)
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            <span style=color:#75715e>//处理代码</span>
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>private</span> <span style=color:#66d9ef>void</span> MyListView_MouseRightButtonDown(<span style=color:#66d9ef>object</span> sender, MouseButtonEventArgs e)
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            <span style=color:#75715e>//处理代码</span>
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>还有就是我还没啥办法实现类似<code>Button</code>绑定<code>ICommand</code>的做法<br>但其实可以把方法本体写在<code>VM</code>里，然后在<code>.cs</code>里用<code>DataContext</code>调命令，实现猴版的<code>MVVM</code><br>这里就不细讲了</p><h3 id=网格布局gridview>网格布局GridView</h3><p>博客最上面的图就是使用了<code>GridView</code>的效果<br><img alt=这张图 loading=lazy sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src=../../Blog/给侧边栏加个B站图标/picture/1.jpg><br>(就是这张)</p><p><code>GridView</code>是嵌套在<code>ListView</code>里面的，具体代码如下<br>(还是用得ViewModel2.cs)</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-xml data-lang=xml><span style=display:flex><span><span style=color:#75715e>&lt;!--MainWindow.xaml--&gt;</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>&lt;Window</span> <span style=color:#960050;background-color:#1e0010>...</span><span style=color:#f92672>&gt;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&lt;Window.DataContext&gt;</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&lt;local:ViewModel2/&gt;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&lt;/Window.DataContext&gt;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&lt;ListView</span>
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>ItemsSource=</span><span style=color:#e6db74>&#34;{Binding SomeItems}&#34;</span><span style=color:#f92672>&gt;</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&lt;ListView.View&gt;</span>
+</span></span><span style=display:flex><span>            <span style=color:#f92672>&lt;GridView&gt;</span>
+</span></span><span style=display:flex><span>                <span style=color:#f92672>&lt;GridViewColumn</span> <span style=color:#a6e22e>Header=</span><span style=color:#e6db74>&#34;Name&#34;</span> <span style=color:#a6e22e>DisplayMemberBinding=</span><span style=color:#e6db74>&#34;{Binding Name}&#34;</span><span style=color:#f92672>/&gt;</span>
+</span></span><span style=display:flex><span>                <span style=color:#f92672>&lt;GridViewColumn</span> <span style=color:#a6e22e>Header=</span><span style=color:#e6db74>&#34;Color&#34;</span><span style=color:#f92672>&gt;</span>
+</span></span><span style=display:flex><span>                    <span style=color:#f92672>&lt;GridViewColumn.CellTemplate&gt;</span>
+</span></span><span style=display:flex><span>                        <span style=color:#f92672>&lt;DataTemplate</span> <span style=color:#a6e22e>DataType=</span><span style=color:#e6db74>&#34;local:TypicalItem&#34;</span><span style=color:#f92672>&gt;</span>
+</span></span><span style=display:flex><span>                            <span style=color:#f92672>&lt;TextBlock</span> <span style=color:#a6e22e>Text=</span><span style=color:#e6db74>&#34;{Binding Color}&#34;</span> <span style=color:#a6e22e>Background=</span><span style=color:#e6db74>&#34;{Binding Color}&#34;</span><span style=color:#f92672>/&gt;</span>
+</span></span><span style=display:flex><span>                        <span style=color:#f92672>&lt;/DataTemplate&gt;</span>
+</span></span><span style=display:flex><span>                    <span style=color:#f92672>&lt;/GridViewColumn.CellTemplate&gt;</span>
+</span></span><span style=display:flex><span>                <span style=color:#f92672>&lt;/GridViewColumn&gt;</span>
+</span></span><span style=display:flex><span>            <span style=color:#f92672>&lt;/GridView&gt;</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&lt;/ListView.View&gt;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&lt;/ListView&gt;</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>&lt;/Window&gt;</span>
+</span></span></code></pre></div><p><img alt=emmm loading=lazy sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src=8.png><br>这样就实现了类似前面那张图的效果了</p><p>这里不难看出<code>GridView</code>是隶属于<code>ListView</code>的<br>然后对于每一个格子，也是能自定义<code>Template</code>的</p><p>最上面的是<code>Header</code>，也能自定义</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-xml data-lang=xml><span style=display:flex><span><span style=color:#75715e>&lt;!--MainWindow.xaml--&gt;</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>&lt;Window</span> <span style=color:#960050;background-color:#1e0010>...</span><span style=color:#f92672>&gt;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&lt;Window.DataContext&gt;</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&lt;local:ViewModel2/&gt;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&lt;/Window.DataContext&gt;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&lt;ListView</span>
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>ItemsSource=</span><span style=color:#e6db74>&#34;{Binding SomeItems}&#34;</span><span style=color:#f92672>&gt;</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&lt;ListView.View&gt;</span>
+</span></span><span style=display:flex><span>            <span style=color:#f92672>&lt;GridView&gt;</span>
+</span></span><span style=display:flex><span>                <span style=color:#f92672>&lt;GridViewColumn</span> <span style=color:#a6e22e>Header=</span><span style=color:#e6db74>&#34;Name&#34;</span> <span style=color:#a6e22e>DisplayMemberBinding=</span><span style=color:#e6db74>&#34;{Binding Name}&#34;</span><span style=color:#f92672>/&gt;</span>
+</span></span><span style=display:flex><span>                <span style=color:#f92672>&lt;GridViewColumn&gt;</span>
+</span></span><span style=display:flex><span>                    <span style=color:#75715e>&lt;!--就改了这里--&gt;</span>
+</span></span><span style=display:flex><span>                    <span style=color:#f92672>&lt;GridViewColumnHeader&gt;</span>
+</span></span><span style=display:flex><span>                        <span style=color:#f92672>&lt;TextBlock</span> <span style=color:#a6e22e>Text=</span><span style=color:#e6db74>&#34;emm&#34;</span> <span style=color:#a6e22e>Background=</span><span style=color:#e6db74>&#34;BurlyWood&#34;</span><span style=color:#f92672>/&gt;</span>
+</span></span><span style=display:flex><span>                    <span style=color:#f92672>&lt;/GridViewColumnHeader&gt;</span>
+</span></span><span style=display:flex><span>                    <span style=color:#f92672>&lt;GridViewColumn.CellTemplate&gt;</span>
+</span></span><span style=display:flex><span>                        <span style=color:#f92672>&lt;DataTemplate</span> <span style=color:#a6e22e>DataType=</span><span style=color:#e6db74>&#34;local:TypicalItem&#34;</span><span style=color:#f92672>&gt;</span>
+</span></span><span style=display:flex><span>                            <span style=color:#f92672>&lt;TextBlock</span> <span style=color:#a6e22e>Text=</span><span style=color:#e6db74>&#34;{Binding Color}&#34;</span> <span style=color:#a6e22e>Background=</span><span style=color:#e6db74>&#34;{Binding Color}&#34;</span><span style=color:#f92672>/&gt;</span>
+</span></span><span style=display:flex><span>                        <span style=color:#f92672>&lt;/DataTemplate&gt;</span>
+</span></span><span style=display:flex><span>                    <span style=color:#f92672>&lt;/GridViewColumn.CellTemplate&gt;</span>
+</span></span><span style=display:flex><span>                <span style=color:#f92672>&lt;/GridViewColumn&gt;</span>
+</span></span><span style=display:flex><span>            <span style=color:#f92672>&lt;/GridView&gt;</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&lt;/ListView.View&gt;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&lt;/ListView&gt;</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>&lt;/Window&gt;</span>
+</span></span></code></pre></div><p>简单写一下就是这样了<br>前面讲的<code>SelectionChanged</code>和<code>MouseDoubleClick</code>之类的还是写在<code>ListView</code>的块里<br>这样就可以实现表格化的效果了</p><h2 id=0x02-讲讲modernwpf的listview>&lt;0x02> 讲讲ModernWPF的ListView</h2><p>因为有自己的练手项目在用这个包，所以就顺便讲讲了<br>(Nuget上有好多叫ModernWPF的包，我自己用的是<a class=link href=https://github.com/Kinnara/ModernWpf target=_blank rel=noopener>这个</a>)<br>之前的博客也有讲过一点</p><p>在<code>ModernWPF</code>的包里面有两种<code>ListView</code>实现<br>一种是使用<code>WPF</code>原生的<code>ListView</code>但修改了<code>Style</code>来匹配风格<br>另一种是包里面自己写的<code>ListView</code><br>前者就要求别去改<code>Style</code>，不然所有的样式又要自己写<br>后者的化代码风格会更像<code>UWP</code>开发，有些写法确实挺新的</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-xml data-lang=xml><span style=display:flex><span><span style=color:#75715e>&lt;!--MainWindow.xaml--&gt;</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>&lt;Window</span> <span style=color:#960050;background-color:#1e0010>...</span>
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>xmlns:ui=</span><span style=color:#e6db74>&#34;http://schemas.modernwpf.com/2019&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>ui:WindowHelper.UseModernWindowStyle=</span><span style=color:#e6db74>&#34;True&#34;</span><span style=color:#f92672>&gt;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&lt;Window.DataContext&gt;</span>
+</span></span><span style=display:flex><span>        <span style=color:#75715e>&lt;!--这里用的是最前面的ViewModel--&gt;</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&lt;local:ViewModel/&gt;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&lt;/Window.DataContext&gt;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&lt;Grid&gt;</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&lt;Grid.RowDefinitions&gt;</span>
+</span></span><span style=display:flex><span>            <span style=color:#f92672>&lt;RowDefinition/&gt;</span>
+</span></span><span style=display:flex><span>            <span style=color:#f92672>&lt;RowDefinition/&gt;</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&lt;/Grid.RowDefinitions&gt;</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&lt;ListView</span>
+</span></span><span style=display:flex><span>            <span style=color:#a6e22e>Grid.Row=</span><span style=color:#e6db74>&#34;0&#34;</span>
+</span></span><span style=display:flex><span>            <span style=color:#a6e22e>ItemsSource=</span><span style=color:#e6db74>&#34;{Binding SomeItems}&#34;</span><span style=color:#f92672>/&gt;</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&lt;ui:ListView</span>
+</span></span><span style=display:flex><span>            <span style=color:#a6e22e>Grid.Row=</span><span style=color:#e6db74>&#34;1&#34;</span>
+</span></span><span style=display:flex><span>            <span style=color:#a6e22e>ItemsSource=</span><span style=color:#e6db74>&#34;{Binding SomeItems}&#34;</span><span style=color:#f92672>/&gt;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&lt;/Grid&gt;</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>&lt;/Window&gt;</span>
+</span></span></code></pre></div><p><img alt=效果 loading=lazy sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src=9.png><br>这里演示了这个包里面的两种写法，效果上是一样的<br>其余大部分都可以按WPF原生的写法写<br>但如果要用GridView，那么只有原生的写法(这个包没自己写)</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-xml data-lang=xml><span style=display:flex><span><span style=color:#75715e>&lt;!--MainWindow.xaml--&gt;</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>&lt;Window</span> <span style=color:#960050;background-color:#1e0010>...</span>
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>xmlns:ui=</span><span style=color:#e6db74>&#34;http://schemas.modernwpf.com/2019&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>ui:WindowHelper.UseModernWindowStyle=</span><span style=color:#e6db74>&#34;True&#34;</span><span style=color:#f92672>&gt;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&lt;Window.DataContext&gt;</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&lt;local:ViewModel2/&gt;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&lt;/Window.DataContext&gt;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&lt;ListView</span>
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>ItemsSource=</span><span style=color:#e6db74>&#34;{Binding SomeItems}&#34;</span><span style=color:#f92672>&gt;</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&lt;ListView.View&gt;</span>
+</span></span><span style=display:flex><span>            <span style=color:#f92672>&lt;GridView&gt;</span>
+</span></span><span style=display:flex><span>                <span style=color:#f92672>&lt;GridViewColumn</span> <span style=color:#a6e22e>Header=</span><span style=color:#e6db74>&#34;Name&#34;</span> <span style=color:#a6e22e>DisplayMemberBinding=</span><span style=color:#e6db74>&#34;{Binding Name}&#34;</span><span style=color:#f92672>/&gt;</span>
+</span></span><span style=display:flex><span>                <span style=color:#f92672>&lt;GridViewColumn</span> <span style=color:#a6e22e>Header=</span><span style=color:#e6db74>&#34;Color&#34;</span> <span style=color:#a6e22e>DisplayMemberBinding=</span><span style=color:#e6db74>&#34;{Binding Color}&#34;</span><span style=color:#f92672>/&gt;</span>
+</span></span><span style=display:flex><span>            <span style=color:#f92672>&lt;/GridView&gt;</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&lt;/ListView.View&gt;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&lt;/ListView&gt;</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>&lt;/Window&gt;</span>
+</span></span></code></pre></div><p><img alt=演示 loading=lazy sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src=10.png><br>这里可以看得，如果用GridView的话，右边的滚动条时不会收纳的<br>(准确来说自动从收纳状态变成展开状态)</p><p>别的自定义之类的也和WPF原生写法一样，就是尽量别动Style</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-xml data-lang=xml><span style=display:flex><span><span style=color:#75715e>&lt;!--MainWindow.xaml--&gt;</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>&lt;Window</span> <span style=color:#960050;background-color:#1e0010>...</span>
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>xmlns:ui=</span><span style=color:#e6db74>&#34;http://schemas.modernwpf.com/2019&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>ui:WindowHelper.UseModernWindowStyle=</span><span style=color:#e6db74>&#34;True&#34;</span><span style=color:#f92672>&gt;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&lt;Window.DataContext&gt;</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&lt;local:ViewModel2/&gt;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&lt;/Window.DataContext&gt;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&lt;ListView</span>
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>ItemsSource=</span><span style=color:#e6db74>&#34;{Binding SomeItems}&#34;</span><span style=color:#f92672>&gt;</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&lt;ListView.View&gt;</span>
+</span></span><span style=display:flex><span>            <span style=color:#f92672>&lt;GridView&gt;</span>
+</span></span><span style=display:flex><span>                <span style=color:#f92672>&lt;GridViewColumn</span> <span style=color:#a6e22e>Header=</span><span style=color:#e6db74>&#34;Name&#34;</span> <span style=color:#a6e22e>DisplayMemberBinding=</span><span style=color:#e6db74>&#34;{Binding Name}&#34;</span><span style=color:#f92672>/&gt;</span>
+</span></span><span style=display:flex><span>                <span style=color:#f92672>&lt;GridViewColumn</span> <span style=color:#a6e22e>Header=</span><span style=color:#e6db74>&#34;Color&#34;</span><span style=color:#f92672>&gt;</span>
+</span></span><span style=display:flex><span>                    <span style=color:#f92672>&lt;GridViewColumn.CellTemplate&gt;</span>
+</span></span><span style=display:flex><span>                        <span style=color:#f92672>&lt;DataTemplate</span> <span style=color:#a6e22e>DataType=</span><span style=color:#e6db74>&#34;local:TypicalItem&#34;</span><span style=color:#f92672>&gt;</span>
+</span></span><span style=display:flex><span>                            <span style=color:#f92672>&lt;Button</span> <span style=color:#a6e22e>Content=</span><span style=color:#e6db74>&#34;{Binding Color}&#34;</span> <span style=color:#a6e22e>Background=</span><span style=color:#e6db74>&#34;{Binding Color}&#34;</span><span style=color:#f92672>/&gt;</span>
+</span></span><span style=display:flex><span>                        <span style=color:#f92672>&lt;/DataTemplate&gt;</span>
+</span></span><span style=display:flex><span>                    <span style=color:#f92672>&lt;/GridViewColumn.CellTemplate&gt;</span>
+</span></span><span style=display:flex><span>                <span style=color:#f92672>&lt;/GridViewColumn&gt;</span>
+</span></span><span style=display:flex><span>            <span style=color:#f92672>&lt;/GridView&gt;</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&lt;/ListView.View&gt;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&lt;/ListView&gt;</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>&lt;/Window&gt;</span>
+</span></span></code></pre></div><p><img alt=演示 class=gallery-image data-flex-basis=414px data-flex-grow=172 height=222 loading=lazy sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src=/post/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B006-%E5%85%B3%E4%BA%8Elistview/picture/11.png width=383></p><p>写这篇博客真的花了不少时间，大家看得开心就好</p></section><footer class="article-meta article-footer"><section class=article-tags><a href=/tags/csharp/>CSharp</a></section><section class="article-copyright inline-meta"><svg class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg>
+<span>CC BY-NC-SA 4.0</span></section></footer><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css integrity=sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV crossorigin=anonymous><script src=https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js integrity=sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8 crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js integrity=sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05 crossorigin=anonymous defer></script><script>window.addEventListener("DOMContentLoaded",()=>{const e=[".main-article",".widget--toc"];e.forEach(e=>{const t=document.querySelector(e);t&&renderMathInElement(t,{delimiters:[{left:"$$",right:"$$",display:!0},{left:"$",right:"$",display:!1},{left:"\\(",right:"\\)",display:!1},{left:"\\[",right:"\\]",display:!0}],ignoredClasses:["gist"]})})})</script></article><aside><h2 class=section-title>相关文章</h2><div class=subsection-list><div class=article-list--tile><article><a href=/post/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B005-%E6%80%8E%E4%B9%88%E7%94%A8modernwpf%E5%AE%9E%E7%8E%B0%E5%B8%A6%E5%AF%BC%E8%88%AA%E7%9A%84%E7%95%8C%E9%9D%A2/><div class=article-details><h2 class=article-title>WPF学习笔记05-怎么用ModernWPF实现带导航的界面</h2></div></a></article><article><a href=/post/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B004-mvvm%E5%92%8C%E5%88%AB%E7%9A%84%E4%B8%80%E4%BA%9B%E4%B8%9C%E8%A5%BF%E7%9A%84%E8%A1%A5%E5%85%85/><div class=article-details><h2 class=article-title>WPF学习笔记04-MVVM和别的一些东西的补充</h2></div></a></article><article><a href=/post/articles/2023/%E6%B5%85%E8%B0%88csharp%E8%BD%ACil%E8%AF%AD%E8%A8%80/><div class=article-details><h2 class=article-title>浅谈C#转IL语言</h2></div></a></article><article><a href=/post/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B003-mvvm%E6%A8%A1%E5%9E%8B/><div class=article-details><h2 class=article-title>WPF学习笔记03-MVVM模型</h2></div></a></article><article><a href=/post/categories/wpf/wpf%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B002-%E7%AE%80%E5%8D%95%E7%BE%8E%E5%8C%96%E8%AE%A1%E7%AE%97%E5%99%A8/><div class=article-details><h2 class=article-title>WPF学习笔记02-简单美化计算器</h2></div></a></article></div></div></aside><footer class=site-footer><section class=copyright>&copy;
+2023 -
+2026 MLAcookie</section><section class=powerby>使用 <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> 构建<br>主题 <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=4.0.3>Stack</a></b> 由 <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a> 设计</section></footer><script type=module>
+    import gallery from '\/ts\/gallery.js';
+
+    const articleContent = document.querySelector('.article-content');
+    const shouldLoad = articleContent && (articleContent.querySelectorAll('figure').length > 0 || articleContent.querySelectorAll('img.gallery-image').length > 0);
+    
+    if (shouldLoad) {
+        gallery(articleContent);
+
+        const PhotoSwipeLightbox = (await import("https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe-lightbox.esm.min.js")).default;
+        const styleHref = "https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe.css";
+
+        const styleTag = document.createElement('link');
+        styleTag.rel = 'stylesheet';
+        styleTag.href = styleHref;
+        document.head.appendChild(styleTag);
+
+        const lightbox = new PhotoSwipeLightbox({
+            gallerySelector: '.article-content',
+            childSelector: 'figure a.image-link',
+            pswpModule: () => import("https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe.esm.min.js")
+        });
+        lightbox.init();
+    }
+</script></main></div><script type=text/javascript src=/ts/main.f856840516f7c2ad1769a8f5937e3d08d6cb386e2cd2dd025ae696e0ff207958.js defer></script></body></html>

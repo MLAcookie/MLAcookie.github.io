@@ -1,0 +1,140 @@
+<!doctype html><html lang=zh dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content="这个是CS162的Project 0，也是我们的实验一部分\n虽然这个部分不必出现在最后的验收和报告中\n但里面的坑还是很多的，我觉得还是要讲一讲\n<0x01> 任务说明 这个任务很简单，在pintos的源码中有一些小问题\n这会使pintos在启动用户进程时崩溃\n你需要找出这个错误并修改\n这个任务最简单的解决办法只需要更改一处代码\n这个任务需要通过的测试是do-nothing和stack-align-0\n<0x02> 省流版 只需要在./userprog/process.c中作这样的修改\nstatic void start_process(void *file_name_) { // ... /* Initialize interrupt frame and load executable. */ if (success) { memset(&amp;if_, 0, sizeof if_); if_.gs = if_.fs = if_.es = if_.ds = if_.ss = SEL_UDSEG; if_.cs = SEL_UCSEG; if_.eflags = FLAG_IF | FLAG_MBS; success = load(file_name, &amp;if_.eip, &amp;if_.esp); } // 新加的一句 if_.esp -= 0x14; /* Handle failure with succesful PCB malloc. Must free the PCB */ if (!success && pcb_success) { // Avoid race where PCB is freed before t->pcb is set to NULL // If this happens, then an unfortuantely timed timer interrupt // can try to activate the pagedir, but it is now freed memory struct process *pcb_to_free = t->pcb; t->pcb = NULL; free(pcb_to_free); } // ... } 只要在这个位置加上if_.esp -= 0x14;就可以了\n"><title>Zjut-Os-01 Introduction 记录</title><link rel=canonical href=https://mlacookie.github.io/post/categories/cs162/zjut-os-01-%E8%AE%B0%E5%BD%95/><link rel=preconnect href=https://fonts.googleapis.com><link rel=preconnect href=https://fonts.gstatic.com crossorigin><link rel=preload as=style href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap"><link rel=stylesheet href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap"><link rel=stylesheet href=/scss/style.min.e62e09c60ba428a627e03568fa3df938f6a8224f815b5846f00816c17d4a0be4.css><meta property='og:title' content="Zjut-Os-01 Introduction 记录"><meta property='og:description' content="这个是CS162的Project 0，也是我们的实验一部分\n虽然这个部分不必出现在最后的验收和报告中\n但里面的坑还是很多的，我觉得还是要讲一讲\n<0x01> 任务说明 这个任务很简单，在pintos的源码中有一些小问题\n这会使pintos在启动用户进程时崩溃\n你需要找出这个错误并修改\n这个任务最简单的解决办法只需要更改一处代码\n这个任务需要通过的测试是do-nothing和stack-align-0\n<0x02> 省流版 只需要在./userprog/process.c中作这样的修改\nstatic void start_process(void *file_name_) { // ... /* Initialize interrupt frame and load executable. */ if (success) { memset(&amp;if_, 0, sizeof if_); if_.gs = if_.fs = if_.es = if_.ds = if_.ss = SEL_UDSEG; if_.cs = SEL_UCSEG; if_.eflags = FLAG_IF | FLAG_MBS; success = load(file_name, &amp;if_.eip, &amp;if_.esp); } // 新加的一句 if_.esp -= 0x14; /* Handle failure with succesful PCB malloc. Must free the PCB */ if (!success && pcb_success) { // Avoid race where PCB is freed before t->pcb is set to NULL // If this happens, then an unfortuantely timed timer interrupt // can try to activate the pagedir, but it is now freed memory struct process *pcb_to_free = t->pcb; t->pcb = NULL; free(pcb_to_free); } // ... } 只要在这个位置加上if_.esp -= 0x14;就可以了\n"><meta property='og:url' content='https://mlacookie.github.io/post/categories/cs162/zjut-os-01-%E8%AE%B0%E5%BD%95/'><meta property='og:site_name' content='MLAcookie'><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:tag' content='CourseProject'><meta property='article:published_time' content='2024-12-11T16:07:53+08:00'><meta property='article:modified_time' content='2024-12-11T16:07:53+08:00'><meta name=twitter:title content="Zjut-Os-01 Introduction 记录"><meta name=twitter:description content="这个是CS162的Project 0，也是我们的实验一部分\n虽然这个部分不必出现在最后的验收和报告中\n但里面的坑还是很多的，我觉得还是要讲一讲\n<0x01> 任务说明 这个任务很简单，在pintos的源码中有一些小问题\n这会使pintos在启动用户进程时崩溃\n你需要找出这个错误并修改\n这个任务最简单的解决办法只需要更改一处代码\n这个任务需要通过的测试是do-nothing和stack-align-0\n<0x02> 省流版 只需要在./userprog/process.c中作这样的修改\nstatic void start_process(void *file_name_) { // ... /* Initialize interrupt frame and load executable. */ if (success) { memset(&amp;if_, 0, sizeof if_); if_.gs = if_.fs = if_.es = if_.ds = if_.ss = SEL_UDSEG; if_.cs = SEL_UCSEG; if_.eflags = FLAG_IF | FLAG_MBS; success = load(file_name, &amp;if_.eip, &amp;if_.esp); } // 新加的一句 if_.esp -= 0x14; /* Handle failure with succesful PCB malloc. Must free the PCB */ if (!success && pcb_success) { // Avoid race where PCB is freed before t->pcb is set to NULL // If this happens, then an unfortuantely timed timer interrupt // can try to activate the pagedir, but it is now freed memory struct process *pcb_to_free = t->pcb; t->pcb = NULL; free(pcb_to_free); } // ... } 只要在这个位置加上if_.esp -= 0x14;就可以了\n"><link rel="shortcut icon" href=favicon.webp></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.setItem(e,"dark")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar.png width=640 height=640 class=site-logo loading=lazy alt=Avatar>
+</a><span class=emoji>🤯</span></figure><div class=site-meta><h1 class=site-name><a href=/>MLAcookie</a></h1><h2 class=site-description>随便记点东西的记事本</h2></div></header><ol class=menu-social><li><a href=https://space.bilibili.com/13629146 title=MLA_cookie@Bilibili rel=me><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-bilibili"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 10a4 4 0 014-4h10a4 4 0 014 4v6a4 4 0 01-4 4H7a4 4 0 01-4-4v-6z"/><path d="M8 3l2 3"/><path d="M16 3l-2 3"/><path d="M9 13v-2"/><path d="M15 11v2"/></svg></a></li><li><a href=https://github.com/MLAcookie title=MLAcookie@Github rel=me><svg class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
+<span>Home</span></a></li><li><a href=/page/archives/><svg class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+<span>Archives</span></a></li><li><a href=/page/search/><svg class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg>
+<span>Search</span></a></li><li><a href=/page/links/><svg class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M10 14a3.5 3.5.0 005 0l4-4a3.5 3.5.0 00-5-5l-.5.5"/><path d="M14 10a3.5 3.5.0 00-5 0l-4 4a3.5 3.5.0 005 5l.5-.5"/></svg>
+<span>Links</span></a></li><li><a href=/page/about/><svg class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg>
+<span>About</span></a></li><li class=menu-bottom-section><ol class=menu></ol></li></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">目录</h2><div class=widget--toc><nav class=toc-nav id=TableOfContents><ul><li><a href=#0x01-任务说明>&lt;0x01> 任务说明</a></li><li><a href=#0x02-省流版>&lt;0x02> 省流版</a></li><li><a href=#0x03-原理>&lt;0x03> 原理</a><ul><li><a href=#问题原因>问题原因</a></li><li><a href=#为什么会访问这个地址>为什么会访问这个地址</a></li><li><a href=#访问内核地址的原因>访问内核地址的原因</a></li><li><a href=#为什么偏移量是0x14>为什么偏移量是0x14</a></li></ul></li></ul></nav></div></section></aside><main class="main full-width"><article class=main-article><header class=article-header><div class=article-details><header class=article-category><a href=/categories/cs162/ style=background-color:#d9efbe;color:#293d0f>CS162</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/post/categories/cs162/zjut-os-01-%E8%AE%B0%E5%BD%95/>Zjut-Os-01 Introduction 记录</a></h2></div><footer class=article-meta><div class=inline-meta><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
+<time class=article-time--published datetime=2024-12-11T16:07:53+08:00>2024年12月11日星期三</time></div></footer></div></header><aside class=article-toc><details><summary><div class=article-toc-title><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-chevron-right"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 6l6 6-6 6"/></svg>
+<span>目录</span></div></summary><nav class=toc-nav><ul><li><a href=#0x01-任务说明>&lt;0x01> 任务说明</a></li><li><a href=#0x02-省流版>&lt;0x02> 省流版</a></li><li><a href=#0x03-原理>&lt;0x03> 原理</a><ul><li><a href=#问题原因>问题原因</a></li><li><a href=#为什么会访问这个地址>为什么会访问这个地址</a></li><li><a href=#访问内核地址的原因>访问内核地址的原因</a></li><li><a href=#为什么偏移量是0x14>为什么偏移量是0x14</a></li></ul></li></ul></nav></details></aside><section class=article-content><p>这个是CS162的<code>Project 0</code>，也是我们的实验一部分<br>虽然这个部分不必出现在最后的验收和报告中<br>但里面的坑还是很多的，我觉得还是要讲一讲</p><h2 id=0x01-任务说明>&lt;0x01> 任务说明</h2><p>这个任务很简单，在pintos的源码中有一些小问题<br>这会使pintos在启动用户进程时崩溃<br>你需要找出这个错误并修改<br>这个任务最简单的解决办法只需要更改一处代码</p><p>这个任务需要通过的测试是<code>do-nothing</code>和<code>stack-align-0</code></p><h2 id=0x02-省流版>&lt;0x02> 省流版</h2><p>只需要在<code>./userprog/process.c</code>中作这样的修改</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-c data-lang=c><span style=display:flex><span><span style=color:#66d9ef>static</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>start_process</span>(<span style=color:#66d9ef>void</span> <span style=color:#f92672>*</span>file_name_)
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>	<span style=color:#75715e>// ...
+</span></span></span><span style=display:flex><span>    <span style=color:#75715e>/* Initialize interrupt frame and load executable. */</span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> (success)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>memset</span>(<span style=color:#f92672>&amp;</span>if_, <span style=color:#ae81ff>0</span>, <span style=color:#66d9ef>sizeof</span> if_);
+</span></span><span style=display:flex><span>        if_.gs <span style=color:#f92672>=</span> if_.fs <span style=color:#f92672>=</span> if_.es <span style=color:#f92672>=</span> if_.ds <span style=color:#f92672>=</span> if_.ss <span style=color:#f92672>=</span> SEL_UDSEG;
+</span></span><span style=display:flex><span>        if_.cs <span style=color:#f92672>=</span> SEL_UCSEG;
+</span></span><span style=display:flex><span>        if_.eflags <span style=color:#f92672>=</span> FLAG_IF <span style=color:#f92672>|</span> FLAG_MBS;
+</span></span><span style=display:flex><span>        success <span style=color:#f92672>=</span> <span style=color:#a6e22e>load</span>(file_name, <span style=color:#f92672>&amp;</span>if_.eip, <span style=color:#f92672>&amp;</span>if_.esp);
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>	<span style=color:#75715e>// 新加的一句
+</span></span></span><span style=display:flex><span>    if_.esp <span style=color:#f92672>-=</span> <span style=color:#ae81ff>0x14</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>/* Handle failure with succesful PCB malloc. Must free the PCB */</span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> (<span style=color:#f92672>!</span>success <span style=color:#f92672>&amp;&amp;</span> pcb_success)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#75715e>// Avoid race where PCB is freed before t-&gt;pcb is set to NULL
+</span></span></span><span style=display:flex><span>        <span style=color:#75715e>// If this happens, then an unfortuantely timed timer interrupt
+</span></span></span><span style=display:flex><span>        <span style=color:#75715e>// can try to activate the pagedir, but it is now freed memory
+</span></span></span><span style=display:flex><span>        <span style=color:#66d9ef>struct</span> process <span style=color:#f92672>*</span>pcb_to_free <span style=color:#f92672>=</span> t<span style=color:#f92672>-&gt;</span>pcb;
+</span></span><span style=display:flex><span>        t<span style=color:#f92672>-&gt;</span>pcb <span style=color:#f92672>=</span> NULL;
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>free</span>(pcb_to_free);
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>	<span style=color:#75715e>// ...
+</span></span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>只要在这个位置加上<code>if_.esp -= 0x14;</code>就可以了</p><h2 id=0x03-原理>&lt;0x03> 原理</h2><p>需要指出的是，笔者目前没系统学过汇编，对x86调用约定之类的只知道皮毛<br>下面的内容有部分是我猜测出来的，有概率是错的，如果有误请务必指出</p><h3 id=问题原因>问题原因</h3><p>是不是感觉很奇怪，为什么加上这句就可以解决加载用户进程的出错<br>实际上，让我们先删除这句，看看原本的pintos启动<code>do-nothing</code>的时候会报什么错</p><pre tabindex=0><code>Executing &#39;do-nothing&#39;:
+Page fault at 0xc0000008: rights violation error reading page in user context.
+do-nothing: dying due to interrupt 0x0e (#PF Page-Fault Exception).
+Interrupt 0x0e (#PF Page-Fault Exception) at eip=0x8048915
+ cr2=c0000008 error=00000005
+ eax=00000000 ebx=00000000 ecx=00000000 edx=00000000
+ esi=00000000 edi=00000000 esp=bfffffe4 ebp=bffffffc
+ cs=001b ds=0023 es=0023 ss=0023
+Execution of &#39;do-nothing&#39; complete.
+</code></pre><p>我们可以看到，这里报了个<code>Page fault</code><br>根据pintos的文档，说明这里是用户进程尝试访问内核空间导致的错误</p><pre tabindex=0><code>A user program can only access its own user virtual memory. 
+An attempt to access kernel virtual memory causes a page fault, 
+handled by page_fault() in userprog/exception.c, and the process will be terminated. 
+
+一个用户程序只能访问自己的用户虚拟内存
+如果尝试访问内核虚拟内存会导致页面错误
+然后会在 ./userprog/exception.c 的 page_fault() 中处理，用户进程会被终止
+</code></pre><p>我们可以在<code>start_process()</code>打上断点，看看最后的<code>esp</code>是什么<br>然后我们可以得到这样的数值</p><pre tabindex=0><code>esp: 0xc0000000
+</code></pre><p>根据pintos的文档，这个数字也是<code>PHYS_BASE</code>的值</p><pre tabindex=0><code>Virtual memory in Pintos is divided into two regions: 
+user virtual memory and kernel virtual memory. 
+User virtual memory ranges from virtual address 0 up to PHYS_BASE, 
+which is defined in threads/vaddr.h and defaults to 0xc0000000 (3 GB). 
+Kernel virtual memory occupies the rest of the virtual address space, 
+from PHYS_BASE up to 4 GB.
+
+pintos的虚拟内存有两块组成
+用户虚拟内存和内核虚拟内存
+用户虚拟内存地址范围是0 - PHYS_BASE
+PHYS_BASE在 ./threads/vaddr.h 定义并且默认为 0xc0000000 (3 GB)
+内核虚拟内存占据剩下的部分
+也就是PHYS_BASE - 4GB
+</code></pre><p>那现在也就不难理解这个报错了<br>报错信息也指出，当前用户进程尝试访问地址为0xc0000008的内容</p><h3 id=为什么会访问这个地址>为什么会访问这个地址</h3><p>那么用户进程为什么会在执行前访问这个地址的内容呢<br>这就要讲到x86的调用约定与用户程序启动过程</p><h4 id=x86调用约定>x86调用约定</h4><p>对于我们习惯高级语言的程序员来说，处理参数问题是很简单的</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-c data-lang=c><span style=display:flex><span><span style=color:#66d9ef>void</span> <span style=color:#a6e22e>temp</span>(<span style=color:#66d9ef>int</span> a, <span style=color:#66d9ef>int</span> b);
+</span></span></code></pre></div><p>这样就说明这这个函数需要两个参数，都是<code>int</code><br>如果需要使用直接<code>temp(1, 2)</code>就完成了参数传递<br>但对于CPU来说，它该怎么理解这两个参数的传递呢<br>换句话说，对于远古时期没有高级语言的开发者，该怎么解决参数传递的问题呢<br>这里就是调用约定上场的地方了</p><p>调用约定规定了参数在内存中是如何摆放的，寄存器该怎么设置的<br>在pintos中，使用的x86调用约定应该是<code>cdecl</code><br>这个调用约定要求传递的参数从右至左压入内存，并将esp设置在最前面</p><pre tabindex=0><code>0xbffffe70  return address  &lt;-- esp
+0xbffffe74  1
+0xbffffe78  2        
+</code></pre><p>对于刚刚的例子，内存布局大概就是这样<br>这里内存的地址是随便编的，表达个意思</p><h4 id=用户进程启动过程>用户进程启动过程</h4><p>在pintos中，内核会这样启动用户进程</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-c data-lang=c><span style=display:flex><span><span style=color:#66d9ef>void</span> <span style=color:#a6e22e>_start</span> (<span style=color:#66d9ef>int</span> argc, <span style=color:#66d9ef>char</span> <span style=color:#f92672>*</span>argv[]) {
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>exit</span> (<span style=color:#a6e22e>main</span> (argc, argv));
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>对于内核，它必须把参数在内存合适的地方安排好，然后设置好寄存器状态<br>参数的内存布局和寄存器状态就是上面提到的调用约定</p><p>pintos的文档中给了一个例子<br>假设内核需要执行<code>/bin/ls -l foo bar</code><br>首先内核会将命令行按空格分开，分成一个一个的<br>这里先展示最后的内存布局</p><pre tabindex=0><code> Address         Name         Data        Type
+0xbfffffcc   return address    0         void (*) ()    &lt;-- esp
+0xbfffffd0   argc              4         int
+0xbfffffd4   argv           0xbfffffd8   char **
+0xbfffffd8   argv[0]        0xbfffffed   char *
+0xbfffffdc   argv[1]        0xbffffff5   char *
+0xbfffffe0   argv[2]        0xbffffff8   char *
+0xbfffffe4   argv[3]        0xbffffffc   char *
+0xbfffffe8   argv[4]           0         char *
+0xbfffffec   stack-align       0         uint8_t
+0xbfffffed   argv[0][...]    /bin/ls\0   char[8]
+0xbffffff5   argv[1][...]    -l\0        char[3]
+0xbffffff8   argv[2][...]    foo\0       char[4]
+0xbffffffc   argv[3][...]    bar\0       char[4]
+</code></pre><p>最下面的部分是实际存放字符串的地方<br>然后会有个<code>stack-align</code>，这是为了确保四字节对齐来提高性能<br>再上面是<code>argv</code>参数的部分，需要注意的是argv最后有一个留空的部分<br>然后是<code>argv</code>本身的地址，指向<code>argv[0]</code><br>之后是<code>argc</code>，表示参数个数<br>最后是返回地址，当然对于用户进程来说main是没返回值的，直接给0即可<br>esp指向的也是这个返回地址</p><h3 id=访问内核地址的原因>访问内核地址的原因</h3><p>我们假设一个最简单的情况，一个参数也不传递<br>那么内存布局应该是这样的</p><pre tabindex=0><code> Address         Name         Data        Type
+0xbffffff0   return address    0         void (*) ()    &lt;-- esp
+0xbffffff4   argc              0         int
+0xbffffff8   argv           0xbffffffc   char**
+0xbffffffc   argv[0]           0         char*
+</code></pre><p>但我们之前得到的esp指向的是<code>0xc0000000</code><br>那么在CPU看来，这个函数的参数布局是这样的</p><pre tabindex=0><code> Address         Name         Data        Type
+0xc0000000   return address    *         void (*) ()    &lt;-- esp
+0xc0000004   argc              *         int
+0xc0000008   argv              *         char**
+0xc000000c   argv[0]           *         char*
+</code></pre><p><code>0xc0000000</code>下面是内核空间的虚拟内存，所以就报错了</p><p>因为这一步我们还没实现参数传递的逻辑<br>所以这一步最简单的办法就是在某个位置把esp指针往前移几个字节</p><h3 id=为什么偏移量是0x14>为什么偏移量是0x14</h3><p>这是为了<code>stack-align-0</code>考虑的</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-c data-lang=c><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&#34;tests/lib.h&#34;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#66d9ef>int</span> <span style=color:#a6e22e>main</span>(<span style=color:#66d9ef>int</span> argc UNUSED, <span style=color:#66d9ef>char</span> <span style=color:#f92672>*</span>argv[] UNUSED)
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>register</span> <span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>int</span> esp <span style=color:#66d9ef>asm</span>(<span style=color:#e6db74>&#34;esp&#34;</span>);
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> esp <span style=color:#f92672>%</span> <span style=color:#ae81ff>16</span>;
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>可以看到，这个测试会对esp取16的余<br>查看测试文件，也可以知道期望的返回值是12</p><p>我们假设我们已经实现了参数传递的逻辑<br>那么这个测试的内存布局应该是这样的</p><pre tabindex=0><code> Address         Name         Data            Type
+0xbfffffdc   return address    0             void (*) ()    &lt;-- esp
+0xbfffffe0   argc              1             int
+0xbfffffe4   argv           0xbfffffe8       char **
+0xbfffffe8   argv[0]        0xbffffff2       char *
+0xbfffffec   argv[1]           0             char *
+0xbffffff0   stack-align       0             uint16_t
+0xbffffff2   argv[0][...]   stack-align-0\0  char[14]
+</code></pre><p>这<code>esp % 16</code>一算，就是12<br>当然，这里逻辑还没实现，那么就取偏移量20也就是0x14<br>这样这两个测试也是满足的</p><p>说到底还是缓兵之计，等到之后实现参数传递的时候就不需要这样写了</p></section><footer class="article-meta article-footer"><section class=article-tags><a href=/tags/courseproject/>CourseProject</a></section><section class="article-copyright inline-meta"><svg class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg>
+<span>CC BY-NC-SA 4.0</span></section></footer><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css integrity=sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV crossorigin=anonymous><script src=https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js integrity=sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8 crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js integrity=sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05 crossorigin=anonymous defer></script><script>window.addEventListener("DOMContentLoaded",()=>{const e=[".main-article",".widget--toc"];e.forEach(e=>{const t=document.querySelector(e);t&&renderMathInElement(t,{delimiters:[{left:"$$",right:"$$",display:!0},{left:"$",right:"$",display:!1},{left:"\\(",right:"\\)",display:!1},{left:"\\[",right:"\\]",display:!0}],ignoredClasses:["gist"]})})})</script></article><aside><h2 class=section-title>相关文章</h2><div class=subsection-list><div class=article-list--tile><article><a href=/post/categories/cs162/zjut-os-02-%E8%AE%B0%E5%BD%95/><div class=article-details><h2 class=article-title>Zjut-OS-02 Shell 记录</h2></div></a></article><article><a href=/post/categories/cs162/zjut-os-04-%E8%AE%B0%E5%BD%95/><div class=article-details><h2 class=article-title>Zjut-OS-04 Threads 记录</h2></div></a></article><article><a href=/post/categories/cs162/pintos-lab1%E8%AE%B0%E5%BD%95/><div class=article-details><h2 class=article-title>Pintos-Lab1记录</h2></div></a></article><article><a href=/post/articles/2024/%E6%B5%99%E5%B7%A5%E5%A4%A7%E6%95%B0%E5%AD%97%E5%9B%BE%E5%83%8F%E5%A4%84%E7%90%86%E8%AF%BE%E8%AE%BE%E8%AE%B0%E5%BD%95/><div class=article-details><h2 class=article-title>浙工大数字图像处理课设记录</h2></div></a></article><article><a href=/post/articles/2023/%E6%B5%99%E5%B7%A5%E5%A4%A7%E7%A6%BB%E6%95%A3%E8%AF%BE%E8%AE%BE%E8%AE%B0%E5%BD%95/><div class=article-details><h2 class=article-title>浙工大离散课设讲解</h2></div></a></article></div></div></aside><footer class=site-footer><section class=copyright>&copy;
+2023 -
+2026 MLAcookie</section><section class=powerby>使用 <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> 构建<br>主题 <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=4.0.3>Stack</a></b> 由 <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a> 设计</section></footer><script type=module>
+    import gallery from '\/ts\/gallery.js';
+
+    const articleContent = document.querySelector('.article-content');
+    const shouldLoad = articleContent && (articleContent.querySelectorAll('figure').length > 0 || articleContent.querySelectorAll('img.gallery-image').length > 0);
+    
+    if (shouldLoad) {
+        gallery(articleContent);
+
+        const PhotoSwipeLightbox = (await import("https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe-lightbox.esm.min.js")).default;
+        const styleHref = "https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe.css";
+
+        const styleTag = document.createElement('link');
+        styleTag.rel = 'stylesheet';
+        styleTag.href = styleHref;
+        document.head.appendChild(styleTag);
+
+        const lightbox = new PhotoSwipeLightbox({
+            gallerySelector: '.article-content',
+            childSelector: 'figure a.image-link',
+            pswpModule: () => import("https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe.esm.min.js")
+        });
+        lightbox.init();
+    }
+</script></main></div><script type=text/javascript src=/ts/main.f856840516f7c2ad1769a8f5937e3d08d6cb386e2cd2dd025ae696e0ff207958.js defer></script></body></html>

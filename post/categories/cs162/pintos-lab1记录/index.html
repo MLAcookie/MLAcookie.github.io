@@ -1,0 +1,381 @@
+<!doctype html><html lang=zh dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content='这里主要讲解思路，代码可能展示得不会很详细\n完整代码在Github\n<0x01> Task 1: Alarm Clock 任务摘要 这个任务要求重新实现./devices/timer.c的timer_sleep()函数\n原本的timer_sleep()实现是基于无限循环直到到达等待时间的忙等待\n我们需要避免这个忙等待\n怎么实现 参考5状态模型，线程运行部分主要有三个状态\n分别是运行态、准备态和阻塞态\n原本的忙实现仅在运行态和准备态之间切换\n所以这里我们要做的就是把阻塞态用上\n所以可以单独开一个线程队列，用来存放所有休眠的线程\n然后在每次时钟中断时检查休眠线程队列，把到时间的线程放到准备队列中即可\n代码实现 首先先看下原始代码\nvoid timer_sleep(int64_t ticks) { int64_t start = timer_ticks(); enum intr_level old_level; ASSERT(intr_get_level() == INTR_ON); while (timer_elapsed(start) < ticks) thread_yield(); } 可以看到就是记录了开始的时间刻，然后无限循环\n无限循环就是我们要删除的\n添加休眠线程队列 在./threads/thread.c的最上面，有定义ready_list的部分\n按这个格式再定义一个sleep_list作为休眠线程队列\nstatic struct list sleep_list; 定义完后往下找，会找到一个thread_init函数，这里初始化了ready_list\n我们也跟着初始化一下\nvoid thread_init(void) { ASSERT(intr_get_level() == INTR_OFF); lock_init(&amp;tid_lock); list_init(&amp;ready_list); list_init(&amp;all_list); // lab1 初始化休眠线程队列 list_init(&amp;sleep_list); /* Set up a thread structure for the running thread. */ initial_thread = running_thread(); init_thread(initial_thread, "main", PRI_DEFAULT); initial_thread->status = THREAD_RUNNING; initial_thread->tid = allocate_tid(); } 给线程加上苏醒时间信息 在tcb中加上线程的休眠时间信息，thread.h中添加\n'><title>Pintos-Lab1记录</title><link rel=canonical href=https://mlacookie.github.io/post/categories/cs162/pintos-lab1%E8%AE%B0%E5%BD%95/><link rel=preconnect href=https://fonts.googleapis.com><link rel=preconnect href=https://fonts.gstatic.com crossorigin><link rel=preload as=style href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap"><link rel=stylesheet href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap"><link rel=stylesheet href=/scss/style.min.e62e09c60ba428a627e03568fa3df938f6a8224f815b5846f00816c17d4a0be4.css><meta property='og:title' content="Pintos-Lab1记录"><meta property='og:description' content='这里主要讲解思路，代码可能展示得不会很详细\n完整代码在Github\n<0x01> Task 1: Alarm Clock 任务摘要 这个任务要求重新实现./devices/timer.c的timer_sleep()函数\n原本的timer_sleep()实现是基于无限循环直到到达等待时间的忙等待\n我们需要避免这个忙等待\n怎么实现 参考5状态模型，线程运行部分主要有三个状态\n分别是运行态、准备态和阻塞态\n原本的忙实现仅在运行态和准备态之间切换\n所以这里我们要做的就是把阻塞态用上\n所以可以单独开一个线程队列，用来存放所有休眠的线程\n然后在每次时钟中断时检查休眠线程队列，把到时间的线程放到准备队列中即可\n代码实现 首先先看下原始代码\nvoid timer_sleep(int64_t ticks) { int64_t start = timer_ticks(); enum intr_level old_level; ASSERT(intr_get_level() == INTR_ON); while (timer_elapsed(start) < ticks) thread_yield(); } 可以看到就是记录了开始的时间刻，然后无限循环\n无限循环就是我们要删除的\n添加休眠线程队列 在./threads/thread.c的最上面，有定义ready_list的部分\n按这个格式再定义一个sleep_list作为休眠线程队列\nstatic struct list sleep_list; 定义完后往下找，会找到一个thread_init函数，这里初始化了ready_list\n我们也跟着初始化一下\nvoid thread_init(void) { ASSERT(intr_get_level() == INTR_OFF); lock_init(&amp;tid_lock); list_init(&amp;ready_list); list_init(&amp;all_list); // lab1 初始化休眠线程队列 list_init(&amp;sleep_list); /* Set up a thread structure for the running thread. */ initial_thread = running_thread(); init_thread(initial_thread, "main", PRI_DEFAULT); initial_thread->status = THREAD_RUNNING; initial_thread->tid = allocate_tid(); } 给线程加上苏醒时间信息 在tcb中加上线程的休眠时间信息，thread.h中添加\n'><meta property='og:url' content='https://mlacookie.github.io/post/categories/cs162/pintos-lab1%E8%AE%B0%E5%BD%95/'><meta property='og:site_name' content='MLAcookie'><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:tag' content='CourseProject'><meta property='article:published_time' content='2024-10-31T12:33:16+08:00'><meta property='article:modified_time' content='2024-10-31T12:33:16+08:00'><meta name=twitter:title content="Pintos-Lab1记录"><meta name=twitter:description content='这里主要讲解思路，代码可能展示得不会很详细\n完整代码在Github\n<0x01> Task 1: Alarm Clock 任务摘要 这个任务要求重新实现./devices/timer.c的timer_sleep()函数\n原本的timer_sleep()实现是基于无限循环直到到达等待时间的忙等待\n我们需要避免这个忙等待\n怎么实现 参考5状态模型，线程运行部分主要有三个状态\n分别是运行态、准备态和阻塞态\n原本的忙实现仅在运行态和准备态之间切换\n所以这里我们要做的就是把阻塞态用上\n所以可以单独开一个线程队列，用来存放所有休眠的线程\n然后在每次时钟中断时检查休眠线程队列，把到时间的线程放到准备队列中即可\n代码实现 首先先看下原始代码\nvoid timer_sleep(int64_t ticks) { int64_t start = timer_ticks(); enum intr_level old_level; ASSERT(intr_get_level() == INTR_ON); while (timer_elapsed(start) < ticks) thread_yield(); } 可以看到就是记录了开始的时间刻，然后无限循环\n无限循环就是我们要删除的\n添加休眠线程队列 在./threads/thread.c的最上面，有定义ready_list的部分\n按这个格式再定义一个sleep_list作为休眠线程队列\nstatic struct list sleep_list; 定义完后往下找，会找到一个thread_init函数，这里初始化了ready_list\n我们也跟着初始化一下\nvoid thread_init(void) { ASSERT(intr_get_level() == INTR_OFF); lock_init(&amp;tid_lock); list_init(&amp;ready_list); list_init(&amp;all_list); // lab1 初始化休眠线程队列 list_init(&amp;sleep_list); /* Set up a thread structure for the running thread. */ initial_thread = running_thread(); init_thread(initial_thread, "main", PRI_DEFAULT); initial_thread->status = THREAD_RUNNING; initial_thread->tid = allocate_tid(); } 给线程加上苏醒时间信息 在tcb中加上线程的休眠时间信息，thread.h中添加\n'><link rel="shortcut icon" href=favicon.webp></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.setItem(e,"dark")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar.png width=640 height=640 class=site-logo loading=lazy alt=Avatar>
+</a><span class=emoji>🤯</span></figure><div class=site-meta><h1 class=site-name><a href=/>MLAcookie</a></h1><h2 class=site-description>随便记点东西的记事本</h2></div></header><ol class=menu-social><li><a href=https://space.bilibili.com/13629146 title=MLA_cookie@Bilibili rel=me><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-bilibili"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 10a4 4 0 014-4h10a4 4 0 014 4v6a4 4 0 01-4 4H7a4 4 0 01-4-4v-6z"/><path d="M8 3l2 3"/><path d="M16 3l-2 3"/><path d="M9 13v-2"/><path d="M15 11v2"/></svg></a></li><li><a href=https://github.com/MLAcookie title=MLAcookie@Github rel=me><svg class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
+<span>Home</span></a></li><li><a href=/page/archives/><svg class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+<span>Archives</span></a></li><li><a href=/page/search/><svg class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg>
+<span>Search</span></a></li><li><a href=/page/links/><svg class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M10 14a3.5 3.5.0 005 0l4-4a3.5 3.5.0 00-5-5l-.5.5"/><path d="M14 10a3.5 3.5.0 00-5 0l-4 4a3.5 3.5.0 005 5l.5-.5"/></svg>
+<span>Links</span></a></li><li><a href=/page/about/><svg class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg>
+<span>About</span></a></li><li class=menu-bottom-section><ol class=menu></ol></li></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">目录</h2><div class=widget--toc><nav class=toc-nav id=TableOfContents><ul><li><a href=#0x01-task-1-alarm-clock>&lt;0x01> Task 1: Alarm Clock</a><ul><li><a href=#任务摘要>任务摘要</a></li><li><a href=#怎么实现>怎么实现</a></li><li><a href=#代码实现>代码实现</a></li><li><a href=#运行结果>运行结果</a></li></ul></li><li><a href=#0x02-task2-priority-scheduling>&lt;0x02> Task2: Priority Scheduling</a><ul><li><a href=#任务摘要-1>任务摘要</a></li><li><a href=#pintos默认实现的东西>pintos默认实现的东西</a></li><li><a href=#代码实现-1>代码实现</a></li></ul></li><li><a href=#0x03-task3-advanced-scheduler>&lt;0x03> Task3: Advanced Scheduler</a><ul><li><a href=#任务摘要-2>任务摘要</a></li><li><a href=#bsd调度>BSD调度</a></li><li><a href=#代码实现-2>代码实现</a></li></ul></li></ul></nav></div></section></aside><main class="main full-width"><article class=main-article><header class=article-header><div class=article-details><header class=article-category><a href=/categories/cs162/ style=background-color:#d9efbe;color:#293d0f>CS162</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/post/categories/cs162/pintos-lab1%E8%AE%B0%E5%BD%95/>Pintos-Lab1记录</a></h2></div><footer class=article-meta><div class=inline-meta><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
+<time class=article-time--published datetime=2024-10-31T12:33:16+08:00>2024年10月31日星期四</time></div></footer></div></header><aside class=article-toc><details><summary><div class=article-toc-title><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-chevron-right"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 6l6 6-6 6"/></svg>
+<span>目录</span></div></summary><nav class=toc-nav><ul><li><a href=#0x01-task-1-alarm-clock>&lt;0x01> Task 1: Alarm Clock</a><ul><li><a href=#任务摘要>任务摘要</a></li><li><a href=#怎么实现>怎么实现</a></li><li><a href=#代码实现>代码实现</a></li><li><a href=#运行结果>运行结果</a></li></ul></li><li><a href=#0x02-task2-priority-scheduling>&lt;0x02> Task2: Priority Scheduling</a><ul><li><a href=#任务摘要-1>任务摘要</a></li><li><a href=#pintos默认实现的东西>pintos默认实现的东西</a></li><li><a href=#代码实现-1>代码实现</a></li></ul></li><li><a href=#0x03-task3-advanced-scheduler>&lt;0x03> Task3: Advanced Scheduler</a><ul><li><a href=#任务摘要-2>任务摘要</a></li><li><a href=#bsd调度>BSD调度</a></li><li><a href=#代码实现-2>代码实现</a></li></ul></li></ul></nav></details></aside><section class=article-content><p>这里主要讲解思路，代码可能展示得不会很详细<br>完整代码在<a class=link href=https://github.com/MLAcookie/Pintos-CourseProject target=_blank rel=noopener>Github</a></p><h2 id=0x01-task-1-alarm-clock>&lt;0x01> Task 1: Alarm Clock</h2><h3 id=任务摘要>任务摘要</h3><p>这个任务要求重新实现<code>./devices/timer.c</code>的<code>timer_sleep()</code>函数</p><p>原本的<code>timer_sleep()</code>实现是基于无限循环直到到达等待时间的忙等待<br>我们需要避免这个忙等待</p><h3 id=怎么实现>怎么实现</h3><p>参考5状态模型，线程运行部分主要有三个状态<br>分别是运行态、准备态和阻塞态<br>原本的忙实现仅在运行态和准备态之间切换<br>所以这里我们要做的就是把阻塞态用上</p><p>所以可以单独开一个线程队列，用来存放所有休眠的线程<br>然后在每次时钟中断时检查休眠线程队列，把到时间的线程放到准备队列中即可</p><h3 id=代码实现>代码实现</h3><p>首先先看下原始代码</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-c data-lang=c><span style=display:flex><span><span style=color:#66d9ef>void</span> <span style=color:#a6e22e>timer_sleep</span>(<span style=color:#66d9ef>int64_t</span> ticks)
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>int64_t</span> start <span style=color:#f92672>=</span> <span style=color:#a6e22e>timer_ticks</span>();
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>enum</span> intr_level old_level;
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>ASSERT</span>(<span style=color:#a6e22e>intr_get_level</span>() <span style=color:#f92672>==</span> INTR_ON);
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>while</span> (<span style=color:#a6e22e>timer_elapsed</span>(start) <span style=color:#f92672>&lt;</span> ticks)
+</span></span><span style=display:flex><span>		<span style=color:#a6e22e>thread_yield</span>();
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>可以看到就是记录了开始的时间刻，然后无限循环<br>无限循环就是我们要删除的</p><h4 id=添加休眠线程队列>添加休眠线程队列</h4><p>在<code>./threads/thread.c</code>的最上面，有定义<code>ready_list</code>的部分<br>按这个格式再定义一个<code>sleep_list</code>作为休眠线程队列</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-c data-lang=c><span style=display:flex><span><span style=color:#66d9ef>static</span> <span style=color:#66d9ef>struct</span> list sleep_list;
+</span></span></code></pre></div><p>定义完后往下找，会找到一个<code>thread_init</code>函数，这里初始化了<code>ready_list</code><br>我们也跟着初始化一下</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-c data-lang=c><span style=display:flex><span><span style=color:#66d9ef>void</span> <span style=color:#a6e22e>thread_init</span>(<span style=color:#66d9ef>void</span>)
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>ASSERT</span>(<span style=color:#a6e22e>intr_get_level</span>() <span style=color:#f92672>==</span> INTR_OFF);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>lock_init</span>(<span style=color:#f92672>&amp;</span>tid_lock);
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>list_init</span>(<span style=color:#f92672>&amp;</span>ready_list);
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>list_init</span>(<span style=color:#f92672>&amp;</span>all_list);
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// lab1 初始化休眠线程队列
+</span></span></span><span style=display:flex><span>    <span style=color:#a6e22e>list_init</span>(<span style=color:#f92672>&amp;</span>sleep_list);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>/* Set up a thread structure for the running thread. */</span>
+</span></span><span style=display:flex><span>    initial_thread <span style=color:#f92672>=</span> <span style=color:#a6e22e>running_thread</span>();
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>init_thread</span>(initial_thread, <span style=color:#e6db74>&#34;main&#34;</span>, PRI_DEFAULT);
+</span></span><span style=display:flex><span>    initial_thread<span style=color:#f92672>-&gt;</span>status <span style=color:#f92672>=</span> THREAD_RUNNING;
+</span></span><span style=display:flex><span>    initial_thread<span style=color:#f92672>-&gt;</span>tid <span style=color:#f92672>=</span> <span style=color:#a6e22e>allocate_tid</span>();
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><h4 id=给线程加上苏醒时间信息>给线程加上苏醒时间信息</h4><p>在tcb中加上线程的休眠时间信息，thread.h中添加</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-c data-lang=c><span style=display:flex><span><span style=color:#66d9ef>struct</span> <span style=color:#66d9ef>thread</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#75715e>/* Owned by thread.c. */</span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>tid_t</span> tid;                 <span style=color:#75715e>/* Thread identifier. */</span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>enum</span> thread_status status; <span style=color:#75715e>/* Thread state. */</span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>char</span> name[<span style=color:#ae81ff>16</span>];             <span style=color:#75715e>/* Name (for debugging purposes). */</span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>uint8_t</span> <span style=color:#f92672>*</span>stack;            <span style=color:#75715e>/* Saved stack pointer. */</span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>int</span> priority;              <span style=color:#75715e>/* Priority. */</span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>struct</span> list_elem allelem;  <span style=color:#75715e>/* List element for all threads list. */</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>int64_t</span> wakeup_ticks; <span style=color:#75715e>// lab1 添加苏醒时间刻
+</span></span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>/* Shared between thread.c and synch.c. */</span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>struct</span> list_elem elem; <span style=color:#75715e>/* List element. */</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#ifdef USERPROG
+</span></span></span><span style=display:flex><span>    <span style=color:#75715e>/* Owned by userprog/process.c. */</span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>uint32_t</span> <span style=color:#f92672>*</span>pagedir; <span style=color:#75715e>/* Page directory. */</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#endif
+</span></span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>/* Owned by thread.c. */</span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>unsigned</span> magic; <span style=color:#75715e>/* Detects stack overflow. */</span>
+</span></span><span style=display:flex><span>};
+</span></span></code></pre></div><p>这个信息用来给内核检查是否到达对应的时间，然后做相应的操作</p><h4 id=添加线程休眠逻辑>添加线程休眠逻辑</h4><p>现在有休眠队列了，在线程需要休眠的时候将其添加到这个队列中</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-c data-lang=c><span style=display:flex><span><span style=color:#75715e>// 用来比较线程等待至目标时间刻的函数
+</span></span></span><span style=display:flex><span><span style=color:#66d9ef>bool</span> <span style=color:#a6e22e>thread_less_wakeup_tick</span>(<span style=color:#66d9ef>const</span> <span style=color:#66d9ef>struct</span> list_elem <span style=color:#f92672>*</span>a, <span style=color:#66d9ef>const</span> <span style=color:#66d9ef>struct</span> list_elem <span style=color:#f92672>*</span>b, <span style=color:#66d9ef>void</span> <span style=color:#f92672>*</span>aux UNUSED)
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>struct</span> <span style=color:#66d9ef>thread</span> <span style=color:#f92672>*</span>p_thread_a <span style=color:#f92672>=</span> <span style=color:#a6e22e>list_entry</span>(a, <span style=color:#66d9ef>struct</span> <span style=color:#66d9ef>thread</span>, elem);
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>struct</span> <span style=color:#66d9ef>thread</span> <span style=color:#f92672>*</span>p_thread_b <span style=color:#f92672>=</span> <span style=color:#a6e22e>list_entry</span>(b, <span style=color:#66d9ef>struct</span> <span style=color:#66d9ef>thread</span>, elem);
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> p_thread_a<span style=color:#f92672>-&gt;</span>wakeup_ticks <span style=color:#f92672>&lt;</span> p_thread_b<span style=color:#f92672>-&gt;</span>wakeup_ticks;
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span><span style=color:#75715e>// 这个记得在thread.h中声明，要在timer.c中用的
+</span></span></span><span style=display:flex><span><span style=color:#66d9ef>void</span> <span style=color:#a6e22e>thread_sleep</span>(<span style=color:#66d9ef>int64_t</span> target_ticks)
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// 获取当前线程
+</span></span></span><span style=display:flex><span>    <span style=color:#66d9ef>struct</span> <span style=color:#66d9ef>thread</span> <span style=color:#f92672>*</span>cur <span style=color:#f92672>=</span> <span style=color:#a6e22e>thread_current</span>();;
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// 给当前线程添加苏醒时间刻
+</span></span></span><span style=display:flex><span>    cur<span style=color:#f92672>-&gt;</span>wakeup_ticks <span style=color:#f92672>=</span> target_ticks;
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// 按苏醒时间刻从小到大插入休眠队列
+</span></span></span><span style=display:flex><span>    <span style=color:#a6e22e>list_insert_ordered</span>(<span style=color:#f92672>&amp;</span>sleep_list, <span style=color:#f92672>&amp;</span>cur<span style=color:#f92672>-&gt;</span>elem, thread_less_wakeup_tick, NULL);
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// 当前线程进入阻塞态
+</span></span></span><span style=display:flex><span>    <span style=color:#a6e22e>thread_block</span>();
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>然后在<code>timer_sleep</code>中调用即可</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-c data-lang=c><span style=display:flex><span><span style=color:#66d9ef>void</span> <span style=color:#a6e22e>timer_sleep</span>(<span style=color:#66d9ef>int64_t</span> ticks)
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>enum</span> intr_level old_level;
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>ASSERT</span>(<span style=color:#a6e22e>intr_get_level</span>() <span style=color:#f92672>==</span> INTR_ON);
+</span></span><span style=display:flex><span>    old_level <span style=color:#f92672>=</span> <span style=color:#a6e22e>intr_disable</span>();
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>thread_sleep</span>(<span style=color:#a6e22e>timer_ticks</span>() <span style=color:#f92672>+</span> ticks);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>intr_set_level</span>(old_level);
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>除了<code>thread_sleep</code>的代码跟中断处理有关系，我还没摸透</p><h4 id=添加线程苏醒逻辑>添加线程苏醒逻辑</h4><p>现在线程会休眠了，但线程自己不会苏醒，需要内核操作<br>既然跟时间相关，那么就应该在时钟中断里面做点什么<br>也就是<code>./devices/timer.c</code>的<code>timer_interrupt</code>函数</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-c data-lang=c><span style=display:flex><span><span style=color:#66d9ef>static</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>timer_interrupt</span>(<span style=color:#66d9ef>struct</span> intr_frame <span style=color:#f92672>*</span>args UNUSED)
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    ticks<span style=color:#f92672>++</span>;
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>thread_tick</span>();
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// lab1 将到达休眠时间将线程移出休眠队列
+</span></span></span><span style=display:flex><span>    <span style=color:#a6e22e>thread_wakeup</span>();
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>这里的<code>thread_wakeup</code>是需要在<code>./threads/thread.c</code>中实现的函数</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-c data-lang=c><span style=display:flex><span><span style=color:#75715e>// 记得添加声明到thread.h中
+</span></span></span><span style=display:flex><span><span style=color:#66d9ef>void</span> <span style=color:#a6e22e>thread_wakeup</span>(<span style=color:#66d9ef>void</span>)
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>struct</span> list_elem <span style=color:#f92672>*</span>p_elem;
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>struct</span> <span style=color:#66d9ef>thread</span> <span style=color:#f92672>*</span>p_thread;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>while</span> (<span style=color:#f92672>!</span><span style=color:#a6e22e>list_empty</span>(<span style=color:#f92672>&amp;</span>sleep_list))
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        p_elem <span style=color:#f92672>=</span> <span style=color:#a6e22e>list_front</span>(<span style=color:#f92672>&amp;</span>sleep_list);
+</span></span><span style=display:flex><span>        p_thread <span style=color:#f92672>=</span> <span style=color:#a6e22e>list_entry</span>(pe, <span style=color:#66d9ef>struct</span> <span style=color:#66d9ef>thread</span>, elem);
+</span></span><span style=display:flex><span>        <span style=color:#75715e>// 休眠队列本身就是从小到大排序的，可以这样提前退出
+</span></span></span><span style=display:flex><span>        <span style=color:#66d9ef>if</span> (p_thread<span style=color:#f92672>-&gt;</span>wakeup_ticks <span style=color:#f92672>&gt;</span> <span style=color:#a6e22e>timer_ticks</span>())
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>break</span>;
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>        <span style=color:#75715e>// 移除出休眠队列
+</span></span></span><span style=display:flex><span>        <span style=color:#a6e22e>list_remove</span>(p_elem);
+</span></span><span style=display:flex><span>        <span style=color:#75715e>// 让pt指向的线程退出阻塞态进入准备态
+</span></span></span><span style=display:flex><span>        <span style=color:#a6e22e>thread_unblock</span>(p_thread);
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><h3 id=运行结果>运行结果</h3><p>运行测试<code>alarm-multiple</code></p><pre tabindex=0><code class=language-log data-lang=log>(alarm-multiple) begin
+(alarm-multiple) Creating 5 threads to sleep 7 times each.
+(alarm-multiple) Thread 0 sleeps 10 ticks each time,
+(alarm-multiple) thread 1 sleeps 20 ticks each time, and so on.
+(alarm-multiple) If successful, product of iteration count and
+(alarm-multiple) sleep duration will appear in nondescending order.
+(alarm-multiple) thread 0: duration=10, iteration=1, product=10
+(alarm-multiple) thread 1: duration=20, iteration=1, product=20
+(alarm-multiple) thread 0: duration=10, iteration=2, product=20
+(alarm-multiple) thread 2: duration=30, iteration=1, product=30
+(alarm-multiple) thread 0: duration=10, iteration=3, product=30
+(alarm-multiple) thread 3: duration=40, iteration=1, product=40
+(alarm-multiple) thread 1: duration=20, iteration=2, product=40
+(alarm-multiple) thread 0: duration=10, iteration=4, product=40
+(alarm-multiple) thread 4: duration=50, iteration=1, product=50
+(alarm-multiple) thread 0: duration=10, iteration=5, product=50
+(alarm-multiple) thread 2: duration=30, iteration=2, product=60
+(alarm-multiple) thread 1: duration=20, iteration=3, product=60
+(alarm-multiple) thread 0: duration=10, iteration=6, product=60
+(alarm-multiple) thread 0: duration=10, iteration=7, product=70
+(alarm-multiple) thread 3: duration=40, iteration=2, product=80
+(alarm-multiple) thread 1: duration=20, iteration=4, product=80
+(alarm-multiple) thread 2: duration=30, iteration=3, product=90
+(alarm-multiple) thread 4: duration=50, iteration=2, product=100
+(alarm-multiple) thread 1: duration=20, iteration=5, product=100
+(alarm-multiple) thread 3: duration=40, iteration=3, product=120
+(alarm-multiple) thread 2: duration=30, iteration=4, product=120
+(alarm-multiple) thread 1: duration=20, iteration=6, product=120
+(alarm-multiple) thread 1: duration=20, iteration=7, product=140
+(alarm-multiple) thread 4: duration=50, iteration=3, product=150
+(alarm-multiple) thread 2: duration=30, iteration=5, product=150
+(alarm-multiple) thread 3: duration=40, iteration=4, product=160
+(alarm-multiple) thread 2: duration=30, iteration=6, product=180
+(alarm-multiple) thread 4: duration=50, iteration=4, product=200
+(alarm-multiple) thread 3: duration=40, iteration=5, product=200
+(alarm-multiple) thread 2: duration=30, iteration=7, product=210
+(alarm-multiple) thread 3: duration=40, iteration=6, product=240
+(alarm-multiple) thread 4: duration=50, iteration=5, product=250
+(alarm-multiple) thread 3: duration=40, iteration=7, product=280
+(alarm-multiple) thread 4: duration=50, iteration=6, product=300
+(alarm-multiple) thread 4: duration=50, iteration=7, product=350
+(alarm-multiple) end
+</code></pre><p>当然，有人要说了，这样看不出来跟忙等待实现的差别啊<br>这里就可以在<code>./threads/init.c</code>的main函数中加点东西</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-c data-lang=c><span style=display:flex><span><span style=color:#75715e>// main函数，东西太多就不贴了
+</span></span></span><span style=display:flex><span>	<span style=color:#75715e>// ...
+</span></span></span><span style=display:flex><span>    <span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;Boot complete.</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>/* Run actions specified on kernel command line. */</span>
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>run_actions</span>(argv);
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// 加上这句
+</span></span></span><span style=display:flex><span>    <span style=color:#a6e22e>thread_print_stats</span>();
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>/* Finish up. */</span>
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>shutdown</span>();
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>thread_exit</span>();
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// ...
+</span></span></span></code></pre></div><p>然后执行，看最后的一句输出</p><p>忙等待实现是这样的</p><pre tabindex=0><code class=language-log data-lang=log>Thread: 0 idle ticks, 592 kernel ticks, 0 user ticks
+</code></pre><p>休眠队列的实现是这样的</p><pre tabindex=0><code class=language-log data-lang=log>Thread: 550 idle ticks, 40 kernel ticks, 0 user ticks
+</code></pre><p>可以看到忙等待实现不会跑idle</p><p>需要注意的是，虽然<code>alarm-priority</code>在这个部分，但这个测试目前是过不了的<br>要到task2写完才可以</p><h2 id=0x02-task2-priority-scheduling>&lt;0x02> Task2: Priority Scheduling</h2><p>测试目标为<code>[Lab1] Default Scheduler Debug</code></p><h3 id=任务摘要-1>任务摘要</h3><p>优先级调度器不会在之后的项目中使用</p><h4 id=task21-实现优先级调度>Task2.1 实现优先级调度</h4><p>当一个线程加入到就绪队列时，如果这个新线程的优先级高于当前线程，当前线程应该立即让步<br>同样的，如果线程正在等待锁、信号或者条件时，高优先级的线程应当最先唤醒<br>线程自己可以改变优先级，但如果优先级改变后，自己不具有最高优先级，应当立即让步</p><h4 id=task22>Task2.2</h4><h5 id=优先级反转问题>优先级反转问题</h5><p>考虑三个线程，分别有高中低的优先级<br>低优先级线程占有一个锁，然后这时候高优先级线程也想占用这个锁<br>那么高优先级线程会被阻塞，等待低优先级线程释放这个锁<br>但如果后面中优先级的线程启动了，那么由于优先级确实比低优先级高<br>中优先级线程会在低优先级线程时钟中断后执行，并且直到处理完毕<br>本来应该最优先处理的高优先级线程实际上没有最优先处理<br>这个现象称为优先级反转</p><pre tabindex=0><code>priority
+   ↑
+   │          ↓ 高优先级线程尝试获取锁，但会阻塞
+   │         │─│                            │ high ──────────│
+   │             ↓ 中优先级启动               ↑ 高优先级反而最后处理
+   │             │ mid ─────────────│
+   │  ↓ 低优先级启动
+   │  │ low ─────│                  │ low ──│
+   │             ↑ 低优先级时间片耗尽
+   └────────────────────────────────────────────────────────────→ time
+</code></pre><p>所以需要实现优先级借用机制来解决这个问题<br>（原词是priority donation，我觉得翻译成优先级借用比较合适）<br>优先级借用就是如果有高优先级线程尝试获取锁<br>那么原来低优先级线程暂时获得高优先级线程的优先级<br>还是前面例子，如果使用优先级借用机制，那么优先级与时间关系图将会时这样</p><pre tabindex=0><code>priority
+   ↑
+   │          ↓ 尝试获取锁    ↓ 低优先级线程处理完毕后马上处理高优先级
+   │         │─││ low ──────││ high ──────────│
+   │            ↑ 低优先级线程优先级暂时提升      ↓ 中优先级启动
+   │                                          │ mid ───────────│
+   │  ↓ 低优先级启动
+   │  │ low ─│
+   │
+   └────────────────────────────────────────────────────────────→ time
+</code></pre><p>低优先级线程优先级会暂时提升到高优先级线程的水平<br>实现低优先级处理完就处理高优先级线程任务</p><p>你需要考虑所有的优先级借用的情况<br>必须实现锁的优先级借用，其他的同步结构的优先级借用不必实现<br>你需要实现所有情况的优先级调度<br>确保多个优先级借用时的工作情况</p><h5 id=支持嵌套优先级借用>支持嵌套优先级借用</h5><p>还是一样的优先级借用，但是需要考虑嵌套时的优先级借用的传递问题</p><h4 id=task23-实现优先级的获取与修改>Task2.3 实现优先级的获取与修改</h4><p>这个任务需要你修改<code>thread_set_priority</code>和<code>thread_get_priority</code>
+对于<code>thread_set_priority</code>，如果新优先级不具有最高的优先级，那么当前线程应当让步<br>对于<code>thread_get_priority</code>，返回当前优先级或者说借用的优先级</p><h3 id=pintos默认实现的东西>pintos默认实现的东西</h3><p>pintos虽然没有实现优先级调度<br>但已经提供了一套优先级<br>范围0到63，线程默认优先级为31<br>调度没做高优先级优先调度的功能，是先进先出的</p><p>在信号量、锁、条件这些同步设施上，pintos的实现也是最基本的<br>只是能用，也都没做优先级处理的操作</p><h3 id=代码实现-1>代码实现</h3><h4 id=task21>Task2.1</h4><p>这部分还是简单的</p><p>先在<code>./threads/thread.c</code>实现一个线程优先级比较函数</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-c data-lang=c><span style=display:flex><span><span style=color:#75715e>// lab1 线程优先级比较函数
+</span></span></span><span style=display:flex><span><span style=color:#66d9ef>bool</span> <span style=color:#a6e22e>thread_more_priority</span>(<span style=color:#66d9ef>const</span> <span style=color:#66d9ef>struct</span> list_elem <span style=color:#f92672>*</span>a, <span style=color:#66d9ef>const</span> <span style=color:#66d9ef>struct</span> list_elem <span style=color:#f92672>*</span>b, <span style=color:#66d9ef>void</span> <span style=color:#f92672>*</span>aux UNUSED)
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>struct</span> <span style=color:#66d9ef>thread</span> <span style=color:#f92672>*</span>p_thread_a <span style=color:#f92672>=</span> <span style=color:#a6e22e>list_entry</span>(a, <span style=color:#66d9ef>struct</span> <span style=color:#66d9ef>thread</span>, elem);
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>struct</span> <span style=color:#66d9ef>thread</span> <span style=color:#f92672>*</span>p_thread_b <span style=color:#f92672>=</span> <span style=color:#a6e22e>list_entry</span>(b, <span style=color:#66d9ef>struct</span> <span style=color:#66d9ef>thread</span>, elem);
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> p_thread_a<span style=color:#f92672>-&gt;</span>priority <span style=color:#f92672>&gt;</span> p_thread_b<span style=color:#f92672>-&gt;</span>priority;
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>修改的是<code>thread_create</code>函数</p><h4 id=task22-1>Task2.2</h4><p>这个可以说是这个lab最难的部分<br>如果lock的部分没写好，main线程初始化都会出问题，调试都不好调试<br>所以很多时候都不知道自己哪里错了</p><h4 id=task23>Task2.3</h4><p><code>thread_get_priority</code>非常简单，直接返回当前线程优先级</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-c data-lang=c><span style=display:flex><span><span style=color:#66d9ef>int</span> <span style=color:#a6e22e>thread_get_priority</span>(<span style=color:#66d9ef>void</span>)
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>thread_current</span>()<span style=color:#f92672>-&gt;</span>priority;
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p><code>thread_set_priority</code>也很简单，只是要处理一下锁的优先级借用问题</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-c data-lang=c><span style=display:flex><span><span style=color:#75715e>// lab1 当前线程是否持有锁
+</span></span></span><span style=display:flex><span><span style=color:#66d9ef>bool</span> <span style=color:#a6e22e>thread_is_holding_lock</span>(<span style=color:#66d9ef>void</span>)
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>struct</span> <span style=color:#66d9ef>thread</span> <span style=color:#f92672>*</span>cur <span style=color:#f92672>=</span> <span style=color:#a6e22e>thread_current</span>();
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> <span style=color:#f92672>!</span><span style=color:#a6e22e>list_empty</span>(<span style=color:#f92672>&amp;</span>cur<span style=color:#f92672>-&gt;</span>lock_list);
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span><span style=color:#66d9ef>void</span> <span style=color:#a6e22e>thread_set_priority</span>(<span style=color:#66d9ef>int</span> new_priority)
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// 断言限制优先级范围
+</span></span></span><span style=display:flex><span>    <span style=color:#a6e22e>ASSERT</span>(PRI_MIN <span style=color:#f92672>&lt;=</span> new_priority <span style=color:#f92672>&amp;&amp;</span> new_priority <span style=color:#f92672>&lt;=</span> PRI_MAX);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>struct</span> <span style=color:#66d9ef>thread</span> <span style=color:#f92672>*</span>cur <span style=color:#f92672>=</span> <span style=color:#a6e22e>thread_current</span>();
+</span></span><span style=display:flex><span>    cur<span style=color:#f92672>-&gt;</span>base_priority <span style=color:#f92672>=</span> new_priority;
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> (<span style=color:#f92672>!</span><span style=color:#a6e22e>thread_is_holding_lock</span>() <span style=color:#f92672>||</span> new_priority <span style=color:#f92672>&gt;</span> cur<span style=color:#f92672>-&gt;</span>priority)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        cur<span style=color:#f92672>-&gt;</span>priority <span style=color:#f92672>=</span> new_priority;
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>thread_yield</span>();
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>如果没持有锁，那么直接更新就可以，如果有锁，那么还要判断下是否大于当前优先级<br>基础优先级是一定会更新的</p><h2 id=0x03-task3-advanced-scheduler>&lt;0x03> Task3: Advanced Scheduler</h2><p>测试目标为<code>[Lab1] Advanced Scheduler Debug</code></p><h3 id=任务摘要-2>任务摘要</h3><p>实现附录中的BSD调度</p><p>高级调度器不会在之后的项目中使用</p><h3 id=bsd调度>BSD调度</h3><p>那么什么是BSD调度呢<br>前面我们实现的调度是基于优先级的，线程需要根据自己的情况给内核一个优先级<br>但这样不够智能，更何况如果有恶意线程啥都不干但占用最高优先级，那不就完了</p><p>BSD调度算是一种优先级计算方法，它会评估系统总体的占用负载和线程的cpu使用率<br>然后给线程一个合理的优先级</p><p>整个BSD调度中线程需要新增两个量，<code>niceness</code>和<code>recent_cpu</code><br><code>niceness</code>表示线程的好心程度，范围是-20~20，默认值为0<br><code>niceness</code>越大，表示这个线程越好心，越愿意让步主动权<br>相反，如果这个值越小，表示这个线程不希望让步<br><code>recent_cpu</code>表示这个线程的cpu使用频率，没啥好说的</p><p>BSD调度的优先级计算方法如下，每4个时钟中断更新一次<br>$$priority=PRI_MAX-\frac{recent_cpu}{4}-2<em>niceness$$
+其中，recent_cpu的更新方法如下<br>每个时钟中断时，<code>recent_cpu</code>自增1<br>每过了物理时间1s，<code>recent_cpu</code>按下面公式重新计算<br>$$recent_cpu=\frac{2</em>load_avg}{2*load_avg+1}*recent_cpu+niceness$$
+这里出现的<code>load_avg</code>表示系统负载水平，计算公式如下，每物理时间1s更新一次<br>$$load_avg=\frac{59}{60}*load_avg+\frac{1}{60}*ready_threads$$
+<code>ready_threads</code>表示不包括<code>idle</code>的运行线程和就绪线程的个数</p><p>（这里省略了很多公式推导的细节）</p><h3 id=代码实现-2>代码实现</h3><p>这个还是比较简单的，基本上按着文档走就可以</p><h4 id=实现模拟浮点库>实现模拟浮点库</h4><p>pintos本身没有浮点类型，但BSD调度中会用到小数<br>好在文档的后面提供了一个方案，可以用模拟的浮点数<br>这个就按文档最后实现一下就好了<br>在我的代码中，实现的文件是<code>./threads/fp.h</code>和<code>./threads/fp.c</code><br>这里就不贴了，挺重复的</p><p>需要指出的是，我使用了<code>typedef int fp;</code>，提示自己是浮点数</p><h4 id=禁用优先级借用机制>禁用优先级借用机制</h4><p>文档中有提到，BSD调度器不需要优先级借用机制<br>所以就把它禁用掉就可以了<br>在测试这个任务的代码时，会传入<code>-mlfqs</code>这个参数<br>这个参数会使<code>thread_mlfqs</code>变为<code>true</code><br>通过这个值可以判断是否测试的是高级调度器</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-c data-lang=c><span style=display:flex><span><span style=color:#66d9ef>void</span> <span style=color:#a6e22e>lock_acquire</span>(<span style=color:#66d9ef>struct</span> lock <span style=color:#f92672>*</span>lock)
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>ASSERT</span>(lock <span style=color:#f92672>!=</span> NULL);
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>ASSERT</span>(<span style=color:#f92672>!</span><span style=color:#a6e22e>intr_context</span>());
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>ASSERT</span>(<span style=color:#f92672>!</span><span style=color:#a6e22e>lock_held_by_current_thread</span>(lock));
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// lab1 高级调度不需要优先级借用
+</span></span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> (<span style=color:#f92672>!</span>thread_mlfqs)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>lock_acquire_priority_donation</span>(lock);
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>sema_down</span>(<span style=color:#f92672>&amp;</span>lock<span style=color:#f92672>-&gt;</span>semaphore);
+</span></span><span style=display:flex><span>    lock<span style=color:#f92672>-&gt;</span>holder <span style=color:#f92672>=</span> <span style=color:#a6e22e>thread_current</span>();
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span><span style=color:#66d9ef>void</span> <span style=color:#a6e22e>lock_release</span>(<span style=color:#66d9ef>struct</span> lock <span style=color:#f92672>*</span>lock)
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>ASSERT</span>(lock <span style=color:#f92672>!=</span> NULL);
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>ASSERT</span>(<span style=color:#a6e22e>lock_held_by_current_thread</span>(lock));
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// lab1 高级调度不需要优先级借用
+</span></span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> (<span style=color:#f92672>!</span>thread_mlfqs)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>lock_release_priority_donation</span>(lock);
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    lock<span style=color:#f92672>-&gt;</span>holder <span style=color:#f92672>=</span> NULL;
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>sema_up</span>(<span style=color:#f92672>&amp;</span>lock<span style=color:#f92672>-&gt;</span>semaphore);
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p><code>lock_acquire_priority_donation</code>和<code>lock_release_priority_donation</code>就是前面实现的优先级借用方法<br>只是把这两个封装成单独的函数而已</p><h4 id=修改thread相关的代码>修改thread相关的代码</h4><p>在<code>./threads/thread.h</code>中添加<code>niceness</code>的范围与默认值定义</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-c data-lang=c><span style=display:flex><span><span style=color:#75715e>// lab1 高级调度 niceness部分
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#define NICENESS_MIN -20
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#define NICENESS_DEFAULT 0
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#define NICENESS_MAX 20
+</span></span></span></code></pre></div><p>添加<code>load_avg</code>的定义（在<code>./threads/thread.c</code>中也加一个）</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-c data-lang=c><span style=display:flex><span><span style=color:#75715e>// lab1 高级调度 系统负载
+</span></span></span><span style=display:flex><span><span style=color:#66d9ef>extern</span> fp thread_load_avg;
+</span></span></code></pre></div><p>给线程控制块加上<code>niceness</code>和<code>recent_cpu</code>这两个值</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-c data-lang=c><span style=display:flex><span><span style=color:#66d9ef>struct</span> <span style=color:#66d9ef>thread</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// ...
+</span></span></span><span style=display:flex><span>    <span style=color:#66d9ef>int</span> niceness;   <span style=color:#75715e>// lab1 高级调度 线程的好心程度
+</span></span></span><span style=display:flex><span>    fp recent_cpu;  <span style=color:#75715e>// lab1 高级调度 线程使用的cpu时间
+</span></span></span><span style=display:flex><span>	<span style=color:#75715e>// ...
+</span></span></span><span style=display:flex><span>};
+</span></span></code></pre></div><h4 id=实现bsd调度的公式计算>实现BSD调度的公式计算</h4><p>因为这个调度的值都是线程相关的，所以相关的计算我也就放在<code>./threads/thread.c</code>里面了<br>后面<code>./devices/timer.c</code>也会用到这几个函数，所以要添加声明到对应头文件中</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-c data-lang=c><span style=display:flex><span><span style=color:#75715e>// lab1 高级调度 基于nice与recent_cpu计算线程优先级
+</span></span></span><span style=display:flex><span><span style=color:#66d9ef>void</span> <span style=color:#a6e22e>thread_mlfqs_refresh_priority</span>(<span style=color:#66d9ef>struct</span> <span style=color:#66d9ef>thread</span> <span style=color:#f92672>*</span>t)
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> (t <span style=color:#f92672>==</span> idle_thread)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span>;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>    fp f_priority <span style=color:#f92672>=</span> <span style=color:#a6e22e>fp_convert_from</span>(PRI_MAX);
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// 1/4 * recent_cpu
+</span></span></span><span style=display:flex><span>    fp f_a <span style=color:#f92672>=</span> <span style=color:#a6e22e>fp_div_int</span>(t<span style=color:#f92672>-&gt;</span>recent_cpu, <span style=color:#ae81ff>4</span>);
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// 2*niceness
+</span></span></span><span style=display:flex><span>    fp f_b <span style=color:#f92672>=</span> <span style=color:#a6e22e>fp_convert_from</span>(t<span style=color:#f92672>-&gt;</span>niceness);
+</span></span><span style=display:flex><span>    f_b <span style=color:#f92672>=</span> <span style=color:#a6e22e>fp_mul_int</span>(f_b, <span style=color:#ae81ff>2</span>);
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// PRI_MAX - 1/4 * recent_cpu - 2 * niceness
+</span></span></span><span style=display:flex><span>    fp f_ans <span style=color:#f92672>=</span> <span style=color:#a6e22e>fp_sub_fp</span>(f_priority, f_a);
+</span></span><span style=display:flex><span>    f_ans <span style=color:#f92672>=</span> <span style=color:#a6e22e>fp_sub_fp</span>(f_ans, f_b);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    t<span style=color:#f92672>-&gt;</span>priority <span style=color:#f92672>=</span> <span style=color:#a6e22e>fp_toint_round</span>(f_ans);
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>// lab1 高级调度 当前线程recent_cpu自增1
+</span></span></span><span style=display:flex><span><span style=color:#66d9ef>void</span> <span style=color:#a6e22e>thread_mlfqs_increase_recent_cpu</span>(<span style=color:#66d9ef>void</span>)
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>struct</span> <span style=color:#66d9ef>thread</span> <span style=color:#f92672>*</span>cur <span style=color:#f92672>=</span> <span style=color:#a6e22e>thread_current</span>();
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> (cur <span style=color:#f92672>==</span> idle_thread)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span>;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>    cur<span style=color:#f92672>-&gt;</span>recent_cpu <span style=color:#f92672>=</span> <span style=color:#a6e22e>fp_add_int</span>(cur<span style=color:#f92672>-&gt;</span>recent_cpu, <span style=color:#ae81ff>1</span>);
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>// lab1 高级调度 计算线程最近cpu使用率
+</span></span></span><span style=display:flex><span><span style=color:#66d9ef>void</span> <span style=color:#a6e22e>thread_mlfqs_refresh_recent_cpu</span>(<span style=color:#66d9ef>struct</span> <span style=color:#66d9ef>thread</span> <span style=color:#f92672>*</span>t)
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> (t <span style=color:#f92672>==</span> idle_thread)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span>;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// (2 * load_avg) / (2 * laod_avg + 1) * recent_cpu
+</span></span></span><span style=display:flex><span>    fp f_a <span style=color:#f92672>=</span> <span style=color:#a6e22e>fp_mul_int</span>(thread_load_avg, <span style=color:#ae81ff>2</span>);
+</span></span><span style=display:flex><span>    f_a <span style=color:#f92672>=</span> <span style=color:#a6e22e>fp_div_fp</span>(f_a, <span style=color:#a6e22e>fp_add_int</span>(f_a, <span style=color:#ae81ff>1</span>));
+</span></span><span style=display:flex><span>    f_a <span style=color:#f92672>=</span> <span style=color:#a6e22e>fp_mul_fp</span>(f_a, t<span style=color:#f92672>-&gt;</span>recent_cpu);
+</span></span><span style=display:flex><span>    fp f_niceness <span style=color:#f92672>=</span> <span style=color:#a6e22e>fp_convert_from</span>(t<span style=color:#f92672>-&gt;</span>niceness);
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// (2 * load_avg) / (2 * laod_avg + 1) * recent_cpu + niceness
+</span></span></span><span style=display:flex><span>    t<span style=color:#f92672>-&gt;</span>recent_cpu <span style=color:#f92672>=</span> <span style=color:#a6e22e>fp_add_fp</span>(f_a, f_niceness);
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>// lab1 高级调度 计算系统使用负载
+</span></span></span><span style=display:flex><span><span style=color:#66d9ef>void</span> <span style=color:#a6e22e>thread_mlfqs_refresh_load_avg</span>(<span style=color:#66d9ef>void</span>)
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// 59/60 * load_avg
+</span></span></span><span style=display:flex><span>    fp f_a <span style=color:#f92672>=</span> <span style=color:#a6e22e>fp_convert_from</span>(<span style=color:#ae81ff>59</span>);
+</span></span><span style=display:flex><span>    f_a <span style=color:#f92672>=</span> <span style=color:#a6e22e>fp_div_int</span>(f_a, <span style=color:#ae81ff>60</span>);
+</span></span><span style=display:flex><span>    f_a <span style=color:#f92672>=</span> <span style=color:#a6e22e>fp_mul_fp</span>(f_a, thread_load_avg);
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// 1/60 * ready_threads
+</span></span></span><span style=display:flex><span>    fp f_b <span style=color:#f92672>=</span> <span style=color:#a6e22e>fp_convert_from</span>(<span style=color:#ae81ff>1</span>);
+</span></span><span style=display:flex><span>    f_b <span style=color:#f92672>=</span> <span style=color:#a6e22e>fp_div_int</span>(f_b, <span style=color:#ae81ff>60</span>);
+</span></span><span style=display:flex><span>    f_b <span style=color:#f92672>=</span> <span style=color:#a6e22e>fp_mul_int</span>(f_b, <span style=color:#a6e22e>list_size</span>(<span style=color:#f92672>&amp;</span>all_list) <span style=color:#f92672>-</span> <span style=color:#a6e22e>list_size</span>(<span style=color:#f92672>&amp;</span>sleep_list) <span style=color:#f92672>-</span> <span style=color:#ae81ff>1</span>);
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// 59/60 * load_avg + 1/60 * ready_threads
+</span></span></span><span style=display:flex><span>    thread_load_avg <span style=color:#f92672>=</span> <span style=color:#a6e22e>fp_add_fp</span>(f_a, f_b);
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><h4 id=修改时钟中断行为>修改时钟中断行为</h4><p>毕竟是涉及到时间的操作，相关代码修改在<code>./devices/timer.c</code>中完成</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-c data-lang=c><span style=display:flex><span><span style=color:#66d9ef>static</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>timer_interrupt</span>(<span style=color:#66d9ef>struct</span> intr_frame <span style=color:#f92672>*</span>args UNUSED)
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    ticks<span style=color:#f92672>++</span>;
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>thread_tick</span>();
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// lab1 将到达休眠时间将线程移出休眠队列
+</span></span></span><span style=display:flex><span>    <span style=color:#a6e22e>thread_wakeup</span>();
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// lab1 高级调度
+</span></span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> (thread_mlfqs)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>	    <span style=color:#75715e>// 每tick增加当前线程recent_cpu
+</span></span></span><span style=display:flex><span>        <span style=color:#a6e22e>thread_mlfqs_increase_recent_cpu</span>();
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>if</span> (<span style=color:#a6e22e>timer_ticks</span>() <span style=color:#f92672>%</span> TIMER_FREQ <span style=color:#f92672>==</span> <span style=color:#ae81ff>0</span>)
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>	        <span style=color:#75715e>// 每1s重新计算系统负载和所有线程的recent_cpu
+</span></span></span><span style=display:flex><span>            <span style=color:#a6e22e>thread_mlfqs_refresh_load_avg</span>();
+</span></span><span style=display:flex><span>            <span style=color:#a6e22e>thread_foreach</span>(thread_mlfqs_refresh_recent_cpu, NULL);
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>if</span> (<span style=color:#a6e22e>timer_ticks</span>() <span style=color:#f92672>%</span> <span style=color:#ae81ff>4</span> <span style=color:#f92672>==</span> <span style=color:#ae81ff>0</span>)
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>	        <span style=color:#75715e>// 每4个tick重新计算所有线程的优先级
+</span></span></span><span style=display:flex><span>            <span style=color:#a6e22e>thread_foreach</span>(thread_mlfqs_refresh_priority, NULL);
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>以上完成了所有修改，并且所有的测试也都可以过了<br>这部分的测试耗时很长，这个是正常的</p></section><footer class="article-meta article-footer"><section class=article-tags><a href=/tags/courseproject/>CourseProject</a></section><section class="article-copyright inline-meta"><svg class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg>
+<span>CC BY-NC-SA 4.0</span></section></footer><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css integrity=sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV crossorigin=anonymous><script src=https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js integrity=sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8 crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js integrity=sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05 crossorigin=anonymous defer></script><script>window.addEventListener("DOMContentLoaded",()=>{const e=[".main-article",".widget--toc"];e.forEach(e=>{const t=document.querySelector(e);t&&renderMathInElement(t,{delimiters:[{left:"$$",right:"$$",display:!0},{left:"$",right:"$",display:!1},{left:"\\(",right:"\\)",display:!1},{left:"\\[",right:"\\]",display:!0}],ignoredClasses:["gist"]})})})</script></article><aside><h2 class=section-title>相关文章</h2><div class=subsection-list><div class=article-list--tile><article><a href=/post/articles/2024/%E6%B5%99%E5%B7%A5%E5%A4%A7%E6%95%B0%E5%AD%97%E5%9B%BE%E5%83%8F%E5%A4%84%E7%90%86%E8%AF%BE%E8%AE%BE%E8%AE%B0%E5%BD%95/><div class=article-details><h2 class=article-title>浙工大数字图像处理课设记录</h2></div></a></article><article><a href=/post/articles/2023/%E6%B5%99%E5%B7%A5%E5%A4%A7%E7%A6%BB%E6%95%A3%E8%AF%BE%E8%AE%BE%E8%AE%B0%E5%BD%95/><div class=article-details><h2 class=article-title>浙工大离散课设讲解</h2></div></a></article><article><a href=/post/articles/2023/%E6%B5%99%E5%B7%A5%E5%A4%A7c++%E8%AF%BE%E8%AE%BE%E8%AE%B0%E5%BD%95/><div class=article-details><h2 class=article-title>浙工大c++课设讲解</h2></div></a></article></div></div></aside><footer class=site-footer><section class=copyright>&copy;
+2023 -
+2026 MLAcookie</section><section class=powerby>使用 <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> 构建<br>主题 <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=4.0.3>Stack</a></b> 由 <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a> 设计</section></footer><script type=module>
+    import gallery from '\/ts\/gallery.js';
+
+    const articleContent = document.querySelector('.article-content');
+    const shouldLoad = articleContent && (articleContent.querySelectorAll('figure').length > 0 || articleContent.querySelectorAll('img.gallery-image').length > 0);
+    
+    if (shouldLoad) {
+        gallery(articleContent);
+
+        const PhotoSwipeLightbox = (await import("https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe-lightbox.esm.min.js")).default;
+        const styleHref = "https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe.css";
+
+        const styleTag = document.createElement('link');
+        styleTag.rel = 'stylesheet';
+        styleTag.href = styleHref;
+        document.head.appendChild(styleTag);
+
+        const lightbox = new PhotoSwipeLightbox({
+            gallerySelector: '.article-content',
+            childSelector: 'figure a.image-link',
+            pswpModule: () => import("https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe.esm.min.js")
+        });
+        lightbox.init();
+    }
+</script></main></div><script type=text/javascript src=/ts/main.f856840516f7c2ad1769a8f5937e3d08d6cb386e2cd2dd025ae696e0ff207958.js defer></script></body></html>

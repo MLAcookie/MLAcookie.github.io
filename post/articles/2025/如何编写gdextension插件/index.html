@@ -1,0 +1,494 @@
+<!doctype html><html lang=zh dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content='Godot的GDExtension通过运行时动态加载编译完成的Dll文件\n实现对编辑器功能的扩展，并且无需重新编译引擎源代码\n虽然Godot官方确实有这样的教程，但在我实际按照教程操作时，发现很多已过时的内容\n本文章采用的版本是4.5\n从导出符号文件里面的注释，GDExtension的API应该是时常修改的，所以与教程有差别也正常\n并且Godot官方的教程存在部分未翻译的情况，所以觉得还是要写点东西记一下\n本文章不大会对函数的具体功能做介绍，只是让GDExtension可以跑起来\n代码仓库\n使用C开发GDExtension <0x00> 从Godot中导出GDExtension符号 首先要获取GDExtension需要的符号文件\n这一步需要确保你的Godot执行文件可以在命令行中找到\n（这里推荐通过scoop安装Godot，会自动配置这一块的）\n命令行中执行下列语句\ngodot --dump-gdextension-interface godot --dump-extension-api 这样会得到两个文件，分别是gdextension_interface.h与extension_api.json\ngdextension_interface.h包括了编译时需要的符号信息，里面都是C风格的定义\nextension_api.json包含了Godot类型的信息，包括类型大小等，编译时不需要，只是供代码编写时使用\n<0x01> 配置目录结构与构建系统 我们主要分两个文件夹来组织文件\ngdextension_c_example\r├── demo # 编译输出文件夹\r└── src # 源代码文件夹 需要把gdextension_interface.h放到src文件夹中\n官方的教程使用Scons作为构建系统，但这个我不熟，所以我换成了我更熟悉的Xmake\n因为最后只要能输出相应的动态链接库即可，所以其实构建系统是可以挑自己喜欢的\n这里使用到的Xmake.lua如下\nadd_rules("mode.debug", "mode.release") target("ExtensionTest") set_kind("shared") set_toolchains("clang") set_targetdir("demo/bin") add_files("src/*.c") 这里还指定了使用clang工具链，只是因为我比较喜欢clang，用其他的也问题不大\n<0x02> 编写代码 对于GDExtension，Godot通过一个函数入口来初始化调用\n函数入口的名字无所谓，只要可以和之后的配置文件对上即可\n这里假设入口函数名为gdexample_library_init，入口函数签名是这样的\nGDExtensionBool gdexample_library_init(GDExtensionInterfaceGetProcAddress p_get_proc_address, GDExtensionClassLibraryPtr p_library, GDExtensionInitialization *r_initialization) // GDExtensionBool: uint_8 // GDExtensionInterfaceGetProcAddress: void(*(*)(const char*))() // GDExtensionClassLibraryPtr: void* // GDExtensionInitialization: (struct) 某种程度上，只写这样一个函数就可以\n但这样会导致代码很难维护，所以需要将一些东西分离出来，方便开发\n'><title>如何编写GDExtension插件</title><link rel=canonical href=https://mlacookie.github.io/post/articles/2025/%E5%A6%82%E4%BD%95%E7%BC%96%E5%86%99gdextension%E6%8F%92%E4%BB%B6/><link rel=preconnect href=https://fonts.googleapis.com><link rel=preconnect href=https://fonts.gstatic.com crossorigin><link rel=preload as=style href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap"><link rel=stylesheet href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap"><link rel=stylesheet href=/scss/style.min.e62e09c60ba428a627e03568fa3df938f6a8224f815b5846f00816c17d4a0be4.css><meta property='og:title' content="如何编写GDExtension插件"><meta property='og:description' content='Godot的GDExtension通过运行时动态加载编译完成的Dll文件\n实现对编辑器功能的扩展，并且无需重新编译引擎源代码\n虽然Godot官方确实有这样的教程，但在我实际按照教程操作时，发现很多已过时的内容\n本文章采用的版本是4.5\n从导出符号文件里面的注释，GDExtension的API应该是时常修改的，所以与教程有差别也正常\n并且Godot官方的教程存在部分未翻译的情况，所以觉得还是要写点东西记一下\n本文章不大会对函数的具体功能做介绍，只是让GDExtension可以跑起来\n代码仓库\n使用C开发GDExtension <0x00> 从Godot中导出GDExtension符号 首先要获取GDExtension需要的符号文件\n这一步需要确保你的Godot执行文件可以在命令行中找到\n（这里推荐通过scoop安装Godot，会自动配置这一块的）\n命令行中执行下列语句\ngodot --dump-gdextension-interface godot --dump-extension-api 这样会得到两个文件，分别是gdextension_interface.h与extension_api.json\ngdextension_interface.h包括了编译时需要的符号信息，里面都是C风格的定义\nextension_api.json包含了Godot类型的信息，包括类型大小等，编译时不需要，只是供代码编写时使用\n<0x01> 配置目录结构与构建系统 我们主要分两个文件夹来组织文件\ngdextension_c_example\r├── demo # 编译输出文件夹\r└── src # 源代码文件夹 需要把gdextension_interface.h放到src文件夹中\n官方的教程使用Scons作为构建系统，但这个我不熟，所以我换成了我更熟悉的Xmake\n因为最后只要能输出相应的动态链接库即可，所以其实构建系统是可以挑自己喜欢的\n这里使用到的Xmake.lua如下\nadd_rules("mode.debug", "mode.release") target("ExtensionTest") set_kind("shared") set_toolchains("clang") set_targetdir("demo/bin") add_files("src/*.c") 这里还指定了使用clang工具链，只是因为我比较喜欢clang，用其他的也问题不大\n<0x02> 编写代码 对于GDExtension，Godot通过一个函数入口来初始化调用\n函数入口的名字无所谓，只要可以和之后的配置文件对上即可\n这里假设入口函数名为gdexample_library_init，入口函数签名是这样的\nGDExtensionBool gdexample_library_init(GDExtensionInterfaceGetProcAddress p_get_proc_address, GDExtensionClassLibraryPtr p_library, GDExtensionInitialization *r_initialization) // GDExtensionBool: uint_8 // GDExtensionInterfaceGetProcAddress: void(*(*)(const char*))() // GDExtensionClassLibraryPtr: void* // GDExtensionInitialization: (struct) 某种程度上，只写这样一个函数就可以\n但这样会导致代码很难维护，所以需要将一些东西分离出来，方便开发\n'><meta property='og:url' content='https://mlacookie.github.io/post/articles/2025/%E5%A6%82%E4%BD%95%E7%BC%96%E5%86%99gdextension%E6%8F%92%E4%BB%B6/'><meta property='og:site_name' content='MLAcookie'><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:tag' content='Godot'><meta property='article:tag' content='Cpp'><meta property='article:tag' content='CSharp'><meta property='article:published_time' content='2025-12-04T16:20:29+08:00'><meta property='article:modified_time' content='2025-12-04T16:20:29+08:00'><meta name=twitter:title content="如何编写GDExtension插件"><meta name=twitter:description content='Godot的GDExtension通过运行时动态加载编译完成的Dll文件\n实现对编辑器功能的扩展，并且无需重新编译引擎源代码\n虽然Godot官方确实有这样的教程，但在我实际按照教程操作时，发现很多已过时的内容\n本文章采用的版本是4.5\n从导出符号文件里面的注释，GDExtension的API应该是时常修改的，所以与教程有差别也正常\n并且Godot官方的教程存在部分未翻译的情况，所以觉得还是要写点东西记一下\n本文章不大会对函数的具体功能做介绍，只是让GDExtension可以跑起来\n代码仓库\n使用C开发GDExtension <0x00> 从Godot中导出GDExtension符号 首先要获取GDExtension需要的符号文件\n这一步需要确保你的Godot执行文件可以在命令行中找到\n（这里推荐通过scoop安装Godot，会自动配置这一块的）\n命令行中执行下列语句\ngodot --dump-gdextension-interface godot --dump-extension-api 这样会得到两个文件，分别是gdextension_interface.h与extension_api.json\ngdextension_interface.h包括了编译时需要的符号信息，里面都是C风格的定义\nextension_api.json包含了Godot类型的信息，包括类型大小等，编译时不需要，只是供代码编写时使用\n<0x01> 配置目录结构与构建系统 我们主要分两个文件夹来组织文件\ngdextension_c_example\r├── demo # 编译输出文件夹\r└── src # 源代码文件夹 需要把gdextension_interface.h放到src文件夹中\n官方的教程使用Scons作为构建系统，但这个我不熟，所以我换成了我更熟悉的Xmake\n因为最后只要能输出相应的动态链接库即可，所以其实构建系统是可以挑自己喜欢的\n这里使用到的Xmake.lua如下\nadd_rules("mode.debug", "mode.release") target("ExtensionTest") set_kind("shared") set_toolchains("clang") set_targetdir("demo/bin") add_files("src/*.c") 这里还指定了使用clang工具链，只是因为我比较喜欢clang，用其他的也问题不大\n<0x02> 编写代码 对于GDExtension，Godot通过一个函数入口来初始化调用\n函数入口的名字无所谓，只要可以和之后的配置文件对上即可\n这里假设入口函数名为gdexample_library_init，入口函数签名是这样的\nGDExtensionBool gdexample_library_init(GDExtensionInterfaceGetProcAddress p_get_proc_address, GDExtensionClassLibraryPtr p_library, GDExtensionInitialization *r_initialization) // GDExtensionBool: uint_8 // GDExtensionInterfaceGetProcAddress: void(*(*)(const char*))() // GDExtensionClassLibraryPtr: void* // GDExtensionInitialization: (struct) 某种程度上，只写这样一个函数就可以\n但这样会导致代码很难维护，所以需要将一些东西分离出来，方便开发\n'><link rel="shortcut icon" href=favicon.webp></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.setItem(e,"dark")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar.png width=640 height=640 class=site-logo loading=lazy alt=Avatar>
+</a><span class=emoji>🤯</span></figure><div class=site-meta><h1 class=site-name><a href=/>MLAcookie</a></h1><h2 class=site-description>随便记点东西的记事本</h2></div></header><ol class=menu-social><li><a href=https://space.bilibili.com/13629146 title=MLA_cookie@Bilibili rel=me><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-bilibili"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 10a4 4 0 014-4h10a4 4 0 014 4v6a4 4 0 01-4 4H7a4 4 0 01-4-4v-6z"/><path d="M8 3l2 3"/><path d="M16 3l-2 3"/><path d="M9 13v-2"/><path d="M15 11v2"/></svg></a></li><li><a href=https://github.com/MLAcookie title=MLAcookie@Github rel=me><svg class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
+<span>Home</span></a></li><li><a href=/page/archives/><svg class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+<span>Archives</span></a></li><li><a href=/page/search/><svg class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg>
+<span>Search</span></a></li><li><a href=/page/links/><svg class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M10 14a3.5 3.5.0 005 0l4-4a3.5 3.5.0 00-5-5l-.5.5"/><path d="M14 10a3.5 3.5.0 00-5 0l-4 4a3.5 3.5.0 005 5l.5-.5"/></svg>
+<span>Links</span></a></li><li><a href=/page/about/><svg class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg>
+<span>About</span></a></li><li class=menu-bottom-section><ol class=menu></ol></li></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">目录</h2><div class=widget--toc><nav class=toc-nav id=TableOfContents><ul><li><a href=#0x00-从godot中导出gdextension符号>&lt;0x00> 从Godot中导出GDExtension符号</a></li><li><a href=#0x01-配置目录结构与构建系统>&lt;0x01> 配置目录结构与构建系统</a></li><li><a href=#0x02-编写代码>&lt;0x02> 编写代码</a><ul><li><a href=#扩展配置文件>扩展配置文件</a></li><li><a href=#扩展的其他符号定义>扩展的其他符号定义</a></li><li><a href=#api绑定>API绑定</a></li><li><a href=#自定义节点类型>自定义节点类型</a></li><li><a href=#初始化模块>初始化模块</a></li></ul></li><li><a href=#0x03-在godot中使用>&lt;0x03> 在Godot中使用</a></li></ul><ul><li><a href=#0x00-使用c开发的前言>&lt;0x00> 使用C#开发的前言</a></li><li><a href=#0x01-一些概念>&lt;0x01> 一些概念</a><ul><li><a href=#unsafe代码块>unsafe代码块</a></li><li><a href=#函数指针>函数指针</a></li><li><a href=#fixed代码块>fixed代码块</a></li></ul></li><li><a href=#0x02-开始>&lt;0x02> 开始</a><ul><li><a href=#整个入口>整个入口</a></li><li><a href=#分离代码>分离代码</a></li></ul></li><li><a href=#0x03-实现>&lt;0x03> 实现</a><ul><li><a href=#stringname定义>StringName定义</a></li><li><a href=#其他类型的封装>其他类型的封装</a></li><li><a href=#枚举类型的传递>枚举类型的传递</a></li><li><a href=#编写自定义节点>编写自定义节点</a></li></ul></li><li><a href=#0x04-编译与运行>&lt;0x04> 编译与运行</a></li></ul></nav></div></section></aside><main class="main full-width"><article class=main-article><header class=article-header><div class=article-details><div class=article-title-wrapper><h2 class=article-title><a href=/post/articles/2025/%E5%A6%82%E4%BD%95%E7%BC%96%E5%86%99gdextension%E6%8F%92%E4%BB%B6/>如何编写GDExtension插件</a></h2></div><footer class=article-meta><div class=inline-meta><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
+<time class=article-time--published datetime=2025-12-04T16:20:29+08:00>2025年12月4日星期四</time></div></footer></div></header><aside class=article-toc><details><summary><div class=article-toc-title><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-chevron-right"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 6l6 6-6 6"/></svg>
+<span>目录</span></div></summary><nav class=toc-nav><ul><li><a href=#0x00-从godot中导出gdextension符号>&lt;0x00> 从Godot中导出GDExtension符号</a></li><li><a href=#0x01-配置目录结构与构建系统>&lt;0x01> 配置目录结构与构建系统</a></li><li><a href=#0x02-编写代码>&lt;0x02> 编写代码</a><ul><li><a href=#扩展配置文件>扩展配置文件</a></li><li><a href=#扩展的其他符号定义>扩展的其他符号定义</a></li><li><a href=#api绑定>API绑定</a></li><li><a href=#自定义节点类型>自定义节点类型</a></li><li><a href=#初始化模块>初始化模块</a></li></ul></li><li><a href=#0x03-在godot中使用>&lt;0x03> 在Godot中使用</a></li></ul><ul><li><a href=#0x00-使用c开发的前言>&lt;0x00> 使用C#开发的前言</a></li><li><a href=#0x01-一些概念>&lt;0x01> 一些概念</a><ul><li><a href=#unsafe代码块>unsafe代码块</a></li><li><a href=#函数指针>函数指针</a></li><li><a href=#fixed代码块>fixed代码块</a></li></ul></li><li><a href=#0x02-开始>&lt;0x02> 开始</a><ul><li><a href=#整个入口>整个入口</a></li><li><a href=#分离代码>分离代码</a></li></ul></li><li><a href=#0x03-实现>&lt;0x03> 实现</a><ul><li><a href=#stringname定义>StringName定义</a></li><li><a href=#其他类型的封装>其他类型的封装</a></li><li><a href=#枚举类型的传递>枚举类型的传递</a></li><li><a href=#编写自定义节点>编写自定义节点</a></li></ul></li><li><a href=#0x04-编译与运行>&lt;0x04> 编译与运行</a></li></ul></nav></details></aside><section class=article-content><p>Godot的GDExtension通过运行时动态加载编译完成的Dll文件<br>实现对编辑器功能的扩展，并且无需重新编译引擎源代码</p><p>虽然Godot官方确实有这样的<a class=link href=https://docs.godotengine.org/zh-cn/4.x/tutorials/scripting/gdextension/gdextension_c_example.html target=_blank rel=noopener>教程</a>，但在我实际按照教程操作时，发现很多已过时的内容<br>本文章采用的版本是4.5<br>从导出符号文件里面的注释，GDExtension的API应该是时常修改的，所以与教程有差别也正常<br>并且Godot官方的教程存在部分未翻译的情况，所以觉得还是要写点东西记一下<br>本文章不大会对函数的具体功能做介绍，只是让GDExtension可以跑起来<br><a class=link href=https://github.com/MLAcookie/GDExtension-Example target=_blank rel=noopener>代码仓库</a></p><h1 id=使用c开发gdextension>使用C开发GDExtension</h1><h2 id=0x00-从godot中导出gdextension符号>&lt;0x00> 从Godot中导出GDExtension符号</h2><p>首先要获取GDExtension需要的符号文件<br>这一步需要确保你的Godot执行文件可以在命令行中找到<br>（这里推荐通过scoop安装Godot，会自动配置这一块的）<br>命令行中执行下列语句</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-sh data-lang=sh><span style=display:flex><span>godot --dump-gdextension-interface
+</span></span><span style=display:flex><span>godot --dump-extension-api
+</span></span></code></pre></div><p>这样会得到两个文件，分别是<code>gdextension_interface.h</code>与<code>extension_api.json</code><br><code>gdextension_interface.h</code>包括了编译时需要的符号信息，里面都是C风格的定义<br><code>extension_api.json</code>包含了Godot类型的信息，包括类型大小等，编译时不需要，只是供代码编写时使用</p><h2 id=0x01-配置目录结构与构建系统>&lt;0x01> 配置目录结构与构建系统</h2><p>我们主要分两个文件夹来组织文件</p><pre tabindex=0><code>gdextension_c_example
+├── demo    # 编译输出文件夹
+└── src     # 源代码文件夹
+</code></pre><p>需要把<code>gdextension_interface.h</code>放到<code>src</code>文件夹中</p><p>官方的教程使用Scons作为构建系统，但这个我不熟，所以我换成了我更熟悉的Xmake<br>因为最后只要能输出相应的动态链接库即可，所以其实构建系统是可以挑自己喜欢的</p><p>这里使用到的<code>Xmake.lua</code>如下</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-lua data-lang=lua><span style=display:flex><span>add_rules(<span style=color:#e6db74>&#34;mode.debug&#34;</span>, <span style=color:#e6db74>&#34;mode.release&#34;</span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>target(<span style=color:#e6db74>&#34;ExtensionTest&#34;</span>)
+</span></span><span style=display:flex><span>    set_kind(<span style=color:#e6db74>&#34;shared&#34;</span>)
+</span></span><span style=display:flex><span>    set_toolchains(<span style=color:#e6db74>&#34;clang&#34;</span>)
+</span></span><span style=display:flex><span>    set_targetdir(<span style=color:#e6db74>&#34;demo/bin&#34;</span>)
+</span></span><span style=display:flex><span>    add_files(<span style=color:#e6db74>&#34;src/*.c&#34;</span>)
+</span></span></code></pre></div><p>这里还指定了使用clang工具链，只是因为我比较喜欢clang，用其他的也问题不大</p><h2 id=0x02-编写代码>&lt;0x02> 编写代码</h2><p>对于GDExtension，Godot通过一个函数入口来初始化调用<br>函数入口的名字无所谓，只要可以和之后的配置文件对上即可<br>这里假设入口函数名为<code>gdexample_library_init</code>，入口函数签名是这样的</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-c data-lang=c><span style=display:flex><span>GDExtensionBool <span style=color:#a6e22e>gdexample_library_init</span>(GDExtensionInterfaceGetProcAddress p_get_proc_address,
+</span></span><span style=display:flex><span>                                    GDExtensionClassLibraryPtr p_library,
+</span></span><span style=display:flex><span>                                    GDExtensionInitialization <span style=color:#f92672>*</span>r_initialization)
+</span></span><span style=display:flex><span><span style=color:#75715e>// GDExtensionBool: uint_8
+</span></span></span><span style=display:flex><span><span style=color:#75715e>// GDExtensionInterfaceGetProcAddress: void(*(*)(const char*))()
+</span></span></span><span style=display:flex><span><span style=color:#75715e>// GDExtensionClassLibraryPtr: void*
+</span></span></span><span style=display:flex><span><span style=color:#75715e>// GDExtensionInitialization: (struct)
+</span></span></span></code></pre></div><p>某种程度上，只写这样一个函数就可以<br>但这样会导致代码很难维护，所以需要将一些东西分离出来，方便开发</p><h3 id=扩展配置文件>扩展配置文件</h3><p>首先先在<code>demo</code>文件夹下面创建插件的配置文件<code>gdexample.gdextension</code></p><pre tabindex=0><code class=language-conf data-lang=conf># ./demo/gdexample.gdextension
+[configuration]
+
+entry_symbol = &#34;gdexample_library_init&#34;
+compatibility_minimum = &#34;4.2&#34;
+
+[libraries]
+macos.debug = &#34;res://addon/bin/ExtensionTest.dylib&#34;
+linux.debug = &#34;res://addon/bin/ExtensionTest.so&#34;
+windows.debug = &#34;res://addon/bin/ExtensionTest.dll&#34;
+</code></pre><p><code>entry_symbol</code>表示函数入口符号，能对应上即可<br>下面的<code>[libraries]</code>指示Godot该在哪里找到动态链接库</p><h3 id=扩展的其他符号定义>扩展的其他符号定义</h3><p><code>gdextension_interface.h</code>只导出了必须的GDExtensionAPI<br>而Godot的很多其他部分如StringName的符号定义并未给出<br>所以需要有一个定义其他符号的文件<br>创建<code>./src/defs.h</code>文件，内容如下</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-c data-lang=c><span style=display:flex><span><span style=color:#75715e>#pragma once
+</span></span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;stdbool.h&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;stddef.h&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;stdint.h&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#if !defined(GDE_EXPORT)
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#if defined(_WIN32)
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#define GDE_EXPORT __declspec(dllexport)
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#elif defined(__GNUC__)
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#define GDE_EXPORT __attribute__((visibility(&#34;default&#34;)))
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#else
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#define GDE_EXPORT
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#endif
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#ifdef BUILD_32
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#define STRING_NAME_SIZE 4
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#else
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#define STRING_NAME_SIZE 8
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#endif
+</span></span></span><span style=display:flex><span><span style=color:#66d9ef>typedef</span> <span style=color:#66d9ef>struct</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>uint8_t</span> data[STRING_NAME_SIZE];
+</span></span><span style=display:flex><span>} StringName;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#endif </span><span style=color:#75715e>// ! GDE_EXPORT
+</span></span></span></code></pre></div><p>这里主要定义了两个东西，一个是<code>GDE_Export</code>宏，另一个是<code>StringName</code>的符号定义<br><code>GDE_Export</code>宏需要添加在需要导出到动态链接库的函数声明中<br><code>StringName</code>的类型大小信息可以在<code>extension_api.json</code>中寻找</p><h3 id=api绑定>API绑定</h3><p>我们可以通过函数入口传入的<code>p_get_proc_address</code>获取需要的函数<br>为了方便调用与减少代码错误，这里为需要的用到的函数创建符号</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-c data-lang=c><span style=display:flex><span><span style=color:#75715e>// ./src/api.h
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#pragma once
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&#34;gdextension_interface.h&#34;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&#34;defs.h&#34;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#66d9ef>extern</span> GDExtensionClassLibraryPtr class_library;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>extern</span> <span style=color:#66d9ef>struct</span> Constructors
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    GDExtensionInterfaceStringNameNewWithLatin1Chars string_name_new_with_latin1_chars;
+</span></span><span style=display:flex><span>} constructors;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>extern</span> <span style=color:#66d9ef>struct</span> Destructors
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    GDExtensionPtrDestructor string_name_destructor;
+</span></span><span style=display:flex><span>} destructors;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>extern</span> <span style=color:#66d9ef>struct</span> API
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    GDExtensionInterfaceClassdbRegisterExtensionClass2 classdb_register_extension_class2;
+</span></span><span style=display:flex><span>    GDExtensionInterfaceClassdbConstructObject classdb_construct_object;
+</span></span><span style=display:flex><span>    GDExtensionInterfaceObjectSetInstance object_set_instance;
+</span></span><span style=display:flex><span>    GDExtensionInterfaceObjectSetInstanceBinding object_set_instance_binding;
+</span></span><span style=display:flex><span>    GDExtensionInterfaceMemAlloc mem_alloc;
+</span></span><span style=display:flex><span>    GDExtensionInterfaceMemFree mem_free;
+</span></span><span style=display:flex><span>} api;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>void</span> <span style=color:#a6e22e>load_api</span>(GDExtensionInterfaceGetProcAddress p_get_proc_address);
+</span></span></code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-c data-lang=c><span style=display:flex><span><span style=color:#75715e>// ./src/api.c
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&#34;api.h&#34;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>struct</span> Constructors constructors;
+</span></span><span style=display:flex><span><span style=color:#66d9ef>struct</span> Destructors destructors;
+</span></span><span style=display:flex><span><span style=color:#66d9ef>struct</span> API api;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>GDExtensionClassLibraryPtr class_library <span style=color:#f92672>=</span> NULL;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>void</span> <span style=color:#a6e22e>load_api</span>(GDExtensionInterfaceGetProcAddress p_get_proc_address)
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// Get helper functions first.
+</span></span></span><span style=display:flex><span>    GDExtensionInterfaceVariantGetPtrDestructor variant_get_ptr_destructor <span style=color:#f92672>=</span>
+</span></span><span style=display:flex><span>        (GDExtensionInterfaceVariantGetPtrDestructor)<span style=color:#a6e22e>p_get_proc_address</span>(<span style=color:#e6db74>&#34;variant_get_ptr_destructor&#34;</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// API.
+</span></span></span><span style=display:flex><span>    api.classdb_register_extension_class2 <span style=color:#f92672>=</span> <span style=color:#a6e22e>p_get_proc_address</span>(<span style=color:#e6db74>&#34;classdb_register_extension_class2&#34;</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// Constructors.
+</span></span></span><span style=display:flex><span>    constructors.string_name_new_with_latin1_chars <span style=color:#f92672>=</span>
+</span></span><span style=display:flex><span>        (GDExtensionInterfaceStringNameNewWithLatin1Chars)<span style=color:#a6e22e>p_get_proc_address</span>(<span style=color:#e6db74>&#34;string_name_new_with_latin1_chars&#34;</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// Destructors.
+</span></span></span><span style=display:flex><span>    destructors.string_name_destructor <span style=color:#f92672>=</span> <span style=color:#a6e22e>variant_get_ptr_destructor</span>(GDEXTENSION_VARIANT_TYPE_STRING_NAME);
+</span></span><span style=display:flex><span>    api.classdb_register_extension_class2 <span style=color:#f92672>=</span> <span style=color:#a6e22e>p_get_proc_address</span>(<span style=color:#e6db74>&#34;classdb_register_extension_class2&#34;</span>);
+</span></span><span style=display:flex><span>    api.classdb_construct_object <span style=color:#f92672>=</span>
+</span></span><span style=display:flex><span>        (GDExtensionInterfaceClassdbConstructObject)<span style=color:#a6e22e>p_get_proc_address</span>(<span style=color:#e6db74>&#34;classdb_construct_object&#34;</span>);
+</span></span><span style=display:flex><span>    api.object_set_instance <span style=color:#f92672>=</span> <span style=color:#a6e22e>p_get_proc_address</span>(<span style=color:#e6db74>&#34;object_set_instance&#34;</span>);
+</span></span><span style=display:flex><span>    api.object_set_instance_binding <span style=color:#f92672>=</span> <span style=color:#a6e22e>p_get_proc_address</span>(<span style=color:#e6db74>&#34;object_set_instance_binding&#34;</span>);
+</span></span><span style=display:flex><span>    api.mem_alloc <span style=color:#f92672>=</span> (GDExtensionInterfaceMemAlloc)<span style=color:#a6e22e>p_get_proc_address</span>(<span style=color:#e6db74>&#34;mem_alloc&#34;</span>);
+</span></span><span style=display:flex><span>    api.mem_free <span style=color:#f92672>=</span> (GDExtensionInterfaceMemFree)<span style=color:#a6e22e>p_get_proc_address</span>(<span style=color:#e6db74>&#34;mem_free&#34;</span>);
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>这样通过全局字段绑定了需要使用的api，方便调用</p><h3 id=自定义节点类型>自定义节点类型</h3><p>现在可以开始写自定义节点的实现了</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-c data-lang=c><span style=display:flex><span><span style=color:#75715e>// ./src/gdextension.h
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#pragma once
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&#34;gdextension_interface.h&#34;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&#34;defs.h&#34;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>// Struct to hold the node data.
+</span></span></span><span style=display:flex><span><span style=color:#66d9ef>typedef</span> <span style=color:#66d9ef>struct</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    GDExtensionObjectPtr object; <span style=color:#75715e>// Stores the underlying Godot object.
+</span></span></span><span style=display:flex><span>} CookieGDExample;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>// Constructor for the node.
+</span></span></span><span style=display:flex><span><span style=color:#66d9ef>void</span> <span style=color:#a6e22e>gdexample_class_constructor</span>(CookieGDExample <span style=color:#f92672>*</span>self);
+</span></span><span style=display:flex><span><span style=color:#75715e>// Destructor for the node.
+</span></span></span><span style=display:flex><span><span style=color:#66d9ef>void</span> <span style=color:#a6e22e>gdexample_class_destructor</span>(CookieGDExample <span style=color:#f92672>*</span>self);
+</span></span><span style=display:flex><span><span style=color:#75715e>// Bindings.
+</span></span></span><span style=display:flex><span><span style=color:#66d9ef>void</span> <span style=color:#a6e22e>gdexample_class_bind_methods</span>();
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>GDExtensionObjectPtr <span style=color:#a6e22e>gdexample_class_create_instance</span>(<span style=color:#66d9ef>void</span> <span style=color:#f92672>*</span>p_class_userdata);
+</span></span><span style=display:flex><span><span style=color:#66d9ef>void</span> <span style=color:#a6e22e>gdexample_class_free_instance</span>(<span style=color:#66d9ef>void</span> <span style=color:#f92672>*</span>p_class_userdata, GDExtensionClassInstancePtr p_instance);
+</span></span></code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-c data-lang=c><span style=display:flex><span><span style=color:#75715e>// ./src/gdextension.c
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&#34;gdexample.h&#34;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&#34;api.h&#34;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>void</span> <span style=color:#a6e22e>gdexample_class_constructor</span>(CookieGDExample <span style=color:#f92672>*</span>self)
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>void</span> <span style=color:#a6e22e>gdexample_class_destructor</span>(CookieGDExample <span style=color:#f92672>*</span>self)
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>void</span> <span style=color:#a6e22e>gdexample_class_bind_methods</span>()
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>const</span> GDExtensionInstanceBindingCallbacks gdexample_class_binding_callbacks <span style=color:#f92672>=</span> {
+</span></span><span style=display:flex><span>    .create_callback <span style=color:#f92672>=</span> NULL,
+</span></span><span style=display:flex><span>    .free_callback <span style=color:#f92672>=</span> NULL,
+</span></span><span style=display:flex><span>    .reference_callback <span style=color:#f92672>=</span> NULL,
+</span></span><span style=display:flex><span>};
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>GDExtensionObjectPtr <span style=color:#a6e22e>gdexample_class_create_instance</span>(<span style=color:#66d9ef>void</span> <span style=color:#f92672>*</span>p_class_userdata)
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>	<span style=color:#75715e>// 先创建Sprite2D节点
+</span></span></span><span style=display:flex><span>    <span style=color:#75715e>// 创建临时的StringName结构
+</span></span></span><span style=display:flex><span>    StringName class_name;
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// 给创建的StringName结构赋值&#34;Sprite2D&#34;
+</span></span></span><span style=display:flex><span>    constructors.<span style=color:#a6e22e>string_name_new_with_latin1_chars</span>(<span style=color:#f92672>&amp;</span>class_name, <span style=color:#e6db74>&#34;Sprite2D&#34;</span>, false);
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// 通过ClassDB创建Sprite2D节点
+</span></span></span><span style=display:flex><span>    GDExtensionObjectPtr object <span style=color:#f92672>=</span> api.<span style=color:#a6e22e>classdb_construct_object</span>(<span style=color:#f92672>&amp;</span>class_name);
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// 销毁临时的StringName数据
+</span></span></span><span style=display:flex><span>    destructors.<span style=color:#a6e22e>string_name_destructor</span>(<span style=color:#f92672>&amp;</span>class_name);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// 创建扩展类型节点
+</span></span></span><span style=display:flex><span>    <span style=color:#75715e>// 给扩展类型节点分配内存
+</span></span></span><span style=display:flex><span>    CookieGDExample <span style=color:#f92672>*</span>self <span style=color:#f92672>=</span> (CookieGDExample <span style=color:#f92672>*</span>)api.<span style=color:#a6e22e>mem_alloc</span>(<span style=color:#66d9ef>sizeof</span>(CookieGDExample));
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// 调用扩展类型节点构造函数，这里演示为空
+</span></span></span><span style=display:flex><span>    <span style=color:#a6e22e>gdexample_class_constructor</span>(self);
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// 给扩展类型赋值
+</span></span></span><span style=display:flex><span>    self<span style=color:#f92672>-&gt;</span>object <span style=color:#f92672>=</span> object;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// 配置扩展类型节点
+</span></span></span><span style=display:flex><span>    <span style=color:#75715e>// 给临时StringName结构赋值&#34;GDExample&#34;
+</span></span></span><span style=display:flex><span>    constructors.<span style=color:#a6e22e>string_name_new_with_latin1_chars</span>(<span style=color:#f92672>&amp;</span>class_name, <span style=color:#e6db74>&#34;GDExample&#34;</span>, false);
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// 设置创建的object
+</span></span></span><span style=display:flex><span>    api.<span style=color:#a6e22e>object_set_instance</span>(object, <span style=color:#f92672>&amp;</span>class_name, self);
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// 配置object绑定的脚本之类的，跟这里填NULL即可
+</span></span></span><span style=display:flex><span>    api.<span style=color:#a6e22e>object_set_instance_binding</span>(object, class_library, self, <span style=color:#f92672>&amp;</span>gdexample_class_binding_callbacks);
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// 销毁临时的StringName数据
+</span></span></span><span style=display:flex><span>    destructors.<span style=color:#a6e22e>string_name_destructor</span>(<span style=color:#f92672>&amp;</span>class_name);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> object;
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>void</span> <span style=color:#a6e22e>gdexample_class_free_instance</span>(<span style=color:#66d9ef>void</span> <span style=color:#f92672>*</span>p_class_userdata, GDExtensionClassInstancePtr p_instance)
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> (p_instance <span style=color:#f92672>==</span> NULL)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span>;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>    CookieGDExample <span style=color:#f92672>*</span>self <span style=color:#f92672>=</span> (CookieGDExample <span style=color:#f92672>*</span>)p_instance;
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>gdexample_class_destructor</span>(self);
+</span></span><span style=display:flex><span>    api.<span style=color:#a6e22e>mem_free</span>(self);
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><h3 id=初始化模块>初始化模块</h3><p>有上面的工作后，就可以开始初始化模块了</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-c data-lang=c><span style=display:flex><span><span style=color:#75715e>// ./src/init.h
+</span></span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#pragma once
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&#34;defs.h&#34;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&#34;gdextension_interface.h&#34;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>void</span> <span style=color:#a6e22e>initialize_gdexample_module</span>(<span style=color:#66d9ef>void</span> <span style=color:#f92672>*</span>p_userdata, GDExtensionInitializationLevel p_level);
+</span></span><span style=display:flex><span><span style=color:#66d9ef>void</span> <span style=color:#a6e22e>deinitialize_gdexample_module</span>(<span style=color:#66d9ef>void</span> <span style=color:#f92672>*</span>p_userdata, GDExtensionInitializationLevel p_level);
+</span></span><span style=display:flex><span>GDExtensionBool GDE_EXPORT <span style=color:#a6e22e>gdexample_library_init</span>(GDExtensionInterfaceGetProcAddress p_get_proc_address,
+</span></span><span style=display:flex><span>                                                  GDExtensionClassLibraryPtr p_library,
+</span></span><span style=display:flex><span>                                                  GDExtensionInitialization <span style=color:#f92672>*</span>r_initialization);
+</span></span></code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-c data-lang=c><span style=display:flex><span><span style=color:#75715e>// ./src/init.c
+</span></span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&#34;init.h&#34;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&#34;api.h&#34;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&#34;gdexample.h&#34;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>void</span> <span style=color:#a6e22e>initialize_gdexample_module</span>(<span style=color:#66d9ef>void</span> <span style=color:#f92672>*</span>p_userdata, GDExtensionInitializationLevel p_level)
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> (p_level <span style=color:#f92672>!=</span> GDEXTENSION_INITIALIZATION_SCENE)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span>;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    StringName class_name;
+</span></span><span style=display:flex><span>    constructors.<span style=color:#a6e22e>string_name_new_with_latin1_chars</span>(<span style=color:#f92672>&amp;</span>class_name, <span style=color:#e6db74>&#34;GDExample&#34;</span>, false);
+</span></span><span style=display:flex><span>    StringName parent_class_name;
+</span></span><span style=display:flex><span>    constructors.<span style=color:#a6e22e>string_name_new_with_latin1_chars</span>(<span style=color:#f92672>&amp;</span>parent_class_name, <span style=color:#e6db74>&#34;Sprite2D&#34;</span>, false);
+</span></span><span style=display:flex><span>	
+</span></span><span style=display:flex><span>	<span style=color:#75715e>// 创建类型信息
+</span></span></span><span style=display:flex><span>    GDExtensionClassCreationInfo2 class_info <span style=color:#f92672>=</span> {
+</span></span><span style=display:flex><span>        .is_virtual <span style=color:#f92672>=</span> false,
+</span></span><span style=display:flex><span>        .is_abstract <span style=color:#f92672>=</span> false,
+</span></span><span style=display:flex><span>        .is_exposed <span style=color:#f92672>=</span> true,
+</span></span><span style=display:flex><span>        .set_func <span style=color:#f92672>=</span> NULL,
+</span></span><span style=display:flex><span>        .get_func <span style=color:#f92672>=</span> NULL,
+</span></span><span style=display:flex><span>        .get_property_list_func <span style=color:#f92672>=</span> NULL,
+</span></span><span style=display:flex><span>        .free_property_list_func <span style=color:#f92672>=</span> NULL,
+</span></span><span style=display:flex><span>        .property_can_revert_func <span style=color:#f92672>=</span> NULL,
+</span></span><span style=display:flex><span>        .property_get_revert_func <span style=color:#f92672>=</span> NULL,
+</span></span><span style=display:flex><span>        .validate_property_func <span style=color:#f92672>=</span> NULL,
+</span></span><span style=display:flex><span>        .notification_func <span style=color:#f92672>=</span> NULL,
+</span></span><span style=display:flex><span>        .to_string_func <span style=color:#f92672>=</span> NULL,
+</span></span><span style=display:flex><span>        .reference_func <span style=color:#f92672>=</span> NULL,
+</span></span><span style=display:flex><span>        .unreference_func <span style=color:#f92672>=</span> NULL,
+</span></span><span style=display:flex><span>        .create_instance_func <span style=color:#f92672>=</span> gdexample_class_create_instance,
+</span></span><span style=display:flex><span>        .free_instance_func <span style=color:#f92672>=</span> gdexample_class_free_instance,
+</span></span><span style=display:flex><span>        .recreate_instance_func <span style=color:#f92672>=</span> NULL,
+</span></span><span style=display:flex><span>        .get_virtual_func <span style=color:#f92672>=</span> NULL,
+</span></span><span style=display:flex><span>        .get_virtual_call_data_func <span style=color:#f92672>=</span> NULL,
+</span></span><span style=display:flex><span>        .call_virtual_with_data_func <span style=color:#f92672>=</span> NULL,
+</span></span><span style=display:flex><span>        .get_rid_func <span style=color:#f92672>=</span> NULL,
+</span></span><span style=display:flex><span>        .class_userdata <span style=color:#f92672>=</span> NULL,
+</span></span><span style=display:flex><span>    };
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#75715e>// 把类型信息注册到ClassDB中
+</span></span></span><span style=display:flex><span>    api.<span style=color:#a6e22e>classdb_register_extension_class2</span>(class_library, <span style=color:#f92672>&amp;</span>class_name, <span style=color:#f92672>&amp;</span>parent_class_name, <span style=color:#f92672>&amp;</span>class_info);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// Bind methods.
+</span></span></span><span style=display:flex><span>    <span style=color:#a6e22e>gdexample_class_bind_methods</span>();
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// 销毁两个临时的StringName数据
+</span></span></span><span style=display:flex><span>    destructors.<span style=color:#a6e22e>string_name_destructor</span>(<span style=color:#f92672>&amp;</span>class_name);
+</span></span><span style=display:flex><span>    destructors.<span style=color:#a6e22e>string_name_destructor</span>(<span style=color:#f92672>&amp;</span>parent_class_name);
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>void</span> <span style=color:#a6e22e>deinitialize_gdexample_module</span>(<span style=color:#66d9ef>void</span> <span style=color:#f92672>*</span>p_userdata, GDExtensionInitializationLevel p_level)
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>GDExtensionBool GDE_EXPORT <span style=color:#a6e22e>gdexample_library_init</span>(GDExtensionInterfaceGetProcAddress p_get_proc_address,
+</span></span><span style=display:flex><span>                                                  GDExtensionClassLibraryPtr p_library,
+</span></span><span style=display:flex><span>                                                  GDExtensionInitialization <span style=color:#f92672>*</span>r_initialization)
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    class_library <span style=color:#f92672>=</span> p_library;
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>load_api</span>(p_get_proc_address);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    r_initialization<span style=color:#f92672>-&gt;</span>initialize <span style=color:#f92672>=</span> initialize_gdexample_module;
+</span></span><span style=display:flex><span>    r_initialization<span style=color:#f92672>-&gt;</span>deinitialize <span style=color:#f92672>=</span> deinitialize_gdexample_module;
+</span></span><span style=display:flex><span>    r_initialization<span style=color:#f92672>-&gt;</span>userdata <span style=color:#f92672>=</span> NULL;
+</span></span><span style=display:flex><span>    r_initialization<span style=color:#f92672>-&gt;</span>minimum_initialization_level <span style=color:#f92672>=</span> GDEXTENSION_INITIALIZATION_SCENE;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> true;
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>（<code>GDExtensionClassCreationInfo2</code>算是废弃了，4.5应该用<code>GDExtensionClassCreationInfo5</code>）<br>（不过如果考虑给旧版本开发GDExtension，那应该使用旧版本的函数）</p><h2 id=0x03-在godot中使用>&lt;0x03> 在Godot中使用</h2><p>只需要创建新项目，然后将demo文件夹直接复制到项目文件中<br>需要注意<code>gdexample.gdextension</code>内的路径<br>不同于通过脚本实现的插件需要启用<br>GDExtension实现的插件在Godot读取到<code>*.gdextension</code>后，会自动开始加载需要的动态链接文件<br>当然，如果在初始化模块时遇到错误，会导致整个Godot直接崩溃</p><p>加载后，就可以在添加新节点中看到扩展定义的节点<br><img class=gallery-image data-flex-basis=280px data-flex-grow=116 height=1029 loading=lazy sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src=/post/articles/2025/%E5%A6%82%E4%BD%95%E7%BC%96%E5%86%99gdextension%E6%8F%92%E4%BB%B6/picture/1.png srcset="/post/articles/2025/%E5%A6%82%E4%BD%95%E7%BC%96%E5%86%99gdextension%E6%8F%92%E4%BB%B6/picture/1_hu_a5eeeb38efbf8508.png 800w, /post/articles/2025/%E5%A6%82%E4%BD%95%E7%BC%96%E5%86%99gdextension%E6%8F%92%E4%BB%B6/picture/1.png 1202w" width=1202></p><h1 id=使用c开发gdextension-1>使用C#开发GDExtension</h1><p>上面提到Godot通过运行时加载动态链接库实现对引擎功能的扩充<br>而理论上，加载动态链接库实际上只要调用的符号对得上就可以，这是与语言无关的<br>也就是说，只要语言可以导出C符号的动态链接库，就可以写GDExtension<br>而C#恰好就可以通过AOT导出C符号的动态链接库，这就很有意思了</p><h2 id=0x00-使用c开发的前言>&lt;0x00> 使用C#开发的前言</h2><p>需要注意的是，在我研究到一半的时候，发现有项目在做这个事情了(<a class=link href=https://github.com/raulsntos/godot-dotnet target=_blank rel=noopener>godot-dotnet</a>)<br>当然，这个项目还不像Rust或者Go的Binding那么完善稳定，不推荐在生产环境中使用<br>所以，这篇文章更多的是举一个例子，展示如何用C#编写AOT的代码<br><a class=link href=https://github.com/MLAcookie/GDExtension-Example target=_blank rel=noopener>代码仓库</a></p><p>需要注意的是，编写AOT代码不仅需要.netSDK，还需要额外的工具来完成符号的导出<br>比如说Windows平台上，就需要安装Visual Studio的C++工作负载<br>主要是需要MSVC生成工具，其他平台可以参考<a class=link href=https://learn.microsoft.com/en-us/dotnet/core/deploying/native-aot target=_blank rel=noopener>微软的这篇教程</a></p><h2 id=0x01-一些概念>&lt;0x01> 一些概念</h2><h3 id=unsafe代码块>unsafe代码块</h3><p>在本项目中，我们需要用到一些unsafe的代码<br>在unsafe上下文中，我们可以通过指针直接操作内存<br>代价就是这样没有运行时的内存安全保证<br>一旦操作不当就可能会引起程序崩溃<br>不过对于一些本机代码的交互，还是需要用unsafe的</p><h3 id=函数指针>函数指针</h3><p>在GDExtension中，有非常多的操作是通过函数指针传递的<br>对于C中如下的函数指针</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-c data-lang=c><span style=display:flex><span><span style=color:#66d9ef>typedef</span> <span style=color:#a6e22e>void</span> (<span style=color:#f92672>*</span>function_a)(<span style=color:#66d9ef>int</span> num);
+</span></span><span style=display:flex><span><span style=color:#66d9ef>typedef</span> <span style=color:#a6e22e>int</span> (<span style=color:#f92672>*</span>function_b)(<span style=color:#66d9ef>const</span> <span style=color:#66d9ef>char</span><span style=color:#f92672>*</span> str);
+</span></span></code></pre></div><p>C#中需要如下方式声明</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-cs data-lang=cs><span style=display:flex><span><span style=color:#66d9ef>using</span> FunctionAPtr = <span style=color:#66d9ef>delegate</span>* unmanaged[Cdecl]&lt;<span style=color:#66d9ef>int</span>, <span style=color:#66d9ef>void</span>&gt;;
+</span></span><span style=display:flex><span><span style=color:#75715e>// C的char类型应该对应C#的byte，C#的char类型为2字节，表示UTF16编码</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>using</span> FunctionBPtr = <span style=color:#66d9ef>delegate</span>* unmanaged[Cdecl]&lt;<span style=color:#66d9ef>byte</span>*, <span style=color:#66d9ef>int</span>&gt;;
+</span></span></code></pre></div><p>有一说一，写法上确实挺抽象的<br>这里使用的是using声明，作用域仅限当前文件内<br>如果需要确保类型，就需要单独声明一个struct，比如这样</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-cs data-lang=cs><span style=display:flex><span><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>unsafe</span> <span style=color:#66d9ef>struct</span> <span style=color:#a6e22e>FunctionAPtr</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>private</span> FunctionAPtr(<span style=color:#66d9ef>delegate</span>* unmanaged[Cdecl]&lt;<span style=color:#66d9ef>int</span>, <span style=color:#66d9ef>void</span>&gt; ptr)
+</span></span><span style=display:flex><span>	{
+</span></span><span style=display:flex><span>		_ptr = ptr;
+</span></span><span style=display:flex><span>	}
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>private</span> <span style=color:#66d9ef>delegate</span>* unmanaged[Cdecl]&lt;<span style=color:#66d9ef>int</span>, <span style=color:#66d9ef>void</span>&gt; _ptr;
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>static</span> <span style=color:#66d9ef>implicit</span> <span style=color:#66d9ef>operator</span> FunctionAPtr(<span style=color:#66d9ef>delegate</span>* unmanaged[Cdecl]&lt;<span style=color:#66d9ef>int</span>, <span style=color:#66d9ef>void</span>&gt; ptr) =&gt; <span style=color:#66d9ef>new</span> (ptr);
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>由于struct的内存分配特性，<code>FunctionAPtr</code>结构位置也即<code>_ptr</code>的位置<br>这就相当于给指针分配了类型</p><p>需要注意的是，在C#中指定方法需要在非托管环境中调用，需要用一个特性标记</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-cs data-lang=cs><span style=display:flex><span><span style=color:#75715e>// 标记仅允许非托管环境调用，调用约定为Cdecl</span>
+</span></span><span style=display:flex><span><span style=color:#a6e22e>[UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)]</span>)]
+</span></span><span style=display:flex><span><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>static</span> <span style=color:#66d9ef>void</span> FunctionA(<span style=color:#66d9ef>int</span> num)
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>delegate</span>* unmanaged[Cdecl]&lt;<span style=color:#66d9ef>int</span>, <span style=color:#66d9ef>void</span>&gt; ptr = &amp;FunctionA;
+</span></span></code></pre></div><h3 id=fixed代码块>fixed代码块</h3><p>C#中有一个挺少见的关键字<code>fixed</code><br>这个是用来指定该代码区域中指定托管对象的内存位置不动<br>为什么需要这样代码块呢，因为托管对象在托管堆的内存位置是有可能改变的<br>由于垃圾回收机制的存在，不需要的对象会被清理<br>而为了避免内存空间碎片化，垃圾回收器会对剩余的对象重新排列<br>通过<code>fixed</code>关键字，告诉垃圾回收器在这里暂时不要动指定对象的内存位置<br>下面是一个示例</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-cs data-lang=cs><span style=display:flex><span><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>Test</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>public</span> DoSomething()
+</span></span><span style=display:flex><span>	{
+</span></span><span style=display:flex><span>		<span style=color:#75715e>// ...</span>
+</span></span><span style=display:flex><span>		<span style=color:#75715e>// 固定this表示的对象</span>
+</span></span><span style=display:flex><span>		<span style=color:#66d9ef>fixed</span>(<span style=color:#66d9ef>void</span>* pThis = &amp;<span style=color:#66d9ef>this</span>)
+</span></span><span style=display:flex><span>		{
+</span></span><span style=display:flex><span>			Method(pThis);
+</span></span><span style=display:flex><span>		}
+</span></span><span style=display:flex><span>		<span style=color:#75715e>// ...</span>
+</span></span><span style=display:flex><span>	}
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><h2 id=0x02-开始>&lt;0x02> 开始</h2><p>创建一个项目，这里采用.net10，使用类库项目模板<br>需要在.csproj文件中启用AOT与unsafe上下文</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-xml data-lang=xml><span style=display:flex><span><span style=color:#f92672>&lt;Project</span> <span style=color:#a6e22e>Sdk=</span><span style=color:#e6db74>&#34;Microsoft.NET.Sdk&#34;</span><span style=color:#f92672>&gt;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&lt;PropertyGroup&gt;</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&lt;TargetFramework&gt;</span>net10.0<span style=color:#f92672>&lt;/TargetFramework&gt;</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&lt;ImplicitUsings&gt;</span>enable<span style=color:#f92672>&lt;/ImplicitUsings&gt;</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&lt;Nullable&gt;</span>enable<span style=color:#f92672>&lt;/Nullable&gt;</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&lt;PublishAot&gt;</span>true<span style=color:#f92672>&lt;/PublishAot&gt;</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&lt;AllowUnsafeBlocks&gt;</span>true<span style=color:#f92672>&lt;/AllowUnsafeBlocks&gt;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&lt;/PropertyGroup&gt;</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>&lt;/Project&gt;</span>
+</span></span></code></pre></div><h3 id=整个入口>整个入口</h3><p>首先先复刻一个我们需要的函数入口</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-cs data-lang=cs><span style=display:flex><span><span style=color:#75715e>// .ExtensionEntry.cs</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>using</span> System.Runtime.CompilerServices;
+</span></span><span style=display:flex><span><span style=color:#66d9ef>using</span> System.Runtime.InteropServices;
+</span></span><span style=display:flex><span><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>unsafe</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>ExtensionEntry</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span><span style=color:#a6e22e>	[UnmanagedCallersOnly(EntryPoint = &#34;aot_init&#34;)]</span>
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>static</span> <span style=color:#66d9ef>bool</span> Init(
+</span></span><span style=display:flex><span>        nint pGetProcAddress,
+</span></span><span style=display:flex><span>        nint pLibrary,
+</span></span><span style=display:flex><span>        nint rInitialization)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>其他先不加，尝试生成一下，通过dumpbin看看有没有这个入口</p><p><img class=gallery-image data-flex-basis=370px data-flex-grow=154 height=800 loading=lazy sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src=/post/articles/2025/%E5%A6%82%E4%BD%95%E7%BC%96%E5%86%99gdextension%E6%8F%92%E4%BB%B6/picture/2.png srcset="/post/articles/2025/%E5%A6%82%E4%BD%95%E7%BC%96%E5%86%99gdextension%E6%8F%92%E4%BB%B6/picture/2_hu_f34642dd667aeab9.png 800w, /post/articles/2025/%E5%A6%82%E4%BD%95%E7%BC%96%E5%86%99gdextension%E6%8F%92%E4%BB%B6/picture/2.png 1235w" width=1235></p><p>有<code>aot_init</code>就说明已经把入口符号导出了</p><h3 id=分离代码>分离代码</h3><p>为了方便管理，这里将不同的代码放在不同的文件中</p><ul><li><code>./GdExtensionApi/GodotApi.cs</code>负责保存需要的Api函数指针</li><li><code>./GdExtensionApi/GodotEnum.cs</code>定义需要的枚举类型</li><li><code>./GdExtensionApi/GodotFunction.cs</code>定义需要的函数指针类型封装</li><li><code>./GdExtensionApi/GodotStruct.cs</code>定义需要的结构</li><li><code>./GdExtensionApi/GodotValue.cs</code>定义需要的数值类型</li></ul><h2 id=0x03-实现>&lt;0x03> 实现</h2><p>具体流程实际上还是与C的示例是一致的<br>也是通过入口，获取所有需要的Api函数指针<br>然后再进行一些操作<br>由于C#没有这些符号定义，所以最花时间的就是定义C#中的符号<br>自己定义的符号通过一些方式还可以融合C#的语法糖，也还行</p><h3 id=stringname定义>StringName定义</h3><p>GDExtension中，获取StringName实际上获取的是StringName的指针<br>其内容的生存期由Godot本身管理<br>也就是说，在我们的代码中需要告诉Godot什么时候销毁这个东西<br>所以会在C的代码中看到这样的代码</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-c data-lang=c><span style=display:flex><span>StringName class_name;
+</span></span><span style=display:flex><span><span style=color:#75715e>// 创建StringName，内容为&#34;Sprite2D&#34;
+</span></span></span><span style=display:flex><span>constructors.<span style=color:#a6e22e>string_name_new_with_latin1_chars</span>(<span style=color:#f92672>&amp;</span>class_name, <span style=color:#e6db74>&#34;Sprite2D&#34;</span>, false);
+</span></span><span style=display:flex><span><span style=color:#75715e>// 一些操作
+</span></span></span><span style=display:flex><span><span style=color:#75715e>// 指示销毁
+</span></span></span><span style=display:flex><span>destructors.<span style=color:#a6e22e>string_name_destructor</span>(<span style=color:#f92672>&amp;</span>class_name);
+</span></span></code></pre></div><p>这会导致局部暂时使用StringName会有些麻烦，需要记得销毁</p><p>C#中有个<code>using</code>语法，表示在作用域内使用的变量，离开作用域后自动销毁<br>这依赖于<code>IDisposable</code>接口的实现<br>我们可以在自己定义的StringName中实现这个接口</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-cs data-lang=cs><span style=display:flex><span><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>unsafe</span> <span style=color:#66d9ef>struct</span> <span style=color:#a6e22e>StringName</span> : IDisposable
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>private</span> StringName(<span style=color:#66d9ef>string</span> str)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        From(str);
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#75715e>// 需要加载的函数指针</span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>static</span> <span style=color:#66d9ef>delegate</span>* unmanaged[Cdecl]&lt;StringName*, <span style=color:#66d9ef>byte</span>*, GdExtensionBool, <span style=color:#66d9ef>void</span>&gt; ConstructPtr;
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>static</span> <span style=color:#66d9ef>delegate</span>* unmanaged[Cdecl]&lt;StringName*, <span style=color:#66d9ef>void</span>&gt; DestructPtr;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>static</span> <span style=color:#66d9ef>implicit</span> <span style=color:#66d9ef>operator</span> StringName(<span style=color:#66d9ef>string</span> str) =&gt; <span style=color:#66d9ef>new</span>(str);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>private</span> <span style=color:#66d9ef>void</span>* _ptr = <span style=color:#66d9ef>null</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>private</span> <span style=color:#66d9ef>void</span> From(<span style=color:#66d9ef>string</span> str)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>fixed</span> (StringName* pThis = &amp;<span style=color:#66d9ef>this</span>)
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            ConstructPtr(pThis, (<span style=color:#66d9ef>byte</span>*)Marshal.StringToHGlobalAnsi(str), <span style=color:#66d9ef>false</span>);
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>void</span> Dispose()
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>fixed</span> (StringName* pThis = &amp;<span style=color:#66d9ef>this</span>)
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            DestructPtr(pThis);
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>这样的实现，在代码中需要使用StringName时，就方便许多了</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-cs data-lang=cs><span style=display:flex><span><span style=color:#66d9ef>using</span> StringName className = <span style=color:#e6db74>&#34;Sprite2D&#34;</span>;
+</span></span></code></pre></div><h3 id=其他类型的封装>其他类型的封装</h3><p>在本示例中，其他类型的封装大多是重复劳动<br>主要使用的技巧是隐式类型转换，比如说这样</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-cs data-lang=cs><span style=display:flex><span><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>unsafe</span> <span style=color:#66d9ef>struct</span> <span style=color:#a6e22e>GdExtensionObjectPtr</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>private</span> GdExtensionObjectPtr(<span style=color:#66d9ef>void</span>* ptr)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        _ptr = ptr;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>private</span> <span style=color:#66d9ef>readonly</span> <span style=color:#66d9ef>void</span>* _ptr;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>static</span> <span style=color:#66d9ef>implicit</span> <span style=color:#66d9ef>operator</span> GdExtensionObjectPtr(<span style=color:#66d9ef>void</span>* ptr) =&gt; <span style=color:#66d9ef>new</span>(ptr);
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>static</span> <span style=color:#66d9ef>implicit</span> <span style=color:#66d9ef>operator</span> <span style=color:#66d9ef>void</span>*(GdExtensionObjectPtr ptr) =&gt; ptr._ptr;
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>定义了<code>void*</code>与<code>GdExtensionObjectPtr</code>类型的互相隐式转换<br>在需要的地方就可以非常方便得转换不同类型的指针封装<br>具体的话可以看仓库代码</p><h3 id=枚举类型的传递>枚举类型的传递</h3><p>GDExtension中也存在一些枚举类型，这些类型在C#中怎么对应呢<br>好消息是，在C与C#中，枚举本质上与int类似<br>传递不同的枚举值相当于传递不同的int值<br>也就是可以直接对应，只要C#中的定义与C中的定义一致即可<br>具体详见仓库代码</p><h3 id=编写自定义节点>编写自定义节点</h3><p>有了上面的定义基础，我们就可以用C#编写一个简单的节点了<br>上次用C写的是继承<code>Sprite2D</code>的节点，这次写一个继承<code>Control</code>的节点</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-cs data-lang=cs><span style=display:flex><span><span style=color:#75715e>// ./AotExample.cs</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>using</span> System.Runtime.CompilerServices;
+</span></span><span style=display:flex><span><span style=color:#66d9ef>using</span> System.Runtime.InteropServices;
+</span></span><span style=display:flex><span><span style=color:#66d9ef>using</span> CSharpAotExtension.GodotExtensionApi;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>namespace</span> CSharpAotExtension;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>unsafe</span> <span style=color:#66d9ef>struct</span> <span style=color:#a6e22e>AotExample</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>private</span> <span style=color:#66d9ef>static</span> <span style=color:#66d9ef>readonly</span> GdExtensionInstanceBindingCallbacks BindingCallbacks;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>private</span> GdExtensionObjectPtr _objectPtr;
+</span></span><span style=display:flex><span><span style=color:#a6e22e>
+</span></span></span><span style=display:flex><span><span style=color:#a6e22e>    [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)]</span>)]
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>static</span> GdExtensionObjectPtr CreateInstance(<span style=color:#66d9ef>void</span>* pClassUserdata)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>using</span> StringName controlName = <span style=color:#e6db74>&#34;Control&#34;</span>;
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>using</span> StringName exampleName = <span style=color:#e6db74>&#34;AotExample&#34;</span>;
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>var</span> control = GdExtensionClassDb.ConstructObject(&amp;controlName);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>var</span> self = (AotExample*)GdExtensionCore.MemAlloc(<span style=color:#66d9ef>sizeof</span>(AotExample));
+</span></span><span style=display:flex><span>        self-&gt;_objectPtr = control;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        GdExtensionCore.ObjectSetInstance(control, &amp;exampleName, self);
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>fixed</span> (GdExtensionInstanceBindingCallbacks* pCallbacks = &amp;BindingCallbacks)
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            GdExtensionCore.ObjectSetInstanceBinding(control, ExtensionEntry.ClassLibrary, self, pCallbacks);
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> control;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span><span style=color:#a6e22e>
+</span></span></span><span style=display:flex><span><span style=color:#a6e22e>    [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)]</span>)]
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>static</span> <span style=color:#66d9ef>void</span> FreeInstance(<span style=color:#66d9ef>void</span>* pClassUserdata, GdExtensionClassInstancePtr pInstance)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>if</span> (pInstance.IsNull())
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>return</span>;
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        GdExtensionCore.MemFree(pInstance);
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>然后在加载过程中注册这个类型即可</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-cs data-lang=cs><span style=display:flex><span><span style=color:#75715e>// ./ExtensionEntry.cs</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>// ...</span>
+</span></span><span style=display:flex><span><span style=color:#a6e22e>[UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)]</span>)]
+</span></span><span style=display:flex><span><span style=color:#66d9ef>private</span> <span style=color:#66d9ef>static</span> <span style=color:#66d9ef>void</span> InitializeModule(<span style=color:#66d9ef>void</span>* pUserdata, GdExtensionInitializationLevel level)
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> (level != GdExtensionInitializationLevel.Scene)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span>;
+</span></span><span style=display:flex><span>	}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>using</span> StringName className = <span style=color:#e6db74>&#34;AotExample&#34;</span>;
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>using</span> StringName parentClassName = <span style=color:#e6db74>&#34;Control&#34;</span>;
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>delegate</span>* unmanaged[Cdecl]&lt;<span style=color:#66d9ef>void</span>*, GdExtensionObjectPtr&gt; createInstancePtr = &amp;AotExample.CreateInstance;
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>delegate</span>* unmanaged[Cdecl]&lt;<span style=color:#66d9ef>void</span>*, GdExtensionClassInstancePtr, <span style=color:#66d9ef>void</span>&gt; freeInstancePtr = &amp;AotExample.FreeInstance;
+</span></span><span style=display:flex><span>    GdExtensionClassCreationInfo2 classInfo = <span style=color:#66d9ef>new</span>()
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        IsVirtual = <span style=color:#66d9ef>false</span>,
+</span></span><span style=display:flex><span>        IsAbstract = <span style=color:#66d9ef>false</span>,
+</span></span><span style=display:flex><span>        IsExposed = <span style=color:#66d9ef>true</span>,
+</span></span><span style=display:flex><span>        CreateInstanceFunc = createInstancePtr,
+</span></span><span style=display:flex><span>        FreeInstanceFunc = freeInstancePtr,
+</span></span><span style=display:flex><span>    };
+</span></span><span style=display:flex><span>    GdExtensionClassDb.RegisterExtensionClass2(ClassLibrary, &amp;className, &amp;parentClassName, &amp;classInfo);
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span><span style=color:#75715e>// ...</span>
+</span></span></code></pre></div><h2 id=0x04-编译与运行>&lt;0x04> 编译与运行</h2><p>publish到目标位置后，同样，需要一个<code>.gdextension</code>文件来说明函数入口与动态库位置<br>（是publish，不是build，build的话入口符号可能不会导出）<br>配置完成后，启动Godot</p><p><img class=gallery-image data-flex-basis=317px data-flex-grow=132 height=768 loading=lazy sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src=/post/articles/2025/%E5%A6%82%E4%BD%95%E7%BC%96%E5%86%99gdextension%E6%8F%92%E4%BB%B6/picture/3.png srcset="/post/articles/2025/%E5%A6%82%E4%BD%95%E7%BC%96%E5%86%99gdextension%E6%8F%92%E4%BB%B6/picture/3_hu_590ce232cd8a0db9.png 800w, /post/articles/2025/%E5%A6%82%E4%BD%95%E7%BC%96%E5%86%99gdextension%E6%8F%92%E4%BB%B6/picture/3.png 1016w" width=1016></p><p>出现<code>AotExample</code>节点即说明我们写的扩展是正常运行的</p></section><footer class="article-meta article-footer"><section class=article-tags><a href=/tags/godot/>Godot</a>
+<a href=/tags/cpp/>Cpp</a>
+<a href=/tags/csharp/>CSharp</a></section><section class="article-copyright inline-meta"><svg class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg>
+<span>CC BY-NC-SA 4.0</span></section></footer><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css integrity=sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV crossorigin=anonymous><script src=https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js integrity=sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8 crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js integrity=sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05 crossorigin=anonymous defer></script><script>window.addEventListener("DOMContentLoaded",()=>{const e=[".main-article",".widget--toc"];e.forEach(e=>{const t=document.querySelector(e);t&&renderMathInElement(t,{delimiters:[{left:"$$",right:"$$",display:!0},{left:"$",right:"$",display:!1},{left:"\\(",right:"\\)",display:!1},{left:"\\[",right:"\\]",display:!0}],ignoredClasses:["gist"]})})})</script></article><aside><h2 class=section-title>相关文章</h2><div class=subsection-list><div class=article-list--tile><article><a href=/post/articles/2025/godot%E6%8F%92%E4%BB%B6%E5%88%B6%E4%BD%9C%E7%9A%84%E4%B8%80%E4%BA%9B%E7%A5%9E%E7%A7%98%E5%B0%8F%E6%8A%80%E5%B7%A7/><div class=article-details><h2 class=article-title>Godot插件制作的一些神秘小技巧</h2></div></a></article><article><a href=/post/articles/2025/godot%E4%B8%AD%E8%87%AA%E5%AE%9A%E4%B9%89editor/><div class=article-details><h2 class=article-title>Godot中自定义Editor</h2></div></a></article><article><a href=/post/articles/2025/%E8%AE%A9pythonnet%E4%BC%98%E9%9B%85%E5%9C%B0%E8%BF%90%E8%A1%8C%E5%9C%A8%E5%8D%95%E7%8B%AC%E7%9A%84%E7%BA%BF%E7%A8%8B/><div class=article-details><h2 class=article-title>让PythonNet优雅地运行在单独的线程</h2></div></a></article><article><a href=/post/articles/2025/%E8%AE%A9kokorosharp%E7%94%A8%E4%B8%8Av1.1-zh%E7%9A%84%E6%A8%A1%E5%9E%8B/><div class=article-details><h2 class=article-title>让KokoroSharp用上V1.1-zh的模型</h2></div></a></article><article><a href=/post/articles/2025/csharp%E4%B8%AD%E7%9A%84iasyncenumerable%E5%BC%82%E6%AD%A5%E6%B5%81/><div class=article-details><h2 class=article-title>C#中的IAsyncEnumerable异步流</h2></div></a></article></div></div></aside><footer class=site-footer><section class=copyright>&copy;
+2023 -
+2026 MLAcookie</section><section class=powerby>使用 <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> 构建<br>主题 <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=4.0.3>Stack</a></b> 由 <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a> 设计</section></footer><script type=module>
+    import gallery from '\/ts\/gallery.js';
+
+    const articleContent = document.querySelector('.article-content');
+    const shouldLoad = articleContent && (articleContent.querySelectorAll('figure').length > 0 || articleContent.querySelectorAll('img.gallery-image').length > 0);
+    
+    if (shouldLoad) {
+        gallery(articleContent);
+
+        const PhotoSwipeLightbox = (await import("https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe-lightbox.esm.min.js")).default;
+        const styleHref = "https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe.css";
+
+        const styleTag = document.createElement('link');
+        styleTag.rel = 'stylesheet';
+        styleTag.href = styleHref;
+        document.head.appendChild(styleTag);
+
+        const lightbox = new PhotoSwipeLightbox({
+            gallerySelector: '.article-content',
+            childSelector: 'figure a.image-link',
+            pswpModule: () => import("https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe.esm.min.js")
+        });
+        lightbox.init();
+    }
+</script></main></div><script type=text/javascript src=/ts/main.f856840516f7c2ad1769a8f5937e3d08d6cb386e2cd2dd025ae696e0ff207958.js defer></script></body></html>

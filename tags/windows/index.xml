@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Windows on MLAcookie</title><link>https://mlacookie.github.io/tags/windows/</link><description>Recent content in Windows on MLAcookie</description><generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Mon, 23 Mar 2026 17:16:07 +0800</lastBuildDate><atom:link href="https://mlacookie.github.io/tags/windows/index.xml" rel="self" type="application/rss+xml"/><item><title>使用wsl的一些小问题</title><link>https://mlacookie.github.io/post/articles/2026/%E4%BD%BF%E7%94%A8wsl%E7%9A%84%E4%B8%80%E4%BA%9B%E5%B0%8F%E9%97%AE%E9%A2%98/</link><pubDate>Mon, 23 Mar 2026 17:16:07 +0800</pubDate><guid>https://mlacookie.github.io/post/articles/2026/%E4%BD%BF%E7%94%A8wsl%E7%9A%84%E4%B8%80%E4%BA%9B%E5%B0%8F%E9%97%AE%E9%A2%98/</guid><description>&lt;p&gt;收集一些使用wsl中遇到的小问题&lt;br&gt;
+当然，其中也不只是wsl的问题，也有一些linux中常见问题&lt;/p&gt;
+&lt;h1 id="使用systemd初始化系统"&gt;使用systemd初始化系统
+&lt;/h1&gt;&lt;p&gt;在wsl中，默认使用init初始化系统而不是systemd&lt;br&gt;
+要使用systemd就需要写配置文件启用功能&lt;br&gt;
+首先需确保使用的是wsl2版本&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;wsl -l -v
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 如果不是升级一下&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;wsl --set-version &amp;lt;发行版名称&amp;gt; &lt;span style="color:#ae81ff"&gt;2&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;然后编辑配置文件&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sudo nano /etc/wsl.conf
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-ini" data-lang="ini"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 添加以下内容&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;[boot]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;systemd&lt;/span&gt;&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#e6db74"&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;使用systemd会让系统行为更接近常用发行版的行为&lt;/p&gt;
+&lt;h1 id="rider连接wsl中的docker"&gt;Rider连接WSL中的Docker
+&lt;/h1&gt;&lt;p&gt;不配置可能会在Rider连接WSL中的Docker时报Permission Denied&lt;br&gt;
+因为Rider没有足够的权限去访问Docker守护进程的socket文件（/var/run/docker.sock）&lt;br&gt;
+这个文件需要&lt;code&gt;root&lt;/code&gt;用户或&lt;code&gt;docker&lt;/code&gt;用户组的权限&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 将当前用户加入 docker 组&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sudo usermod -aG docker $USER
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 验证用户是否已在组中&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;groups $USER
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;然后重启下WSL即可&lt;/p&gt;</description></item><item><title>配置Windows</title><link>https://mlacookie.github.io/post/categories/backup/%E9%85%8D%E7%BD%AEwindows/</link><pubDate>Sun, 27 Oct 2024 02:29:35 +0800</pubDate><guid>https://mlacookie.github.io/post/categories/backup/%E9%85%8D%E7%BD%AEwindows/</guid><description>&lt;p&gt;归纳一下windows常安装的东西&lt;br&gt;
+我目前算是包管理重度依赖，基本上所有的软件都靠包管理器管理&lt;br&gt;
+主要用winget和scoop&lt;/p&gt;
+&lt;h2 id="winget部分"&gt;winget部分
+&lt;/h2&gt;&lt;h3 id="配置全局安装行为"&gt;配置全局安装行为
+&lt;/h3&gt;&lt;p&gt;我的习惯让winget的安装都在全局里&lt;br&gt;
+这个不关键，只是方便我找软件的目录&lt;/p&gt;
+&lt;p&gt;打开winget的json配置文件&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;winget settings
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;加上&lt;code&gt;installBehavior&lt;/code&gt;还有里面的东西&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-json" data-lang="json"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;#34;$schema&amp;#34;&lt;/span&gt;: &lt;span style="color:#e6db74"&gt;&amp;#34;https://aka.ms/winget-settings.schema.json&amp;#34;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;#34;installBehavior&amp;#34;&lt;/span&gt;: {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;#34;preferences&amp;#34;&lt;/span&gt;: {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;#34;scope&amp;#34;&lt;/span&gt;: &lt;span style="color:#e6db74"&gt;&amp;#34;machine&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="实用工具"&gt;实用工具
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 新的powershell好用，包括历史命令之类的&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;winget install Microsoft.PowerShell
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# windows实用小工具合集，又名windows版本前瞻&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;winget install Microsoft.PowerToys
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 最好的windows终端&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;winget install Microsoft.WindowsTerminal
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 众所周知，windows是linux最好的发新版（确信&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;winget install Microsoft.WSL
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 高级进程查看&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;winget install Microsoft.Sysinternals.ProcessExplorer
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 好用的IDE&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;winget install JetBrains.Rider
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="日常软件"&gt;日常软件
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 思题目学习平台&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;winget install Valve.Steam
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 网易云&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;winget install NetEase.CloudMusic
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="命令面板插件"&gt;命令面板插件
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Translator for Command Palette&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;winget install 9NSHZ9B3KJFW
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="scoop部分"&gt;scoop部分
+&lt;/h2&gt;&lt;p&gt;建议全局安装的会带sudo和-g&lt;br&gt;
+如果是win10的话就先安装一个sudo&lt;br&gt;
+win11的话&lt;code&gt;设置 &amp;gt;&amp;gt; 开发者选项&lt;/code&gt;里面启用sudo&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;scoop install sudo
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="添加scoop存储库"&gt;添加scoop存储库
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;scoop bucket add extras
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;scoop bucket add nerd-fonts
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;scoop bucket add version
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="实用工具-1"&gt;实用工具
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 多线程下载器，scoop也可以调用&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sudo scoop install aria2 -g
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 提取安装包文件&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sudo scoop install uniextract2 -g
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# hex编辑软件，界面清爽&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;scoop install imhex
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 经典游戏作弊器，有时候用来改一些软件的数值&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;scoop install cheat-engine
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 写这篇博客就在用的markdown编辑器&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;scoop install obsidian
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 硬件信息与温度检测&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;scoop install hwinfo
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 简易文件服务器，快速传文件&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;scoop install miniserve
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h4 id="清理用的小工具"&gt;清理用的小工具
+&lt;/h4&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 文件占用空间可视化，方便快速清理大文件&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;scoop install wiztree
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 用来卸载有安装包的软件，这个卸载还带清理注册表&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;scoop install geekuninstaller
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 清理多余的安装包残留&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;scoop install patchcleaner
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="coding"&gt;Coding
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sudo scoop install clangd -g
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sudo scoop install cmake -g
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sudo scoop install xmake -g
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;scoop install miktex
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 开源的git图形化管理工具&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;scoop install sourcegit
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 好用的开源AI Coding工具&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sudo scoop install opencode -g
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="生-产-力"&gt;生 产 力
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-shell" data-lang="shell"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 开源轻量的office套件，足以胜任大部分的情况&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;scoop install onlyoffice-desktopeditors
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# KDE下面的开源的绘画软件，可以用来做图像编辑&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;scoop install krita
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 开源的面向工业的3DCAD软件&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;scoop install freecad
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 编写曲谱的软件&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;scoop install musescore
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Tracker编曲软件&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;scoop install furnace
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="字体"&gt;字体
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# 综合用下来适配度最高的字体&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sudo scoop install DejaVuSansMono-NF -g
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="其他"&gt;其他
+&lt;/h2&gt;&lt;p&gt;&lt;a class="link" href="https://hyperos.mi.com/continuity" target="_blank" rel="noopener"
+ &gt;小米互联服务&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;微软商店安装命令&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;sudo wsreset -i
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description></item><item><title>相对优雅得C#调用Win32API</title><link>https://mlacookie.github.io/post/articles/2024/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97csharp%E8%B0%83%E7%94%A8win32api/</link><pubDate>Sun, 21 Jul 2024 21:08:14 +0800</pubDate><guid>https://mlacookie.github.io/post/articles/2024/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97csharp%E8%B0%83%E7%94%A8win32api/</guid><description>&lt;p&gt;今天有人找我解决一些软件相关的问题，然后发现会牵扯到一些Win32的API&lt;br&gt;
+一般调用Win32API都是用C++方便的，而且微软给的文档也是C++的&lt;br&gt;
+我虽然对C++不是很熟，但对C#熟啊&lt;/p&gt;
+&lt;p&gt;在C#中，我们可以通过&lt;code&gt;P/Invoke&lt;/code&gt;去做动态库的互操作&lt;br&gt;
+但对于Win32API，如果自己写&lt;code&gt;P/Invoke&lt;/code&gt;，里面就有很多不确定的东西&lt;br&gt;
+光是那个DllImport特性里面的参数就不是很好填&lt;/p&gt;
+&lt;p&gt;那C#开发者是不是很难做Win32开发呢，那也不是&lt;br&gt;
+在Nuget上有很多别的大佬包装好的Win32库，安装完可以直接调用&lt;br&gt;
+但Win32中有超级多的API，这会导致代码提示里面会多出非常多东西，确实是有点干扰了&lt;/p&gt;
+&lt;p&gt;但好在微软也提供了一个解决方案，&lt;a class="link" href="https://github.com/microsoft/CsWin32" target="_blank" rel="noopener"
+ &gt;CsWin32&lt;/a&gt;&lt;br&gt;
+这个是基于C#&lt;code&gt;源生成器&lt;/code&gt;的Win32API封装器&lt;br&gt;
+就是需要什么API，它就去生成那些API的&lt;code&gt;P/Invoke&lt;/code&gt;代码&lt;br&gt;
+并且生成的质量还挺高的，保留原本的调用风格的同时，尽可能去迎合C#的开发体验&lt;/p&gt;
+&lt;h2 id="0x00-安装cswin32"&gt;&amp;lt;0x00&amp;gt; 安装CsWin32
+&lt;/h2&gt;&lt;p&gt;因为会用到C#的源生成器，所以最好使用VS2022并且相对新的版本，不然代码提示之类的会出问题&lt;br&gt;
+VSCode的源生成器体验也是不错的，这个直接装&lt;code&gt;C# kit&lt;/code&gt;插件就可以了&lt;/p&gt;
+&lt;p&gt;直接在Nuget中搜索CsWin32，包名是Microsoft.Windows.CsWin32&lt;br&gt;
+这个包最低支持到&lt;code&gt;.net framework 4.5&lt;/code&gt;也即&lt;code&gt;.NET Standard 2.0&lt;/code&gt;&lt;br&gt;
+对于这个版本，还需要安装&lt;code&gt;System.Memory&lt;/code&gt;&lt;br&gt;
+如果是&lt;code&gt;.NET Standard 2.1&lt;/code&gt;及以上，也即&lt;code&gt;.net 5.0&lt;/code&gt;及以上的版本，那么就不需要安装&lt;br&gt;
+（如果是新项目的话应该会用新版本的框架吧）&lt;/p&gt;
+&lt;h2 id="0x01-如何使用"&gt;&amp;lt;0x01&amp;gt; 如何使用
+&lt;/h2&gt;&lt;h3 id="添加需要的api"&gt;添加需要的API
+&lt;/h3&gt;&lt;p&gt;首先是要告诉源生成器要生成哪些API的封装&lt;br&gt;
+在项目根目录新建叫&lt;code&gt;NativeMethods.txt&lt;/code&gt;的文件&lt;br&gt;
+&lt;img class="gallery-image" data-flex-basis="606px" data-flex-grow="252" height="95" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://mlacookie.github.io/post/articles/2024/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97csharp%E8%B0%83%E7%94%A8win32api/picture/1.png" width="240"&gt;&lt;br&gt;
+在里面可以添加你需要添加的Win32函数或者结构的名字&lt;/p&gt;
+&lt;pre tabindex="0"&gt;&lt;code&gt;PssCaptureSnapshot
+PssQuerySnapshot
+
+PSS_PROCESS_INFORMATION
+PSS_HANDLE_INFORMATION
+PSS_VA_CLONE_INFORMATION
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;这里的示例是Windows&lt;a class="link" href="https://learn.microsoft.com/zh-cn/windows/win32/api/_proc_snap/" target="_blank" rel="noopener"
+ &gt;进程快照&lt;/a&gt;相关的API，使用的API也不多，仅做演示作用&lt;/p&gt;
+&lt;h3 id="简单解释下使用的api"&gt;简单解释下使用的API
+&lt;/h3&gt;&lt;h4 id="psscapturesnapshot"&gt;PssCaptureSnapshot
+&lt;/h4&gt;&lt;p&gt;捕获目标进程的快照&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-cpp" data-lang="cpp"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;DWORD &lt;span style="color:#a6e22e"&gt;PssCaptureSnapshot&lt;/span&gt;(
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; [in] HANDLE ProcessHandle,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; [in] PSS_CAPTURE_FLAGS CaptureFlags,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; [in, optional] DWORD ThreadContextFlags,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; [out] HPSS &lt;span style="color:#f92672"&gt;*&lt;/span&gt;SnapshotHandle
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;code&gt;ProcessHandle&lt;/code&gt;目标进程的句柄&lt;br&gt;
+&lt;code&gt;CaptureFlags&lt;/code&gt;指定要捕获的标志&lt;br&gt;
+&lt;code&gt;ThreadContextFlags&lt;/code&gt;如果 CaptureFlags 指定线程上下文，则要捕获的 CONTEXT 记录标志&lt;br&gt;
+&lt;code&gt;SnapshotHandle&lt;/code&gt;返回此函数捕获的快照的句柄&lt;/p&gt;
+&lt;p&gt;函数返回的是&lt;code&gt;winerror.h&lt;/code&gt;中定义的错误代码，无错误是&lt;code&gt;ERROR_SUCCESS&lt;/code&gt;&lt;/p&gt;
+&lt;h4 id="pssquerysnapshot"&gt;PssQuerySnapshot
+&lt;/h4&gt;&lt;p&gt;查询捕获的快照的信息&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-cpp" data-lang="cpp"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;DWORD &lt;span style="color:#a6e22e"&gt;PssQuerySnapshot&lt;/span&gt;(
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; [in] HPSS SnapshotHandle,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; [in] PSS_QUERY_INFORMATION_CLASS InformationClass,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; [out] &lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; &lt;span style="color:#f92672"&gt;*&lt;/span&gt;Buffer,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; [in] DWORD BufferLength
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;code&gt;SnapshotHandle&lt;/code&gt;要查询的快照的句柄&lt;br&gt;
+&lt;code&gt;InformationClass&lt;/code&gt;用于选择要查询的信息&lt;br&gt;
+&lt;code&gt;Buffer&lt;/code&gt;此函数提供的信息，类型由&lt;code&gt;InformationClass&lt;/code&gt;决定&lt;br&gt;
+&lt;code&gt;BufferLength&lt;/code&gt;缓冲区的大小（以字节为单位）&lt;/p&gt;
+&lt;p&gt;函数返回的是&lt;code&gt;winerror.h&lt;/code&gt;中定义的错误代码，无错误是&lt;code&gt;ERROR_SUCCESS&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;剩下的是一些结构，东西多就不细讲了，跟本文关系不大，具体就看文档吧&lt;/p&gt;
+&lt;h3 id="在代码中使用win32api"&gt;在代码中使用Win32API
+&lt;/h3&gt;&lt;p&gt;这里做一个使用Win32API查询进程PID的示例&lt;br&gt;
+（虽然C#的Process类对象本身就可以直接查询）&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-cs" data-lang="cs"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;using&lt;/span&gt; System.Diagnostics;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;using&lt;/span&gt; Windows.Win32;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;using&lt;/span&gt; Windows.Win32.System.Diagnostics.ProcessSnapshotting;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;class&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;Program&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;static&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; Main()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	 &lt;span style="color:#75715e"&gt;// 使用C#自带的Process类型获取记事本进程&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Process test = Process.GetProcessesByName(&lt;span style="color:#e6db74"&gt;&amp;#34;notepad&amp;#34;&lt;/span&gt;)[&lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;];
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// 声明一个查询flags&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; PSS_CAPTURE_FLAGS flags = PSS_CAPTURE_FLAGS.PSS_CAPTURE_THREADS;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// 使用Win32API来捕获进程快照&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; PInvoke.PssCaptureSnapshot(
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; test.SafeHandle,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; flags,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;out&lt;/span&gt; HPSS snapshotHandle);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// 声明查询进程基本信息的变量&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; PSS_PROCESS_INFORMATION info;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// 涉及到指针操作，所以要用unsafe块包装&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;unsafe&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	 &lt;span style="color:#75715e"&gt;// 使用Win32API来查询进程快照信息&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; PInvoke.PssQuerySnapshot(
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; snapshotHandle,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; PSS_QUERY_INFORMATION_CLASS.PSS_QUERY_PROCESS_INFORMATION,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &amp;amp;info,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; (&lt;span style="color:#66d9ef"&gt;uint&lt;/span&gt;)&lt;span style="color:#66d9ef"&gt;sizeof&lt;/span&gt;(PSS_PROCESS_INFORMATION));
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Console.WriteLine(info.ProcessId);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img alt="运行结果" class="gallery-image" data-flex-basis="1198px" data-flex-grow="499" height="166" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://mlacookie.github.io/post/articles/2024/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97csharp%E8%B0%83%E7%94%A8win32api/picture/3.png" srcset="https://mlacookie.github.io/post/articles/2024/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97csharp%E8%B0%83%E7%94%A8win32api/picture/3_hu_65c57208126316f0.png 800w, https://mlacookie.github.io/post/articles/2024/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97csharp%E8%B0%83%E7%94%A8win32api/picture/3.png 829w" width="829"&gt;&lt;/p&gt;
+&lt;p&gt;确实是获取到了记事本的PID&lt;/p&gt;
+&lt;p&gt;而且观察代码，不难发现，CsWin32会非常智能地使用C#自带的类型&lt;br&gt;
+比如说Process类型里面的SafeHandle属性，这个返回的是&lt;code&gt;SafeProcessHandle&lt;/code&gt;&lt;br&gt;
+这个虽然它的命名空间是&lt;code&gt;Microsoft.Win32.SafeHandles&lt;/code&gt;，但确实是C#本身就有的&lt;br&gt;
+对于C#不带的类型，只有使用的API需要这些类型传参，CsWin32才会去生成对应的代码&lt;/p&gt;
+&lt;h2 id="0x02-一些不知道类型的枚举"&gt;&amp;lt;0x02&amp;gt; 一些不知道类型的枚举
+&lt;/h2&gt;&lt;p&gt;如果你需要使用某个枚举，但不知道是什么类型，CsWin32可以自动指出具体类型&lt;br&gt;
+比如前面提到那两个API的返回值是&lt;code&gt;winerror.h&lt;/code&gt;中定义的错误代码，但我们不知道这是什么类&lt;br&gt;
+这时候可以在&lt;code&gt;NativeMethods.txt&lt;/code&gt;里面直接加上&lt;code&gt;ERROR_SUCCESS&lt;/code&gt;&lt;br&gt;
+CsWin32会抛出警告：应该使用正确的声明&lt;br&gt;
+&lt;img class="gallery-image" data-flex-basis="6150px" data-flex-grow="2562" height="24" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://mlacookie.github.io/post/articles/2024/%E7%9B%B8%E5%AF%B9%E4%BC%98%E9%9B%85%E5%BE%97csharp%E8%B0%83%E7%94%A8win32api/picture/2.png" width="615"&gt;&lt;br&gt;
+最后也指出正确的声明是&lt;code&gt;WIN32_ERROR&lt;/code&gt;，文件里改好就行&lt;br&gt;
+这里对上面的代码稍作修改作为示例&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-cs" data-lang="cs"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;using&lt;/span&gt; System.Diagnostics;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;using&lt;/span&gt; Windows.Win32;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;using&lt;/span&gt; Windows.Win32.Foundation;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;using&lt;/span&gt; Windows.Win32.System.Diagnostics.ProcessSnapshotting;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;class&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;Program&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;static&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; Main()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Process test = Process.GetProcessesByName(&lt;span style="color:#e6db74"&gt;&amp;#34;notepad&amp;#34;&lt;/span&gt;)[&lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;];
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; PSS_CAPTURE_FLAGS flags = PSS_CAPTURE_FLAGS.PSS_CAPTURE_THREADS;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; PInvoke.PssCaptureSnapshot(
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; test.SafeHandle,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; flags,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;out&lt;/span&gt; HPSS snapshotHandle);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; PSS_PROCESS_INFORMATION info;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// 添加错误码的声明&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;uint&lt;/span&gt; errorCode;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;unsafe&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	 &lt;span style="color:#75715e"&gt;// 获取错误码返回值&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; errorCode = PInvoke.PssQuerySnapshot(
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; snapshotHandle,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; PSS_QUERY_INFORMATION_CLASS.PSS_QUERY_PROCESS_INFORMATION,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &amp;amp;info,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; (&lt;span style="color:#66d9ef"&gt;uint&lt;/span&gt;)&lt;span style="color:#66d9ef"&gt;sizeof&lt;/span&gt;(PSS_PROCESS_INFORMATION));
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Console.WriteLine(info.ProcessId);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// 跟WIN32_ERROR.ERROR_SUCCESS做比较，返回True&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Console.WriteLine((WIN32_ERROR)errorCode == WIN32_ERROR.ERROR_SUCCESS);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;当然头铁不改正确的声明也没关系，也是这样使用&lt;/p&gt;
+&lt;p&gt;对于其他不知道怎么声明的枚举也可以这样让CsWin32去找&lt;/p&gt;</description></item></channel></rss>

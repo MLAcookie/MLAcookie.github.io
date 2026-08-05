@@ -1,0 +1,1149 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Godot on MLAcookie</title><link>https://mlacookie.github.io/tags/godot/</link><description>Recent content in Godot on MLAcookie</description><generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Tue, 04 Aug 2026 12:57:45 +0800</lastBuildDate><atom:link href="https://mlacookie.github.io/tags/godot/index.xml" rel="self" type="application/rss+xml"/><item><title>如何实现接近原生类型的GDExtension类型</title><link>https://mlacookie.github.io/post/articles/2026/%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E6%8E%A5%E8%BF%91%E5%8E%9F%E7%94%9F%E7%B1%BB%E5%9E%8B%E7%9A%84gdextension%E7%B1%BB%E5%9E%8B/</link><pubDate>Tue, 04 Aug 2026 12:57:45 +0800</pubDate><guid>https://mlacookie.github.io/post/articles/2026/%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E6%8E%A5%E8%BF%91%E5%8E%9F%E7%94%9F%E7%B1%BB%E5%9E%8B%E7%9A%84gdextension%E7%B1%BB%E5%9E%8B/</guid><description>&lt;p&gt;之前提到，通过GDExtension实现Godot插件可以真正把类注册到ClassDB中&lt;br&gt;
+这样就可以让Godot的类型系统区分不同的类型，但这样还不够&lt;br&gt;
+还需要一些额外的知识才可以让实现的类型尽可能接近原生类型&lt;/p&gt;
+&lt;h2 id="0x01-一个小实验"&gt;&amp;lt;0x01&amp;gt; 一个小实验
+&lt;/h2&gt;&lt;p&gt;这里使用&lt;code&gt;godot-rust&lt;/code&gt;来构建&lt;code&gt;GDExtension&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;扩展的测试代码&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-rust" data-lang="rust"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#[derive(GodotClass)]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#[class(init, base=Node)]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;struct&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;TestNode&lt;/span&gt;{}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#[godot_api]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;impl&lt;/span&gt; INode &lt;span style="color:#66d9ef"&gt;for&lt;/span&gt; TestNode{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	&lt;span style="color:#66d9ef"&gt;fn&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;_ready&lt;/span&gt;(){
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;		&lt;span style="color:#a6e22e"&gt;godot_print!&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;TestNode Ready&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;构建后，在Godot中创建一个测试场景，添加&lt;code&gt;TestNode&lt;/code&gt;&lt;br&gt;
+在&lt;code&gt;TestNode&lt;/code&gt;中绑定测试脚本代码&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-gdscript" data-lang="gdscript"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;extend TestNode
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;func&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;_ready&lt;/span&gt;() &lt;span style="color:#f92672"&gt;-&amp;gt;&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;void&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	print(&lt;span style="color:#e6db74"&gt;&amp;#34;Script Ready&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;运行后发现，只有&lt;code&gt;Script Ready&lt;/code&gt;输出，没有&lt;code&gt;TestNode Ready&lt;/code&gt;的输出&lt;/p&gt;
+&lt;p&gt;也就是说脚本的&lt;code&gt;_ready&lt;/code&gt;实现会覆盖&lt;code&gt;GDExtension&lt;/code&gt;的&lt;code&gt;_ready&lt;/code&gt;实现&lt;br&gt;
+这就不是很妙了，再怎么说自己实现的节点一定是要基于生命周期写自己的实现的&lt;br&gt;
+如果用户需要对扩展的节点的&lt;code&gt;_ready&lt;/code&gt;进行扩展且不影响原本逻辑，那就需要手动调用基类的&lt;code&gt;_ready&lt;/code&gt;&lt;br&gt;
+也就是要这样写&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-gdscript" data-lang="gdscript"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;extend TestNode
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;func&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;_ready&lt;/span&gt;() &lt;span style="color:#f92672"&gt;-&amp;gt;&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;void&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	&lt;span style="color:#66d9ef"&gt;super&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;&lt;span style="color:#a6e22e"&gt;_ready&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	print(&lt;span style="color:#e6db74"&gt;&amp;#34;Script Ready&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;但这样写用户必须这样显式指出，容易遗忘而造成一些非预期的运行结果&lt;br&gt;
+并且对于插件来说，节点的逻辑应当是确定的，应该不需要用户额外的控制&lt;/p&gt;
+&lt;h2 id="0x02-通过notification实现生命周期逻辑"&gt;&amp;lt;0x02&amp;gt; 通过notification实现生命周期逻辑
+&lt;/h2&gt;&lt;p&gt;那么问题来了，显然一些原生类型也是要基于生命周期实现自己的逻辑的&lt;br&gt;
+为什么原生类型的节点脚本不需要显式调用基类的&lt;code&gt;_ready&lt;/code&gt;这样的方法呢&lt;br&gt;
+难道是godot对原生类型有什么独特的调用吗&lt;br&gt;
+经过我对源代码与文档的探索，可以说对，也不对&lt;/p&gt;
+&lt;p&gt;首先，为什么脚本的&lt;code&gt;_ready&lt;/code&gt;会覆盖节点实现的&lt;code&gt;_ready&lt;/code&gt;&lt;br&gt;
+在Godot中，&lt;code&gt;_ready&lt;/code&gt;、&lt;code&gt;_process&lt;/code&gt;这样的函数都是虚函数，派生类可以有自己的实现&lt;br&gt;
+也即这个函数的调用点是可变的，可随程序运行更改&lt;br&gt;
+Godot也是通过这样的机制实现了节点可通过脚本来重新定义这些函数的功能&lt;/p&gt;
+&lt;p&gt;但这样的修改是会覆盖原来的实现的&lt;br&gt;
+要解决这个问题，就必须要有另一种调用方式，这就要靠notificatioin机制了&lt;br&gt;
+&lt;code&gt;_ready&lt;/code&gt;、&lt;code&gt;_process&lt;/code&gt;这样的函数本身也表示一个事件&lt;br&gt;
+Godot会在这些事件触发后，一定会通过一个指定的函数做回调，这个函数是&lt;code&gt;_notification&lt;/code&gt;&lt;br&gt;
+当然，这个&lt;code&gt;_notification&lt;/code&gt;也是虚函数，如果脚本需要修改也是可以的，但一般不会动这个&lt;/p&gt;
+&lt;p&gt;查看&lt;code&gt;Control&lt;/code&gt;类型的&lt;a class="link" href="https://github.com/godotengine/godot/blob/master/scene/gui/control.cpp" target="_blank" rel="noopener"
+ &gt;源代码&lt;/a&gt;&lt;br&gt;
+可以发现对于原生类型，生命周期逻辑是写在&lt;code&gt;_notification&lt;/code&gt;函数里的&lt;br&gt;
+而&lt;code&gt;_ready&lt;/code&gt;、&lt;code&gt;_process&lt;/code&gt;这样的函数是空出来没实现的&lt;br&gt;
+所以给原生类型写脚本是不需要显式调用基类方法，通过notification机制处理&lt;br&gt;
+如果自己的扩展节点实现了这样的机制，也可以做到这样的效果&lt;/p&gt;
+&lt;p&gt;notification在文档中有提到，但主要就在最佳实践中提到（&lt;a class="link" href="https://docs.godotengine.org/zh-cn/4.x/tutorials/best_practices/godot_notifications.html" target="_blank" rel="noopener"
+ &gt;Godot通知&lt;/a&gt;）&lt;br&gt;
+可以说第一次见确实不知道这个是什么意思，名字很难联想到可以与扩展有关
+毕竟这个特性写脚本是不需要的，一般人也不会上来就开始写扩展&lt;/p&gt;
+&lt;h2 id="0x03-如何通过notification实现"&gt;&amp;lt;0x03&amp;gt; 如何通过notification实现
+&lt;/h2&gt;&lt;p&gt;首先观察notification的函数签名，这里用&lt;code&gt;godot-rust&lt;/code&gt;的api举例&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-rust" data-lang="rust"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;fn&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;on_notification&lt;/span&gt;(&lt;span style="color:#f92672"&gt;&amp;amp;&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;mut&lt;/span&gt; self, what: &lt;span style="color:#a6e22e"&gt;ControlNotification&lt;/span&gt;) { &lt;span style="color:#75715e"&gt;/*...*/&lt;/span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;前面的&lt;code&gt;self&lt;/code&gt;不用管，这是rust表示调用者自己的写法&lt;br&gt;
+后面的&lt;code&gt;what&lt;/code&gt;是一个&lt;code&gt;ControlNotification&lt;/code&gt;类型的参数&lt;br&gt;
+这个&lt;code&gt;what&lt;/code&gt;的类型按不同的节点是不同的，这是是&lt;code&gt;Control&lt;/code&gt;节点的&lt;code&gt;on_notification&lt;/code&gt;&lt;br&gt;
+如果是&lt;code&gt;Object&lt;/code&gt;类型，那么&lt;code&gt;what&lt;/code&gt;就是&lt;code&gt;ObjectNotification&lt;/code&gt;&lt;br&gt;
+无论是什么类型，其实都是一个枚举类型&lt;br&gt;
+比如这里的&lt;code&gt;ControlNotification&lt;/code&gt;有以下值&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-rust" data-lang="rust"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;pub&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;enum&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;ControlNotification&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;RESIZED&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;40&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;i32&lt;/span&gt;, 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;MOUSE_ENTER&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;41&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;i32&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;MOUSE_EXIT&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;42&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;i32&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;MOUSE_ENTER_SELF&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;60&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;i32&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;MOUSE_EXIT_SELF&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;61&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;i32&lt;/span&gt;, 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;FOCUS_ENTER&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;43&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;i32&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;FOCUS_EXIT&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;44&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;i32&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;THEME_CHANGED&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;45&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;i32&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;SCROLL_BEGIN&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;47&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;i32&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;SCROLL_END&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;48&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;i32&lt;/span&gt;, 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;LAYOUT_DIRECTION_CHANGED&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;49&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;i32&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;TRANSFORM_CHANGED&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;2000&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;i32&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;LOCAL_TRANSFORM_CHANGED&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;35&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;i32&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;DRAW&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;30&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;i32&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;VISIBILITY_CHANGED&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;31&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;i32&lt;/span&gt;, 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;ENTER_CANVAS&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;32&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;i32&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;EXIT_CANVAS&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;33&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;i32&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;WORLD_2D_CHANGED&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;36&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;i32&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;ENTER_TREE&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;10&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;i32&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;EXIT_TREE&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;11&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;i32&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;MOVED_IN_PARENT&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;12&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;i32&lt;/span&gt;, 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;READY&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;13&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;i32&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;PAUSED&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;14&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;i32&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;UNPAUSED&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;15&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;i32&lt;/span&gt;, 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;PHYSICS_PROCESS&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;16&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;i32&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;PROCESS&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;17&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;i32&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;PARENTED&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;18&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;i32&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;UNPARENTED&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;19&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;i32&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;SCENE_INSTANTIATED&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;20&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;i32&lt;/span&gt;, 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;DRAG_BEGIN&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;21&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;i32&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;DRAG_END&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;22&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;i32&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;PATH_RENAMED&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;23&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;i32&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;CHILD_ORDER_CHANGED&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;24&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;i32&lt;/span&gt;, 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;INTERNAL_PROCESS&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;25&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;i32&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;INTERNAL_PHYSICS_PROCESS&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;26&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;i32&lt;/span&gt;, 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;POST_ENTER_TREE&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;27&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;i32&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;DISABLED&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;28&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;i32&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;ENABLED&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;29&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;i32&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;RESET_PHYSICS_INTERPOLATION&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;2001&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;i32&lt;/span&gt;, 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;EDITOR_PRE_SAVE&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;9001&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;i32&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;EDITOR_POST_SAVE&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;9002&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;i32&lt;/span&gt;, 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;WM_MOUSE_ENTER&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;1002&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;i32&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;WM_MOUSE_EXIT&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;1003&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;i32&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;WM_WINDOW_FOCUS_IN&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;1004&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;i32&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;WM_WINDOW_FOCUS_OUT&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;1005&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;i32&lt;/span&gt;, 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;WM_CLOSE_REQUEST&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;1006&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;i32&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;WM_GO_BACK_REQUEST&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;1007&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;i32&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;WM_SIZE_CHANGED&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;1008&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;i32&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;WM_DPI_CHANGE&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;1009&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;i32&lt;/span&gt;, 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;VP_MOUSE_ENTER&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;1010&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;i32&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;VP_MOUSE_EXIT&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;1011&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;i32&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;WM_POSITION_CHANGED&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;1012&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;i32&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;OS_MEMORY_WARNING&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;2009&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;i32&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;TRANSLATION_CHANGED&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;2010&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;i32&lt;/span&gt;, 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;WM_ABOUT&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;2011&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;i32&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;CRASH&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;2012&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;i32&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;OS_IME_UPDATE&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;2013&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;i32&lt;/span&gt;, 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;APPLICATION_RESUMED&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;2014&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;i32&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;APPLICATION_PAUSED&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;2015&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;i32&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;APPLICATION_FOCUS_IN&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;2016&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;i32&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;APPLICATION_FOCUS_OUT&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;2017&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;i32&lt;/span&gt;, 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;TEXT_SERVER_CHANGED&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;2018&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;i32&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;ACCESSIBILITY_UPDATE&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;3000&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;i32&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;ACCESSIBILITY_INVALIDATE&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;3001&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;i32&lt;/span&gt;, 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;POSTINITIALIZE&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;i32&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;PREDELETE&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;i32&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;EXTENSION_RELOADED&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;2&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;i32&lt;/span&gt;, 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Unknown(&lt;span style="color:#66d9ef"&gt;i32&lt;/span&gt;),
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;看着很多值，但里面其实有很多熟悉的名字，比如&lt;code&gt;READY&lt;/code&gt;、&lt;code&gt;PROCESS&lt;/code&gt;、&lt;code&gt;ENTER_TREE&lt;/code&gt;这样的值&lt;br&gt;
+实际上，在&lt;code&gt;on_notification&lt;/code&gt;里面就靠这样识别是哪个事件的回调&lt;/p&gt;
+&lt;p&gt;所以对于之前的示例，这样写就可以&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-rust" data-lang="rust"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#[derive(GodotClass)]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#[class(init, base=Node)]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;struct&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;TestNode&lt;/span&gt;{}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#[godot_api]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;impl&lt;/span&gt; INode &lt;span style="color:#66d9ef"&gt;for&lt;/span&gt; TestNode{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	&lt;span style="color:#66d9ef"&gt;fn&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;on_notification&lt;/span&gt;(&lt;span style="color:#f92672"&gt;&amp;amp;&lt;/span&gt;&lt;span style="color:#66d9ef"&gt;mut&lt;/span&gt; self, what: &lt;span style="color:#a6e22e"&gt;NodeNotification&lt;/span&gt;){
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;		&lt;span style="color:#66d9ef"&gt;match&lt;/span&gt; what {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;			NodeNotification::&lt;span style="color:#66d9ef"&gt;READY&lt;/span&gt; &lt;span style="color:#f92672"&gt;=&amp;gt;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;				&lt;span style="color:#a6e22e"&gt;godot_print!&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;TestNode Ready&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;			}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;			_ &lt;span style="color:#f92672"&gt;=&amp;gt;&lt;/span&gt; {}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;		}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;这样实现后再附加原来的脚本，脚本的&lt;code&gt;_ready()&lt;/code&gt;就不会覆盖节点自己的READY逻辑了&lt;br&gt;
+当然还有一个问题，运行后会发现先输出&lt;code&gt;Script Ready&lt;/code&gt;然后输出&lt;code&gt;TestNode Ready&lt;/code&gt;&lt;br&gt;
+这是因为notification毕竟是回调，触发时间在每个事件的最后&lt;br&gt;
+在这里就是脚本的&lt;code&gt;_ready&lt;/code&gt;完成后才执行节点的&lt;code&gt;NodeNotification::READY&lt;/code&gt;&lt;br&gt;
+所以对于节点的初始化，应该用&lt;code&gt;ENTER_TREE&lt;/code&gt;完成，毕竟到了&lt;code&gt;ready&lt;/code&gt;的周期，节点应该已经初始化完毕&lt;/p&gt;
+&lt;h2 id="番外这对脚本实现的扩展有什么启示"&gt;番外：这对脚本实现的扩展有什么启示
+&lt;/h2&gt;&lt;p&gt;如果说因为各种原因，扩展不打算通过GDExtension机制实现，这个知识有什么启示&lt;br&gt;
+那还是有的，notification机制在C#/GDScript中也是可以实现的&lt;br&gt;
+这样实现之后，对于继承类的脚本也不需要显式调用基类方法&lt;/p&gt;
+&lt;p&gt;这里用GDscript简单实现一下&lt;br&gt;
+首先创建&lt;code&gt;addon&lt;/code&gt;，添加类型加载&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-gdscript" data-lang="gdscript"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# res://addons/test_plugin/test_plugin.gd&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;@tool&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;extends&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;EditorPlugin&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;func&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;_enable_plugin&lt;/span&gt;() &lt;span style="color:#f92672"&gt;-&amp;gt;&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;void&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	&lt;span style="color:#75715e"&gt;# Add autoloads here.&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	&lt;span style="color:#66d9ef"&gt;var&lt;/span&gt; script &lt;span style="color:#f92672"&gt;=&lt;/span&gt; load(&lt;span style="color:#e6db74"&gt;&amp;#34;res://addons/test_plugin/test_node.gd&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	&lt;span style="color:#a6e22e"&gt;add_custom_type&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;TestNode&amp;#34;&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;&amp;#34;Node&amp;#34;&lt;/span&gt;, script, &lt;span style="color:#a6e22e"&gt;Texture2D&lt;/span&gt;&lt;span style="color:#f92672"&gt;.&lt;/span&gt;&lt;span style="color:#a6e22e"&gt;new&lt;/span&gt;());
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	&lt;span style="color:#66d9ef"&gt;pass&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;func&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;_disable_plugin&lt;/span&gt;() &lt;span style="color:#f92672"&gt;-&amp;gt;&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;void&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	&lt;span style="color:#75715e"&gt;# Remove autoloads here.&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	&lt;span style="color:#a6e22e"&gt;remove_custom_type&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;TestNode&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	&lt;span style="color:#66d9ef"&gt;pass&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;func&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;_enter_tree&lt;/span&gt;() &lt;span style="color:#f92672"&gt;-&amp;gt;&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;void&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	&lt;span style="color:#75715e"&gt;# Initialization of the plugin goes here.&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	&lt;span style="color:#66d9ef"&gt;pass&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;func&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;_exit_tree&lt;/span&gt;() &lt;span style="color:#f92672"&gt;-&amp;gt;&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;void&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	&lt;span style="color:#75715e"&gt;# Clean-up of the plugin goes here.&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	&lt;span style="color:#66d9ef"&gt;pass&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;创建新的类型脚本&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-gdscript" data-lang="gdscript"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# res://addons/test_plugin/test_node.gd&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;extend &lt;span style="color:#a6e22e"&gt;Node&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;func&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;_notification&lt;/span&gt;(what: &lt;span style="color:#66d9ef"&gt;int&lt;/span&gt;) &lt;span style="color:#f92672"&gt;-&amp;gt;&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;void&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	&lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; what &lt;span style="color:#f92672"&gt;==&lt;/span&gt; NOTIFICATION_READY:
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;		print(&lt;span style="color:#e6db74"&gt;&amp;#34;TestNode Ready&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;然后新建场景，添加自定义的&lt;code&gt;TestNode&lt;/code&gt;，然后扩展脚本&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-gdscript" data-lang="gdscript"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# res://extend_test.gd&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;extends&lt;/span&gt; &lt;span style="color:#960050;background-color:#1e0010"&gt;&amp;#34;&lt;/span&gt;&lt;span style="color:#a6e22e"&gt;res&lt;/span&gt;:&lt;span style="color:#f92672"&gt;//&lt;/span&gt;addons&lt;span style="color:#f92672"&gt;/&lt;/span&gt;test_plugin&lt;span style="color:#f92672"&gt;/&lt;/span&gt;test_node&lt;span style="color:#f92672"&gt;.&lt;/span&gt;gd&lt;span style="color:#e6db74"&gt;&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#e6db74"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#e6db74"&gt;func _ready() -&amp;gt; void:
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#e6db74"&gt;	print(&amp;#34;&lt;/span&gt;&lt;span style="color:#a6e22e"&gt;Script&lt;/span&gt; Ready&lt;span style="color:#e6db74"&gt;&amp;#34;);
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;运行发现，也能达到之前的效果，先输出&lt;code&gt;Script Ready&lt;/code&gt;然后输出&lt;code&gt;TestNode Ready&lt;/code&gt;&lt;br&gt;
+脚本实现的扩展的功能性问题也就剩类型没法通过ClassDB判断了&lt;br&gt;
+不过之前也提到有其他方法判断，可以解决&lt;/p&gt;
+&lt;p&gt;题外话，这样看的话C#在Godot真就算三等公民了&lt;br&gt;
+虽然官方确实在努力支持C#，但论支持程度真的不太行，任重而道远&lt;br&gt;
+目前按Godot社区的情况看，GDExtension是大伙都喜欢的方案，基本什么平台都可以导出&lt;br&gt;
+而C#总是有这样或那样的限制，做GDExtension又不方便&lt;br&gt;
+不负责任的讲，现在Godot对语言的支持，第一等绝对是GDScript，即开即用，支持全部功能&lt;br&gt;
+第二等是有良好社区支持GDExtension的语言，比如Rust或者C++，通过GDExtension也可以支持全部功能&lt;br&gt;
+然后就是第三等，总是受限的语言，C#属于是确实容易碰壁，其他的语言可能就是不好做GDExtension&lt;br&gt;
+不过社区也在努力，对于GDExtension，有&lt;code&gt;Godot-Sharp&lt;/code&gt;推进，C#的支持之后有望做成一个拓展包的形式&lt;br&gt;
+只能说慢慢来吧，我也在尝试推进Godot上C#的支持，毕竟C#也算是我的白月光语言了&lt;/p&gt;</description></item><item><title>Godot节点和脚本的关系</title><link>https://mlacookie.github.io/post/articles/2026/godot%E8%8A%82%E7%82%B9%E5%92%8C%E8%84%9A%E6%9C%AC%E7%9A%84%E5%85%B3%E7%B3%BB/</link><pubDate>Thu, 18 Jun 2026 12:25:20 +0800</pubDate><guid>https://mlacookie.github.io/post/articles/2026/godot%E8%8A%82%E7%82%B9%E5%92%8C%E8%84%9A%E6%9C%AC%E7%9A%84%E5%85%B3%E7%B3%BB/</guid><description>&lt;p&gt;最近聊天的时候聊到了这个话题，身边的人对这个貌似也不是很了解&lt;br&gt;
+顺便水篇博客&lt;/p&gt;
+&lt;h2 id="godot中的内存管理"&gt;Godot中的内存管理
+&lt;/h2&gt;&lt;p&gt;首先明确一点，所有的节点的内存生命周期都是由Godot本身管理&lt;br&gt;
+无论通过任何语言任何方式编写的代码，所有节点内存的生命周期都是由Godot管理&lt;br&gt;
+语言只是通过一些绑定的语法访问其中的功能而已&lt;/p&gt;
+&lt;p&gt;而节点可以附加脚本，脚本的生存周期可以是额外的&lt;br&gt;
+（当然，目前只有GDScript和C#可以作为脚本语言，这里主要讲的也是C#）&lt;br&gt;
+也就是说，使用C#脚本，脚本的生存周期是由C#管理的&lt;/p&gt;
+&lt;h2 id="godot中的classdb"&gt;Godot中的ClassDB
+&lt;/h2&gt;&lt;p&gt;Godot本身有自己的类型系统，通过自己的类型系统实现了跨语言的开发支持&lt;br&gt;
+而ClassDB记录了Godot中所有注册的类型&lt;br&gt;
+所有注册的类型都有一个&lt;code&gt;APIType&lt;/code&gt;的枚举类型，表示类型的来源与作用&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;API_CORE：原生核心类型&lt;/li&gt;
+&lt;li&gt;API_EDITOR：原生编辑器类型&lt;/li&gt;
+&lt;li&gt;API_EXTENSION：GDExtension类型&lt;/li&gt;
+&lt;li&gt;API_EDITOR_EXTENSION：GDExtension编辑器类型
+原生类型表示Godot自带的，GDExtension类型表示通过GDExtension系统导入的类型&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;只有ClassDB中的类型，才会被识别为独立的类型&lt;br&gt;
+也即只有在ClassDB中的节点类型，才能附加自己的脚本&lt;/p&gt;
+&lt;h2 id="c就比较尴尬了"&gt;C#就比较尴尬了
+&lt;/h2&gt;&lt;p&gt;Godot中的&lt;code&gt;[GlobalClass]&lt;/code&gt;虽然可以在添加节点界面中添加自己实现的节点&lt;br&gt;
+但这只是自动给基类节点附加了脚本而已，没有在ClassDB中注册&lt;br&gt;
+要附加新的脚本就必须替换原有的脚本，通过类型继承的方式添加新的行为&lt;/p&gt;
+&lt;p&gt;所以目前其实C#在Godot的地位有点尴尬，论易用性不如GDScript，论扩展性不如直接使用GDExtension系统&lt;br&gt;
+GDScript可以通过内置的ClassDB信息给到LSP，可以很方便的调用内置类型与GDExtension类型&lt;br&gt;
+直接使用GDExtesion系统就相当于直接给Godot写插件，可以控制的东西更多且具有与内置类型同等地位&lt;br&gt;
+由于C#是静态类型语言，导致必须通过一些绑定的语法操作类型&lt;br&gt;
+但目前Godot社区还没有统一的为GDExtension生成绑定代码的方案&lt;/p&gt;</description></item><item><title>如何编写GDExtension插件</title><link>https://mlacookie.github.io/post/articles/2025/%E5%A6%82%E4%BD%95%E7%BC%96%E5%86%99gdextension%E6%8F%92%E4%BB%B6/</link><pubDate>Thu, 04 Dec 2025 16:20:29 +0800</pubDate><guid>https://mlacookie.github.io/post/articles/2025/%E5%A6%82%E4%BD%95%E7%BC%96%E5%86%99gdextension%E6%8F%92%E4%BB%B6/</guid><description>&lt;p&gt;Godot的GDExtension通过运行时动态加载编译完成的Dll文件&lt;br&gt;
+实现对编辑器功能的扩展，并且无需重新编译引擎源代码&lt;/p&gt;
+&lt;p&gt;虽然Godot官方确实有这样的&lt;a class="link" href="https://docs.godotengine.org/zh-cn/4.x/tutorials/scripting/gdextension/gdextension_c_example.html" target="_blank" rel="noopener"
+ &gt;教程&lt;/a&gt;，但在我实际按照教程操作时，发现很多已过时的内容&lt;br&gt;
+本文章采用的版本是4.5&lt;br&gt;
+从导出符号文件里面的注释，GDExtension的API应该是时常修改的，所以与教程有差别也正常&lt;br&gt;
+并且Godot官方的教程存在部分未翻译的情况，所以觉得还是要写点东西记一下&lt;br&gt;
+本文章不大会对函数的具体功能做介绍，只是让GDExtension可以跑起来&lt;br&gt;
+&lt;a class="link" href="https://github.com/MLAcookie/GDExtension-Example" target="_blank" rel="noopener"
+ &gt;代码仓库&lt;/a&gt;&lt;/p&gt;
+&lt;h1 id="使用c开发gdextension"&gt;使用C开发GDExtension
+&lt;/h1&gt;&lt;h2 id="0x00-从godot中导出gdextension符号"&gt;&amp;lt;0x00&amp;gt; 从Godot中导出GDExtension符号
+&lt;/h2&gt;&lt;p&gt;首先要获取GDExtension需要的符号文件&lt;br&gt;
+这一步需要确保你的Godot执行文件可以在命令行中找到&lt;br&gt;
+（这里推荐通过scoop安装Godot，会自动配置这一块的）&lt;br&gt;
+命令行中执行下列语句&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;godot --dump-gdextension-interface
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;godot --dump-extension-api
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;这样会得到两个文件，分别是&lt;code&gt;gdextension_interface.h&lt;/code&gt;与&lt;code&gt;extension_api.json&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;gdextension_interface.h&lt;/code&gt;包括了编译时需要的符号信息，里面都是C风格的定义&lt;br&gt;
+&lt;code&gt;extension_api.json&lt;/code&gt;包含了Godot类型的信息，包括类型大小等，编译时不需要，只是供代码编写时使用&lt;/p&gt;
+&lt;h2 id="0x01-配置目录结构与构建系统"&gt;&amp;lt;0x01&amp;gt; 配置目录结构与构建系统
+&lt;/h2&gt;&lt;p&gt;我们主要分两个文件夹来组织文件&lt;/p&gt;
+&lt;pre tabindex="0"&gt;&lt;code&gt;gdextension_c_example
+├── demo # 编译输出文件夹
+└── src # 源代码文件夹
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;需要把&lt;code&gt;gdextension_interface.h&lt;/code&gt;放到&lt;code&gt;src&lt;/code&gt;文件夹中&lt;/p&gt;
+&lt;p&gt;官方的教程使用Scons作为构建系统，但这个我不熟，所以我换成了我更熟悉的Xmake&lt;br&gt;
+因为最后只要能输出相应的动态链接库即可，所以其实构建系统是可以挑自己喜欢的&lt;/p&gt;
+&lt;p&gt;这里使用到的&lt;code&gt;Xmake.lua&lt;/code&gt;如下&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-lua" data-lang="lua"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;add_rules(&lt;span style="color:#e6db74"&gt;&amp;#34;mode.debug&amp;#34;&lt;/span&gt;, &lt;span style="color:#e6db74"&gt;&amp;#34;mode.release&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;target(&lt;span style="color:#e6db74"&gt;&amp;#34;ExtensionTest&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; set_kind(&lt;span style="color:#e6db74"&gt;&amp;#34;shared&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; set_toolchains(&lt;span style="color:#e6db74"&gt;&amp;#34;clang&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; set_targetdir(&lt;span style="color:#e6db74"&gt;&amp;#34;demo/bin&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; add_files(&lt;span style="color:#e6db74"&gt;&amp;#34;src/*.c&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;这里还指定了使用clang工具链，只是因为我比较喜欢clang，用其他的也问题不大&lt;/p&gt;
+&lt;h2 id="0x02-编写代码"&gt;&amp;lt;0x02&amp;gt; 编写代码
+&lt;/h2&gt;&lt;p&gt;对于GDExtension，Godot通过一个函数入口来初始化调用&lt;br&gt;
+函数入口的名字无所谓，只要可以和之后的配置文件对上即可&lt;br&gt;
+这里假设入口函数名为&lt;code&gt;gdexample_library_init&lt;/code&gt;，入口函数签名是这样的&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-c" data-lang="c"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;GDExtensionBool &lt;span style="color:#a6e22e"&gt;gdexample_library_init&lt;/span&gt;(GDExtensionInterfaceGetProcAddress p_get_proc_address,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; GDExtensionClassLibraryPtr p_library,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; GDExtensionInitialization &lt;span style="color:#f92672"&gt;*&lt;/span&gt;r_initialization)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// GDExtensionBool: uint_8
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// GDExtensionInterfaceGetProcAddress: void(*(*)(const char*))()
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// GDExtensionClassLibraryPtr: void*
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// GDExtensionInitialization: (struct)
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;某种程度上，只写这样一个函数就可以&lt;br&gt;
+但这样会导致代码很难维护，所以需要将一些东西分离出来，方便开发&lt;/p&gt;
+&lt;h3 id="扩展配置文件"&gt;扩展配置文件
+&lt;/h3&gt;&lt;p&gt;首先先在&lt;code&gt;demo&lt;/code&gt;文件夹下面创建插件的配置文件&lt;code&gt;gdexample.gdextension&lt;/code&gt;&lt;/p&gt;
+&lt;pre tabindex="0"&gt;&lt;code class="language-conf" data-lang="conf"&gt;# ./demo/gdexample.gdextension
+[configuration]
+
+entry_symbol = &amp;#34;gdexample_library_init&amp;#34;
+compatibility_minimum = &amp;#34;4.2&amp;#34;
+
+[libraries]
+macos.debug = &amp;#34;res://addon/bin/ExtensionTest.dylib&amp;#34;
+linux.debug = &amp;#34;res://addon/bin/ExtensionTest.so&amp;#34;
+windows.debug = &amp;#34;res://addon/bin/ExtensionTest.dll&amp;#34;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;code&gt;entry_symbol&lt;/code&gt;表示函数入口符号，能对应上即可&lt;br&gt;
+下面的&lt;code&gt;[libraries]&lt;/code&gt;指示Godot该在哪里找到动态链接库&lt;/p&gt;
+&lt;h3 id="扩展的其他符号定义"&gt;扩展的其他符号定义
+&lt;/h3&gt;&lt;p&gt;&lt;code&gt;gdextension_interface.h&lt;/code&gt;只导出了必须的GDExtensionAPI&lt;br&gt;
+而Godot的很多其他部分如StringName的符号定义并未给出&lt;br&gt;
+所以需要有一个定义其他符号的文件&lt;br&gt;
+创建&lt;code&gt;./src/defs.h&lt;/code&gt;文件，内容如下&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-c" data-lang="c"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#pragma once
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#include&lt;/span&gt; &lt;span style="color:#75715e"&gt;&amp;lt;stdbool.h&amp;gt;&lt;/span&gt;&lt;span style="color:#75715e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#include&lt;/span&gt; &lt;span style="color:#75715e"&gt;&amp;lt;stddef.h&amp;gt;&lt;/span&gt;&lt;span style="color:#75715e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#include&lt;/span&gt; &lt;span style="color:#75715e"&gt;&amp;lt;stdint.h&amp;gt;&lt;/span&gt;&lt;span style="color:#75715e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#if !defined(GDE_EXPORT)
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#if defined(_WIN32)
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#define GDE_EXPORT __declspec(dllexport)
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#elif defined(__GNUC__)
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#define GDE_EXPORT __attribute__((visibility(&amp;#34;default&amp;#34;)))
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#else
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#define GDE_EXPORT
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#endif
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#ifdef BUILD_32
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#define STRING_NAME_SIZE 4
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#else
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#define STRING_NAME_SIZE 8
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#endif
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;typedef&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;struct&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;uint8_t&lt;/span&gt; data[STRING_NAME_SIZE];
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;} StringName;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#endif &lt;/span&gt;&lt;span style="color:#75715e"&gt;// ! GDE_EXPORT
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;这里主要定义了两个东西，一个是&lt;code&gt;GDE_Export&lt;/code&gt;宏，另一个是&lt;code&gt;StringName&lt;/code&gt;的符号定义&lt;br&gt;
+&lt;code&gt;GDE_Export&lt;/code&gt;宏需要添加在需要导出到动态链接库的函数声明中&lt;br&gt;
+&lt;code&gt;StringName&lt;/code&gt;的类型大小信息可以在&lt;code&gt;extension_api.json&lt;/code&gt;中寻找&lt;/p&gt;
+&lt;h3 id="api绑定"&gt;API绑定
+&lt;/h3&gt;&lt;p&gt;我们可以通过函数入口传入的&lt;code&gt;p_get_proc_address&lt;/code&gt;获取需要的函数&lt;br&gt;
+为了方便调用与减少代码错误，这里为需要的用到的函数创建符号&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-c" data-lang="c"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// ./src/api.h
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#pragma once
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#include&lt;/span&gt; &lt;span style="color:#75715e"&gt;&amp;#34;gdextension_interface.h&amp;#34;&lt;/span&gt;&lt;span style="color:#75715e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#include&lt;/span&gt; &lt;span style="color:#75715e"&gt;&amp;#34;defs.h&amp;#34;&lt;/span&gt;&lt;span style="color:#75715e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;extern&lt;/span&gt; GDExtensionClassLibraryPtr class_library;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;extern&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;struct&lt;/span&gt; Constructors
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; GDExtensionInterfaceStringNameNewWithLatin1Chars string_name_new_with_latin1_chars;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;} constructors;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;extern&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;struct&lt;/span&gt; Destructors
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; GDExtensionPtrDestructor string_name_destructor;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;} destructors;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;extern&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;struct&lt;/span&gt; API
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; GDExtensionInterfaceClassdbRegisterExtensionClass2 classdb_register_extension_class2;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; GDExtensionInterfaceClassdbConstructObject classdb_construct_object;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; GDExtensionInterfaceObjectSetInstance object_set_instance;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; GDExtensionInterfaceObjectSetInstanceBinding object_set_instance_binding;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; GDExtensionInterfaceMemAlloc mem_alloc;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; GDExtensionInterfaceMemFree mem_free;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;} api;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;load_api&lt;/span&gt;(GDExtensionInterfaceGetProcAddress p_get_proc_address);
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-c" data-lang="c"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// ./src/api.c
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#include&lt;/span&gt; &lt;span style="color:#75715e"&gt;&amp;#34;api.h&amp;#34;&lt;/span&gt;&lt;span style="color:#75715e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;struct&lt;/span&gt; Constructors constructors;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;struct&lt;/span&gt; Destructors destructors;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;struct&lt;/span&gt; API api;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;GDExtensionClassLibraryPtr class_library &lt;span style="color:#f92672"&gt;=&lt;/span&gt; NULL;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;load_api&lt;/span&gt;(GDExtensionInterfaceGetProcAddress p_get_proc_address)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// Get helper functions first.
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; GDExtensionInterfaceVariantGetPtrDestructor variant_get_ptr_destructor &lt;span style="color:#f92672"&gt;=&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; (GDExtensionInterfaceVariantGetPtrDestructor)&lt;span style="color:#a6e22e"&gt;p_get_proc_address&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;variant_get_ptr_destructor&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// API.
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; api.classdb_register_extension_class2 &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;p_get_proc_address&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;classdb_register_extension_class2&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// Constructors.
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; constructors.string_name_new_with_latin1_chars &lt;span style="color:#f92672"&gt;=&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; (GDExtensionInterfaceStringNameNewWithLatin1Chars)&lt;span style="color:#a6e22e"&gt;p_get_proc_address&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;string_name_new_with_latin1_chars&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// Destructors.
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; destructors.string_name_destructor &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;variant_get_ptr_destructor&lt;/span&gt;(GDEXTENSION_VARIANT_TYPE_STRING_NAME);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; api.classdb_register_extension_class2 &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;p_get_proc_address&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;classdb_register_extension_class2&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; api.classdb_construct_object &lt;span style="color:#f92672"&gt;=&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; (GDExtensionInterfaceClassdbConstructObject)&lt;span style="color:#a6e22e"&gt;p_get_proc_address&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;classdb_construct_object&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; api.object_set_instance &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;p_get_proc_address&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;object_set_instance&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; api.object_set_instance_binding &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;p_get_proc_address&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;object_set_instance_binding&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; api.mem_alloc &lt;span style="color:#f92672"&gt;=&lt;/span&gt; (GDExtensionInterfaceMemAlloc)&lt;span style="color:#a6e22e"&gt;p_get_proc_address&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;mem_alloc&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; api.mem_free &lt;span style="color:#f92672"&gt;=&lt;/span&gt; (GDExtensionInterfaceMemFree)&lt;span style="color:#a6e22e"&gt;p_get_proc_address&lt;/span&gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;mem_free&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;这样通过全局字段绑定了需要使用的api，方便调用&lt;/p&gt;
+&lt;h3 id="自定义节点类型"&gt;自定义节点类型
+&lt;/h3&gt;&lt;p&gt;现在可以开始写自定义节点的实现了&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-c" data-lang="c"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// ./src/gdextension.h
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#pragma once
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#include&lt;/span&gt; &lt;span style="color:#75715e"&gt;&amp;#34;gdextension_interface.h&amp;#34;&lt;/span&gt;&lt;span style="color:#75715e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#include&lt;/span&gt; &lt;span style="color:#75715e"&gt;&amp;#34;defs.h&amp;#34;&lt;/span&gt;&lt;span style="color:#75715e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Struct to hold the node data.
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;typedef&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;struct&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; GDExtensionObjectPtr object; &lt;span style="color:#75715e"&gt;// Stores the underlying Godot object.
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;} CookieGDExample;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Constructor for the node.
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;gdexample_class_constructor&lt;/span&gt;(CookieGDExample &lt;span style="color:#f92672"&gt;*&lt;/span&gt;self);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Destructor for the node.
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;gdexample_class_destructor&lt;/span&gt;(CookieGDExample &lt;span style="color:#f92672"&gt;*&lt;/span&gt;self);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// Bindings.
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;gdexample_class_bind_methods&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;GDExtensionObjectPtr &lt;span style="color:#a6e22e"&gt;gdexample_class_create_instance&lt;/span&gt;(&lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; &lt;span style="color:#f92672"&gt;*&lt;/span&gt;p_class_userdata);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;gdexample_class_free_instance&lt;/span&gt;(&lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; &lt;span style="color:#f92672"&gt;*&lt;/span&gt;p_class_userdata, GDExtensionClassInstancePtr p_instance);
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-c" data-lang="c"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// ./src/gdextension.c
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#include&lt;/span&gt; &lt;span style="color:#75715e"&gt;&amp;#34;gdexample.h&amp;#34;&lt;/span&gt;&lt;span style="color:#75715e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#include&lt;/span&gt; &lt;span style="color:#75715e"&gt;&amp;#34;api.h&amp;#34;&lt;/span&gt;&lt;span style="color:#75715e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;gdexample_class_constructor&lt;/span&gt;(CookieGDExample &lt;span style="color:#f92672"&gt;*&lt;/span&gt;self)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;gdexample_class_destructor&lt;/span&gt;(CookieGDExample &lt;span style="color:#f92672"&gt;*&lt;/span&gt;self)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;gdexample_class_bind_methods&lt;/span&gt;()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;const&lt;/span&gt; GDExtensionInstanceBindingCallbacks gdexample_class_binding_callbacks &lt;span style="color:#f92672"&gt;=&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; .create_callback &lt;span style="color:#f92672"&gt;=&lt;/span&gt; NULL,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; .free_callback &lt;span style="color:#f92672"&gt;=&lt;/span&gt; NULL,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; .reference_callback &lt;span style="color:#f92672"&gt;=&lt;/span&gt; NULL,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;};
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;GDExtensionObjectPtr &lt;span style="color:#a6e22e"&gt;gdexample_class_create_instance&lt;/span&gt;(&lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; &lt;span style="color:#f92672"&gt;*&lt;/span&gt;p_class_userdata)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	&lt;span style="color:#75715e"&gt;// 先创建Sprite2D节点
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// 创建临时的StringName结构
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; StringName class_name;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// 给创建的StringName结构赋值&amp;#34;Sprite2D&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; constructors.&lt;span style="color:#a6e22e"&gt;string_name_new_with_latin1_chars&lt;/span&gt;(&lt;span style="color:#f92672"&gt;&amp;amp;&lt;/span&gt;class_name, &lt;span style="color:#e6db74"&gt;&amp;#34;Sprite2D&amp;#34;&lt;/span&gt;, false);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// 通过ClassDB创建Sprite2D节点
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; GDExtensionObjectPtr object &lt;span style="color:#f92672"&gt;=&lt;/span&gt; api.&lt;span style="color:#a6e22e"&gt;classdb_construct_object&lt;/span&gt;(&lt;span style="color:#f92672"&gt;&amp;amp;&lt;/span&gt;class_name);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// 销毁临时的StringName数据
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; destructors.&lt;span style="color:#a6e22e"&gt;string_name_destructor&lt;/span&gt;(&lt;span style="color:#f92672"&gt;&amp;amp;&lt;/span&gt;class_name);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// 创建扩展类型节点
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// 给扩展类型节点分配内存
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; CookieGDExample &lt;span style="color:#f92672"&gt;*&lt;/span&gt;self &lt;span style="color:#f92672"&gt;=&lt;/span&gt; (CookieGDExample &lt;span style="color:#f92672"&gt;*&lt;/span&gt;)api.&lt;span style="color:#a6e22e"&gt;mem_alloc&lt;/span&gt;(&lt;span style="color:#66d9ef"&gt;sizeof&lt;/span&gt;(CookieGDExample));
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// 调用扩展类型节点构造函数，这里演示为空
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;gdexample_class_constructor&lt;/span&gt;(self);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// 给扩展类型赋值
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; self&lt;span style="color:#f92672"&gt;-&amp;gt;&lt;/span&gt;object &lt;span style="color:#f92672"&gt;=&lt;/span&gt; object;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// 配置扩展类型节点
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// 给临时StringName结构赋值&amp;#34;GDExample&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; constructors.&lt;span style="color:#a6e22e"&gt;string_name_new_with_latin1_chars&lt;/span&gt;(&lt;span style="color:#f92672"&gt;&amp;amp;&lt;/span&gt;class_name, &lt;span style="color:#e6db74"&gt;&amp;#34;GDExample&amp;#34;&lt;/span&gt;, false);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// 设置创建的object
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; api.&lt;span style="color:#a6e22e"&gt;object_set_instance&lt;/span&gt;(object, &lt;span style="color:#f92672"&gt;&amp;amp;&lt;/span&gt;class_name, self);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// 配置object绑定的脚本之类的，跟这里填NULL即可
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; api.&lt;span style="color:#a6e22e"&gt;object_set_instance_binding&lt;/span&gt;(object, class_library, self, &lt;span style="color:#f92672"&gt;&amp;amp;&lt;/span&gt;gdexample_class_binding_callbacks);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// 销毁临时的StringName数据
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; destructors.&lt;span style="color:#a6e22e"&gt;string_name_destructor&lt;/span&gt;(&lt;span style="color:#f92672"&gt;&amp;amp;&lt;/span&gt;class_name);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; object;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;gdexample_class_free_instance&lt;/span&gt;(&lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; &lt;span style="color:#f92672"&gt;*&lt;/span&gt;p_class_userdata, GDExtensionClassInstancePtr p_instance)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (p_instance &lt;span style="color:#f92672"&gt;==&lt;/span&gt; NULL)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; CookieGDExample &lt;span style="color:#f92672"&gt;*&lt;/span&gt;self &lt;span style="color:#f92672"&gt;=&lt;/span&gt; (CookieGDExample &lt;span style="color:#f92672"&gt;*&lt;/span&gt;)p_instance;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;gdexample_class_destructor&lt;/span&gt;(self);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; api.&lt;span style="color:#a6e22e"&gt;mem_free&lt;/span&gt;(self);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="初始化模块"&gt;初始化模块
+&lt;/h3&gt;&lt;p&gt;有上面的工作后，就可以开始初始化模块了&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-c" data-lang="c"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// ./src/init.h
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#pragma once
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#include&lt;/span&gt; &lt;span style="color:#75715e"&gt;&amp;#34;defs.h&amp;#34;&lt;/span&gt;&lt;span style="color:#75715e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#include&lt;/span&gt; &lt;span style="color:#75715e"&gt;&amp;#34;gdextension_interface.h&amp;#34;&lt;/span&gt;&lt;span style="color:#75715e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;initialize_gdexample_module&lt;/span&gt;(&lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; &lt;span style="color:#f92672"&gt;*&lt;/span&gt;p_userdata, GDExtensionInitializationLevel p_level);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;deinitialize_gdexample_module&lt;/span&gt;(&lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; &lt;span style="color:#f92672"&gt;*&lt;/span&gt;p_userdata, GDExtensionInitializationLevel p_level);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;GDExtensionBool GDE_EXPORT &lt;span style="color:#a6e22e"&gt;gdexample_library_init&lt;/span&gt;(GDExtensionInterfaceGetProcAddress p_get_proc_address,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; GDExtensionClassLibraryPtr p_library,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; GDExtensionInitialization &lt;span style="color:#f92672"&gt;*&lt;/span&gt;r_initialization);
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-c" data-lang="c"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// ./src/init.c
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#include&lt;/span&gt; &lt;span style="color:#75715e"&gt;&amp;#34;init.h&amp;#34;&lt;/span&gt;&lt;span style="color:#75715e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#include&lt;/span&gt; &lt;span style="color:#75715e"&gt;&amp;#34;api.h&amp;#34;&lt;/span&gt;&lt;span style="color:#75715e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#include&lt;/span&gt; &lt;span style="color:#75715e"&gt;&amp;#34;gdexample.h&amp;#34;&lt;/span&gt;&lt;span style="color:#75715e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;initialize_gdexample_module&lt;/span&gt;(&lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; &lt;span style="color:#f92672"&gt;*&lt;/span&gt;p_userdata, GDExtensionInitializationLevel p_level)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (p_level &lt;span style="color:#f92672"&gt;!=&lt;/span&gt; GDEXTENSION_INITIALIZATION_SCENE)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; StringName class_name;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; constructors.&lt;span style="color:#a6e22e"&gt;string_name_new_with_latin1_chars&lt;/span&gt;(&lt;span style="color:#f92672"&gt;&amp;amp;&lt;/span&gt;class_name, &lt;span style="color:#e6db74"&gt;&amp;#34;GDExample&amp;#34;&lt;/span&gt;, false);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; StringName parent_class_name;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; constructors.&lt;span style="color:#a6e22e"&gt;string_name_new_with_latin1_chars&lt;/span&gt;(&lt;span style="color:#f92672"&gt;&amp;amp;&lt;/span&gt;parent_class_name, &lt;span style="color:#e6db74"&gt;&amp;#34;Sprite2D&amp;#34;&lt;/span&gt;, false);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	&lt;span style="color:#75715e"&gt;// 创建类型信息
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; GDExtensionClassCreationInfo2 class_info &lt;span style="color:#f92672"&gt;=&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; .is_virtual &lt;span style="color:#f92672"&gt;=&lt;/span&gt; false,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; .is_abstract &lt;span style="color:#f92672"&gt;=&lt;/span&gt; false,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; .is_exposed &lt;span style="color:#f92672"&gt;=&lt;/span&gt; true,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; .set_func &lt;span style="color:#f92672"&gt;=&lt;/span&gt; NULL,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; .get_func &lt;span style="color:#f92672"&gt;=&lt;/span&gt; NULL,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; .get_property_list_func &lt;span style="color:#f92672"&gt;=&lt;/span&gt; NULL,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; .free_property_list_func &lt;span style="color:#f92672"&gt;=&lt;/span&gt; NULL,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; .property_can_revert_func &lt;span style="color:#f92672"&gt;=&lt;/span&gt; NULL,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; .property_get_revert_func &lt;span style="color:#f92672"&gt;=&lt;/span&gt; NULL,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; .validate_property_func &lt;span style="color:#f92672"&gt;=&lt;/span&gt; NULL,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; .notification_func &lt;span style="color:#f92672"&gt;=&lt;/span&gt; NULL,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; .to_string_func &lt;span style="color:#f92672"&gt;=&lt;/span&gt; NULL,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; .reference_func &lt;span style="color:#f92672"&gt;=&lt;/span&gt; NULL,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; .unreference_func &lt;span style="color:#f92672"&gt;=&lt;/span&gt; NULL,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; .create_instance_func &lt;span style="color:#f92672"&gt;=&lt;/span&gt; gdexample_class_create_instance,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; .free_instance_func &lt;span style="color:#f92672"&gt;=&lt;/span&gt; gdexample_class_free_instance,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; .recreate_instance_func &lt;span style="color:#f92672"&gt;=&lt;/span&gt; NULL,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; .get_virtual_func &lt;span style="color:#f92672"&gt;=&lt;/span&gt; NULL,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; .get_virtual_call_data_func &lt;span style="color:#f92672"&gt;=&lt;/span&gt; NULL,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; .call_virtual_with_data_func &lt;span style="color:#f92672"&gt;=&lt;/span&gt; NULL,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; .get_rid_func &lt;span style="color:#f92672"&gt;=&lt;/span&gt; NULL,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; .class_userdata &lt;span style="color:#f92672"&gt;=&lt;/span&gt; NULL,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; };
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	&lt;span style="color:#75715e"&gt;// 把类型信息注册到ClassDB中
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; api.&lt;span style="color:#a6e22e"&gt;classdb_register_extension_class2&lt;/span&gt;(class_library, &lt;span style="color:#f92672"&gt;&amp;amp;&lt;/span&gt;class_name, &lt;span style="color:#f92672"&gt;&amp;amp;&lt;/span&gt;parent_class_name, &lt;span style="color:#f92672"&gt;&amp;amp;&lt;/span&gt;class_info);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// Bind methods.
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;gdexample_class_bind_methods&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// 销毁两个临时的StringName数据
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; destructors.&lt;span style="color:#a6e22e"&gt;string_name_destructor&lt;/span&gt;(&lt;span style="color:#f92672"&gt;&amp;amp;&lt;/span&gt;class_name);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; destructors.&lt;span style="color:#a6e22e"&gt;string_name_destructor&lt;/span&gt;(&lt;span style="color:#f92672"&gt;&amp;amp;&lt;/span&gt;parent_class_name);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;deinitialize_gdexample_module&lt;/span&gt;(&lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; &lt;span style="color:#f92672"&gt;*&lt;/span&gt;p_userdata, GDExtensionInitializationLevel p_level)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;GDExtensionBool GDE_EXPORT &lt;span style="color:#a6e22e"&gt;gdexample_library_init&lt;/span&gt;(GDExtensionInterfaceGetProcAddress p_get_proc_address,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; GDExtensionClassLibraryPtr p_library,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; GDExtensionInitialization &lt;span style="color:#f92672"&gt;*&lt;/span&gt;r_initialization)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; class_library &lt;span style="color:#f92672"&gt;=&lt;/span&gt; p_library;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;load_api&lt;/span&gt;(p_get_proc_address);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; r_initialization&lt;span style="color:#f92672"&gt;-&amp;gt;&lt;/span&gt;initialize &lt;span style="color:#f92672"&gt;=&lt;/span&gt; initialize_gdexample_module;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; r_initialization&lt;span style="color:#f92672"&gt;-&amp;gt;&lt;/span&gt;deinitialize &lt;span style="color:#f92672"&gt;=&lt;/span&gt; deinitialize_gdexample_module;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; r_initialization&lt;span style="color:#f92672"&gt;-&amp;gt;&lt;/span&gt;userdata &lt;span style="color:#f92672"&gt;=&lt;/span&gt; NULL;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; r_initialization&lt;span style="color:#f92672"&gt;-&amp;gt;&lt;/span&gt;minimum_initialization_level &lt;span style="color:#f92672"&gt;=&lt;/span&gt; GDEXTENSION_INITIALIZATION_SCENE;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; true;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;（&lt;code&gt;GDExtensionClassCreationInfo2&lt;/code&gt;算是废弃了，4.5应该用&lt;code&gt;GDExtensionClassCreationInfo5&lt;/code&gt;）&lt;br&gt;
+（不过如果考虑给旧版本开发GDExtension，那应该使用旧版本的函数）&lt;/p&gt;
+&lt;h2 id="0x03-在godot中使用"&gt;&amp;lt;0x03&amp;gt; 在Godot中使用
+&lt;/h2&gt;&lt;p&gt;只需要创建新项目，然后将demo文件夹直接复制到项目文件中&lt;br&gt;
+需要注意&lt;code&gt;gdexample.gdextension&lt;/code&gt;内的路径&lt;br&gt;
+不同于通过脚本实现的插件需要启用&lt;br&gt;
+GDExtension实现的插件在Godot读取到&lt;code&gt;*.gdextension&lt;/code&gt;后，会自动开始加载需要的动态链接文件&lt;br&gt;
+当然，如果在初始化模块时遇到错误，会导致整个Godot直接崩溃&lt;/p&gt;
+&lt;p&gt;加载后，就可以在添加新节点中看到扩展定义的节点&lt;br&gt;
+&lt;img class="gallery-image" data-flex-basis="280px" data-flex-grow="116" height="1029" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://mlacookie.github.io/post/articles/2025/%E5%A6%82%E4%BD%95%E7%BC%96%E5%86%99gdextension%E6%8F%92%E4%BB%B6/picture/1.png" srcset="https://mlacookie.github.io/post/articles/2025/%E5%A6%82%E4%BD%95%E7%BC%96%E5%86%99gdextension%E6%8F%92%E4%BB%B6/picture/1_hu_a5eeeb38efbf8508.png 800w, https://mlacookie.github.io/post/articles/2025/%E5%A6%82%E4%BD%95%E7%BC%96%E5%86%99gdextension%E6%8F%92%E4%BB%B6/picture/1.png 1202w" width="1202"&gt;&lt;/p&gt;
+&lt;h1 id="使用c开发gdextension-1"&gt;使用C#开发GDExtension
+&lt;/h1&gt;&lt;p&gt;上面提到Godot通过运行时加载动态链接库实现对引擎功能的扩充&lt;br&gt;
+而理论上，加载动态链接库实际上只要调用的符号对得上就可以，这是与语言无关的&lt;br&gt;
+也就是说，只要语言可以导出C符号的动态链接库，就可以写GDExtension&lt;br&gt;
+而C#恰好就可以通过AOT导出C符号的动态链接库，这就很有意思了&lt;/p&gt;
+&lt;h2 id="0x00-使用c开发的前言"&gt;&amp;lt;0x00&amp;gt; 使用C#开发的前言
+&lt;/h2&gt;&lt;p&gt;需要注意的是，在我研究到一半的时候，发现有项目在做这个事情了(&lt;a class="link" href="https://github.com/raulsntos/godot-dotnet" target="_blank" rel="noopener"
+ &gt;godot-dotnet&lt;/a&gt;)&lt;br&gt;
+当然，这个项目还不像Rust或者Go的Binding那么完善稳定，不推荐在生产环境中使用&lt;br&gt;
+所以，这篇文章更多的是举一个例子，展示如何用C#编写AOT的代码&lt;br&gt;
+&lt;a class="link" href="https://github.com/MLAcookie/GDExtension-Example" target="_blank" rel="noopener"
+ &gt;代码仓库&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;需要注意的是，编写AOT代码不仅需要.netSDK，还需要额外的工具来完成符号的导出&lt;br&gt;
+比如说Windows平台上，就需要安装Visual Studio的C++工作负载&lt;br&gt;
+主要是需要MSVC生成工具，其他平台可以参考&lt;a class="link" href="https://learn.microsoft.com/en-us/dotnet/core/deploying/native-aot" target="_blank" rel="noopener"
+ &gt;微软的这篇教程&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id="0x01-一些概念"&gt;&amp;lt;0x01&amp;gt; 一些概念
+&lt;/h2&gt;&lt;h3 id="unsafe代码块"&gt;unsafe代码块
+&lt;/h3&gt;&lt;p&gt;在本项目中，我们需要用到一些unsafe的代码&lt;br&gt;
+在unsafe上下文中，我们可以通过指针直接操作内存&lt;br&gt;
+代价就是这样没有运行时的内存安全保证&lt;br&gt;
+一旦操作不当就可能会引起程序崩溃&lt;br&gt;
+不过对于一些本机代码的交互，还是需要用unsafe的&lt;/p&gt;
+&lt;h3 id="函数指针"&gt;函数指针
+&lt;/h3&gt;&lt;p&gt;在GDExtension中，有非常多的操作是通过函数指针传递的&lt;br&gt;
+对于C中如下的函数指针&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-c" data-lang="c"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;typedef&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;void&lt;/span&gt; (&lt;span style="color:#f92672"&gt;*&lt;/span&gt;function_a)(&lt;span style="color:#66d9ef"&gt;int&lt;/span&gt; num);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;typedef&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;int&lt;/span&gt; (&lt;span style="color:#f92672"&gt;*&lt;/span&gt;function_b)(&lt;span style="color:#66d9ef"&gt;const&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;char&lt;/span&gt;&lt;span style="color:#f92672"&gt;*&lt;/span&gt; str);
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;C#中需要如下方式声明&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-cs" data-lang="cs"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;using&lt;/span&gt; FunctionAPtr = &lt;span style="color:#66d9ef"&gt;delegate&lt;/span&gt;* unmanaged[Cdecl]&amp;lt;&lt;span style="color:#66d9ef"&gt;int&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;void&lt;/span&gt;&amp;gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// C的char类型应该对应C#的byte，C#的char类型为2字节，表示UTF16编码&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;using&lt;/span&gt; FunctionBPtr = &lt;span style="color:#66d9ef"&gt;delegate&lt;/span&gt;* unmanaged[Cdecl]&amp;lt;&lt;span style="color:#66d9ef"&gt;byte&lt;/span&gt;*, &lt;span style="color:#66d9ef"&gt;int&lt;/span&gt;&amp;gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;有一说一，写法上确实挺抽象的&lt;br&gt;
+这里使用的是using声明，作用域仅限当前文件内&lt;br&gt;
+如果需要确保类型，就需要单独声明一个struct，比如这样&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-cs" data-lang="cs"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;unsafe&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;struct&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;FunctionAPtr&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	&lt;span style="color:#66d9ef"&gt;private&lt;/span&gt; FunctionAPtr(&lt;span style="color:#66d9ef"&gt;delegate&lt;/span&gt;* unmanaged[Cdecl]&amp;lt;&lt;span style="color:#66d9ef"&gt;int&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;void&lt;/span&gt;&amp;gt; ptr)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;		_ptr = ptr;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	&lt;span style="color:#66d9ef"&gt;private&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;delegate&lt;/span&gt;* unmanaged[Cdecl]&amp;lt;&lt;span style="color:#66d9ef"&gt;int&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;void&lt;/span&gt;&amp;gt; _ptr;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	&lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;static&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;implicit&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;operator&lt;/span&gt; FunctionAPtr(&lt;span style="color:#66d9ef"&gt;delegate&lt;/span&gt;* unmanaged[Cdecl]&amp;lt;&lt;span style="color:#66d9ef"&gt;int&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;void&lt;/span&gt;&amp;gt; ptr) =&amp;gt; &lt;span style="color:#66d9ef"&gt;new&lt;/span&gt; (ptr);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;由于struct的内存分配特性，&lt;code&gt;FunctionAPtr&lt;/code&gt;结构位置也即&lt;code&gt;_ptr&lt;/code&gt;的位置&lt;br&gt;
+这就相当于给指针分配了类型&lt;/p&gt;
+&lt;p&gt;需要注意的是，在C#中指定方法需要在非托管环境中调用，需要用一个特性标记&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-cs" data-lang="cs"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// 标记仅允许非托管环境调用，调用约定为Cdecl&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;[UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)]&lt;/span&gt;)]
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;static&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; FunctionA(&lt;span style="color:#66d9ef"&gt;int&lt;/span&gt; num)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;delegate&lt;/span&gt;* unmanaged[Cdecl]&amp;lt;&lt;span style="color:#66d9ef"&gt;int&lt;/span&gt;, &lt;span style="color:#66d9ef"&gt;void&lt;/span&gt;&amp;gt; ptr = &amp;amp;FunctionA;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="fixed代码块"&gt;fixed代码块
+&lt;/h3&gt;&lt;p&gt;C#中有一个挺少见的关键字&lt;code&gt;fixed&lt;/code&gt;&lt;br&gt;
+这个是用来指定该代码区域中指定托管对象的内存位置不动&lt;br&gt;
+为什么需要这样代码块呢，因为托管对象在托管堆的内存位置是有可能改变的&lt;br&gt;
+由于垃圾回收机制的存在，不需要的对象会被清理&lt;br&gt;
+而为了避免内存空间碎片化，垃圾回收器会对剩余的对象重新排列&lt;br&gt;
+通过&lt;code&gt;fixed&lt;/code&gt;关键字，告诉垃圾回收器在这里暂时不要动指定对象的内存位置&lt;br&gt;
+下面是一个示例&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-cs" data-lang="cs"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;class&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;Test&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	&lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; DoSomething()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;		&lt;span style="color:#75715e"&gt;// ...&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;		&lt;span style="color:#75715e"&gt;// 固定this表示的对象&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;		&lt;span style="color:#66d9ef"&gt;fixed&lt;/span&gt;(&lt;span style="color:#66d9ef"&gt;void&lt;/span&gt;* pThis = &amp;amp;&lt;span style="color:#66d9ef"&gt;this&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;		{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;			Method(pThis);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;		}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;		&lt;span style="color:#75715e"&gt;// ...&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="0x02-开始"&gt;&amp;lt;0x02&amp;gt; 开始
+&lt;/h2&gt;&lt;p&gt;创建一个项目，这里采用.net10，使用类库项目模板&lt;br&gt;
+需要在.csproj文件中启用AOT与unsafe上下文&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-xml" data-lang="xml"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;&amp;lt;Project&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;Sdk=&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#34;Microsoft.NET.Sdk&amp;#34;&lt;/span&gt;&lt;span style="color:#f92672"&gt;&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;lt;PropertyGroup&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;lt;TargetFramework&amp;gt;&lt;/span&gt;net10.0&lt;span style="color:#f92672"&gt;&amp;lt;/TargetFramework&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;lt;ImplicitUsings&amp;gt;&lt;/span&gt;enable&lt;span style="color:#f92672"&gt;&amp;lt;/ImplicitUsings&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;lt;Nullable&amp;gt;&lt;/span&gt;enable&lt;span style="color:#f92672"&gt;&amp;lt;/Nullable&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;lt;PublishAot&amp;gt;&lt;/span&gt;true&lt;span style="color:#f92672"&gt;&amp;lt;/PublishAot&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;lt;AllowUnsafeBlocks&amp;gt;&lt;/span&gt;true&lt;span style="color:#f92672"&gt;&amp;lt;/AllowUnsafeBlocks&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#f92672"&gt;&amp;lt;/PropertyGroup&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f92672"&gt;&amp;lt;/Project&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="整个入口"&gt;整个入口
+&lt;/h3&gt;&lt;p&gt;首先先复刻一个我们需要的函数入口&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-cs" data-lang="cs"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// .ExtensionEntry.cs&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;using&lt;/span&gt; System.Runtime.CompilerServices;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;using&lt;/span&gt; System.Runtime.InteropServices;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;unsafe&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;class&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;ExtensionEntry&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;	[UnmanagedCallersOnly(EntryPoint = &amp;#34;aot_init&amp;#34;)]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	&lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;static&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;bool&lt;/span&gt; Init(
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; nint pGetProcAddress,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; nint pLibrary,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; nint rInitialization)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;其他先不加，尝试生成一下，通过dumpbin看看有没有这个入口&lt;/p&gt;
+&lt;p&gt;&lt;img class="gallery-image" data-flex-basis="370px" data-flex-grow="154" height="800" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://mlacookie.github.io/post/articles/2025/%E5%A6%82%E4%BD%95%E7%BC%96%E5%86%99gdextension%E6%8F%92%E4%BB%B6/picture/2.png" srcset="https://mlacookie.github.io/post/articles/2025/%E5%A6%82%E4%BD%95%E7%BC%96%E5%86%99gdextension%E6%8F%92%E4%BB%B6/picture/2_hu_f34642dd667aeab9.png 800w, https://mlacookie.github.io/post/articles/2025/%E5%A6%82%E4%BD%95%E7%BC%96%E5%86%99gdextension%E6%8F%92%E4%BB%B6/picture/2.png 1235w" width="1235"&gt;&lt;/p&gt;
+&lt;p&gt;有&lt;code&gt;aot_init&lt;/code&gt;就说明已经把入口符号导出了&lt;/p&gt;
+&lt;h3 id="分离代码"&gt;分离代码
+&lt;/h3&gt;&lt;p&gt;为了方便管理，这里将不同的代码放在不同的文件中&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;./GdExtensionApi/GodotApi.cs&lt;/code&gt;负责保存需要的Api函数指针&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;./GdExtensionApi/GodotEnum.cs&lt;/code&gt;定义需要的枚举类型&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;./GdExtensionApi/GodotFunction.cs&lt;/code&gt;定义需要的函数指针类型封装&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;./GdExtensionApi/GodotStruct.cs&lt;/code&gt;定义需要的结构&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;./GdExtensionApi/GodotValue.cs&lt;/code&gt;定义需要的数值类型&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="0x03-实现"&gt;&amp;lt;0x03&amp;gt; 实现
+&lt;/h2&gt;&lt;p&gt;具体流程实际上还是与C的示例是一致的&lt;br&gt;
+也是通过入口，获取所有需要的Api函数指针&lt;br&gt;
+然后再进行一些操作&lt;br&gt;
+由于C#没有这些符号定义，所以最花时间的就是定义C#中的符号&lt;br&gt;
+自己定义的符号通过一些方式还可以融合C#的语法糖，也还行&lt;/p&gt;
+&lt;h3 id="stringname定义"&gt;StringName定义
+&lt;/h3&gt;&lt;p&gt;GDExtension中，获取StringName实际上获取的是StringName的指针&lt;br&gt;
+其内容的生存期由Godot本身管理&lt;br&gt;
+也就是说，在我们的代码中需要告诉Godot什么时候销毁这个东西&lt;br&gt;
+所以会在C的代码中看到这样的代码&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-c" data-lang="c"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;StringName class_name;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// 创建StringName，内容为&amp;#34;Sprite2D&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;constructors.&lt;span style="color:#a6e22e"&gt;string_name_new_with_latin1_chars&lt;/span&gt;(&lt;span style="color:#f92672"&gt;&amp;amp;&lt;/span&gt;class_name, &lt;span style="color:#e6db74"&gt;&amp;#34;Sprite2D&amp;#34;&lt;/span&gt;, false);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// 一些操作
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// 指示销毁
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;destructors.&lt;span style="color:#a6e22e"&gt;string_name_destructor&lt;/span&gt;(&lt;span style="color:#f92672"&gt;&amp;amp;&lt;/span&gt;class_name);
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;这会导致局部暂时使用StringName会有些麻烦，需要记得销毁&lt;/p&gt;
+&lt;p&gt;C#中有个&lt;code&gt;using&lt;/code&gt;语法，表示在作用域内使用的变量，离开作用域后自动销毁&lt;br&gt;
+这依赖于&lt;code&gt;IDisposable&lt;/code&gt;接口的实现&lt;br&gt;
+我们可以在自己定义的StringName中实现这个接口&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-cs" data-lang="cs"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;unsafe&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;struct&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;StringName&lt;/span&gt; : IDisposable
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;private&lt;/span&gt; StringName(&lt;span style="color:#66d9ef"&gt;string&lt;/span&gt; str)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; From(str);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	&lt;span style="color:#75715e"&gt;// 需要加载的函数指针&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;static&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;delegate&lt;/span&gt;* unmanaged[Cdecl]&amp;lt;StringName*, &lt;span style="color:#66d9ef"&gt;byte&lt;/span&gt;*, GdExtensionBool, &lt;span style="color:#66d9ef"&gt;void&lt;/span&gt;&amp;gt; ConstructPtr;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;static&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;delegate&lt;/span&gt;* unmanaged[Cdecl]&amp;lt;StringName*, &lt;span style="color:#66d9ef"&gt;void&lt;/span&gt;&amp;gt; DestructPtr;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;static&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;implicit&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;operator&lt;/span&gt; StringName(&lt;span style="color:#66d9ef"&gt;string&lt;/span&gt; str) =&amp;gt; &lt;span style="color:#66d9ef"&gt;new&lt;/span&gt;(str);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;private&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;void&lt;/span&gt;* _ptr = &lt;span style="color:#66d9ef"&gt;null&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;private&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; From(&lt;span style="color:#66d9ef"&gt;string&lt;/span&gt; str)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;fixed&lt;/span&gt; (StringName* pThis = &amp;amp;&lt;span style="color:#66d9ef"&gt;this&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; ConstructPtr(pThis, (&lt;span style="color:#66d9ef"&gt;byte&lt;/span&gt;*)Marshal.StringToHGlobalAnsi(str), &lt;span style="color:#66d9ef"&gt;false&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; Dispose()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;fixed&lt;/span&gt; (StringName* pThis = &amp;amp;&lt;span style="color:#66d9ef"&gt;this&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; DestructPtr(pThis);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;这样的实现，在代码中需要使用StringName时，就方便许多了&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-cs" data-lang="cs"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;using&lt;/span&gt; StringName className = &lt;span style="color:#e6db74"&gt;&amp;#34;Sprite2D&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="其他类型的封装"&gt;其他类型的封装
+&lt;/h3&gt;&lt;p&gt;在本示例中，其他类型的封装大多是重复劳动&lt;br&gt;
+主要使用的技巧是隐式类型转换，比如说这样&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-cs" data-lang="cs"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;unsafe&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;struct&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;GdExtensionObjectPtr&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;private&lt;/span&gt; GdExtensionObjectPtr(&lt;span style="color:#66d9ef"&gt;void&lt;/span&gt;* ptr)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; _ptr = ptr;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;private&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;readonly&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;void&lt;/span&gt;* _ptr;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;static&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;implicit&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;operator&lt;/span&gt; GdExtensionObjectPtr(&lt;span style="color:#66d9ef"&gt;void&lt;/span&gt;* ptr) =&amp;gt; &lt;span style="color:#66d9ef"&gt;new&lt;/span&gt;(ptr);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;static&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;implicit&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;operator&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;void&lt;/span&gt;*(GdExtensionObjectPtr ptr) =&amp;gt; ptr._ptr;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;定义了&lt;code&gt;void*&lt;/code&gt;与&lt;code&gt;GdExtensionObjectPtr&lt;/code&gt;类型的互相隐式转换&lt;br&gt;
+在需要的地方就可以非常方便得转换不同类型的指针封装&lt;br&gt;
+具体的话可以看仓库代码&lt;/p&gt;
+&lt;h3 id="枚举类型的传递"&gt;枚举类型的传递
+&lt;/h3&gt;&lt;p&gt;GDExtension中也存在一些枚举类型，这些类型在C#中怎么对应呢&lt;br&gt;
+好消息是，在C与C#中，枚举本质上与int类似&lt;br&gt;
+传递不同的枚举值相当于传递不同的int值&lt;br&gt;
+也就是可以直接对应，只要C#中的定义与C中的定义一致即可&lt;br&gt;
+具体详见仓库代码&lt;/p&gt;
+&lt;h3 id="编写自定义节点"&gt;编写自定义节点
+&lt;/h3&gt;&lt;p&gt;有了上面的定义基础，我们就可以用C#编写一个简单的节点了&lt;br&gt;
+上次用C写的是继承&lt;code&gt;Sprite2D&lt;/code&gt;的节点，这次写一个继承&lt;code&gt;Control&lt;/code&gt;的节点&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-cs" data-lang="cs"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// ./AotExample.cs&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;using&lt;/span&gt; System.Runtime.CompilerServices;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;using&lt;/span&gt; System.Runtime.InteropServices;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;using&lt;/span&gt; CSharpAotExtension.GodotExtensionApi;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;namespace&lt;/span&gt; CSharpAotExtension;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;unsafe&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;struct&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;AotExample&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;private&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;static&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;readonly&lt;/span&gt; GdExtensionInstanceBindingCallbacks BindingCallbacks;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;private&lt;/span&gt; GdExtensionObjectPtr _objectPtr;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt; [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)]&lt;/span&gt;)]
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;static&lt;/span&gt; GdExtensionObjectPtr CreateInstance(&lt;span style="color:#66d9ef"&gt;void&lt;/span&gt;* pClassUserdata)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;using&lt;/span&gt; StringName controlName = &lt;span style="color:#e6db74"&gt;&amp;#34;Control&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;using&lt;/span&gt; StringName exampleName = &lt;span style="color:#e6db74"&gt;&amp;#34;AotExample&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;var&lt;/span&gt; control = GdExtensionClassDb.ConstructObject(&amp;amp;controlName);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;var&lt;/span&gt; self = (AotExample*)GdExtensionCore.MemAlloc(&lt;span style="color:#66d9ef"&gt;sizeof&lt;/span&gt;(AotExample));
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; self-&amp;gt;_objectPtr = control;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; GdExtensionCore.ObjectSetInstance(control, &amp;amp;exampleName, self);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;fixed&lt;/span&gt; (GdExtensionInstanceBindingCallbacks* pCallbacks = &amp;amp;BindingCallbacks)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; GdExtensionCore.ObjectSetInstanceBinding(control, ExtensionEntry.ClassLibrary, self, pCallbacks);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; control;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt; [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)]&lt;/span&gt;)]
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;static&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; FreeInstance(&lt;span style="color:#66d9ef"&gt;void&lt;/span&gt;* pClassUserdata, GdExtensionClassInstancePtr pInstance)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (pInstance.IsNull())
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; GdExtensionCore.MemFree(pInstance);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;然后在加载过程中注册这个类型即可&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-cs" data-lang="cs"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// ./ExtensionEntry.cs&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// ...&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;[UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)]&lt;/span&gt;)]
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;private&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;static&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; InitializeModule(&lt;span style="color:#66d9ef"&gt;void&lt;/span&gt;* pUserdata, GdExtensionInitializationLevel level)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (level != GdExtensionInitializationLevel.Scene)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;using&lt;/span&gt; StringName className = &lt;span style="color:#e6db74"&gt;&amp;#34;AotExample&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;using&lt;/span&gt; StringName parentClassName = &lt;span style="color:#e6db74"&gt;&amp;#34;Control&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;delegate&lt;/span&gt;* unmanaged[Cdecl]&amp;lt;&lt;span style="color:#66d9ef"&gt;void&lt;/span&gt;*, GdExtensionObjectPtr&amp;gt; createInstancePtr = &amp;amp;AotExample.CreateInstance;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;delegate&lt;/span&gt;* unmanaged[Cdecl]&amp;lt;&lt;span style="color:#66d9ef"&gt;void&lt;/span&gt;*, GdExtensionClassInstancePtr, &lt;span style="color:#66d9ef"&gt;void&lt;/span&gt;&amp;gt; freeInstancePtr = &amp;amp;AotExample.FreeInstance;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; GdExtensionClassCreationInfo2 classInfo = &lt;span style="color:#66d9ef"&gt;new&lt;/span&gt;()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; IsVirtual = &lt;span style="color:#66d9ef"&gt;false&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; IsAbstract = &lt;span style="color:#66d9ef"&gt;false&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; IsExposed = &lt;span style="color:#66d9ef"&gt;true&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; CreateInstanceFunc = createInstancePtr,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; FreeInstanceFunc = freeInstancePtr,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; };
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; GdExtensionClassDb.RegisterExtensionClass2(ClassLibrary, &amp;amp;className, &amp;amp;parentClassName, &amp;amp;classInfo);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// ...&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="0x04-编译与运行"&gt;&amp;lt;0x04&amp;gt; 编译与运行
+&lt;/h2&gt;&lt;p&gt;publish到目标位置后，同样，需要一个&lt;code&gt;.gdextension&lt;/code&gt;文件来说明函数入口与动态库位置&lt;br&gt;
+（是publish，不是build，build的话入口符号可能不会导出）&lt;br&gt;
+配置完成后，启动Godot&lt;/p&gt;
+&lt;p&gt;&lt;img class="gallery-image" data-flex-basis="317px" data-flex-grow="132" height="768" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://mlacookie.github.io/post/articles/2025/%E5%A6%82%E4%BD%95%E7%BC%96%E5%86%99gdextension%E6%8F%92%E4%BB%B6/picture/3.png" srcset="https://mlacookie.github.io/post/articles/2025/%E5%A6%82%E4%BD%95%E7%BC%96%E5%86%99gdextension%E6%8F%92%E4%BB%B6/picture/3_hu_590ce232cd8a0db9.png 800w, https://mlacookie.github.io/post/articles/2025/%E5%A6%82%E4%BD%95%E7%BC%96%E5%86%99gdextension%E6%8F%92%E4%BB%B6/picture/3.png 1016w" width="1016"&gt;&lt;/p&gt;
+&lt;p&gt;出现&lt;code&gt;AotExample&lt;/code&gt;节点即说明我们写的扩展是正常运行的&lt;/p&gt;</description></item><item><title>Godot插件制作的一些神秘小技巧</title><link>https://mlacookie.github.io/post/articles/2025/godot%E6%8F%92%E4%BB%B6%E5%88%B6%E4%BD%9C%E7%9A%84%E4%B8%80%E4%BA%9B%E7%A5%9E%E7%A7%98%E5%B0%8F%E6%8A%80%E5%B7%A7/</link><pubDate>Thu, 11 Sep 2025 12:47:47 +0800</pubDate><guid>https://mlacookie.github.io/post/articles/2025/godot%E6%8F%92%E4%BB%B6%E5%88%B6%E4%BD%9C%E7%9A%84%E4%B8%80%E4%BA%9B%E7%A5%9E%E7%A7%98%E5%B0%8F%E6%8A%80%E5%B7%A7/</guid><description>&lt;p&gt;使用引擎多少会需要自己搓一些工具&lt;br&gt;
+Godot给出的方案是通过插件来扩展引擎的功能&lt;/p&gt;
+&lt;p&gt;但受制于脚本的功能性，通过C#脚本来编写插件时会遇到一些问题&lt;br&gt;
+（或许通过GDExtension扩展会好一点）
+本文采用C#格式的API&lt;/p&gt;
+&lt;h2 id="判断脚本类型"&gt;判断脚本类型
+&lt;/h2&gt;&lt;p&gt;一般来说，插件通过&lt;code&gt;GodotObject&lt;/code&gt;传递原始对象&lt;br&gt;
+理论上我们可以通过&lt;code&gt;GodotObject.GetClass()&lt;/code&gt;获取对象&lt;br&gt;
+但由于脚本添加的自定义类型本质上是在&lt;code&gt;GodotObject&lt;/code&gt;上附加了这个脚本&lt;br&gt;
+附加的脚本不会在Godot的ClassDB中添加新的元数据&lt;br&gt;
+也就是说没有改变这个&lt;code&gt;GodotObject&lt;/code&gt;的实际类型&lt;br&gt;
+这会导致&lt;code&gt;GodotObject.GetClass()&lt;/code&gt;返回的是基类类型&lt;/p&gt;
+&lt;p&gt;比如说下面的代码&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-cs" data-lang="cs"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;[GlobalClass]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;[Tool]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;partial&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;class&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;TestCamera&lt;/span&gt; : Camera3D
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	&lt;span style="color:#75715e"&gt;// ...&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;那么在插件上下文中，通过&lt;code&gt;GetClass()&lt;/code&gt;返回的是&lt;code&gt;Camera3D&lt;/code&gt;的类型&lt;/p&gt;
+&lt;p&gt;这会导致在制作查看器插件或者Gizmo插件时，无法通过这种方式对类型的判断&lt;br&gt;
+进而使得查看器插件的&lt;code&gt;_CanHandle&lt;/code&gt;与Gizmo插件的&lt;code&gt;_HasGizmo&lt;/code&gt;方法不是很好写&lt;/p&gt;
+&lt;p&gt;还是有办法解决这个问题的&lt;br&gt;
+通过比较脚本类型即可&lt;br&gt;
+以&lt;code&gt;_CanHandle&lt;/code&gt;为例&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-cs" data-lang="cs"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;partial&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;class&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;TestCameraInspector&lt;/span&gt; : EditorInspectorPlugin
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	&lt;span style="color:#75715e"&gt;// ...&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	&lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;override&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;bool&lt;/span&gt; _CanHandle(GodotObject o)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;		&lt;span style="color:#66d9ef"&gt;var&lt;/span&gt; script = GD.Load&amp;lt;Script&amp;gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;path of script&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;		&lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; script == o.GetScript().AsGodotObject();
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	&lt;span style="color:#75715e"&gt;// ...&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;这样就可以判断脚本类型了&lt;/p&gt;
+&lt;p&gt;但如果说要扩展脚本功能，那么这个方法就不能判断了&lt;br&gt;
+毕竟相当于附加的脚本变了&lt;br&gt;
+这种情况可能直接判断基类型或者通过添加元数据判断更好&lt;/p&gt;
+&lt;h2 id="与脚本对象交互"&gt;与脚本对象交互
+&lt;/h2&gt;&lt;p&gt;由于上面的问题，导致&lt;code&gt;GodotObject&lt;/code&gt;没法直接转换为需要的脚本问题&lt;br&gt;
+只能直接转换为继承基类型&lt;br&gt;
+比如上面的&lt;code&gt;TestCamera&lt;/code&gt;，在插件给的&lt;code&gt;GodotObject&lt;/code&gt;只能强制转型到&lt;code&gt;Camera3D&lt;/code&gt;&lt;br&gt;
+那插件怎么传递数据到脚本对象呢&lt;br&gt;
+只能通过动态调用的方法实现&lt;/p&gt;
+&lt;p&gt;在GodotObject中，动态调用相关的主要有下面的方法&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Get()&lt;/code&gt;可以获取某个属性值&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Set()&lt;/code&gt;可以设定某个属性值&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Call()&lt;/code&gt;可以调用某个方法
+还有其他的一些查询方法与衍生方法&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;动态调用是可以调用脚本方法的，只要脚本在生存期内&lt;br&gt;
+在编写插件的场景中，也就是脚本要能在编辑器中运行，记得给脚本带&lt;code&gt;[Tool]&lt;/code&gt;特性即可&lt;/p&gt;
+&lt;p&gt;下面举个例子&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-cs" data-lang="cs"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;[GlobalClass]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;[Tool]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;partial&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;class&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;TestCamera&lt;/span&gt; : Camera3D
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	&lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; TestMethod(&lt;span style="color:#66d9ef"&gt;int&lt;/span&gt; i)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;		GD.Print(i);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;partial&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;class&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;TestCameraInspector&lt;/span&gt; : EditorInspectorPlugin
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	&lt;span style="color:#75715e"&gt;// ...&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	&lt;span style="color:#75715e"&gt;// 这里给TestCamera栏添加一个按钮来触发这个TestMethod&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	&lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;override&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; _ParseCategory(GodotObject o, &lt;span style="color:#66d9ef"&gt;string&lt;/span&gt; category)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (category != &lt;span style="color:#e6db74"&gt;&amp;#34;TestCamera&amp;#34;&lt;/span&gt;) &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;var&lt;/span&gt; buttonTest = &lt;span style="color:#66d9ef"&gt;new&lt;/span&gt; Button()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	 Text = &lt;span style="color:#e6db74"&gt;&amp;#34;Test&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; };
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; buttonTest.ButtonUp += () =&amp;gt; {o.Call(&lt;span style="color:#e6db74"&gt;&amp;#34;TestMethod&amp;#34;&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;233&lt;/span&gt;)};
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; AddCustomControl(buttonTest);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	&lt;span style="color:#75715e"&gt;// ...&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="隐藏某个属性"&gt;隐藏某个属性
+&lt;/h2&gt;&lt;p&gt;有时候我们需要序列化一个属性，但希望只通过脚本内部管理&lt;br&gt;
+Godot本身没有这样的设置，&lt;code&gt;[Export]&lt;/code&gt;默认是会把这个属性放在编辑器里的&lt;br&gt;
+这时候可以通过检查器插件来实现&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-cs" data-lang="cs"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;[GlobalClass]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;[Tool]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;partial&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;class&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;TestCamera&lt;/span&gt; : Camera3D
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;	[Export]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	&lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;int&lt;/span&gt; HideProperty{ &lt;span style="color:#66d9ef"&gt;get&lt;/span&gt;;&lt;span style="color:#66d9ef"&gt;set&lt;/span&gt;; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;partial&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;class&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;TestCameraInspector&lt;/span&gt; : EditorInspectorPlugin
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	&lt;span style="color:#75715e"&gt;// ...&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;override&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;bool&lt;/span&gt; _ParseProperty(
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; GodotObject @object, Variant.Type type, &lt;span style="color:#66d9ef"&gt;string&lt;/span&gt; name, PropertyHint hintType, &lt;span style="color:#66d9ef"&gt;string&lt;/span&gt; hintString,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; PropertyUsageFlags usageFlags, &lt;span style="color:#66d9ef"&gt;bool&lt;/span&gt; wide)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; name == &lt;span style="color:#e6db74"&gt;&amp;#34;HideProperty&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	&lt;span style="color:#75715e"&gt;// ...&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;这样就实现了对&lt;code&gt;HideProperty&lt;/code&gt;的隐藏&lt;br&gt;
+原理是_ParseProperty同返回值判断是否替换原有的控件&lt;br&gt;
+如果返回为true，则说明需要替换&lt;br&gt;
+但这里没有定义新的控件，那么就替换为空了&lt;/p&gt;</description></item><item><title>Godot中自定义Editor</title><link>https://mlacookie.github.io/post/articles/2025/godot%E4%B8%AD%E8%87%AA%E5%AE%9A%E4%B9%89editor/</link><pubDate>Tue, 15 Apr 2025 10:49:45 +0800</pubDate><guid>https://mlacookie.github.io/post/articles/2025/godot%E4%B8%AD%E8%87%AA%E5%AE%9A%E4%B9%89editor/</guid><description>&lt;p&gt;首先，为什么要学习自定义Editor&lt;br&gt;
+一个引擎自带的工具永远不能涵盖所有工程中的问题&lt;br&gt;
+在一个游戏项目中，开发者不仅需要开发游戏本身，还需要开发一系列工具来辅助游戏开发&lt;br&gt;
+就好比厨子做菜还要磨磨刀&lt;/p&gt;
+&lt;p&gt;在Godot中，开发自定义界面是容易很多的&lt;br&gt;
+界面开发流程上跟开发游戏UI流程差不多&lt;/p&gt;
+&lt;p&gt;本篇采用Godot-mono4.4，也就是用C#开发自定义界面&lt;br&gt;
+一步一步，实现一个简单的Markdown查看器&lt;br&gt;
+为啥实现一个Markdown查看器呢，因为这个足够简单&lt;br&gt;
+而且能把开发Editor中的大部分逻辑都过一遍&lt;/p&gt;
+&lt;h2 id="0x01-新建一个插件"&gt;&amp;lt;0x01&amp;gt; 新建一个插件
+&lt;/h2&gt;&lt;p&gt;在Godot中，我们需要在插件中实现自定义界面&lt;br&gt;
+在&lt;code&gt;项目 &amp;gt;&amp;gt; 项目设置 &amp;gt;&amp;gt; 插件&lt;/code&gt;中选择创建新插件&lt;/p&gt;
+&lt;p&gt;&lt;img class="gallery-image" data-flex-basis="211px" data-flex-grow="88" height="586" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://mlacookie.github.io/post/articles/2025/godot%E4%B8%AD%E8%87%AA%E5%AE%9A%E4%B9%89editor/picture/1.png" width="516"&gt;&lt;/p&gt;
+&lt;p&gt;需要注意的是，这里的信息最好后面就别改了&lt;br&gt;
+可能是由于C#的编译问题，如果后面改了会导致无法启用插件&lt;br&gt;
+并且由于C#是编译型的语言，每次测试插件都需要编译项目后重新启用&lt;/p&gt;
+&lt;p&gt;然后Godot就会生成插件需要的文件，里面包含这样的一个C#脚本&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-cs" data-lang="cs"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// ViewMain.cs&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#if&lt;/span&gt; TOOLS
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;using&lt;/span&gt; Godot;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;using&lt;/span&gt; System;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;[Tool]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;partial&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;class&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;ViewMain&lt;/span&gt; : EditorPlugin
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	&lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;override&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; _EnterTree()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;		&lt;span style="color:#75715e"&gt;// Initialization of the plugin goes here.&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	&lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;override&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; _ExitTree()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;		&lt;span style="color:#75715e"&gt;// Clean-up of the plugin goes here.&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#endif&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;其中，&lt;code&gt;[Tool]&lt;/code&gt;表示这个脚本可以在编辑器中运行&lt;br&gt;
+&lt;code&gt;_EnterTree()&lt;/code&gt;表示启用插件时的逻辑，&lt;code&gt;_ExitTree()&lt;/code&gt;表示禁用插件时的逻辑&lt;/p&gt;
+&lt;h2 id="0x02-在场景中编辑界面"&gt;&amp;lt;0x02&amp;gt; 在场景中编辑界面
+&lt;/h2&gt;&lt;p&gt;Godot的自定义界面需要自己定义一个场景，开发逻辑跟游戏中界面一样&lt;/p&gt;
+&lt;p&gt;首先创建一个用户界面场景，也就是以Control节点为根节点的场景&lt;br&gt;
+保存到插件的目录下，这里保存在&lt;code&gt;res://addons/MarkdownViewer/window.tscn&lt;/code&gt;&lt;br&gt;
+然后在代码中添加实例化界面的代码&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-cs" data-lang="cs"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// MainView.cs&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#if&lt;/span&gt; TOOLS
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;using&lt;/span&gt; Godot;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;using&lt;/span&gt; System;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;[Tool]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;partial&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;class&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;ViewMain&lt;/span&gt; : EditorPlugin
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;private&lt;/span&gt; Control _dock;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#75715e"&gt;// 让别的脚本可以访问到根场景节点&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;static&lt;/span&gt; Control RootNode;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;override&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; _EnterTree()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; _dock = GD.Load&amp;lt;PackedScene&amp;gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;res://addons/MarkdownViewer/window.tscn&amp;#34;&lt;/span&gt;).Instantiate&amp;lt;Control&amp;gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; AddControlToDock(DockSlot.RightBl, _dock);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; RootNode = _dock;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;override&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; _ExitTree()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; RemoveControlFromDocks(_dock);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; _dock.Free();
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;#endif&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;如果有接触过其他的前端开发框架，那应该是挺好理解Godot的控件开发的&lt;br&gt;
+在编辑器中编辑这个场景，加入一些需要的控件&lt;br&gt;
+（为了方便起见节点名也是类型名）&lt;/p&gt;
+&lt;p&gt;&lt;img class="gallery-image" data-flex-basis="274px" data-flex-grow="114" height="284" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://mlacookie.github.io/post/articles/2025/godot%E4%B8%AD%E8%87%AA%E5%AE%9A%E4%B9%89editor/picture/2.png" width="325"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;Control/VBoxContainer/HBoxContainer/Button&lt;/code&gt;这个按钮是用来选择文件的&lt;br&gt;
+&lt;code&gt;Control/VBoxContainer/HBoxContainer/Lable&lt;/code&gt;这个是用来显示当前选择文件的&lt;br&gt;
+&lt;code&gt;Control/VBoxContainer/ScrollContainer&lt;/code&gt;这个是显示Markdown内容的视图&lt;br&gt;
+&lt;code&gt;Control/FileDialog&lt;/code&gt;是用来做选择文件交互的窗口，也是一个自带的控件&lt;/p&gt;
+&lt;h3 id="给控件添加脚本"&gt;给控件添加脚本
+&lt;/h3&gt;&lt;p&gt;给控件添加脚本跟开发游戏中界面类似，但要注意加上&lt;code&gt;[Tool]&lt;/code&gt;&lt;br&gt;
+前面也讲到，这个特性表示这个脚本可以运行在编辑器里&lt;/p&gt;
+&lt;p&gt;比如说这里给选择文件的按钮加上脚本&lt;br&gt;
+实现点击选择文件的功能&lt;/p&gt;
+&lt;p&gt;选择Button节点，右键，添加脚本，给脚本起个名字&lt;br&gt;
+这里叫FileButton，里面代码如下&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-cs" data-lang="cs"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// FileButton.cs&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;using&lt;/span&gt; Godot;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;using&lt;/span&gt; System;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;[Tool]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;partial&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;class&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;FileButton&lt;/span&gt; : Button
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;override&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; _Ready()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; ButtonDown += () =&amp;gt; ViewMain.RootNode.GetNode&amp;lt;FileDialog&amp;gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;FileDialog&amp;#34;&lt;/span&gt;).Show();
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;修改完脚本后，记得保存场景&lt;br&gt;
+因为用的是C#，所以每次测试插件都要重新构建并重新启用&lt;/p&gt;
+&lt;p&gt;按同样的方法，给FileDialog添加一个脚本，做选择文件后的回调&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-cs" data-lang="cs"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// MarkdownDialog.cs&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;using&lt;/span&gt; System;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;[Tool]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;partial&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;class&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;MarkdownDialog&lt;/span&gt; : FileDialog
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;override&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; _Ready()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; FileSelected += (s) =&amp;gt; ViewMain
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; .RootNode
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; .GetNode&amp;lt;Label&amp;gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;VBoxContainer/HBoxContainer/Label&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; .Text = s;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id="0x03-完成简单的解析逻辑"&gt;&amp;lt;0x03&amp;gt; 完成简单的解析逻辑
+&lt;/h2&gt;&lt;p&gt;这里主要就是演示，所以解析逻辑非常简单&lt;br&gt;
+只做基本的文字和图片的解析逻辑&lt;/p&gt;
+&lt;p&gt;这里用一个类型表示Markdown的内容&lt;br&gt;
+创建一个新的C#脚本，代码如下&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-cs" data-lang="cs"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;//MarkdownElement.cs&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;using&lt;/span&gt; Godot;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;abstract&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;class&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;MarkdownElement&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;protected&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;string&lt;/span&gt; OriginCode { &lt;span style="color:#66d9ef"&gt;get&lt;/span&gt;; &lt;span style="color:#66d9ef"&gt;set&lt;/span&gt;; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;abstract&lt;/span&gt; Control GetControl();
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;class&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;TextElement&lt;/span&gt; : MarkdownElement
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;string&lt;/span&gt; Text { &lt;span style="color:#66d9ef"&gt;get&lt;/span&gt;; &lt;span style="color:#66d9ef"&gt;set&lt;/span&gt;; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;override&lt;/span&gt; Control GetControl()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;new&lt;/span&gt; Label { Text = Text };
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;class&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;ImageElement&lt;/span&gt; : MarkdownElement
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;string&lt;/span&gt; ImagePath { &lt;span style="color:#66d9ef"&gt;get&lt;/span&gt;; &lt;span style="color:#66d9ef"&gt;set&lt;/span&gt;; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;override&lt;/span&gt; Control GetControl()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;var&lt;/span&gt; image = Image.LoadFromFile(ImagePath);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;return&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;new&lt;/span&gt; TextureRect()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Texture = ImageTexture.CreateFromImage(image),
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; StretchMode = TextureRect.StretchModeEnum.KeepAspect,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; CustomMinimumSize = &lt;span style="color:#66d9ef"&gt;new&lt;/span&gt; Vector2(&lt;span style="color:#ae81ff"&gt;0f&lt;/span&gt;, &lt;span style="color:#ae81ff"&gt;200f&lt;/span&gt;),
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; };
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;还需要一个新的工具类，负责解析Markdown文档内容&lt;br&gt;
+代码如下&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-cs" data-lang="cs"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;//MarkdownObject.cs&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;using&lt;/span&gt; System.Collections.Generic;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;using&lt;/span&gt; System.IO;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;using&lt;/span&gt; System.Text.RegularExpressions;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;using&lt;/span&gt; Godot;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;class&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;MarkdownObject&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; List&amp;lt;MarkdownElement&amp;gt; elements = [];
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;private&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;string&lt;/span&gt; _filePath;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;private&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;const&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;string&lt;/span&gt; ImagePattern = &lt;span style="color:#e6db74"&gt;@&amp;#34;\((.*?)\)&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; GenerateElements(&lt;span style="color:#66d9ef"&gt;string&lt;/span&gt; filePath)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;var&lt;/span&gt; localPath = ProjectSettings.GlobalizePath(filePath);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; _filePath = localPath;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; elements.Clear();
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;foreach&lt;/span&gt; (&lt;span style="color:#66d9ef"&gt;var&lt;/span&gt; line &lt;span style="color:#66d9ef"&gt;in&lt;/span&gt; File.ReadLines(localPath))
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; MarkdownElement element;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;if&lt;/span&gt; (line.StartsWith(&lt;span style="color:#e6db74"&gt;&amp;#39;!&amp;#39;&lt;/span&gt;))
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;string&lt;/span&gt; path = Regex.Match(line, ImagePattern).Groups[&lt;span style="color:#ae81ff"&gt;1&lt;/span&gt;].Value;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; element = &lt;span style="color:#66d9ef"&gt;new&lt;/span&gt; ImageElement()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; ImagePath = &lt;span style="color:#e6db74"&gt;$&amp;#34;res://{path}&amp;#34;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; };
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;else&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; element = &lt;span style="color:#66d9ef"&gt;new&lt;/span&gt; TextElement
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Text = line
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; };
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; elements.Add(element);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id="在运行时添加控件"&gt;在运行时添加控件
+&lt;/h3&gt;&lt;p&gt;在Godot中，只需要在运行时动态添加节点即可&lt;/p&gt;
+&lt;p&gt;这里就写在文件选择事件里面&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-cs" data-lang="cs"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;// MarkdownDialog.cs&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;using&lt;/span&gt; System;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#a6e22e"&gt;[Tool]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;partial&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;class&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;MarkdownDialog&lt;/span&gt; : FileDialog
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;public&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;override&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;void&lt;/span&gt; _Ready()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; FileSelected += (s) =&amp;gt; ViewMain
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; .RootNode
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; .GetNode&amp;lt;Label&amp;gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;VBoxContainer/HBoxContainer/Label&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; .Text = s;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	 FileSelected += (s) =&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	 {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	 &lt;span style="color:#66d9ef"&gt;var&lt;/span&gt; vbox = ViewMain.RootNode.GetNode&amp;lt;VBoxContainer&amp;gt;(&lt;span style="color:#e6db74"&gt;&amp;#34;VBoxContainer/ScrollContainer/VBoxContainer&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	 &lt;span style="color:#66d9ef"&gt;foreach&lt;/span&gt; (Node child &lt;span style="color:#66d9ef"&gt;in&lt;/span&gt; vbox.GetChildren())
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	 {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	 vbox.RemoveChild(child);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	 child.QueueFree();
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	 }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	 MarkdownObject obj = &lt;span style="color:#66d9ef"&gt;new&lt;/span&gt; MarkdownObject();
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	 obj.GenerateElements(s);
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	 &lt;span style="color:#66d9ef"&gt;foreach&lt;/span&gt; (&lt;span style="color:#66d9ef"&gt;var&lt;/span&gt; element &lt;span style="color:#66d9ef"&gt;in&lt;/span&gt; obj.elements)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	 {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	 vbox.AddChild(element.GetControl());
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	 }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	 };
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;	}
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;创建一个简单的Markdown文档，然后在插件窗口中选择这个文档&lt;br&gt;
+正常情况下得到的显示是这样的&lt;/p&gt;
+&lt;p&gt;&lt;img class="gallery-image" data-flex-basis="299px" data-flex-grow="124" height="370" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://mlacookie.github.io/post/articles/2025/godot%E4%B8%AD%E8%87%AA%E5%AE%9A%E4%B9%89editor/picture/3.png" width="462"&gt;&lt;/p&gt;
+&lt;p&gt;到目前为止，我们已经实现了简单的Markdown查看器&lt;br&gt;
+虽然比较简陋，但也算简单带过插件开发了&lt;/p&gt;</description></item></channel></rss>
